@@ -5,7 +5,6 @@ import 'nprogress/nprogress.css'// Progress 进度条样式
 import {install} from './plugin/install'
 import config from './script/config/config';
 import models from './script/config/models';
-import './style/common.css';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
