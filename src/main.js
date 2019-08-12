@@ -12,7 +12,8 @@ Vue.use(install, {
   config: config,
   models: models,
   checkPermission(name) {
-  }
+  },
+  headerVue: r => require.ensure([], () => r(require('./components/HeaderMenu.vue')), 'headerVue')
 });
 
 new Vue({
