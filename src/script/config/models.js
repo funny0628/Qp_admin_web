@@ -91,7 +91,10 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/financial/manual/Manual')), 'manual'),
       }
     ]
-  }
+  },
+  channel:{
+    
+  },
 };
 
 export default models;
