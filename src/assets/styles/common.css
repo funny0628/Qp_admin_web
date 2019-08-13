@@ -1,0 +1,25 @@
+.t-l {text-align: left}
+.t-c {text-align: center}
+.t-r {text-align: right}
+
+#home .el-main .input-area {padding: 20px}
+#home .el-main .input-area .el-input--medium {width: 180px;margin-right: 10px}
+#home .el-main .input-area .el-input--medium.w-160 {width: 160px}
+#home .el-main .input-area .el-input--medium.w-240 {width: 240px}
+#home .el-main .input-area .el-date-editor {margin-right:10px;}
+#home .el-main .el-radio-button:hover {color:#2a7cf5}
+#home .el-main .el-radio-button__orig-radio:checked+.el-radio-button__inner {color:#2a7cf5;border-color:#2a7cf5;background: #fff}
+#home .el-main .el-button--primary,#home .el-main .el-button--info {width: 80px;margin-left: 20px;font-size: 12px;}
+#home .el-main .el-button--primary {background: #006efe}
+
+#home .el-main .bd {padding:0 20px;text-align: center}
+
+/*
+#userList—main .el-date-editor.el-input.el-input--prefix.el-input--suffix.el-date-editor--date{
+  height: 36px;
+}
+#userList—main  .el-input__inner{
+  height: 36px;
+}
+*/
+
