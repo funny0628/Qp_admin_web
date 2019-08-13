@@ -14,6 +14,15 @@
 
 #home .el-main .bd {padding:0 20px;text-align: center}
 
+#userList—main .el-dialog .el-dialog__header {
+  text-align: center;
+}
+#userList—main .el-input {
+  width: 80%;
+}
+/*#MemCardList—main .el-input, #MemCardList—main .el-select {
+  width: 80%;
+}*/
 /*
 #userList—main .el-date-editor.el-input.el-input--prefix.el-input--suffix.el-date-editor--date{
   height: 36px;
