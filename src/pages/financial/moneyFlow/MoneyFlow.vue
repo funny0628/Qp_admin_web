@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "ModifyMemCard"
+        name: "MeneyFlow"
     }
 </script>
 

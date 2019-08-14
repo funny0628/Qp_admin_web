@@ -36,7 +36,7 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="item in tableStyle" :prop="item.prop" :label="item.label" :width="item.width"
+        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label" :width="item.width"
                          align="center">
           <template slot-scope="scope">
             <template
@@ -44,7 +44,7 @@
               <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="btn in scope.row[item.prop]" @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
@@ -105,10 +105,8 @@
           <el-tab-pane label="收款信息" name="second">
             <el-form :model="collectionData" style="display: flex; justify-content: space-between;flex-wrap:wrap ;">
               <el-form-item label="银行卡" label-width="70px" style="width: 50%;">
-<!--                <el-input v-model="formDate.id" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="支付宝" label-width="70px" style="width: 50%;">
-<!--                <el-input v-model="formDate.desc" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="卡号" label-width="70px" style="width: 50%;">
                 <el-input v-model="collectionData.card" autocomplete="off"></el-input>
@@ -351,7 +349,7 @@
 </script>
 
 <style scoped>
-  @import "./../../../assets/styles/common.css";
+  /*@import "./../../../assets/styles/common.css";*/
 
   #userList—main {
   }

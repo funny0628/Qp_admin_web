@@ -17,7 +17,7 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="item in tableStyle" :prop="item.prop" :label="item.label" :width="item.width"
+        <el-table-column v-for="(item,index) in tableStyle" :prop="item.prop" :label="item.label" :width="item.width" :key="index"
                          align="center">
           <template slot-scope="scope">
             <template
@@ -25,7 +25,7 @@
               <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="btn in scope.row[item.prop]" @click="handeClick(btn)"
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)"
                                  style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
@@ -62,7 +62,6 @@
             <el-input v-model="modify_member_card.open_bank" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属省份" label-width="100px">
-            <!--            <el-input v-model="modify_member_card.provinces" autocomplete="off"></el-input>-->
             <el-select v-model="modify_member_card.province" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in provinces"
@@ -73,7 +72,6 @@
             </el-select>
           </el-form-item>
           <el-form-item label="所属城市" label-width="100px">
-<!--            <el-input v-model="modify_member_card.city" autocomplete="off"></el-input>-->
             <el-select v-model="modify_member_card.city" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in citys"
@@ -216,5 +214,5 @@
 </script>
 
 <style scoped>
-  @import "./../../../assets/styles/common.css";
+  /*@import "./../../../assets/styles/common.css";*/
 </style>

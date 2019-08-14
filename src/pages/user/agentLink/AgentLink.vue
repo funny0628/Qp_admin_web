@@ -16,7 +16,7 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="item in tableStyle" :prop="item.prop" :label="item.label" :width="item.width"
+        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label" :width="item.width"
                          align="center">
           <template slot-scope="scope">
             <template
@@ -24,7 +24,7 @@
               <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="btn in scope.row[item.prop]" @click="handeClick(btn)"
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)"
                                  style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
@@ -37,14 +37,15 @@
         </el-table-column>
       </info-table>
     </div>
+
   </div>
 </template>
 
 <script>
-  import InfoTable from '../../../plugin/components/InfoTable'
-  import PageInfo from "../../../plugin/script/common/PageInfo"
-  import BaseIframe from "../../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../../plugin/components/PermissionButton"
+  import InfoTable from '../../../plugin/components/InfoTable';
+  import PageInfo from "../../../plugin/script/common/PageInfo";
+  import BaseIframe from "../../../plugin/script/common/BaseIframe";
+  import PermissionButton from "../../../plugin/components/PermissionButton";
 
   export default {
     name: "AgentLink",
@@ -85,11 +86,12 @@
       }
     },
     methods:{
-      search(){}
+      search(){},
+      handeClick(btn){}
     }
   }
 </script>
 
 <style scoped>
-  @import "./../../../assets/styles/common.css";
+  /*@import "./../../../assets/styles/common.css";*/
 </style>
