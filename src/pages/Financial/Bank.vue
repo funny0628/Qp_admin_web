@@ -78,10 +78,10 @@
 </template>
 
 <script>
-  import PermissionButton from "../../../plugin/components/PermissionButton";
-  import InfoTable from '../../../plugin/components/InfoTable';
-  import BaseIframe from '../../../plugin/script/common/BaseIframe';
-  import PageInfo from '../../../plugin/script/common/PageInfo';
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from '../../plugin/components/InfoTable';
+  import BaseIframe from '../../plugin/script/common/BaseIframe';
+  import PageInfo from '../../plugin/script/common/PageInfo';
   export default {
     name: "Bank",
     extends: BaseIframe,

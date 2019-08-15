@@ -13,9 +13,14 @@
 #home .el-main .el-button--primary {background: #006efe}
 
 #home .el-main .bd {padding:0 20px;text-align: center}
-
 #userList—main .el-dialog .el-dialog__header {
   text-align: center;
 }
-
-
+/*手动上下分*/
+#Manual-main .el-form-item__label{
+  font-weight: 700;
+  font-size: 16px;
+}
+#Manual-main .el-textarea__inner {
+  height:140px;
+}
