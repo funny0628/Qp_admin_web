@@ -93,7 +93,99 @@ const models = {
     ]
   },
   channel:{
-    
+    name:'channel',
+    vue: null,
+    text:'渠道管理',
+    children:[
+      {
+        name:'packagemanage',
+        text:'包管理',
+        vue: r => require.ensure([], () => r(require('../../pages/Channel/PackageManage.vue')), 'packagemanage'),
+      },
+      {
+        name:'packagestatistics',
+        text:'渠道包统计',
+        vue: r => require.ensure([], () => r(require('../../pages/Channel/PackageStatistics.vue')), 'packagestatistics'),
+      },
+      {
+        name:'report',
+        text:'渠道报表',
+        vue: r => require.ensure([], () => r(require('../../pages/Channel/Report.vue')), 'report'),
+      }
+    ]
+  },
+  silvermanage:{
+    name:'silvermanage',
+    vue: null,
+    text:'银商管理',
+    children:[
+      {
+        name:'rechargelist',
+        text:'银商充值列表',
+        vue: r => require.ensure([], () => r(require('../../pages/SilverManage/RechargeList.vue')), 'rechargelist'),
+      },
+      {
+        name:'accountlist',
+        text:'银商账号列表',
+        vue: r => require.ensure([], () => r(require('../../pages/SilverManage/AccountList.vue')), 'accountlist'),
+      },
+    ]
+  },
+  journal:{
+    name:'journal',
+    vue: null,
+    text:'日志记录',
+    children:[
+      {
+        name:'operate',
+        text:'会员操作日志',
+        vue: r => require.ensure([], () => r(require('../../pages/Journal/Operate.vue')), 'operate'),
+      },
+      {
+        name:'loginlog',
+        text:'会员登录日志',
+        vue: r => require.ensure([], () => r(require('../../pages/Journal/LoginLog.vue')), 'loginlog'),
+      },
+    ]
+  },
+  subbackstage:{
+    name:'subbackstage',
+    vue: null,
+    text:'子后台管理',
+    children:[
+      {
+        name:'subaccount',
+        text:'子后台账号列表',
+        vue: r => require.ensure([], () => r(require('../../pages/SubBackstage/Subaccount.vue')), 'subaccount'),
+      }
+    ]
+  },
+  limit:{
+    name:'limit',
+    vue: null,
+    text:'权限管理',
+    children:[
+      {
+        name:'manager',
+        text:'管理员角色',
+        vue: r => require.ensure([], () => r(require('../../pages/Limit/Manager.vue')), 'manager'),
+      },
+      {
+        name:'managerlist',
+        text:'管理员列表',
+        vue: r => require.ensure([], () => r(require('../../pages/Limit/ManagerList.vue')), 'managerlist'),
+      },
+      {
+        name:'backdo',
+        text:'后台操作日志',
+        vue: r => require.ensure([], () => r(require('../../pages/Limit/BackDo.vue')), 'backdo'),
+      },
+      {
+        name:'backlogin',
+        text:'后台登陆日志',
+        vue: r => require.ensure([], () => r(require('../../pages/Limit/BackLogin.vue')), 'backlogin'),
+      }
+    ]
   },
 };
 

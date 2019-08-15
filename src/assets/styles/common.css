@@ -19,3 +19,30 @@
 }
 
 
+/* 包管理 */
+
+/* 包管理弹框头部内容位置调整 */
+#packagemanage .el-dialog__header{
+  text-align: center;
+  padding-top: 35px
+}
+
+/* 包管理弹框表单 */
+#packagemanage .el-form-item{
+  display: inline-block;
+}
+#packagemanage .el-dialog__body{
+  padding:5px 80px 30px;
+}
+
+/* 包管理弹框多选间隔 */
+#packagemanage .el-checkbox{
+  margin-right: 50px;
+}
+
+/* 包管理弹框底部按钮位置 */
+#packagemanage .el-dialog__footer{
+  text-align: center;
+  padding-bottom: 80px;
+  margin-top: -40px
+}
