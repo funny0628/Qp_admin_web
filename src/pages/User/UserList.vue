@@ -20,8 +20,6 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <!--      <el-input v-model="format.user_status" placeholder="用户状态" size="medium"></el-input>-->
-      <!--      <select-time :date="date" :select-date.sync="date"/>-->
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
@@ -150,10 +148,8 @@
           <el-tab-pane label="返点设置" name="fourth">
             <el-form :model="gameData" style="display: flex; justify-content: space-between;flex-wrap:wrap ;">
               <el-form-item label="游戏返点" label-width="70px" style="width: 50%;">
-                <!--                <el-input v-model="formDate.id" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="" label-width="70px" style="width: 50%;">
-                <!--                <el-input v-model="formDate.id" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="游戏1" label-width="70px" style="width: 50%;">
                 <el-input v-model="gameData.game1" autocomplete="off"></el-input>
@@ -180,11 +176,11 @@
 </template>
 
 <script>
-  import SelectTime from '../../../plugin/components/SelectTime'
-  import InfoTable from '../../../plugin/components/InfoTable'
-  import PageInfo from "../../../plugin/script/common/PageInfo"
-  import BaseIframe from "../../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../../plugin/components/PermissionButton"
+  import SelectTime from '../../plugin/components/SelectTime'
+  import InfoTable from '../../plugin/components/InfoTable'
+  import PageInfo from "../../plugin/script/common/PageInfo"
+  import BaseIframe from "../../plugin/script/common/BaseIframe"
+  import PermissionButton from "../../plugin/components/PermissionButton"
 
   export default {
     name: "UserList",

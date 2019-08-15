@@ -1,8 +1,8 @@
 <template>
-  <div id="UserLayer-main">
+  <div id="Commission-main">
     <div class="input-area">
       <permission-button :action="ActionType.ADD" @click="handelAddClick()">
-        <el-button type="primary" size='medium'>添加条件</el-button>
+        <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
     </div>
     <div class="bd">
@@ -41,18 +41,21 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <el-form :model="user_layer" >
-        <el-form-item label="层级名称" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.hierarchy_name"></el-input>
+      <el-form :model="user_layer">
+        <el-form-item label="代理层级" :label-width="labelWidth">
+          <el-input autocomplete="off" v-model="user_layer.level"></el-input>
         </el-form-item>
-        <el-form-item label="充值金额" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.up_amount"></el-input>
+        <el-form-item label="最小业绩" :label-width="labelWidth">
+          <el-input autocomplete="off" v-model="user_layer.min_results"></el-input>
         </el-form-item>
-        <el-form-item label="充值笔数" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.up_number"></el-input>
+        <el-form-item label="最大业绩" :label-width="labelWidth">
+          <el-input autocomplete="off" v-model="user_layer.max_results"></el-input>
+        </el-form-item>
+        <el-form-item label="返佣比例" :label-width="labelWidth">
+          <el-input autocomplete="off" v-model="user_layer.commission_col"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer" style="text-align: center">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
@@ -61,13 +64,13 @@
 </template>
 
 <script>
-  import PermissionButton from "../../../plugin/components/PermissionButton";
-  import InfoTable from '../../../plugin/components/InfoTable';
-  import BaseIframe from '../../../plugin/script/common/BaseIframe';
-  import PageInfo from '../../../plugin/script/common/PageInfo';
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from '../../plugin/components/InfoTable';
+  import BaseIframe from '../../plugin/script/common/BaseIframe';
+  import PageInfo from '../../plugin/script/common/PageInfo';
 
   export default {
-    name: "UserLayer",
+    name: "Commission",
     extends: BaseIframe,
     components: {PermissionButton, InfoTable},
     data() {
@@ -75,19 +78,19 @@
         /**table */
         tableStyle:
           [
-            {label: '层级ID', prop: 'hierarchy_id', width: ''},
-            {label: '层级名称', prop: 'hierarchy_name', width: ''},
-            {label: '充值金额', prop: 'up_amount', width: ''},
-            {label: '充值笔数', prop: 'up_number', width: ''},
+            {label: '代理层级', prop: 'level', width: ''},
+            {label: '最小业绩', prop: 'min_results', width: ''},
+            {label: '最大业绩', prop: 'max_results', width: ''},
+            {label: '返佣比例（%）', prop: 'commission_col', width: ''},
             {label: '操作', prop: 'action', width: ''},
           ],
         records:
           [
             {
-              hierarchy_id: '1',
-              hierarchy_name: 'VIP0',
-              up_amount: '0',
-              up_number: '0',
+              level: '第一级代理',
+              min_results: '0',
+              max_results: '10000',
+              commission_col: '0.2',
               action: [{label: '修改', type: 'edit'}]
             }
           ],
@@ -98,9 +101,10 @@
         dialogVisible: false,
         labelWidth: '70px',
         user_layer: {
-          hierarchy_name: '', //层级名称
-          up_amount: '', //充值金额
-          up_number: '', //充值笔数
+          level: '',
+          min_results: '',
+          max_results:'',
+          commission_col:'',
         },
       }
     },
@@ -108,15 +112,14 @@
       search() {
       },
       handelAddClick() {
-        this.dialogTitleType = '新增用户分层';
+        this.dialogTitleType = '新增代理分层';
         this.dialogVisible = true;
       },
       /**edit */
       handeClick(btn) {
         if (btn.type === 'edit') {
-          this.dialogTitleType = '修改用户分层';
+          this.dialogTitleType = '修改代理分层';
           this.dialogVisible = true;
-
         }
       }
     }
@@ -124,5 +127,5 @@
 </script>
 
 <style scoped>
-  /*@import "./../../../assets/styles/common.css";*/
+
 </style>

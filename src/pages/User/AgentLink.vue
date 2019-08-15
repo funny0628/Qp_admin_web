@@ -42,10 +42,10 @@
 </template>
 
 <script>
-  import InfoTable from '../../../plugin/components/InfoTable';
-  import PageInfo from "../../../plugin/script/common/PageInfo";
-  import BaseIframe from "../../../plugin/script/common/BaseIframe";
-  import PermissionButton from "../../../plugin/components/PermissionButton";
+  import InfoTable from '../../plugin/components/InfoTable';
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PermissionButton from "../../plugin/components/PermissionButton";
 
   export default {
     name: "AgentLink",
@@ -86,12 +86,13 @@
       }
     },
     methods:{
+      /***查询搜索 */
       search(){},
+      /***查看链接 */
       handeClick(btn){}
     }
   }
 </script>
 
 <style scoped>
-  /*@import "./../../../assets/styles/common.css";*/
 </style>

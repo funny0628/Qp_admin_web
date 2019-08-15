@@ -4,10 +4,11 @@
 
 <script>
     export default {
-        name: "prepaidRecord"
+        name: "FlowSta"
     }
 </script>
 
 <style scoped>
 
 </style>
+<!--金流次数统计-->

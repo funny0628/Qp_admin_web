@@ -92,10 +92,10 @@
 </template>
 
 <script>
-  import InfoTable from '../../../plugin/components/InfoTable'
-  import PageInfo from "../../../plugin/script/common/PageInfo"
-  import BaseIframe from "../../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../../plugin/components/PermissionButton"
+  import InfoTable from '../../plugin/components/InfoTable'
+  import PageInfo from "../../plugin/script/common/PageInfo"
+  import BaseIframe from "../../plugin/script/common/BaseIframe"
+  import PermissionButton from "../../plugin/components/PermissionButton"
 
   export default {
     name: "MemCardList",
@@ -104,7 +104,6 @@
     data() {
       let $this = this;
       return {
-        // date: [],
         format: {
           child_id: '', //子后台id
           user_id: '', //用户id

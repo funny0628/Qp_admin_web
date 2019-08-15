@@ -4,10 +4,11 @@
 
 <script>
     export default {
-        name: "MeneyFlow"
+        name: "SummaryAcc"
     }
 </script>
 
 <style scoped>
 
 </style>
+<!--出入账目汇总-->
