@@ -5,7 +5,9 @@ import 'nprogress/nprogress.css'// Progress 进度条样式
 import {install} from './plugin/install'
 import config from './script/config/config';
 import models from './script/config/models';
-import './assets/styles/common.css'
+import './assets/styles/common.css';
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

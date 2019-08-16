@@ -24,14 +24,22 @@
 #Manual-main .el-textarea__inner {
   height:140px;
 }
-
-/* 表单label左对齐 */
-.el-form-item__label{
-  text-align: left;
+/*内部邮件*/
+#InternalMail-main .el-textarea__inner {
+  height: 80px;
 }
+/*每日签到*/
+/*#DayCheck-main .el-form-item__content{
+  line-height: 0;
+}*/
+/*客服设置*/
+#SetService-main  .el-textarea__inner {
+  height: 80px;
+}
+/* 包管理 */
 
-/* 弹框头部内容位置调整 */
-.el-dialog__header{
+/* 包管理弹框头部内容位置调整 */
+#packagemanage .el-dialog__header{
   text-align: center;
   padding-top: 35px
 }

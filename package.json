@@ -12,6 +12,7 @@
     "update_plugin": "git submodule update --init --recursive && git submodule foreach git pull origin master"
   },
   "dependencies": {
+    "echarts": "^4.2.1",
     "moment": "^2.24.0",
     "vue": "^2.5.2"
   },

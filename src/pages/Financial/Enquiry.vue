@@ -21,7 +21,7 @@
         </el-option>
       </el-select>
       <select-time :date="date" :select-time.sync="date"></select-time>
-      <permission-button :action="ActionType.READ" @click="search()">
+      <permission-button :action="ActionType.READ" @click="search()" style="float: right;margin-bottom: 20px;">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
     </div>
@@ -149,4 +149,4 @@
     margin: 0;
   }
 </style>
-
+<!--兑换记录查询-->

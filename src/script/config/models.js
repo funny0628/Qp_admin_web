@@ -126,6 +126,63 @@ const models = {
         name:'flowSta',
         text:'金流数据统计',
         vue: r => require.ensure([], () => r(require('../../pages/DataSta/FlowSta')), 'flowSta')
+      },
+      {
+        name:'dayTrend',
+        text:'每日趋势',
+        vue: r => require.ensure([], () => r(require('../../pages/DataSta/DayTrend')), 'dayTrend')
+      }
+    ]
+  },
+  theConfig:{
+    name:'theConfig',
+    text:'大厅配置',
+    vue:null,
+    children:[
+      {
+        name:'scrollNotice',
+        text:'滚动公告',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/ScrollNotice')), 'scrollNotice')
+      },
+      {
+        name:'internalMail',
+        text:'内部邮件',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/InternalMail')), 'internalMail')
+      },
+      {
+        name:'popNotice',
+        text:'弹窗公告',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PopNotice')), 'popNotice')
+      },
+      {
+        name:'posterHall',
+        text:'大厅海报',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PosterHall')), 'posterHall')
+      },
+      {
+        name:'topPref',
+        text:'充值优惠',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/TopPref')), 'topPref')
+      },
+      {
+        name:'dayCheck',
+        text:'每日签到',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/DayCheck')), 'dayCheck')
+      },
+      {
+        name:'rotaActive',
+        text:'转盘活动',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/RotaActive')), 'rotaActive')
+      },
+      {
+        name:'playTask',
+        text:'玩家任务',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PlayTask')), 'playTask')
+      },
+      {
+        name:'setService',
+        text:'客服设置',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/SetService')), 'setService')
       }
     ]
   },
