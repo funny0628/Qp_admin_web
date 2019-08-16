@@ -25,14 +25,10 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 
 export default {
-  name: "AttendanceRecords",
   extends: BaseIframe,
   components: { SelectTime, InfoTable, PermissionButton },
   data() {
     return {
-      user_id: "",
-      level: "",
-      quickDate: "",
       date: [],
       tableStyle: [
         { label: "日期", prop: "date", width: "155px" },
@@ -60,7 +56,6 @@ export default {
   },
   methods: {
     search() {},
-    handlerQuickDateChange() {}
   }
 };
 </script>

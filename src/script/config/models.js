@@ -206,6 +206,13 @@ const models = {
         name:'manager',
         text:'管理员角色',
         vue: r => require.ensure([], () => r(require('../../pages/Limit/Manager.vue')), 'manager'),
+        children:[
+          {
+            name:'setlimit',
+            text:'权限设置',
+            vue: r => require.ensure([], () => r(require('../../pages/Limit/SetLimit.vue')), 'setlimit'),
+          },
+        ]
       },
       {
         name:'managerlist',
@@ -221,6 +228,18 @@ const models = {
         name:'backlogin',
         text:'后台登陆日志',
         vue: r => require.ensure([], () => r(require('../../pages/Limit/BackLogin.vue')), 'backlogin'),
+      }
+    ]
+  },
+  systemmanage:{
+    name:'systemmanage',
+    vue: null,
+    text:'系统管理',
+    children:[
+      {
+        name:'global',
+        text:'全局设置',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemManage/Global.vue')), 'global'),
       }
     ]
   },
