@@ -32,6 +32,13 @@
 /*#DayCheck-main .el-form-item__content{
   line-height: 0;
 }*/
+
+/*充值优惠*/
+#TopPref-main .el-button--warning , #Sales-main .el-button--warning {
+  width: 120px;
+}
+/*业绩返佣*/
+
 /*客服设置*/
 #SetService-main  .el-textarea__inner {
   height: 80px;

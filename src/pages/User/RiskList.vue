@@ -1,0 +1,99 @@
+<template>
+  <div id="RiskList">
+    <div class="input-area">
+      <permission-button :action="ActionType.READ" @click="search()">
+        <el-button type="primary" size="medium">添加条件</el-button>
+      </permission-button>
+    </div>
+    <div class="bd">
+      <info-table
+        :search="search"
+        :table-style="tableStyle"
+        :records="records"
+        :page-info="pageInfo"
+      >
+        <el-table-column v-for="(item,index) in tableStyle" :prop="item.prop" :label="item.label" :width="item.width" :key="index"
+                         align="center">
+          <template slot-scope="scope">
+            <template
+              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) >= 0">
+              <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
+            </template>
+            <template v-if="item.prop === 'action'">
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)"
+                                 style="cursor: pointer; padding-left: 5px;">
+                <span>{{btn.label}}</span>
+              </permission-button>
+            </template>
+            <template
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) < 0">
+              {{scope.row[item.prop]}}
+            </template>
+          </template>
+        </el-table-column>
+      </info-table>
+    </div>
+    <div class="dialog">
+      <el-dialog title="风控条件" :visible.sync="dialogVisible" width="30%" center>
+        <el-form :model="formData">
+          <el-form-item label="盈亏大于：" label-width="110px">
+            <el-input v-model="formData.greater" autocomplete="off" placeholder="单位（元) "></el-input>
+          </el-form-item>
+          <el-form-item label="输赢局数大于：" label-width="110px">
+            <el-input v-model="formData.greater_num" autocomplete="off" placeholder="单位（局）"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </div>
+</template>
+
+<script>
+  import InfoTable from '../../plugin/components/InfoTable'
+  import PageInfo from "../../plugin/script/common/PageInfo"
+  import BaseIframe from "../../plugin/script/common/BaseIframe"
+  import PermissionButton from "../../plugin/components/PermissionButton"
+  export default {
+    name: "RiskList",
+    extends: BaseIframe,
+    components: {InfoTable, PermissionButton},
+    data(){
+      return {
+        tableStyle: [
+          {label: '渠道ID', prop: 'channel_id', width: ''},
+          {label: '用户ID', prop: 'user_id', width: ''},
+          {label: '用户昵称', prop: 'user_name', width: ''},
+          {label: '盈亏', prop: 'loss', width: ''},
+          {label: '用户输赢局数', prop: 'win_num', width: ''},
+        ],
+        records: [{
+          channel_id: '100',
+          user_id: '1001100',
+          user_name: '测试玩家1',
+          loss: '300000.000',
+          win_num: '6',
+        }],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        dialogVisible:false,
+        formData:{
+          greater:'',
+          greater_num:''
+        }
+      }
+    },
+    methods:{
+      search(){
+        this.dialogVisible = true
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
+<!--风控列表-->

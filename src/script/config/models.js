@@ -30,6 +30,11 @@ const models = {
         name: 'userLayer',
         text: '用户分层',
         vue: r => require.ensure([], () => r(require('../../pages/User/UserLayer')), 'userLayer'),
+      },
+      {
+        name:'riskList',
+        text:'风控列表',
+        vue: r => require.ensure([], () => r(require('../../pages/User/RiskList')), 'riskList'),
       }
     ]
   },
@@ -47,6 +52,21 @@ const models = {
         name:'commission',
         text:'代理返佣设置',
         vue: r => require.ensure([], () => r(require('../../pages/Agent/Commission')), 'commission')
+      },
+      {
+        name:'universal',
+        text:'全民返佣',
+        vue: r => require.ensure([], ()=> r(require('../../pages/Agent/Universal')),'universal')
+      },
+      {
+        name:'sales',
+        text:'业绩返佣',
+        vue: r => require.ensure([], ()=> r(require('../../pages/Agent/Sales')),'sales')
+      },
+      {
+        name:'salesList',
+        text:'业绩返佣列表',
+        vue: r => require.ensure([], ()=> r(require('../../pages/Agent/SalesList')),'sales')
       }
     ]
   },

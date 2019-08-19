@@ -9,6 +9,10 @@ import './assets/styles/common.css';
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+Vue.use(iView);
+
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(install, {
