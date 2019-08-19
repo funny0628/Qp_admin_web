@@ -52,16 +52,42 @@
 }
 
 /* 弹框表单 */
-.el-form-item{
+#packagemanage .el-form-item,
+#accountlist .el-form-item,
+#managerlist .el-form-item,
+#subaccount .el-form-item{
   display: inline-block;
 }
-.el-dialog__body{
+
+
+#packagemanage .el-dialog__body,
+#accountlist .el-dialog__body,
+#managerlist .el-dialog__body,
+#subaccount .el-dialog__body{
   padding:5px 80px 30px;
 }
 
 /* 包管理弹框多选间隔 */
 #packagemanage .el-checkbox{
   margin-right: 50px;
+}
+
+/* 权限设置表格样式改变 */
+
+#setlimit .permission-bd {
+  padding: 0 20px;
+}
+#setlimit .permission-bd th {
+  background: #f2f2f2!important;
+  font-weight: normal;
+}
+#setlimit .permission-bd th,
+#setlimit .permission-bd td {
+  padding-left: 40px;
+  color: #333;
+}
+#setlimit .permission-bd .el-button--info {
+  margin-left: 0;
 }
 
 
