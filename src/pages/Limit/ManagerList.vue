@@ -28,33 +28,45 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <p>
-            <el-form-item label="管理员名称" prop="admin" class="formleft">
-              <el-input v-model="ruleForm.admin" placeholder="请输入名称"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input v-model.number="ruleForm.password" placeholder="(6-8位数字)"></el-input>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="真实姓名" prop="realname" class="formleft">
-              <el-input v-model="ruleForm.realname" placeholder="请输入昵称"></el-input>
-            </el-form-item>
-            <el-form-item label="所属角色" prop="belongrole">
-              <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="手机号" prop="phone" class="formleft">
-              <el-input v-model.number="ruleForm.phone" placeholder="请输入11位手机号"></el-input>
-            </el-form-item>
-            <el-form-item label="备注" prop="tips">
-              <el-input v-model="ruleForm.tips" placeholder="请输入邮箱号"></el-input>
-            </el-form-item>
-          </p>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="管理员名称" prop="admin" class="formleft">
+                <el-input v-model="ruleForm.admin" placeholder="请输入名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="密码" prop="password">
+                <el-input v-model.number="ruleForm.password" placeholder="(6-8位数字)"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="真实姓名" prop="realname" class="formleft">
+                <el-input v-model="ruleForm.realname" placeholder="请输入昵称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="所属角色" prop="belongrole">
+                <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
+                  <el-option label="区域一" value="shanghai"></el-option>
+                  <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="手机号" prop="phone" class="tel">
+                <el-input v-model.number="ruleForm.phone" placeholder="请输入11位手机号"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="备注" prop="tips">
+                <el-input v-model="ruleForm.tips" placeholder="请输入邮箱号"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -157,14 +169,11 @@ export default {
 </script>
 
 <style scoped>
-.el-input {
-  margin-right: 10px;
+.el-row {
+  margin: 10px 0 30px;
 }
-.formleft {
-  margin-right: 100px;
-}
-p {
-  margin-bottom: 30px;
+.checkbox{
+  margin-bottom: 20px;
 }
 .el-textarea {
   width: 630px;

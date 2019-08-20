@@ -29,25 +29,33 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <p>
-            <el-form-item label="用户名" prop="username" class="formleft">
-              <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
-            </el-form-item>
-            <el-form-item label="子后台ID" prop="substageid">
-              <el-input v-model="ruleForm.substageid" placeholder="请输入子后台ID"></el-input>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="密码" prop="password" class="formleft">
-              <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
-            </el-form-item>
-            <el-form-item label="用户昵称" prop="nickname">
-              <el-input v-model="ruleForm.nickname" placeholder="请输入用户昵称"></el-input>
-            </el-form-item>
-          </p>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="用户名" prop="username" class="formleft">
+                <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="子后台ID" prop="substageid">
+                <el-input v-model="ruleForm.substageid" placeholder="请输入子后台ID"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="密码" prop="password" class="formleft">
+                <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="用户昵称" prop="nickname">
+                <el-input v-model="ruleForm.nickname" placeholder="请输入用户昵称"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <p>
             <el-form-item label="银商描述" prop="silverdescribe">
-              <el-input type="textarea" v-model="ruleForm.silverdescribe" placeholder="请输入描述"></el-input>
+              <el-input  type="textarea" v-model="ruleForm.silverdescribe" placeholder="请输入描述"></el-input>
             </el-form-item>
           </p>
         </el-form>
@@ -141,15 +149,10 @@ export default {
 </script>
 
 <style scoped>
-.el-input {
-  margin-right: 10px;
+.el-row {
+  margin: 10px 0 30px;
 }
-.formleft {
-  margin-right: 100px;
-}
-p {
-  margin-bottom: 30px;
-}
+
 .el-textarea {
   width: 630px;
 }
@@ -164,5 +167,8 @@ p {
 .cancel {
   background-color: #ccc;
   border: transparent;
+}
+.checkbox{
+  margin-bottom: 20px;
 }
 </style>

@@ -29,30 +29,42 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <p>
-            <el-form-item label="平台名称" prop="platform" class="formleft">
-              <el-input v-model="ruleForm.platform" placeholder="请输入名称"></el-input>
-            </el-form-item>
-            <el-form-item label="唯一标识" prop="mark">
-              <el-input v-model="ruleForm.mark" placeholder="请输入标识"></el-input>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="绑定用户" prop="user" class="formleft">
-              <el-input v-model.number="ruleForm.user" placeholder="（6-8位数字）"></el-input>
-            </el-form-item>
-            <el-form-item label="下载地址" prop="url">
-              <el-input v-model="ruleForm.url" placeholder="请输入下载地址"></el-input>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="大厅热更" prop="lobbyupdate" class="lobbyupdate">
-              <el-switch v-model="ruleForm.lobbyupdate"></el-switch>
-            </el-form-item>
-            <el-form-item label="包状态" prop="packagestatus">
-              <el-switch v-model="ruleForm.packagestatus"></el-switch>
-            </el-form-item>
-          </p>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="平台名称" prop="platform" class="formleft">
+                <el-input v-model="ruleForm.platform" placeholder="请输入名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="唯一标识" prop="mark">
+                <el-input v-model="ruleForm.mark" placeholder="请输入标识"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="绑定用户" prop="user" class="formleft">
+                <el-input v-model.number="ruleForm.user" placeholder="（6-8位数字）"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="下载地址" prop="url">
+                <el-input v-model="ruleForm.url" placeholder="请输入下载地址"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="大厅热更" prop="lobbyupdate" class="lobbyupdate">
+                <el-switch v-model="ruleForm.lobbyupdate"></el-switch>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="包状态" prop="packagestatus" class="packagestatus">
+                <el-switch v-model="ruleForm.packagestatus"></el-switch>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <p>
             <el-form-item label="游戏开放" prop="type">
               <el-checkbox-group v-model="ruleForm.type">
@@ -67,7 +79,11 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addpackage = false" class="cancel">取 消</el-button>
-        <el-button type="primary" @click="addpackage = false,submitForm('ruleForm')" class="confirm">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="addpackage = false,submitForm('ruleForm')"
+          class="confirm"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -84,19 +100,19 @@ export default {
   extends: BaseIframe,
   components: { SelectTime, InfoTable, PermissionButton },
   data() {
-       var validateid=(rule, value, callback)=>{
-          if(!Number.isInteger(value)){
-              return callback(new Error('密码为纯数字'))
-          }else if(value.toString().length<6||value.toString().length>8){
-               return callback(new Error('密码位数为6-8位'))
-           }else{
-             callback()
-           }
-      };
+    var validateid = (rule, value, callback) => {
+      if (!Number.isInteger(value)) {
+        return callback(new Error("密码为纯数字"));
+      } else if (value.toString().length < 6 || value.toString().length > 8) {
+        return callback(new Error("密码位数为6-8位"));
+      } else {
+        callback();
+      }
+    };
     return {
       package_id: "",
       mark: "",
-      package_status:"",
+      package_status: "",
       date: [],
       addpackage: false,
       ruleForm: {
@@ -106,16 +122,25 @@ export default {
         url: "",
         lobbyupdate: true,
         packagestatus: true,
-        type:[]
+        type: []
       },
       rules: {
         platform: [
           { required: true, message: "请输入平台名称", trigger: "blur" }
         ],
         mark: [{ required: true, message: "请输入唯一标识", trigger: "blur" }],
-        user: [{ required: true, message: "请输入用户id", trigger: "blur" },
-                 { validator: validateid, trigger: 'blur' }],
-        type:[{type: 'array', required: true, message: '请至少选择一个游戏', trigger: 'change'}]
+        user: [
+          { required: true, message: "请输入用户id", trigger: "blur" },
+          { validator: validateid, trigger: "blur" }
+        ],
+        type: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个游戏",
+            trigger: "change"
+          }
+        ]
       },
       tableStyle: [
         { label: "包ID", prop: "packageid", width: "279px" },
@@ -152,25 +177,25 @@ export default {
 </script>
 
 <style scoped>
-.formleft {
-  margin-right: 100px;
+.el-row {
+  margin: 10px 0 30px;
 }
-p {
-  margin-bottom: 30px;
+.lobbyupdate{
+  margin-left: 8px
 }
-.lobbyupdate {
-  margin-right: 266px;
+.packagestatus{
+  margin-left: 8px;
 }
 .cancel,
-.confirm{
-  width: 160px!important;
+.confirm {
+  width: 160px !important;
   margin: 0 100px;
-  color: #fff!important;
-  font-size: 15px!important;
-  font-weight: 650!important
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
 }
-.cancel{
-    background-color: #ccc;
-        border:transparent
+.cancel {
+  background-color: #ccc;
+  border: transparent;
 }
 </style>

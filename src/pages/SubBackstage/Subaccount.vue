@@ -27,28 +27,36 @@
           label-width="100px"
           class="demo-ruleForm"
         >
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="子后台名称" prop="substage" class="formleft">
+                <el-input v-model="ruleForm.substage" placeholder="请输入名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="子后台账号" prop="subaccount">
+                <el-input v-model="ruleForm.subaccount" placeholder="请输入昵称"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="密码" prop="password" class="formleft">
+                <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span='12'>
+              <el-form-item label="所属角色" prop="belongrole">
+                <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
+                  <el-option label="区域一" value="shanghai"></el-option>
+                  <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <p>
-            <el-form-item label="子后台名称" prop="substage" class="formleft">
-              <el-input v-model="ruleForm.substage" placeholder="请输入名称"></el-input>
-            </el-form-item>
-            <el-form-item label="子后台账号" prop="subaccount">
-              <el-input v-model="ruleForm.subaccount" placeholder="请输入昵称"></el-input>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="密码" prop="password" class="formleft">
-              <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
-            </el-form-item>
-            <el-form-item label="所属角色" prop="belongrole">
-              <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </p>
-          <p>
-            <el-form-item label="子后台描述" prop="silverdescribe">
-              <el-input type="textarea" v-model="ruleForm.silverdescribe" placeholder="请输入描述"></el-input>
+            <el-form-item label="子后台描述" prop="subdescribe">
+              <el-input type="textarea" v-model="ruleForm.subdescribe" placeholder="请输入描述"></el-input>
             </el-form-item>
           </p>
         </el-form>
@@ -71,7 +79,7 @@ export default {
   extends: BaseIframe,
   components: { InfoTable, PermissionButton },
   data() {
-       var validatePass = (rule, value, callback) => {
+    var validatePass = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
         return callback(new Error("密码为纯数字"));
       } else if (value.toString().length < 6 || value.toString().length > 8) {
@@ -87,15 +95,22 @@ export default {
       addsub: false,
       ruleForm: {
         substage: "",
-        subaccount:'',
+        subaccount: "",
         password: "",
         belongrole: "",
+        subdescribe: ""
       },
       rules: {
-        substage: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        subaccount: [{ required: true, message: "请输入昵称", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" },
-          { validator: validatePass, trigger: "blur" }],
+        substage: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        subaccount: [
+          { required: true, message: "请输入昵称", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { validator: validatePass, trigger: "blur" }
+        ],
         belongrole: [
           { required: true, message: "请选择角色", trigger: "change" }
         ]
@@ -107,7 +122,7 @@ export default {
         { label: "下级后台数", prop: "lowerstage", width: "" },
         { label: "用户类型", prop: "usertype", width: "" },
         { label: "子后台描述", prop: "substagedescribe", width: "" },
-        { label: "操作", prop: "operate", width: "" },
+        { label: "操作", prop: "operate", width: "" }
       ],
       records: [],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
@@ -120,14 +135,11 @@ export default {
 </script>
 
 <style scoped>
-.el-input {
-  margin-right: 10px;
+.el-row {
+  margin: 10px 0 30px;
 }
-.formleft {
-  margin-right: 100px;
-}
-p {
-  margin-bottom: 30px;
+.checkbox{
+  margin-bottom: 20px;
 }
 .el-textarea {
   width: 630px;

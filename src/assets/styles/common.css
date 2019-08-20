@@ -42,7 +42,10 @@
 /* 包管理 */
 
 /* 包管理弹框头部内容位置调整 */
-#packagemanage .el-dialog__header{
+#packagemanage .el-dialog__header,
+#accountlist .el-dialog__header,
+#managerlist .el-dialog__header,
+#subaccount .el-dialog__header{
   text-align: center;
   padding-top: 35px
 }
@@ -92,6 +95,17 @@
 #setlimit .permission-bd .el-button--info {
   margin-left: 0;
 }
-
+#packagemanage .el-form-item__label,
+#accountlist  .el-form-item__label,
+#managerlist .el-form-item__label,
+#subaccount .el-form-item__label{
+  text-align: left;
+}
+ 
+/* 系统管理中玩家设置的输入框 */
+.global .el-input__inner{
+  border-radius: 0;
+  border: 1px solid rgba(228, 228, 228, 1);
+}
 
 
