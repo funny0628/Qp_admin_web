@@ -35,6 +35,11 @@ const models = {
         name:'riskList',
         text:'风控列表',
         vue: r => require.ensure([], () => r(require('../../pages/User/RiskList')), 'riskList'),
+      },
+      {
+        name:'leaderBoard',
+        text:'排行版数据',
+        vue: r => require.ensure([], () => r(require('../../pages/User/LeaderBoard')), 'leaderBoard'),
       }
     ]
   },

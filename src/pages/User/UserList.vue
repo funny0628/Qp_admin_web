@@ -34,7 +34,8 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label" :width="item.width"
+        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label"
+                         :width="item.width"
                          align="center">
           <template slot-scope="scope">
             <template
@@ -42,7 +43,8 @@
               <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index"
+                                 @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
@@ -56,19 +58,33 @@
     </div>
     <div>
       <!-- 添加会员 -->
-      <el-dialog title="添加会员" :visible.sync="dialogAddVisible" width="30%" center>
-        <el-form :model="form">
-          <el-form-item label="同户名" label-width="70px">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+      <el-dialog title="添加会员" :visible.sync="dialogAddVisible" width="40%" center>
+        <el-form :model="form" :rules="rules" ref="form">
+          <el-form-item label="用户名" label-width="100px" style="display: inline-block;" prop="name">
+            <el-input v-model="form.name" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="昵称" label-width="70px">
-            <el-input v-model="form.desc" autocomplete="off"></el-input>
+          <el-form-item label="上级用户" label-width="100px" style="display: inline-block;">
+            <el-input v-model="form.higher_user" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="资金密码" label-width="70px">
-            <el-input v-model="form.password" autocomplete="off"></el-input>
+          <el-form-item label="昵称" label-width="100px" style="display: inline-block;">
+            <el-input v-model="form.desc" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" label-width="70px">
-            <el-input v-model="form.tel" autocomplete="off"></el-input>
+          <el-form-item label="登录密码" label-width="100px" style="display: inline-block;" prop="password">
+            <el-input v-model.number="form.login_password" autocomplete="off" type="password"
+                      style="width: 200px;"></el-input>
+          </el-form-item>
+          <el-form-item label="资金密码" label-width="100px" style="display: inline-block;">
+            <el-input v-model="form.password" autocomplete="off" type="password" style="width: 200px;"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" label-width="100px"  style="display: inline-block;" prop="phone">
+            <el-input v-model.number="form.tel" autocomplete="off" style="width: 200px;"></el-input>
+          </el-form-item>
+          <el-form-item label="会员身份" label-width="100px" style="display: inline-block;">
+            <el-radio-group v-model="form.identity">
+              <el-radio :label="1">测试用户</el-radio>
+              <el-radio :label="2">代理用户</el-radio>
+              <el-radio :label="3">普通玩家</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -181,13 +197,26 @@
   import PageInfo from "../../plugin/script/common/PageInfo"
   import BaseIframe from "../../plugin/script/common/BaseIframe"
   import PermissionButton from "../../plugin/components/PermissionButton"
+  import UserHandler from "../../script/handlers/UserHandler";
 
   export default {
     name: "UserList",
     extends: BaseIframe,
     components: {SelectTime, InfoTable, PermissionButton},
     data() {
-      let $this = this;
+      //校验手机号
+      var checkPhone = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('手机号不能为空'));
+        } else {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        }
+      };
       return {
         options: [
           {
@@ -288,42 +317,58 @@
         dialogAddVisible: false,
         form: {
           name: '',
+          higher_user: '',
           desc: '',
+          login_password: '',
           password: '',
-          tel: ''
+          tel: '',
+          identity: 1,
         },
         //修改会员信息
-        activeName:'first',
-        dialogModifyVisible:false,
+        activeName: 'first',
+        dialogModifyVisible: false,
         userData: {
-          id:'',
+          id: '',
           desc: '',
           tel: '',
-          ide:'',
-          lay:'',
+          ide: '',
+          lay: '',
         },
         //收款
-        collectionData:{
-          card:'',
-          account:'',
-          bank:'',
-          bank_name:'',
-          alipay_name:'',
+        collectionData: {
+          card: '',
+          account: '',
+          bank: '',
+          bank_name: '',
+          alipay_name: '',
         },
         //密码
-        passwordData:{
-          loginPassword:'',
-          loginSure:'',
-          moneyPassword:'',
-          moneySure:''
+        passwordData: {
+          loginPassword: '',
+          loginSure: '',
+          moneyPassword: '',
+          moneySure: ''
         },
         //游戏
-        gameData:{
-          game1:'',
-          game2:'',
-          game3:'',
-          game4:'',
-        }
+        gameData: {
+          game1: '',
+          game2: '',
+          game3: '',
+          game4: '',
+        },
+        //校验
+        rules: {
+          name: [
+            {required: true, message: '请输入用户名', trigger: 'blur'},
+            {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
+            {min: 6, max: 8, message: '长度在 6 到 8个字符'},
+            {pattern: /^(\w){6,8}$/, message: '只能输入6-8个数字'}
+          ],
+          phone: [{required: true,validator: checkPhone, trigger: 'blur'}],
+        },
       }
     },
     methods: {
@@ -339,7 +384,22 @@
       },
       handleClick(tab, event) {
         console.log(tab, event);
+      },
+      //获取用户列表
+      getUserList() {
+        UserHandler.list({}).promise.then(res => {
+
+        });
+        /*this.$post('/v1/user/r/list').then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log(err)
+        })*/
       }
+    },
+    mounted() {
+      this.getUserList()
+
     }
   }
 </script>

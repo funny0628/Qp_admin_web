@@ -24,14 +24,10 @@
 #Manual-main .el-textarea__inner {
   height:140px;
 }
-/*内部邮件*/
-#InternalMail-main .el-textarea__inner {
+/*内部邮件*/ /*滚动公告*/
+#InternalMail-main .el-textarea__inner , #ScrollNotice-main .el-textarea__inner, #PopNotice-main .el-textarea__inner {
   height: 80px;
 }
-/*每日签到*/
-/*#DayCheck-main .el-form-item__content{
-  line-height: 0;
-}*/
 
 /*充值优惠*/
 #TopPref-main .el-button--warning , #Sales-main .el-button--warning {

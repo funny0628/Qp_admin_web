@@ -41,13 +41,32 @@
         :title="dialogTitleType"
         :visible.sync="dialogVisible"
         width="30%"
+        center
       >
         <el-form :model="formDate" >
-          <el-form-item label="标题" :label-width="labelWidth">
-            <el-input autocomplete="off" v-model="formDate.title"></el-input>
+          <el-form-item label="标题：" :label-width="labelWidth">
+            <el-input autocomplete="off" v-model="formDate.title" placeholder="请输入标题"></el-input>
           </el-form-item>
-          <el-form-item label="公告内容" :label-width="labelWidth">
-            <el-input autocomplete="off" type="textarea" v-model="formDate.content"></el-input>
+          <el-form-item label="开始时间：" :label-width="labelWidth">
+            <el-date-picker
+              v-model="formDate.begin_time"
+              type="date"
+              placeholder="请选择开始时间" style="width: 100%;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间：" :label-width="labelWidth">
+            <el-date-picker
+              v-model="formDate.end_time"
+              type="date"
+              placeholder="请选择结束时间"
+              style="width: 100%;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="内容：" :label-width="labelWidth">
+            <el-input autocomplete="off" type="textarea" v-model="formDate.content" placeholder="请输入滚动公告内容"></el-input>
+          </el-form-item>
+          <el-form-item label="排序：" :label-width="labelWidth">
+            <el-input autocomplete="off"  v-model="formDate.sort" placeholder="数值越小越优先"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -92,10 +111,13 @@
         /*dialog*/
         dialogTitleType:'',
         dialogVisible:false,
-        labelWidth:'70px',
+        labelWidth:'90px',
         formDate:{
           title:'',
-          content:''
+          content:'',
+          begin_time:'',
+          end_time:'',
+          sort:''
         }
       }
     },
