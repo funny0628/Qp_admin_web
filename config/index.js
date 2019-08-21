@@ -14,7 +14,7 @@ module.exports = {
       (function (){
         let ls = ['/v1'];
       let obj = {};
-      let baseUrl = "http://192.168.0.188:8081";
+      let baseUrl = "http://192.168.0.188:7777";
       ls.map(item=>{
         obj[item] = {target: baseUrl, changeOrigin: true, pathRewrite: {'^/v1': '/v1'},
           onProxyReq: function (proxyReq, req, res) {

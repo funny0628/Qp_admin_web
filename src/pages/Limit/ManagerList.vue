@@ -28,7 +28,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="管理员名称" prop="admin" class="formleft">
                 <el-input v-model="ruleForm.admin" placeholder="请输入名称"></el-input>
@@ -40,7 +40,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="真实姓名" prop="realname" class="formleft">
                 <el-input v-model="ruleForm.realname" placeholder="请输入昵称"></el-input>
@@ -55,28 +55,28 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="手机号" prop="phone" class="tel">
+              <el-form-item label="手机号" prop="phone" class="managerlist-tel">
                 <el-input v-model.number="ruleForm.phone" placeholder="请输入11位手机号"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="备注" prop="tips">
+              <el-form-item label="备注" prop="tips" class="managerlist-tips">
                 <el-input v-model="ruleForm.tips" placeholder="请输入邮箱号"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addsilver = false" class="cancel">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="addsilver = false,submitForm('ruleForm')"
-          class="confirm"
-        >确 定</el-button>
-      </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="addsilver = false" class="cancel">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="addsilver = false,submitForm('ruleForm')"
+              class="confirm"
+            >确 定</el-button>
+          </span>
     </el-dialog>
   </div>
 </template>
@@ -172,16 +172,12 @@ export default {
 .el-row {
   margin: 10px 0 30px;
 }
-.checkbox{
+.checkbox {
   margin-bottom: 20px;
-}
-.el-textarea {
-  width: 630px;
 }
 .cancel,
 .confirm {
   width: 160px !important;
-  margin: 0 100px;
   color: #fff !important;
   font-size: 15px !important;
   font-weight: 650 !important;
@@ -189,5 +185,9 @@ export default {
 .cancel {
   background-color: #ccc;
   border: transparent;
+  margin-right: 100px;
+}
+.confirm{
+  margin-left: 100px;
 }
 </style>

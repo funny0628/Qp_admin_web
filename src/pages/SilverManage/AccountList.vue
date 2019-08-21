@@ -29,7 +29,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="用户名" prop="username" class="formleft">
                 <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
@@ -41,7 +41,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="密码" prop="password" class="formleft">
                 <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
@@ -53,11 +53,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <p>
-            <el-form-item label="银商描述" prop="silverdescribe">
+          <el-row>
+            <el-col :span="24">
+            <el-form-item label="银商描述" prop="silverdescribe" class="silvertextarea">
               <el-input  type="textarea" v-model="ruleForm.silverdescribe" placeholder="请输入描述"></el-input>
             </el-form-item>
-          </p>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -153,13 +155,12 @@ export default {
   margin: 10px 0 30px;
 }
 
-.el-textarea {
-  width: 630px;
+.silvertextarea {
+  width: 90%;
 }
 .cancel,
 .confirm {
   width: 160px !important;
-  margin: 0 100px;
   color: #fff !important;
   font-size: 15px !important;
   font-weight: 650 !important;
@@ -167,8 +168,19 @@ export default {
 .cancel {
   background-color: #ccc;
   border: transparent;
+    margin-right: 100px;
+}
+.confirm{
+  margin-left: 100px;
 }
 .checkbox{
   margin-bottom: 20px;
+}
+.select-time{
+  margin-right: 20px !important;
+}
+#accountlist .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
 }
 </style>

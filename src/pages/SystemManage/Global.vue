@@ -93,26 +93,26 @@
         <el-row>
           <el-col :span="4">平台logo</el-col>
           <el-col :span="8">
-              <div class="logobox">
-            <div class="imgbox">
-                <img src="" alt="">
-            </div>
-            <!-- <el-upload
-                  :limit="1"
-                  :http-request="uploadsuc"
-                  class="upload-demo"
-                  action="/"
-                  :name="'img1'"
-                >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                </el-upload> -->
+            <div class="logobox">
+              <div class="imgbox">
+                <img src alt />
+              </div>
+              <el-upload
+                :limit="1"
+                :http-request="uploadsuc"
+                class="upload-demo"
+                action="/"
+                :show-file-list="false"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
             </div>
           </el-col>
           <el-col :span="4"></el-col>
           <el-col :span="8"></el-col>
         </el-row>
       </div>
-         <p class="savebtnbox">
+      <p class="savebtnbox">
         <permission-button :action="ActionType.EDIT">
           <el-button type="primary" size="medium" class="savebtn">保存</el-button>
         </permission-button>
@@ -137,11 +137,11 @@ export default {
       exchangerate: "默认汇率1:1",
       binding: "",
       checkboxGroup: ["微信登录"],
-      radio:'open'
+      radio: "open"
     };
   },
-  methods:{
-      uploadsuc(){}
+  methods: {
+    uploadsuc(elefrom) {}
   }
 };
 </script>
@@ -254,16 +254,21 @@ export default {
   top: 50%;
   transform: translateY(-50%);
 }
-.imgbox{
-    width: 130px;
-    height: 40px;
-    border: 1px solid black
+.imgbox {
+  width: 130px;
+  height: 40px;
+  border: 1px solid black;
+  display: inline-block;
 }
-.imgbox img{
-    width: 100%;
-    height: 100%;
+.imgbox img {
+  width: 100%;
+  height: 100%;
 }
-/* .upload-demo{
-    display: inline-block
-} */
+.upload-demo{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left:200px;
+}
 </style>

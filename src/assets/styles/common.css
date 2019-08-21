@@ -108,4 +108,14 @@
   border: 1px solid rgba(228, 228, 228, 1);
 }
 
+/* 权限管理-管理员列表-电话、备注 */
+.managerlist-tel .el-form-item__label,
+.managerlist-tips .el-form-item__label{
+  padding-left: 8px;
+}
 
+/* 银商管理账号列表,权限管理管理员列表输入框高度 */
+#accountlist .el-input__inner,
+#managerlist .el-input__inner{
+  height: 36px;
+}

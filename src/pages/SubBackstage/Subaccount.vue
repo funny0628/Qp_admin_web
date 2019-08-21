@@ -27,7 +27,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="子后台名称" prop="substage" class="formleft">
                 <el-input v-model="ruleForm.substage" placeholder="请输入名称"></el-input>
@@ -39,13 +39,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="密码" prop="password" class="formleft">
                 <el-input v-model.number="ruleForm.password" placeholder="（6-8位数字）"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span='12'>
+            <el-col :span="12">
               <el-form-item label="所属角色" prop="belongrole">
                 <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
                   <el-option label="区域一" value="shanghai"></el-option>
@@ -54,17 +54,23 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <p>
-            <el-form-item label="子后台描述" prop="subdescribe">
-              <el-input type="textarea" v-model="ruleForm.subdescribe" placeholder="请输入描述"></el-input>
-            </el-form-item>
-          </p>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="子后台描述" prop="subdescribe" class="subtextarea">
+                <el-input type="textarea" v-model="ruleForm.subdescribe" placeholder="请输入描述"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addsub = false" class="cancel">取 消</el-button>
-        <el-button type="primary" @click="addsub = false,submitForm('ruleForm')" class="confirm">确 定</el-button>
-      </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="addsub = false" class="cancel">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="addsub = false,submitForm('ruleForm')"
+              class="confirm"
+            >确 定</el-button>
+          </span>
     </el-dialog>
   </div>
 </template>
@@ -138,16 +144,15 @@ export default {
 .el-row {
   margin: 10px 0 30px;
 }
-.checkbox{
+.checkbox {
   margin-bottom: 20px;
 }
-.el-textarea {
-  width: 630px;
+.subtextarea {
+  width: 90%;
 }
 .cancel,
 .confirm {
   width: 160px !important;
-  margin: 0 100px;
   color: #fff !important;
   font-size: 15px !important;
   font-weight: 650 !important;
@@ -155,5 +160,9 @@ export default {
 .cancel {
   background-color: #ccc;
   border: transparent;
+  margin-right: 100px;
+}
+.confirm{
+  margin-left: 100px;
 }
 </style>

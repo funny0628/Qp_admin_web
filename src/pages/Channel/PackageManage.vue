@@ -65,26 +65,28 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <p>
-            <el-form-item label="游戏开放" prop="type">
-              <el-checkbox-group v-model="ruleForm.type">
-                <el-checkbox label="游戏1" name="type"></el-checkbox>
-                <el-checkbox label="游戏2" name="type"></el-checkbox>
-                <el-checkbox label="游戏3" name="type"></el-checkbox>
-                <el-checkbox label="游戏4" name="type"></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-          </p>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="游戏开放" prop="type">
+                <el-checkbox-group v-model="ruleForm.type">
+                  <el-checkbox label="游戏1" name="type"></el-checkbox>
+                  <el-checkbox label="游戏2" name="type"></el-checkbox>
+                  <el-checkbox label="游戏3" name="type"></el-checkbox>
+                  <el-checkbox label="游戏4" name="type"></el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addpackage = false" class="cancel">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="addpackage = false,submitForm('ruleForm')"
-          class="confirm"
-        >确 定</el-button>
-      </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="addpackage = false" class="cancel">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="addpackage = false,submitForm('ruleForm')"
+              class="confirm"
+            >确 定</el-button>
+          </span>
     </el-dialog>
   </div>
 </template>
@@ -180,16 +182,15 @@ export default {
 .el-row {
   margin: 10px 0 30px;
 }
-.lobbyupdate{
-  margin-left: 8px
+.lobbyupdate {
+  margin-left: 8px;
 }
-.packagestatus{
+.packagestatus {
   margin-left: 8px;
 }
 .cancel,
 .confirm {
   width: 160px !important;
-  margin: 0 100px;
   color: #fff !important;
   font-size: 15px !important;
   font-weight: 650 !important;
@@ -197,5 +198,9 @@ export default {
 .cancel {
   background-color: #ccc;
   border: transparent;
+  margin-right: 100px;
+}
+.confirm {
+  margin-left: 100px
 }
 </style>
