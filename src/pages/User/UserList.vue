@@ -42,6 +42,10 @@
               v-if="['user_gold', 'alipay_account', 'account_person'].indexOf(item.prop) >= 0">
               <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
             </template>
+            <template v-if="'status'.indexOf(item.prop) >= 0">
+              <span v-if="scope.row[item.prop]  == 1">启用</span>
+              <span v-else>冻结</span>
+            </template>
             <template v-if="item.prop === 'action'">
               <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index"
                                  @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
@@ -49,7 +53,7 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person'].indexOf(item.prop) < 0">
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status'].indexOf(item.prop) < 0">
               {{scope.row[item.prop]}}
             </template>
           </template>
@@ -69,15 +73,15 @@
           <el-form-item label="昵称" label-width="100px" style="display: inline-block;">
             <el-input v-model="form.desc" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="登录密码" label-width="100px" style="display: inline-block;" prop="password">
-            <el-input v-model.number="form.login_password" autocomplete="off" type="password"
+          <el-form-item label="登录密码" label-width="100px" style="display: inline-block;" prop="login_password">
+            <el-input v-model="form.login_password" autocomplete="off" type="password"
                       style="width: 200px;"></el-input>
           </el-form-item>
           <el-form-item label="资金密码" label-width="100px" style="display: inline-block;">
             <el-input v-model="form.password" autocomplete="off" type="password" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" label-width="100px"  style="display: inline-block;" prop="phone">
-            <el-input v-model.number="form.tel" autocomplete="off" style="width: 200px;"></el-input>
+          <el-form-item label="手机号" label-width="100px" style="display: inline-block;" prop="tel">
+            <el-input v-model="form.tel" autocomplete="off" style="width: 200px;" maxlength="11"></el-input>
           </el-form-item>
           <el-form-item label="会员身份" label-width="100px" style="display: inline-block;">
             <el-radio-group v-model="form.identity">
@@ -182,7 +186,7 @@
             </el-form>
           </el-tab-pane>
         </el-tabs>
-        <div slot="footer" class="dialog-footer" style="text-align: center;">
+        <div slot="footer" class="dialog-footer">
           <el-button @click="dialogModifyVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogModifyVisible = false">确 定</el-button>
         </div>
@@ -209,8 +213,7 @@
         if (!value) {
           return callback(new Error('手机号不能为空'));
         } else {
-          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
-          if (reg.test(value)) {
+          if (/^[1][345789]\d{9}$/.test(value)) {
             callback();
           } else {
             return callback(new Error('请输入正确的手机号'));
@@ -262,43 +265,43 @@
           }]
         },
         tableStyle: [
-          {label: '渠道ID', prop: 'channel_id', width: ''},
+          {label: '渠道ID', prop: 'platform_id', width: ''},
           {label: '用户ID', prop: 'user_id', width: ''},
           {label: '用户昵称', prop: 'user_name', width: ''},
-          {label: '用户身份', prop: 'user_identity', width: ''},
-          {label: 'VIP等级', prop: 'vip_level', width: ''},
-          {label: '手机号', prop: 'mobile', width: '120'},
+          {label: '用户身份', prop: 'tier', width: ''},
+          {label: 'VIP等级', prop: 'vip', width: ''},
+          {label: '手机号', prop: 'phone', width: '120'},
           {label: '用户金币', prop: 'user_gold', width: '140'},
           {label: '充值金额／笔数', prop: 'top_up_amount', width: '150'},
           {label: '兑换金额／笔数', prop: 'change_amount', width: '150'},
           {label: '支付宝账号/名称', prop: 'alipay_account', width: '260'},
           {label: '开户人/卡号/开户行', prop: 'account_person', width: '260'},
-          {label: '下级人数', prop: 'low_num', width: ''},
-          {label: '注册时间', prop: 'registration_time', width: '180'},
-          {label: '客户端类型', prop: 'client_type', width: '150'},
-          {label: '最后登陆IP', prop: 'finally_login', width: '150'},
+          {label: '下级人数', prop: 'lower_count', width: ''},
+          {label: '注册时间', prop: 'created_at', width: '180'},
+          {label: '客户端类型', prop: 'reg_os', width: '150'},
+          {label: '最后登陆IP', prop: 'login_ip', width: '150'},
           {label: '状态', prop: 'status', width: ''},
-          {label: '备注', prop: 'note', width: ''},
+          {label: '备注', prop: 'remark', width: ''},
           {label: '操作', prop: 'action', width: '200'},
         ],
         records: [{
-          channel_id: 1,
+          platform_id: 1,
           user_id: '111',
           user_name: '昵称',
-          user_identity: '一级代理',
-          vip_level: 'vip0',
-          mobile: '13000000000',
+          tier: '一级代理',
+          vip: 'vip0',
+          phone: '13000000000',
           user_gold: ['总金额：5000.00', '理财：3000.00'],
           top_up_amount: '10000/2',
           change_amount: "10000/1",
           alipay_account: ["账号：13000000000", "名称：王毅"],
           account_person: ["开户人：王毅", "卡号：62279983881900", "开户行：中国银行"],
-          low_num: '0',
-          registration_time: '2019-03-06 12:00:00',
-          client_type: 'iOS',
-          finally_login: '192.168.0.0',
+          lower_count: '0',
+          created_at: '2019-03-06 12:00:00',
+          reg_os: 'iOS',
+          login_ip: '192.168.0.0',
           status: '启用',
-          note: '-',
+          remark: '-',
           action: [
             {
               label: '修改', type: 'edit'
@@ -362,12 +365,12 @@
             {required: true, message: '请输入用户名', trigger: 'blur'},
             {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
           ],
-          password: [
+          login_password: [
             {required: true, message: '请输入密码', trigger: 'blur'},
             {min: 6, max: 8, message: '长度在 6 到 8个字符'},
             {pattern: /^(\w){6,8}$/, message: '只能输入6-8个数字'}
           ],
-          phone: [{required: true,validator: checkPhone, trigger: 'blur'}],
+          tel: [{required: true, validator: checkPhone, trigger: 'blur'}],
         },
       }
     },
@@ -387,14 +390,49 @@
       },
       //获取用户列表
       getUserList() {
-        UserHandler.list({}).promise.then(res => {
+        let data = {
+          "platform_id": 1000, //平台编号
+          "user_id": "", //用户id
+          "sub_id": 1000, //子平台id
+          "created_at": "",//创建时间
+          "status": "", //用户状态
+          "time_min": "",//开始时间
+          "time_max": "",//结束时间
+          "page_index": "",//页码
+          "page_size": "" //分页大小
+        };
+        //查询用户列表
+        UserHandler.list(data).promise.then(res => {
+          // console.log(res);
+          if(Number(res.code) === 200){
+            this.records = [...res.data.list,...this.records];
+            //数据处理
+            /*let bankArr = [];
+            res.data.list.map((item)=>{
+              console.log(item);
+              bankArr.push('开户人'+ item.bank_user);
+              bankArr.push('卡号'+item.bank_card);
+              bankArr.push('开户行'+item.subbranch)
+            });
+            console.log(bankArr)*/
+            this.records.map((item)=>{
+              item.action =[
+                {
+                  label: '修改', type: 'edit'
+                },
+                {
+                  label: '冻结', type: 'freeze'
+                },
+                {
+                  label: '强制下线', type: 'light_off'
 
+                }
+              ]
+            })
+          }
+          console.log(this.records);
         });
-        /*this.$post('/v1/user/r/list').then(res=>{
-          console.log(res)
-        }).catch(err=>{
-          console.log(err)
-        })*/
+        //银行卡列表
       }
     },
     mounted() {
@@ -405,7 +443,6 @@
 </script>
 
 <style scoped>
-  /*@import "./../../../assets/styles/common.css";*/
 
   #userList—main {
   }
