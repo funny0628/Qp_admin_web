@@ -86,6 +86,7 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import hallHandler from '../../script/handlers/hallHandler'
 
   export default {
     name: "ScrollNotice",
@@ -110,7 +111,7 @@
             action:[{label:'修改',type:'edit'},{label:'删除',type:'delete'}]
           }
         ],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
         /*dialog*/
         dialogTitleType:'',
         dialogVisible:false,
@@ -136,8 +137,40 @@
           this.dialogTitleType = '修改滚动公告';
           this.dialogVisible = true;
         }
+      },
+      //滚动公告
+      getrollList(){
+        hallHandler.roll_list().promise.then(res=>{
+          console.log(res)
+        })
       }
+    },mounted() {
+      this.getrollList();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 </script>
 

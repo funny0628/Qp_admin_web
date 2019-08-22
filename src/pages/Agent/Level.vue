@@ -11,6 +11,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hidePage="true"
       >
         <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label"
                          :width="item.width"
@@ -22,7 +23,7 @@
             </template>
             <template v-if="item.prop === 'action'">
               <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index"
-                                 @click="handeClick(btn,scope.row)"
+                                 @click="handleClick(btn,scope.row)"
                                  style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
@@ -41,17 +42,18 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <el-form :model="user_layer" >
-        <el-form-item label="层级名称" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.hierarchy_name"></el-input>
+      <el-form :model="dataForm" ref="dataForm">
+        <el-form-item label="层级名称" :label-width="labelWidth" prop="hierarchy_name">
+          <el-input autocomplete="off" v-model="dataForm.hierarchy_name"></el-input>
         </el-form-item>
-        <el-form-item label="别名" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.alias"></el-input>
+        <el-form-item label="别名" :label-width="labelWidth" prop="alias">
+          <el-input autocomplete="off" v-model="dataForm.alias"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer" style="text-align: center">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addLevel">确 定</el-button>
+<!--        <el-button @click="reset">重置</el-button>-->
       </span>
     </el-dialog>
   </div>
@@ -62,14 +64,16 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
-  import tierHandler from './../../script/handlers/tierHandler'
+  import tierHandler from './../../script/handlers/tierHandler';
+  import storage from './../../script/storage/storage'
+
   export default {
     name: "Level",
     extends: BaseIframe,
     components: {PermissionButton, InfoTable},
     data() {
       return {
-        /**table */
+        //表格数据
         tableStyle:
           [
             {label: '层级ID', prop: 'tier', width: ''},
@@ -78,20 +82,13 @@
             {label: '操作', prop: 'action', width: ''},
           ],
         records: [],
-        /**{
-              tier: '1',
-              tier_name: '第一级代理',
-              tier_alias: '董事长',
-              action: [{label: '修改', type: 'edit'}]
-            }*/
         pageInfo: new PageInfo(0, [5, 10, 15], 0),
-        /*type 判断现在是添加还是修改*/
+        //新增、编辑数据
         dialogTitleType: '',
-        /*dialog */
         dialogVisible: false,
         labelWidth: '70px',
-        user_layer: {
-          tier:'',
+        dataForm: {
+          tier: '', //id
           hierarchy_name: '', //层级名称
           alias: '', //别名
         },
@@ -102,29 +99,33 @@
       },
       //新增代理层
       handelAddClick() {
+        this.dataForm.tier ='';
+        this.dataForm.hierarchy_name ='';
+        this.dataForm.alias = '';
         this.dialogTitleType = '新增代理分层';
         this.dialogVisible = true;
       },
       //修改代理层
-      handeClick(btn,row) {
+      handleClick(btn, row) {
         if (btn.type === 'edit') {
           this.dialogTitleType = '修改代理分层';
           this.dialogVisible = true;
-          this.user_layer.hierarchy_name = row.tier_name;
-          this.user_layer.alias = row.tier_alias;
-          this.user_layer.tier = row.tier;
+          this.dataForm.hierarchy_name = row.tier_name;
+          this.dataForm.alias = row.tier_alias;
+          this.dataForm.tier = row.tier;
         }
       },
       //代理层级
-      getList(){
-        tierHandler.list().promise.then(res=>{
-          console.log(res);
-          if(Number(res.code) === 200){
+      getList() {
+        tierHandler.list().promise.then(res => {
+          // console.log(res);
+          if (Number(res.code) === 200) {
             // cache = res.data;
             this.records = res.data;
+            storage.set('list',this.records)
           }
           //数据处理
-          this.records.map((item)=>{
+          this.records.map((item) => {
             item.action = [
               {label: '修改', type: 'edit'}
             ]
@@ -132,46 +133,56 @@
         })
       },
       //增加代理分层
-      addLevel(){
-        if(!this.user_layer.tier){
-          let data = {
-            "tier_name": this.user_layer.hierarchy_name,
-            "tier_alias": this.user_layer.alias
-          };
-          tierHandler.add(data).promise.then(res=>{
-            // console.log(res)
-            if(Number(res.code) === 200){
-              this.$message.success(res.msg)
+      addLevel() {
+        this.$refs.dataForm.validate(valid => {
+          if (valid) {
+            if (!this.dataForm.tier){
+              let data = {
+                "tier_name": this.dataForm.hierarchy_name,
+                "tier_alias": this.dataForm.alias
+              };
+              tierHandler.add(data).promise.then(res => {
+                // console.log(res)
+                if (Number(res.code) === 200) {
+                  this.$message.success(res.msg)
+                }
+                this.dialogVisible = false;
+                this.getList();
+                this.$refs["dataForm"].resetFields();// 失效
+              }).catch(e => {
+                // 打印一下错误
+                console.log(e)
+              })
+            } else{
+              //修改代理分层
+              let data = {
+                "tier": this.dataForm.tier,
+                "tier_name": this.dataForm.hierarchy_name,
+                "tier_alias": this.dataForm.alias
+              };
+              // console.log(data);
+              tierHandler.set(data).promise.then(res => {
+                if (Number(res.code) === 200) {
+                  this.$message.success(res.msg)
+                }
+                this.dialogVisible = false;
+                this.$refs["dataForm"].resetFields();// 失效
+                this.getList();
+              }).catch(e => {
+                console.log(e);
+              })
             }
-          });
-          this.dialogVisible = false;
-          this.user_layer.hierarchy_name = '';
-          this.user_layer.alias = '';
-          this.getList();
-        }else{
-          let data = {
-            "tier": this.user_layer.tier,
-            "tier_name": this.user_layer.hierarchy_name,
-            "tier_alias": this.user_layer.alias
-          };
-          console.log(data);
-          tierHandler.set(data).promise.then(res=>{
-            if(Number(res.code) === 200){
-              this.$message.success(res.msg)
-            }
-            this.dialogVisible = false;
-            this.user_layer.alias = '';
-            this.getList();
-          })
-        }
-      }
+          }
+        })
+      },
+      // reset(){
+      //   this.$refs["dataForm"].resetFields();// 失效
+      // }
     },
     mounted() {
       this.getList()
     },
-    watch:{
-
-    }
+    watch: {}
   };
 </script>
 

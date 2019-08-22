@@ -95,7 +95,8 @@
   import InfoTable from '../../plugin/components/InfoTable'
   import PageInfo from "../../plugin/script/common/PageInfo"
   import BaseIframe from "../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../plugin/components/PermissionButton"
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import UserHandler from '../../script/handlers/UserHandler'
 
   export default {
     name: "MemCardList",
@@ -110,25 +111,25 @@
           channel_id: '',//渠道id
         },
         tableStyle: [
-          {label: '渠道ID', prop: 'channel_id', width: ''},
+          {label: '渠道ID', prop: 'platform_id', width: ''},
           {label: '用户ID', prop: 'user_id', width: ''},
-          {label: '所属银行', prop: 'belong_bank', width: ''},
+          {label: '所属银行', prop: 'bank_name', width: ''},
           {label: '银行卡号', prop: 'bank_card', width: ''},
-          {label: '银行卡开户行', prop: 'open_bank', width: ''},
+          {label: '银行卡开户行', prop: 'bank_user', width: ''},
           {label: '持卡人姓名', prop: 'cardholder_name', width: ''},
-          {label: '创建时间', prop: 'creation_time', width: '160'},
-          {label: '修改时间', prop: 'modify_time', width: '160'},
+          {label: '创建时间', prop: 'created_at', width: '160'},
+          {label: '修改时间', prop: 'updated_at', width: '160'},
           {label: '操作', prop: 'action', width: '200'},
         ],
         records: [{
-          channel_id: '01',
+          platform_id: '01',
           user_id: '1001100',
-          belong_bank: '中国银行',
+          bank_name: '中国银行',
           bank_card: '622790876671282917',
-          open_bank: '北京朝阳支行',
+          bank_user: '北京朝阳支行',
           cardholder_name: '武广',
-          creation_time: '2019-03-06 12:00:00',
-          modify_time: '2019-03-06 12:00:00',
+          created_at: '2019-03-06 12:00:00',
+          updated_at: '2019-03-06 12:00:00',
           action: [
             {
               label: '修改', type: 'edit'
@@ -207,11 +208,30 @@
         if (btn.type === 'edit') {
           this.dialogModifyVisible = true;
         }
+      },
+      //会员银行卡列表
+      getBank_list(){
+        let data = {
+          "platform_id": 1000,
+          "user_id": "",
+          "sub_id": 1000,
+          "bank_card": "",
+          "bank_user": ""
+        };
+        UserHandler.bank_list(data).promise.then(res=>{
+          // console.log(res)
+          if(Number(res.code) === 200){
+            this.records = res.list
+          }
+        })
       }
+    },
+    mounted() {
+      this.getBank_list();
     }
   }
 </script>
 
 <style scoped>
-  /*@import "./../../../assets/styles/common.css";*/
 </style>
+<!--银行卡列表-->

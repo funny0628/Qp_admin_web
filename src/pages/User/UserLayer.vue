@@ -31,7 +31,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[item.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handeClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -46,20 +46,20 @@
     </div>
     <!-- 新增、修改 -->
     <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
-      <el-form :model="user_layer">
-        <el-form-item label="层级名称" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.hierarchy_name"></el-input>
+      <el-form :model="dataForm" ref="dataForm">
+        <el-form-item label="层级名称" :label-width="labelWidth" prop="hierarchy_name">
+          <el-input autocomplete="off" v-model="dataForm.hierarchy_name"></el-input>
         </el-form-item>
-        <el-form-item label="充值金额" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.up_amount"></el-input>
+        <el-form-item label="充值金额" :label-width="labelWidth" prop="up_amount">
+          <el-input autocomplete="off" v-model="dataForm.up_amount"></el-input>
         </el-form-item>
-        <el-form-item label="充值笔数" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="user_layer.up_number"></el-input>
+        <el-form-item label="充值笔数" :label-width="labelWidth" prop="up_number">
+          <el-input autocomplete="off" v-model="dataForm.up_number"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer" style="text-align: center">
+      <span slot="footer" class="dialog-footer" >
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="editAddClick">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -70,6 +70,7 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import InfoTable from "../../plugin/components/InfoTable";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
+import UserHandler from '../../script/handlers/UserHandler'
 
 export default {
   name: "UserLayer",
@@ -79,20 +80,13 @@ export default {
     return {
       /* table */
       tableStyle: [
-        { label: "层级ID", prop: "hierarchy_id", width: "" },
-        { label: "层级名称", prop: "hierarchy_name", width: "" },
-        { label: "充值金额", prop: "up_amount", width: "" },
-        { label: "充值笔数", prop: "up_number", width: "" },
+        { label: "层级ID", prop: "vip", width: "" },
+        { label: "层级名称", prop: "vip_name", width: "" },
+        { label: "充值金额", prop: "pay_sum", width: "" },
+        { label: "充值笔数", prop: "pay_count", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [
-        {
-          hierarchy_id: "1",
-          hierarchy_name: "VIP0",
-          up_amount: "0",
-          up_number: "0",
-          action: [{ label: "修改", type: "edit" }]
-        }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
       /*type 判断现在是添加还是修改*/
@@ -100,10 +94,10 @@ export default {
       /*dialog */
       dialogVisible: false,
       labelWidth: "70px",
-      user_layer: {
-        hierarchy_name: "", //层级名称
-        up_amount: "", //充值金额
-        up_number: "" //充值笔数
+      dataForm: {
+        vip_name: "", //层级名称
+        pay_sum: "", //充值金额
+        pay_count: "" //充值笔数
       }
     };
   },
@@ -114,12 +108,75 @@ export default {
       this.dialogVisible = true;
     },
     /* edit */
-    handeClick(btn) {
+    handeClick(btn,row) {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改用户分层";
         this.dialogVisible = true;
+        this.dataForm.vip_name = row.vip_name;
+        this.dataForm.pay_sum = row.pay_sum;
+        this.dataForm.pay_count = row.pay_count;
       }
+    },
+    vip_list(){
+      UserHandler.vip_list().promise.then(res=>{
+        // console.log(res)
+        if(Number(res.code) === 200){
+          this.records = res.data
+        }
+        //数据处理
+        this.records.map((item)=>{
+          item.action = [
+            { label: "修改", type: "edit" }
+          ]
+        })
+      })
+    },
+    //新增、修改
+    editAddClick(){
+      /*this.$refs.dataForm.validate(valid => {
+        if (valid) {
+          if (!this.dataForm.tier){
+            let data = {
+              "tier_name": this.dataForm.hierarchy_name,
+              "tier_alias": this.dataForm.alias
+            };
+            UserHandler.vip_add(data).promise.then(res => {
+              // console.log(res)
+              if (Number(res.code) === 200) {
+                this.$message.success(res.msg)
+              }
+              this.dialogVisible = false;
+              this.getList();
+              this.$refs["dataForm"].resetFields();// 失效
+            }).catch(e => {
+              // 打印一下错误
+              console.log(e)
+            })
+          } else{
+            //修改代理分层
+            let data = {
+              "tier": this.dataForm.tier,
+              "tier_name": this.dataForm.hierarchy_name,
+              "tier_alias": this.dataForm.alias
+            };
+            // console.log(data);
+            UserHandler.set(data).promise.then(res => {
+              if (Number(res.code) === 200) {
+                this.$message.success(res.msg)
+              }
+              this.dialogVisible = false;
+              this.$refs["dataForm"].resetFields();// 失效
+              this.getList();
+            }).catch(e => {
+              console.log(e);
+            })
+          }
+        }
+      })*/
     }
+  },
+  mounted() {
+    this.vip_list();
   }
 };
 </script>

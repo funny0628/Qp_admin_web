@@ -28,6 +28,14 @@ class UserHandler extends BaseHandler {
   bank_list(data){
     return this.get_v1('/bank_list',data)
   }
+  //用户分层
+  vip_list(data){
+    return this.get_v1('/vip_list',data)
+  }
+  //添加用户分层
+  vip_add(data){
+    return this.get_v1('/vip_add',data)
+  }
 }
 
 export default new UserHandler('/user');
