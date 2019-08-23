@@ -1,6 +1,6 @@
 import BaseHandler from "./BaseHandler";
 
-class UserHandler extends BaseHandler {
+class TierHandler extends BaseHandler {
   list(data) {
     return this.get_v1('/list', data);
   }
@@ -12,4 +12,4 @@ class UserHandler extends BaseHandler {
   }
 }
 
-export default new UserHandler('/tier');
+export default new TierHandler('/tier');

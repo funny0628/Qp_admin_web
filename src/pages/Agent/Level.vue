@@ -64,7 +64,7 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
-  import tierHandler from './../../script/handlers/tierHandler';
+  import TierHandler from './../../script/handlers/tierHandler';
   import storage from './../../script/storage/storage'
 
   export default {
@@ -117,7 +117,7 @@
       },
       //代理层级
       getList() {
-        tierHandler.list().promise.then(res => {
+        TierHandler.list().promise.then(res => {
           // console.log(res);
           if (Number(res.code) === 200) {
             // cache = res.data;
@@ -141,7 +141,7 @@
                 "tier_name": this.dataForm.hierarchy_name,
                 "tier_alias": this.dataForm.alias
               };
-              tierHandler.add(data).promise.then(res => {
+              TierHandler.add(data).promise.then(res => {
                 // console.log(res)
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg)
@@ -161,7 +161,7 @@
                 "tier_alias": this.dataForm.alias
               };
               // console.log(data);
-              tierHandler.set(data).promise.then(res => {
+              TierHandler.set(data).promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg)
                 }

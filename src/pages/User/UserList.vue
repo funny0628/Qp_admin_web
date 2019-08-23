@@ -146,22 +146,20 @@
           <el-tab-pane label="登录密码" name="third">
             <el-form :model="passwordData" style="display: flex; justify-content: space-between;flex-wrap:wrap ;">
               <el-form-item label="登录密码" label-width="70px" style="width: 50%;">
-                <!--                <el-input v-model="formDate.id" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="资金密码" label-width="70px" style="width: 50%;">
-                <!--                <el-input v-model="formDate.desc" autocomplete="off"></el-input>-->
               </el-form-item>
               <el-form-item label="新密码" label-width="70px" style="width: 50%;">
-                <el-input v-model="passwordData.loginPassword" autocomplete="off"></el-input>
+                <el-input v-model="passwordData.loginPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="新密码" label-width="70px" style="width: 50%;">
-                <el-input v-model="passwordData.moneyPassword" autocomplete="off"></el-input>
+                <el-input v-model="passwordData.moneyPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="确定密码" label-width="70px" style="width: 50%;">
-                <el-input v-model="passwordData.loginSure" autocomplete="off"></el-input>
+                <el-input v-model="passwordData.loginSure" type="password" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="确定密码" label-width="70px" style="width: 50%;">
-                <el-input v-model="passwordData.moneySure" autocomplete="off"></el-input>
+                <el-input v-model="passwordData.moneySure" type="password" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -393,12 +391,11 @@
         let data = {
           "platform_id": 1000, //平台编号
           "user_id": "", //用户id
-          "sub_id": 1000, //子平台id
           "created_at": "",//创建时间
           "status": "", //用户状态
           "time_min": "",//开始时间
           "time_max": "",//结束时间
-          "page_index": "",//页码
+          "page_index": 1, //页码
           "page_size": "" //分页大小
         };
         //查询用户列表
