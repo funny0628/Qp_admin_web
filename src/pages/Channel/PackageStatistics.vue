@@ -1,11 +1,11 @@
 <template>
   <div id="packagestatistics">
-    <div class="input-area">
+    <input-area>
       <select-time :date="date" :select-date.sync="date"></select-time>
      <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -23,10 +23,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: { SelectTime, InfoTable, PermissionButton },
+  components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {
       date: [],

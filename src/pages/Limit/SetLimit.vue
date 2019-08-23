@@ -1,6 +1,6 @@
 <template>
   <div id="setlimit">
-    <div class="inp-area">
+    <input-area>
       <div class="row">
         <div class="label">角色名称</div>
         <div class="input">
@@ -16,7 +16,7 @@
       <div class="row">
         <div class="label">授权管理</div>
       </div>
-    </div>
+    </input-area>
     <div class="permission-bd">
       <el-table
         :data="permission"
@@ -60,8 +60,9 @@
 <script>
 import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import InputArea from "../../plugin/components/InputArea";
 export default {
-  components: { PermissionButton },
+  components: {InputArea, PermissionButton },
   extends: BaseIframe,
   data() {
     return {
@@ -202,7 +203,7 @@ export default {
         return obj;
       },
     },
-    
+
 };
  class PermissionCheckbox {
     constructor(name, text, val) {

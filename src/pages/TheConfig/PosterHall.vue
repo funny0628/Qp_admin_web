@@ -1,10 +1,10 @@
 <template>
   <div id="PosterHall-main">
-    <div class="input-area">
+    <input-area>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -109,11 +109,12 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
   const cityOptions = ['上海', '北京', '广州', '深圳'];
   export default {
     name: "PosterHall",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         tableStyle:

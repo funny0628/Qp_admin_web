@@ -1,10 +1,10 @@
 <template>
   <div id="Bank-main">
-    <div class="input-area">
+    <input-area>
       <permission-button :action="ActionType.ADD" @click="handelAddClick()">
         <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -82,10 +82,11 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
   export default {
     name: "Bank",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         /**table */

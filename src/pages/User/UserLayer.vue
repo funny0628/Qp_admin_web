@@ -1,10 +1,10 @@
 <template>
   <div id="UserLayer-main">
-    <div class="input-area">
+    <input-area>
       <permission-button :action="ActionType.ADD" @click="handelAddClick()">
         <el-button type="primary" size="medium">添加条件</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -12,24 +12,17 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column
-          v-for="(item,index) in tableStyle"
-          :key="index"
-          :prop="item.prop"
-          :label="item.label"
-          :width="item.width"
-          align="center"
-        >
+        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) >= 0"
+              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
             >
-              <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
+              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
-            <template v-if="item.prop === 'action'">
+            <template v-if="scope.prop === 'action'">
               <permission-button
                 :action="btn.type"
-                v-for="(btn,index) in scope.row[item.prop]"
+                v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
                 @click="handeClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
@@ -38,10 +31,10 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) < 0"
-            >{{scope.row[item.prop]}}</template>
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
-        </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
     <!-- 新增、修改 -->
@@ -71,11 +64,13 @@ import InfoTable from "../../plugin/components/InfoTable";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import UserHandler from '../../script/handlers/UserHandler'
+import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   name: "UserLayer",
   extends: BaseIframe,
-  components: { PermissionButton, InfoTable },
+  components: {InfoTableItem, InputArea, PermissionButton, InfoTable },
   data() {
     return {
       /* table */

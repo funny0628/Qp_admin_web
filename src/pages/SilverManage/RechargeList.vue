@@ -1,6 +1,6 @@
 <template>
   <div id="rechargelist">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="user_id" placeholder="请输入用户id" style="width:159px;"></el-input>
       <el-input v-model="order_id" placeholder="订单编号" style="width:145px;"></el-input>
       <el-input v-model="order_status" placeholder="订单状态" style="width:145px;"></el-input>
@@ -10,7 +10,7 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -47,10 +47,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: { SelectTime, InfoTable, PermissionButton },
+  components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {
       user_id: "",

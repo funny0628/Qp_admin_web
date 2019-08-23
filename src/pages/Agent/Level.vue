@@ -1,10 +1,10 @@
 <template>
   <div id="Level-main">
-    <div class="input-area">
+    <input-area>
       <permission-button :action="ActionType.ADD" @click="handelAddClick()">
         <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -65,12 +65,14 @@
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
   import TierHandler from './../../script/handlers/tierHandler';
+  import InputArea from "../../plugin/components/InputArea";
+  import tierHandler from './../../script/handlers/tierHandler';
   import storage from './../../script/storage/storage'
 
   export default {
     name: "Level",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         //表格数据
@@ -117,7 +119,7 @@
       },
       //代理层级
       getList() {
-        TierHandler.list().promise.then(res => {
+        tierHandler.list().promise.then(res => {
           // console.log(res);
           if (Number(res.code) === 200) {
             // cache = res.data;
@@ -141,7 +143,7 @@
                 "tier_name": this.dataForm.hierarchy_name,
                 "tier_alias": this.dataForm.alias
               };
-              TierHandler.add(data).promise.then(res => {
+              tierHandler.add(data).promise.then(res => {
                 // console.log(res)
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg)
@@ -161,7 +163,7 @@
                 "tier_alias": this.dataForm.alias
               };
               // console.log(data);
-              TierHandler.set(data).promise.then(res => {
+              tierHandler.set(data).promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg)
                 }

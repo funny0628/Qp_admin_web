@@ -1,6 +1,6 @@
 <template>
   <div id="userList—main">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
@@ -26,7 +26,7 @@
       <permission-button :action="ActionType.ADD" @click="addUser()">
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -34,30 +34,28 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label"
-                         :width="item.width"
-                         align="center">
+        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template
-              v-if="['user_gold', 'alipay_account', 'account_person'].indexOf(item.prop) >= 0">
-              <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
+              v-if="['user_gold', 'alipay_account', 'account_person'].indexOf(scope.prop) >= 0">
+              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
-            <template v-if="'status'.indexOf(item.prop) >= 0">
-              <span v-if="scope.row[item.prop]  == 1">启用</span>
+            <template v-if="'status'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  == 1">启用</span>
               <span v-else>冻结</span>
             </template>
-            <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index"
+            <template v-if="scope.prop === 'action'">
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[scope.prop]" :key="index"
                                  @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status'].indexOf(item.prop) < 0">
-              {{scope.row[item.prop]}}
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status'].indexOf(scope.prop) < 0">
+              {{scope.row[scope.prop]}}
             </template>
           </template>
-        </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
     <div>
@@ -200,11 +198,13 @@
   import BaseIframe from "../../plugin/script/common/BaseIframe"
   import PermissionButton from "../../plugin/components/PermissionButton"
   import UserHandler from "../../script/handlers/UserHandler";
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
 
   export default {
     name: "UserList",
     extends: BaseIframe,
-    components: {SelectTime, InfoTable, PermissionButton},
+    components: {InfoTableItem, InputArea, SelectTime, InfoTable, PermissionButton},
     data() {
       //校验手机号
       var checkPhone = (rule, value, callback) => {

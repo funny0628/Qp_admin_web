@@ -1,12 +1,12 @@
 <template>
   <div id="loginlog">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="ip" placeholder="请输入ip" size="medium"></el-input>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -23,10 +23,11 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: {InfoTable, PermissionButton },
+  components: {InputArea, InfoTable, PermissionButton },
   data() {
     return {
       user_id: "",

@@ -37,12 +37,12 @@
         </ul>
       </div>
     </div>
-    <div class="input-area" style="text-align: center;">
+    <input-area style="text-align: center;">
       <select-time :date="date" :select-time.sync="date"></select-time>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size='medium'>查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="LCharts">
       <div ref="LCharts" class="LContent"></div>
     </div>
@@ -53,11 +53,12 @@
   import SelectTime from "../../plugin/components/SelectTime";
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PermissionButton from "../../plugin/components/PermissionButton";
+  import InputArea from "../../plugin/components/InputArea";
 
   export default {
     name: "DayTrend",
     extends: BaseIframe,
-    components: {PermissionButton, SelectTime},
+    components: {InputArea, PermissionButton, SelectTime},
     data(){
       return {
         date:[],

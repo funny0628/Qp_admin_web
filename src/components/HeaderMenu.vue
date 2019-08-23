@@ -49,8 +49,8 @@
 </script>
 
 <style>
-  #header-menu {display: flex;align-items: center;justify-content: center;height: 100%;margin-right:40px}
-  #header-menu ul {display:flex;align-items: center;justify-content: space-between;width: 200px}
+  #header-menu {display: flex;align-items: center;justify-content: center;height: 100%;margin-right:10px}
+  #header-menu ul {display:flex;align-items: center;justify-content: space-between;width: 140px}
   #header-menu ul li {display:inline-block;cursor: pointer}
   #header-menu ul li .el-badge sup {border: none}
 </style>

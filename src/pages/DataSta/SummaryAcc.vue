@@ -1,11 +1,11 @@
 <template>
   <div id="SummaryAcc">
-    <div class="input-area">
+    <input-area>
       <select-time :date="date" :select-time.sync="date"></select-time>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size='medium'>查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="content" style="padding: 15px 20px 0 20px">
       <el-table
         :data="tableData"
@@ -81,11 +81,12 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import SelectTime from "../../plugin/components/SelectTime";
   import BaseIframe from '../../plugin/script/common/BaseIframe';
+  import InputArea from "../../plugin/components/InputArea";
 
   export default {
     name: "SummaryAcc",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable, SelectTime},
+    components: {InputArea, PermissionButton, InfoTable, SelectTime},
     data() {
       return {
         date: [],

@@ -12,7 +12,7 @@
         <el-table-column prop="game_pep" label="正在游戏房间人数" width="" align="center"></el-table-column>
       </el-table>
     </div>
-    <div class="input-area" style="text-align: center;">
+    <input-area style="text-align: center;">
       <el-input v-model="areaData.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
       <el-select v-model="areaData.type" clearable placeholder="游戏类型" size="medium">
         <el-option
@@ -25,7 +25,7 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size='medium'>查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -64,11 +64,12 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
 
   export default {
     name: "OnlineSta",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         /*top-tab*/

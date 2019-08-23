@@ -1,6 +1,6 @@
 <template>
   <div id="managerlist">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="id" placeholder="请输入ID" style="width:159px;"></el-input>
       <el-input v-model="username" placeholder="请输入用户名" style="width:145px;"></el-input>
       <select-time :date="date" :select-date.sync="date"></select-time>
@@ -10,7 +10,7 @@
       <permission-button :action="ActionType.ADD" @click="addsilver=true">
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -87,10 +87,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: { SelectTime, InfoTable, PermissionButton },
+  components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     var validatePass = (rule, value, callback) => {
       if (!Number.isInteger(value)) {

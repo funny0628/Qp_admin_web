@@ -1,6 +1,6 @@
 <template>
   <div id="BankAccount-main">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
       <el-input v-model="format.payee" placeholder="收款人" size="medium"></el-input>
       <permission-button :action="ActionType.READ" @click="handelReadClick()">
@@ -9,7 +9,7 @@
       <permission-button :action="ActionType.ADD" @click="handelAddClick()" style="float: right;">
         <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -118,11 +118,12 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
   const cityOptions = ['vip1', 'vip2', 'vip3', 'vip4','vip5','vip6'];
   export default {
     name: "BankAccount",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         format: {

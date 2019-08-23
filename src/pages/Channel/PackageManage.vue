@@ -1,6 +1,6 @@
 <template>
   <div id="packagemanage">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="package_id" placeholder="请输入包id" size="medium"></el-input>
       <el-input v-model="mark" placeholder="标示" size="medium" class="w-160"></el-input>
       <el-input v-model="package_status" placeholder="包状态" size="medium"></el-input>
@@ -11,7 +11,7 @@
       <permission-button :action="ActionType.ADD" @click="addpackage=true">
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -116,10 +116,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: { SelectTime, InfoTable, PermissionButton },
+  components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     var validateid = (rule, value, callback) => {
       if (!Number.isInteger(value)) {

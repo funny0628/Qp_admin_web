@@ -1,6 +1,6 @@
 <template>
   <div id="prepaidRecord-main">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="aresData.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="aresData.account_id" placeholder="请输入渠道id" size="medium"></el-input>
       <el-input v-model="aresData.order_num" placeholder="订单编号" size="medium"></el-input>
@@ -24,7 +24,7 @@
       <permission-button :action="ActionType.READ" @click="search()" style="float: right;margin-bottom: 20px;">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -64,11 +64,12 @@
   import SelectTime from "../../plugin/components/SelectTime";
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
 
   export default {
     name: "Enquiry",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable,SelectTime},
+    components: {InputArea, PermissionButton, InfoTable,SelectTime},
     data(){
       return{
         aresData:{

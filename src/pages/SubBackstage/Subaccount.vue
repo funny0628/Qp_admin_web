@@ -1,6 +1,6 @@
 <template>
   <div id="subaccount">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="sub_id" placeholder="子后台ID" size="medium"></el-input>
       <el-input v-model="sub_name" placeholder="子后台名称" size="medium"></el-input>
       <permission-button :action="ActionType.READ" @click="search()">
@@ -9,7 +9,7 @@
       <permission-button :action="ActionType.ADD" @click="addsub=true">
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -80,10 +80,11 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
+import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
-  components: { InfoTable, PermissionButton },
+  components: {InputArea, InfoTable, PermissionButton },
   data() {
     var validatePass = (rule, value, callback) => {
       if (!Number.isInteger(value)) {

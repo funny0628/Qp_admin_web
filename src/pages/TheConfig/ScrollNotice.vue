@@ -1,10 +1,10 @@
 <template>
   <div id="ScrollNotice-main">
-    <div class="input-area">
+    <input-area>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size='medium'>新增</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -86,12 +86,13 @@
   import InfoTable from '../../plugin/components/InfoTable';
   import BaseIframe from '../../plugin/script/common/BaseIframe';
   import PageInfo from '../../plugin/script/common/PageInfo';
+  import InputArea from "../../plugin/components/InputArea";
   import hallHandler from '../../script/handlers/hallHandler'
 
   export default {
     name: "ScrollNotice",
     extends: BaseIframe,
-    components: {PermissionButton, InfoTable},
+    components: {InputArea, PermissionButton, InfoTable},
     data() {
       return {
         tableStyle:

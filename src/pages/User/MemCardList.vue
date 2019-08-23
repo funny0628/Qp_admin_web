@@ -1,6 +1,6 @@
 <template>
   <div id="MemCardList—main">
-    <div class="input-area">
+    <input-area>
       <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
@@ -9,7 +9,7 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-    </div>
+    </input-area>
     <div class="bd">
       <info-table
         :search="search"
@@ -17,25 +17,24 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="(item,index) in tableStyle" :prop="item.prop" :label="item.label" :width="item.width" :key="index"
-                         align="center">
+        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) >= 0">
-              <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
+              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0">
+              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
-            <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index" @click="handeClick(btn)"
+            <template v-if="scope.prop === 'action'">
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[scope.prop]" :key="index" @click="handeClick(btn)"
                                  style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(item.prop) < 0">
-              {{scope.row[item.prop]}}
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0">
+              {{scope.row[scope.prop]}}
             </template>
           </template>
-        </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
     <!--修改会员银行卡 -->
@@ -95,13 +94,15 @@
   import InfoTable from '../../plugin/components/InfoTable'
   import PageInfo from "../../plugin/script/common/PageInfo"
   import BaseIframe from "../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../plugin/components/PermissionButton";
   import UserHandler from '../../script/handlers/UserHandler'
+  import PermissionButton from "../../plugin/components/PermissionButton"
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
 
   export default {
     name: "MemCardList",
     extends: BaseIframe,
-    components: {InfoTable, PermissionButton},
+    components: {InfoTableItem, InputArea, InfoTable, PermissionButton},
     data() {
       let $this = this;
       return {
