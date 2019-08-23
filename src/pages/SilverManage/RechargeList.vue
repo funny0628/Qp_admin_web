@@ -17,7 +17,26 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
-      ></info-table>
+      >
+       <el-table-column
+          v-for="(item,index) in tableStyle"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+          align="center"
+          >
+            <template slot-scope="scope">
+            <template v-if="['moneyexchange','submittime'].indexOf(item.prop)>0">
+              <p v-for="(ite,ind) in scope.row[item.prop]" :key="ind">{{ite}}</p>
+            </template>
+            <template v-if="item.prop==='operate'">
+              <el-button type="text" v-for="(btn,i) in scope.row[item.prop]" :key="i">{{btn.label}}</el-button>
+            </template>
+            <template v-if="['moneyexchange','submittime','operate'].indexOf(item.prop) < 0">{{scope.row[item.prop]}}</template>
+          </template>
+          </el-table-column>
+      </info-table>
     </div>
   </div>
 </template>
@@ -55,7 +74,24 @@ export default {
         { label: "订单备注", prop: "ordertip", width: "" },
         { label: "操作", prop: "operate", width: "" },
       ],
-      records: [],
+      records: [
+        {
+          orderid:1,
+          userid:2,
+          user:'张三',
+          payer:'李四',
+          ordermoney:'10000',
+          moneyexchange:["充值前：10000","充值后：2000"],
+          orderstatus:'启用',
+          submittime:["2018-09-01 12:00:00","2019-08-01 12:00:00"],
+          operater:'admin',
+          ordertip:'',
+          operate:[
+            { label: "审核", type: "check" },
+            { label: "驳回", type: "reject" },
+          ]
+        }
+      ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
     };
   },
@@ -68,5 +104,9 @@ export default {
 <style scoped>
 .el-input{
     margin-right: 10px;
+}
+#rechargelist .bd p {
+  margin: 0;
+  font-size: 13px;
 }
 </style>

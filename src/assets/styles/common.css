@@ -116,6 +116,7 @@
 
 /* 银商管理账号列表,权限管理管理员列表输入框高度 */
 #accountlist .el-input__inner,
-#managerlist .el-input__inner{
+#managerlist .el-input__inner,
+#rechargelist .el-input__inner{
   height: 36px;
 }

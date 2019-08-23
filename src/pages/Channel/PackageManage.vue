@@ -18,7 +18,26 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
-      ></info-table>
+      >
+        <el-table-column
+          v-for="(item,index) in tableStyle"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <template v-if="index===3">
+              <p v-for="(ite,ind) in scope.row[item.prop]" :key="ind">{{ite}}</p>
+            </template>
+            <template v-if="item.prop==='operate'">
+              <el-button type="text" v-for="(btn,i) in scope.row[item.prop]" :key="i">{{btn.label}}</el-button>
+            </template>
+            <template v-if="['belong','operate'].indexOf(item.prop) < 0">{{scope.row[item.prop]}}</template>
+          </template>
+        </el-table-column>
+      </info-table>
     </div>
     <el-dialog :visible.sync="addpackage" width="50%" title="新增包设置">
       <div class="checkbox">
@@ -79,14 +98,14 @@
           </el-row>
         </el-form>
       </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="addpackage = false" class="cancel">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="addpackage = false,submitForm('ruleForm')"
-              class="confirm"
-            >确 定</el-button>
-          </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addpackage = false" class="cancel">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="addpackage = false,submitForm('ruleForm')"
+          class="confirm"
+        >确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -158,7 +177,27 @@ export default {
         { label: "创建时间", prop: "createtime", width: "279px" },
         { label: "操作", prop: "operate", width: "279px" }
       ],
-      records: [],
+      records: [
+        {
+          packageid: 1,
+          mark: "2",
+          platform: "666",
+          belong: ["已绑定用户ID：100001", "已绑定管理员账号：000000001"],
+          download: "www.baidu.com",
+          update: "开启",
+          open: "游戏1、游戏2、游戏3、游戏4",
+          deduction: "-",
+          lowerplayernum: "100",
+          status: "开启",
+          createtime: "20190822 12:00:00",
+          operate: [
+            { label: "绑定", type: "binding" },
+            { label: "编辑", type: "edit" },
+            { label: "禁用", type: "ban" },
+            { label: "推广链接", type: "expand" }
+          ]
+        }
+      ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
     };
   },
@@ -201,6 +240,9 @@ export default {
   margin-right: 100px;
 }
 .confirm {
-  margin-left: 100px
+  margin-left: 100px;
+}
+#packagemanage .bd p {
+  margin: 0;
 }
 </style>
