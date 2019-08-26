@@ -74,9 +74,11 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
   const cityOptions = ['新用户首次进入', '每日充值任意金额', '每日登陆'];
   export default {
     name: "RotaActive",
+    extends:BaseIframe,
     data() {
       return {
         formDate: {

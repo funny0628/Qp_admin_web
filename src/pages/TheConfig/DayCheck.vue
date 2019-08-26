@@ -85,8 +85,10 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
   export default {
     name: "DayCheck",
+    extends:BaseIframe,
     data() {
       return {
         formDate: {

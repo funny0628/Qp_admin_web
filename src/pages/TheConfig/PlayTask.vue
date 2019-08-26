@@ -92,8 +92,10 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
   export default {
     name: "PlayTask",
+    extends:BaseIframe,
     data() {
       return {
         formData: {

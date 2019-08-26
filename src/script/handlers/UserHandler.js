@@ -38,7 +38,7 @@ class UserHandler extends BaseHandler {
     return this.set_v1('/bank_delete/'+user_id,data)
   }
   //代理链接管理
-  spread_list(){
+  spread_list(data){
     return this.get_v1('/spread_list',data)
   }
   //用户分层

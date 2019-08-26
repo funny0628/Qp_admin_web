@@ -9,17 +9,12 @@
           v-for="item in order_status"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
-        </el-option>
+          :value="item.value"
+        ></el-option>
       </el-select>
       <el-input v-model="aresData.order_num" placeholder="支付商户" size="medium"></el-input>
       <el-select v-model="aresData.type" clearable placeholder="所属类型" size="medium">
-        <el-option
-          v-for="item in types"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
+        <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <select-time :date="date" :select-time.sync="date"></select-time>
       <permission-button :action="ActionType.READ" @click="search()">
@@ -33,124 +28,137 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column v-for="(item,index) in tableStyle" :key="index" :prop="item.prop" :label="item.label"
-                         :width="item.width"
-                         align="center">
+        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template
-              v-if="['user_gold', 'money_change', 'submit_time'].indexOf(item.prop) >= 0">
-              <p v-for="(label, ind) in scope.row[item.prop]" :key="ind">{{label}}</p>
+            <template v-if="['user_gold', 'money_change', 'submit_time'].indexOf(scope.prop) >= 0">
+              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
-            <template v-if="item.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[item.prop]" :key="index"
-                                 @click="handeClick(btn)"
-                                 style="cursor: pointer; padding-left: 5px;">
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handeClick(btn)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'money_change', 'submit_time'].indexOf(item.prop) < 0">
-              {{scope.row[item.prop]}}
-            </template>
+              v-if="['action', 'user_gold', 'money_change', 'submit_time'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
-        </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
   </div>
 </template>
 
 <script>
-  import PermissionButton from "../../plugin/components/PermissionButton";
-  import InfoTable from '../../plugin/components/InfoTable';
-  import SelectTime from "../../plugin/components/SelectTime";
-  import BaseIframe from '../../plugin/script/common/BaseIframe';
-  import PageInfo from '../../plugin/script/common/PageInfo';
-  import InputArea from "../../plugin/components/InputArea";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import SelectTime from "../../plugin/components/SelectTime";
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+import InputArea from "../../plugin/components/InputArea";
 
-  export default {
-    name: "prepaidRecord",
-    extends: BaseIframe,
-    components: {InputArea, PermissionButton, InfoTable,SelectTime},
-    data(){
-      return{
-        aresData:{
-          user_id:'',
-          account_id:'',
-          order_num:'',
-          status:'', //订单状态
-          type:'',
+export default {
+  name: "prepaidRecord",
+  extends: BaseIframe,
+  components: {
+    InputArea,
+    PermissionButton,
+    InfoTable,
+    SelectTime,
+    InfoTableItem
+  },
+  data() {
+    return {
+      aresData: {
+        user_id: "",
+        account_id: "",
+        order_num: "",
+        status: "", //订单状态
+        type: ""
+      },
+      /*date*/
+      date: [],
+      order_status: [
+        {
+          value: "1",
+          label: "充值成功"
         },
-        /*date*/
-        date:[],
-        order_status: [{
-          value: '1',
-          label: '充值成功'
-        }, {
-          value: '2',
-          label: '代付款'
-        }, {
-          value: '3',
-          label: '启用'
-        }],
-        types:[
-          {value:'1',label:'银行收款'},
-          {value:'2',label:'第三方充值'},
-          {value:'3',label:'手工入款'},
-          {value:'4',label:'北京支行'}
-        ],
-        /*table*/
-        tableStyle:
-          [
-            {label: '订单编号', prop: 'order_num', width: '160'},
-            {label: '用户ID', prop: 'user_id', width: ''},
-            {label: '用户名', prop: 'user_name', width: ''},
-            {label: '渠道ID', prop: 'account_id', width: ''},
-            {label: '支付商户', prop: 'pay_merchant', width: ''},
-            {label: '所属类型', prop: 'type', width: ''},
-            {label: '订单金额', prop: 'order_money', width: ''},
-            {label: '金额变动', prop: 'money_change', width: '160'},
-            {label: '订单状态', prop: 'order_status', width: '160'},
-            {label: '提交时间／到账时间', prop: 'submit_time', width: '160'},
-            {label: '操作用户', prop: 'operation_user', width: '160'},
-            {label: '订单备注', prop: 'order_note', width: '160'},
-            {label: '操作', prop: 'action', width: ''},
-          ],
-        records: [
-          {
-            order_num: '09287673429137',
-            user_id: '1001001',
-            user_name: '测试玩家',
-            account_id: '10001',
-            pay_merchant: '招商银行',
-            type: '银行收款',
-            order_money:'100',
-            money_change:['充值前：10000','充值后：10100'],
-            order_status:'充值成功',
-            submit_time:['2019-01-01 12:00:00',' 2019-01-01 12:00:59'],
-            operation_user:'',
-            order_note:'',
-            action: [{label: '修改', type: 'edit'}, {label: '删除', type: 'delete'}]
-          }],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        {
+          value: "2",
+          label: "代付款"
+        },
+        {
+          value: "3",
+          label: "启用"
+        }
+      ],
+      types: [
+        { value: "1", label: "银行收款" },
+        { value: "2", label: "第三方充值" },
+        { value: "3", label: "手工入款" },
+        { value: "4", label: "北京支行" }
+      ],
+      /*table*/
+      tableStyle: [
+        { label: "订单编号", prop: "order_num", width: "160" },
+        { label: "用户ID", prop: "user_id", width: "" },
+        { label: "用户名", prop: "user_name", width: "" },
+        { label: "渠道ID", prop: "account_id", width: "" },
+        { label: "支付商户", prop: "pay_merchant", width: "" },
+        { label: "所属类型", prop: "type", width: "" },
+        { label: "订单金额", prop: "order_money", width: "" },
+        { label: "金额变动", prop: "money_change", width: "160" },
+        { label: "订单状态", prop: "order_status", width: "160" },
+        { label: "提交时间／到账时间", prop: "submit_time", width: "160" },
+        { label: "操作用户", prop: "operation_user", width: "160" },
+        { label: "订单备注", prop: "order_note", width: "160" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
+        {
+          order_num: "09287673429137",
+          user_id: "1001001",
+          user_name: "测试玩家",
+          account_id: "10001",
+          pay_merchant: "招商银行",
+          type: "银行收款",
+          order_money: "100",
+          money_change: ["充值前：10000", "充值后：10100"],
+          order_status: "充值成功",
+          submit_time: ["2019-01-01 12:00:00", " 2019-01-01 12:00:59"],
+          operation_user: "",
+          order_note: "",
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
+        }
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0)
+    };
+  },
+  methods: {
+    search() {},
+    /***修改、删除 */
+    handeClick(btn) {
+      if (btn.type === "edit") {
       }
-    },
-    methods:{
-      search() {
-      },
-      /***修改、删除 */
-      handeClick(btn) {
-        if (btn.type === 'edit') {
-        }
-        if (btn.type === 'delete') {
-        }
-      },
+      if (btn.type === "delete") {
+      }
     }
   }
+};
 </script>
 
 <style scoped>
- #prepaidRecord-main .bd p {
-   margin: 0;
- }
+#prepaidRecord-main .bd p {
+  margin: 0;
+}
 </style>
 <!--充值记录查询-->

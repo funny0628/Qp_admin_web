@@ -76,7 +76,7 @@ export default {
       /* table */
       tableStyle: [
         { label: "层级ID", prop: "vip", width: "" },
-        { label: "层级名称", prop: "vip_name", width: "" },
+        { label: "层级名称", prop: "vipname", width: "" },
         { label: "充值金额", prop: "pay_sum", width: "" },
         { label: "充值笔数", prop: "pay_count", width: "" },
         { label: "操作", prop: "action", width: "" }
@@ -84,13 +84,12 @@ export default {
       records: [
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      /*type 判断现在是添加还是修改*/
+      //弹窗数据
       dialogTitleType: "",
-      /*dialog */
       dialogVisible: false,
       labelWidth: "70px",
       dataForm: {
-        vip_name: "", //层级名称
+        vipname: "", //层级名称
         pay_sum: "", //充值金额
         pay_count: "" //充值笔数
       }
@@ -107,7 +106,7 @@ export default {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改用户分层";
         this.dialogVisible = true;
-        this.dataForm.vip_name = row.vip_name;
+        this.dataForm.vipname = row.vipname;
         this.dataForm.pay_sum = row.pay_sum;
         this.dataForm.pay_count = row.pay_count;
       }
@@ -116,7 +115,7 @@ export default {
       UserHandler.vip_list().promise.then(res=>{
         // console.log(res)
         if(Number(res.code) === 200){
-          this.records = res.data
+          this.records = res.data.list
         }
         //数据处理
         this.records.map((item)=>{

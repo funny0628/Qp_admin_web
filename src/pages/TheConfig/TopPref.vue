@@ -72,8 +72,10 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
   export default {
     name: "TopPref",
+    extends:BaseIframe,
     data(){
       return{
         tableData:[{up_channel:'0',up_money:'',given_type:'',given_money:''}]

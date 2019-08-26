@@ -29,8 +29,10 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
   export default {
     name: "Manual",
+    extends:BaseIframe,
     data(){
       return{
         form: {

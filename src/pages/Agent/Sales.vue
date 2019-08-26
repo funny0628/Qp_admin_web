@@ -82,9 +82,11 @@
 </template>
 
 <script>
+import BaseIframe from '../../plugin/script/common/BaseIframe';
 
   export default {
     name: "Sales",
+    extends:BaseIframe,
     data() {
       return {
         formData: {

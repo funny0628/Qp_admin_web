@@ -20,19 +20,24 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0">
+              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
+            >
               <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[scope.prop]" :key="index" @click="handeClick(btn)"
-                                 style="cursor: pointer; padding-left: 5px;">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handeClick(btn)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0">
-              {{scope.row[scope.prop]}}
-            </template>
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -50,8 +55,8 @@
                 v-for="item in banks"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value">
-              </el-option>
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="银行卡号" label-width="100px">
@@ -66,8 +71,8 @@
                 v-for="item in provinces"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value">
-              </el-option>
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所属城市" label-width="100px">
@@ -76,8 +81,8 @@
                 v-for="item in citys"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value">
-              </el-option>
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -91,146 +96,180 @@
 </template>
 
 <script>
-  import InfoTable from '../../plugin/components/InfoTable'
-  import PageInfo from "../../plugin/script/common/PageInfo"
-  import BaseIframe from "../../plugin/script/common/BaseIframe"
-  import UserHandler from '../../script/handlers/UserHandler'
-  import PermissionButton from "../../plugin/components/PermissionButton"
-  import InputArea from "../../plugin/components/InputArea";
-  import InfoTableItem from "../../plugin/components/InfoTableItem";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import UserHandler from "../../script/handlers/UserHandler";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
-  export default {
-    name: "MemCardList",
-    extends: BaseIframe,
-    components: {InfoTableItem, InputArea, InfoTable, PermissionButton},
-    data() {
-      let $this = this;
-      return {
-        format: {
-          child_id: '', //子后台id
-          user_id: '', //用户id
-          channel_id: '',//渠道id
-        },
-        tableStyle: [
-          {label: '渠道ID', prop: 'platform_id', width: ''},
-          {label: '用户ID', prop: 'user_id', width: ''},
-          {label: '所属银行', prop: 'bank_name', width: ''},
-          {label: '银行卡号', prop: 'bank_card', width: ''},
-          {label: '银行卡开户行', prop: 'bank_user', width: ''},
-          {label: '持卡人姓名', prop: 'cardholder_name', width: ''},
-          {label: '创建时间', prop: 'created_at', width: '160'},
-          {label: '修改时间', prop: 'updated_at', width: '160'},
-          {label: '操作', prop: 'action', width: '200'},
-        ],
-        records: [{
-          platform_id: '01',
-          user_id: '1001100',
-          bank_name: '中国银行',
-          bank_card: '622790876671282917',
-          bank_user: '北京朝阳支行',
-          cardholder_name: '武广',
-          created_at: '2019-03-06 12:00:00',
-          updated_at: '2019-03-06 12:00:00',
+export default {
+  name: "MemCardList",
+  extends: BaseIframe,
+  components: { InfoTableItem, InputArea, InfoTable, PermissionButton },
+  data() {
+    let $this = this;
+    return {
+      format: {
+        child_id: "", //子后台id
+        user_id: "", //用户id
+        channel_id: "" //渠道id
+      },
+      tableStyle: [
+        { label: "渠道ID", prop: "platform_id", width: "" },
+        { label: "用户ID", prop: "user_id", width: "" },
+        { label: "所属银行", prop: "bank_name", width: "" },
+        { label: "银行卡号", prop: "bank_card", width: "" },
+        { label: "银行卡开户行", prop: "subbranch", width: "" },
+        { label: "持卡人姓名", prop: "bank_user", width: "" },
+        { label: "创建时间", prop: "created_at", width: "160" },
+        { label: "修改时间", prop: "updated_at", width: "160" },
+        { label: "操作", prop: "action", width: "200" }
+      ],
+      records: [
+        {
+          platform_id: "01",
+          user_id: "1001100",
+          bank_name: "中国银行",
+          bank_card: "622790876671282917",
+          bank_user: "北京朝阳支行",
+          cardholder_name: "武广",
+          created_at: "2019-03-06 12:00:00",
+          updated_at: "2019-03-06 12:00:00",
           action: [
             {
-              label: '修改', type: 'edit'
+              label: "修改",
+              type: "edit"
             },
             {
-              label: '删除', type: 'delete'
+              label: "删除",
+              type: "delete"
             }
-          ],
-        }],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
-        /*修改银行卡信息*/
-        dialogModifyVisible: false,
-        modify_member_card: {
-          name: '',
-          value: '',
-          bank_card: '',
-          open_bank: '',
-          province: '',
-          city: '',
-        },
-        provinces: [{
-          value: '1',
-          label: '四川省'
-        }, {
-          value: '2',
-          label: '广东省'
-        }, {
-          value: '3',
-          label: '湖南省'
-        }, {
-          value: '4',
-          label: '云南省'
-        }, {
-          value: '5',
-          label: '福建省'
-        }],
-        citys: [{
-          value: '1',
-          label: '成都市'
-        }, {
-          value: '2',
-          label: '北京市'
-        }, {
-          value: '3',
-          label: '上海市'
-        }, {
-          value: '4',
-          label: '天津市'
-        }, {
-          value: '5',
-          label: '重庆市'
-        }],
-        banks: [{
-          value: '1',
-          label: '中国银行'
-        }, {
-          value: '2',
-          label: '交通银行'
-        }, {
-          value: '3',
-          label: '招商银行'
-        }, {
-          value: '4',
-          label: '广大银行'
-        }, {
-          value: '5',
-          label: '浦发银行'
-        }],
-      }
-    },
-    methods: {
-      search() {
-        console.log('这是查询');
-      },
-      handeClick(btn) {
-        if (btn.type === 'edit') {
-          this.dialogModifyVisible = true;
+          ]
         }
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      /*修改银行卡信息*/
+      dialogModifyVisible: false,
+      modify_member_card: {
+        name: "",
+        value: "",
+        bank_card: "",
+        open_bank: "",
+        province: "",
+        city: ""
       },
-      //会员银行卡列表
-      getBank_list(){
-        let data = {
-          "platform_id": 1000,
-          "user_id": "",
-          "sub_id": 1000,
-          "bank_card": "",
-          "bank_user": ""
-        };
-        UserHandler.bank_list(data).promise.then(res=>{
-          // console.log(res)
-          if(Number(res.code) === 200){
-            this.records = res.list
-          }
-        })
+      provinces: [
+        {
+          value: "1",
+          label: "四川省"
+        },
+        {
+          value: "2",
+          label: "广东省"
+        },
+        {
+          value: "3",
+          label: "湖南省"
+        },
+        {
+          value: "4",
+          label: "云南省"
+        },
+        {
+          value: "5",
+          label: "福建省"
+        }
+      ],
+      citys: [
+        {
+          value: "1",
+          label: "成都市"
+        },
+        {
+          value: "2",
+          label: "北京市"
+        },
+        {
+          value: "3",
+          label: "上海市"
+        },
+        {
+          value: "4",
+          label: "天津市"
+        },
+        {
+          value: "5",
+          label: "重庆市"
+        }
+      ],
+      banks: [
+        {
+          value: "1",
+          label: "中国银行"
+        },
+        {
+          value: "2",
+          label: "交通银行"
+        },
+        {
+          value: "3",
+          label: "招商银行"
+        },
+        {
+          value: "4",
+          label: "广大银行"
+        },
+        {
+          value: "5",
+          label: "浦发银行"
+        }
+      ]
+    };
+  },
+  methods: {
+    search() {
+      console.log("这是查询");
+    },
+    handeClick(btn) {
+      if (btn.type === "edit") {
+        this.dialogModifyVisible = true;
       }
     },
-    mounted() {
-      this.getBank_list();
+    //会员银行卡列表
+    getBank_list() {
+      let data = {
+        platform_id: 1000,
+        user_id: "",
+        bank_card: "",
+        bank_user: ""
+      };
+      UserHandler.bank_list(data).promise.then(res => {
+        console.log(res);
+        if (Number(res.code) === 200) {
+          this.records = res.data.list;
+        }
+        //数据处理
+        this.records.map(item => {
+          item.action = [
+            {
+              label: "修改",
+              type: "edit"
+            },
+            {
+              label: "删除",
+              type: "delete"
+            }
+          ];
+        });
+      });
     }
+  },
+  mounted() {
+    this.getBank_list();
   }
+};
 </script>
 
 <style scoped>
