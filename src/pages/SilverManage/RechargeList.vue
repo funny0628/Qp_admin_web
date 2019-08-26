@@ -18,24 +18,19 @@
         :records="records"
         :page-info="pageInfo"
       >
-       <el-table-column
-          v-for="(item,index) in tableStyle"
-          :key="index"
-          :prop="item.prop"
-          :label="item.label"
-          :width="item.width"
-          align="center"
-          >
-            <template slot-scope="scope">
-            <template v-if="['moneyexchange','submittime'].indexOf(item.prop)>0">
-              <p v-for="(ite,ind) in scope.row[item.prop]" :key="ind">{{ite}}</p>
+        <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="['moneyexchange','submittime'].indexOf(scope.prop)>=0">
+              <p v-for="(ite,ind) in scope.row[scope.prop]" :key="ind">{{ite}}</p>
             </template>
-            <template v-if="item.prop==='operate'">
-              <el-button type="text" v-for="(btn,i) in scope.row[item.prop]" :key="i">{{btn.label}}</el-button>
+            <template v-if="scope.prop==='operate'">
+              <el-button type="text" v-for="(btn,i) in scope.row[scope.prop]" :key="i">{{btn.label}}</el-button>
             </template>
-            <template v-if="['moneyexchange','submittime','operate'].indexOf(item.prop) < 0">{{scope.row[item.prop]}}</template>
+            <template
+              v-if="['moneyexchange','submittime','operate'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
-          </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
   </div>
@@ -48,17 +43,24 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, SelectTime, InfoTable, PermissionButton },
+  components: {
+    InputArea,
+    SelectTime,
+    InfoTable,
+    PermissionButton,
+    InfoTableItem
+  },
   data() {
     return {
       user_id: "",
-      order_id:'',
-      order_status:"",
-      pay:'',
-      status:'',
+      order_id: "",
+      order_status: "",
+      pay: "",
+      status: "",
       level: "",
       quickDate: "",
       date: [],
@@ -73,23 +75,23 @@ export default {
         { label: "提交时间/到账时间", prop: "submittime", width: "" },
         { label: "操作用户", prop: "operater", width: "" },
         { label: "订单备注", prop: "ordertip", width: "" },
-        { label: "操作", prop: "operate", width: "" },
+        { label: "操作", prop: "operate", width: "" }
       ],
       records: [
         {
-          orderid:1,
-          userid:2,
-          user:'张三',
-          payer:'李四',
-          ordermoney:'10000',
-          moneyexchange:["充值前：10000","充值后：2000"],
-          orderstatus:'启用',
-          submittime:["2018-09-01 12:00:00","2019-08-01 12:00:00"],
-          operater:'admin',
-          ordertip:'',
-          operate:[
+          orderid: 1,
+          userid: 2,
+          user: "张三",
+          payer: "李四",
+          ordermoney: "10000",
+          moneyexchange:["充值前：10000", "充值后：2000"],
+          orderstatus: "充值成功",
+          submittime: ["2018-09-01 12:00:00", "2019-08-01 12:00:00"],
+          operater: "admin",
+          ordertip: "",
+          operate: [
             { label: "审核", type: "check" },
-            { label: "驳回", type: "reject" },
+            { label: "驳回", type: "reject" }
           ]
         }
       ],
@@ -97,14 +99,14 @@ export default {
     };
   },
   methods: {
-    search() {},
+    search() {}
   }
 };
 </script>
 
 <style scoped>
-.el-input{
-    margin-right: 10px;
+.el-input {
+  margin-right: 10px;
 }
 #rechargelist .bd p {
   margin: 0;

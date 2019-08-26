@@ -73,7 +73,8 @@ export default {
       tableStyle: [
         { label: "菜单", prop: "menu", width: "" },
         { label: "全选", prop: "model", width: "" }
-      ]
+      ],
+      originchecklist:{}
     };
   },
   created() {
@@ -167,18 +168,105 @@ export default {
         };
         return selectLs(examplePermission);
       })();
+      
+    this.originchecklist=JSON.parse(JSON.stringify(this.checkList));
+    for(let prop in this.checkList){
+      this.checkList[prop]=[];
+    }
       console.log(this.modelPath);
-      console.log(this.checkList);
+      console.log(this.originchecklist);
     },
     // TODO 硬编码
     singleCheckboxChange(val, name, model) {
-      console.log(val, name, model);
+      // console.log(val, name, model);
 
       /** 点击全部 **/
       if (name === "all") {
+        // 判断当前点击是否为第一层级
         if (this.modelPath.hasOwnProperty(model)) {
-          for (let i = 0; i < this.modelPath.length; i++) {
-            /**  **/
+          //  选中
+          if(val){
+            for(let prop of this.modelPath[model]){
+              this.checkList[prop]=this.originchecklist[prop]
+            }
+          }
+          // 非选中
+          else{
+            for(let prop of this.modelPath[model]){
+              this.checkList[prop]=[];
+            }
+          }
+        }
+        // 非第一层级
+        else{
+          // 选中
+          if(val){
+            this.checkList[model]=this.originchecklist[model];
+            let count=0;
+            for(let p in this.modelPath){
+              if(this.modelPath[p].indexOf(model)!=-1){
+                for(let k of this.modelPath[p]){
+                  if(this.checkList[k].length==this.originchecklist[k].length){
+                    count++
+                  }
+                }
+                if(count==this.modelPath[p].length){
+                  this.checkList[p]=this.originchecklist[p]
+                }
+                else{
+                  this.checkList[p]=[]
+                }
+              }
+            }
+          }
+          // 非选中
+          else{
+            this.checkList[model]=[];
+            for(let p in this.modelPath){
+              if(this.modelPath[p].indexOf(model)!=-1){
+                this.checkList[p]=[];
+              }
+            }
+          }
+        }
+      }
+      // 非全选
+      else{
+        // 判断当前行是否已经全选
+        if(val){
+          let value =JSON.parse(JSON.stringify(this.originchecklist[model])).slice(1)
+          if(this.checkList[model].length==value.length){
+            this.checkList[model]=this.originchecklist[model]
+
+            // 判断所有行是否已经全选
+            let count=0;
+            for(let p in this.modelPath){
+              if(this.modelPath[p].indexOf(model)!=-1){
+                for(let k of this.modelPath[p]){
+                  if(this.checkList[k].length==this.originchecklist[k].length){
+                    count++
+                  }
+                }
+                if(count==this.modelPath[p].length){
+                  this.checkList[p]=this.originchecklist[p]
+                }
+                else{
+                  this.checkList[p]=[]
+                }
+              }
+            }
+          }
+        }
+        else{
+          for(let i=0;i<this.checkList[model].length;i++){
+            if(this.checkList[model][i]=='all'){
+              this.checkList[model].splice(i,i+1)
+            }
+          }
+          for(let p in this.modelPath){
+            if(this.modelPath[p].indexOf(model)!=-1){
+              this.checkList[p]=[];
+            }
           }
         }
       }

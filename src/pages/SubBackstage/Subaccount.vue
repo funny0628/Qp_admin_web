@@ -16,9 +16,24 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
-      ></info-table>
+      >
+        <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="scope.prop==='operate'">
+              <el-button
+                type="text"
+                v-for="(btn,i) in scope.row[scope.prop]"
+                :key="i"
+                @click="handeClick(btn)"
+              >{{btn.label}}</el-button>
+            </template>
+            <template v-if="['operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template>
+        </info-table-item>
+      </info-table>
     </div>
-    <el-dialog :visible.sync="addsub" width="50%" title="新增子后台账号">
+    <!-- 新增运营后台账号 -->
+    <el-dialog :visible.sync="addsub" width="50%" title="新增运营后台账号">
       <div class="checkbox">
         <el-form
           :model="ruleForm"
@@ -46,8 +61,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="所属角色" prop="belongrole">
-                <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
+              <el-form-item label="所属角色" prop="belongrole" class="reducewidth">
+                <el-select v-model="ruleForm.belongrole" placeholder="用户角色" class="changewidth">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
@@ -63,14 +78,28 @@
           </el-row>
         </el-form>
       </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="addsub = false" class="cancel">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="addsub = false,submitForm('ruleForm')"
-              class="confirm"
-            >确 定</el-button>
-          </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addsub = false" class="cancel">取 消</el-button>
+        <el-button type="primary" @click="addsub = false,submitForm('ruleForm')" class="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 游戏管理设置 -->
+    <el-dialog title="游戏管理" :visible.sync="gamemanagedialog" width="40%">
+      <div class="checkbox">
+        <el-checkbox
+          :indeterminate="isIndeterminate"
+          v-model="checkAll"
+          @change="handleCheckAllChange"
+        >全选</el-checkbox>
+        <div style="margin: 15px 0;"></div>
+        <el-checkbox-group v-model="checkedGames" @change="handleCheckedGamesChange">
+          <el-checkbox v-for="game in games" :label="game" :key="game">{{game}}</el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="gamemanagedialog = false">取 消</el-button>
+        <el-button type="primary" @click="gamemanagedialog = false">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -81,10 +110,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, InfoTable, PermissionButton },
+  components: { InputArea, InfoTable, PermissionButton, InfoTableItem },
   data() {
     var validatePass = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
@@ -100,6 +130,11 @@ export default {
       sub_name: "",
       date: [],
       addsub: false,
+      gamemanagedialog: false,
+      checkAll:false,
+       isIndeterminate: true,
+       checkedGames:['游戏1','游戏2'],
+       games:['游戏1','游戏2','游戏3','游戏4','游戏5'],
       ruleForm: {
         substage: "",
         subaccount: "",
@@ -128,15 +163,64 @@ export default {
         { label: "子后台账号", prop: "substageaccount", width: "" },
         { label: "下级后台数", prop: "lowerstage", width: "" },
         { label: "用户类型", prop: "usertype", width: "" },
-        { label: "子后台描述", prop: "substagedescribe", width: "" },
+        { label: "运营后台描述", prop: "substagedescribe", width: "" },
         { label: "操作", prop: "operate", width: "" }
       ],
-      records: [],
+      records: [
+        {
+          substageid: 111,
+          substagename: "游戏平台1",
+          substageaccount: "a-admin",
+          lowerstage: 10,
+          usertype: "超级管理员",
+          substagedescribe: "-",
+          operate: [
+            {
+              label: "游戏管理",
+              type: "gamemanage"
+            },
+            {
+              label: "授权",
+              type: "authorization"
+            },
+            {
+              label: "编辑",
+              type: "edit"
+            },
+            {
+              label: "禁用",
+              type: "ban"
+            },
+            {
+              label: "结算",
+              type: "settlement"
+            }
+          ]
+        }
+      ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
     };
   },
   methods: {
-    search() {}
+    search() {},
+    handeClick(btn) {
+      if (btn.type === "gamemanage") {
+        this.gamemanagedialog = true;
+      }
+      if (btn.type === "edit") {
+        this.forward("setpermission");
+      }
+    },
+    handleCheckAllChange(val){
+      console.log(val)
+       this.checkedGames = val ? games : [];
+        this.isIndeterminate = false;
+    },
+    handleCheckedGamesChange(value){
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.games.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.games.length;
+    }
   }
 };
 </script>
@@ -163,7 +247,13 @@ export default {
   border: transparent;
   margin-right: 100px;
 }
-.confirm{
+.confirm {
   margin-left: 100px;
+}
+.changewidth {
+  width: 100%;
+}
+.checkbox {
+  border:1px solid #e4e4e4 ;
 }
 </style>

@@ -270,12 +270,19 @@ const models = {
   subbackstage:{
     name:'subbackstage',
     vue: null,
-    text:'子后台管理',
+    text:'运营后台管理',
     children:[
       {
         name:'subaccount',
-        text:'子后台账号列表',
+        text:'运营后台账号列表',
         vue: r => require.ensure([], () => r(require('../../pages/SubBackstage/Subaccount.vue')), 'subaccount'),
+        children:[
+          {
+            name:'setpermission',
+            text:'权限设置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubBackstage/Setpermission.vue')), 'setpermission'),
+          },
+        ]
       }
     ]
   },

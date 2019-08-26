@@ -19,24 +19,17 @@
         :records="records"
         :page-info="pageInfo"
       >
-        <el-table-column
-          v-for="(item,index) in tableStyle"
-          :key="index"
-          :prop="item.prop"
-          :label="item.label"
-          :width="item.width"
-          align="center"
-        >
+        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="index===3">
-              <p v-for="(ite,ind) in scope.row[item.prop]" :key="ind">{{ite}}</p>
+            <template v-if="scope.column===3">
+              <p v-for="(ite,ind) in scope.row[scope.prop]" :key="ind">{{ite}}</p>
             </template>
-            <template v-if="item.prop==='operate'">
-              <el-button type="text" v-for="(btn,i) in scope.row[item.prop]" :key="i">{{btn.label}}</el-button>
+            <template v-if="scope.prop==='operate'">
+              <el-button type="text" v-for="(btn,i) in scope.row[scope.prop]" :key="i">{{btn.label}}</el-button>
             </template>
-            <template v-if="['belong','operate'].indexOf(item.prop) < 0">{{scope.row[item.prop]}}</template>
+            <template v-if="['belong','operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
-        </el-table-column>
+        </info-table-item>
       </info-table>
     </div>
     <el-dialog :visible.sync="addpackage" width="50%" title="新增包设置">
@@ -48,7 +41,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="平台名称" prop="platform" class="formleft">
                 <el-input v-model="ruleForm.platform" placeholder="请输入名称"></el-input>
@@ -60,7 +53,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="绑定用户" prop="user" class="formleft">
                 <el-input v-model.number="ruleForm.user" placeholder="（6-8位数字）"></el-input>
@@ -117,10 +110,11 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, SelectTime, InfoTable, PermissionButton },
+  components: {InputArea, SelectTime, InfoTable, PermissionButton,InfoTableItem },
   data() {
     var validateid = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
@@ -165,18 +159,18 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "包ID", prop: "packageid", width: "279px" },
-        { label: "标识", prop: "mark", width: "279px" },
-        { label: "平台名称", prop: "platform", width: "279px" },
-        { label: "包所属用户", prop: "belong", width: "279px" },
-        { label: "下载地址", prop: "download", width: "279px" },
-        { label: "大厅热更新", prop: "update", width: "279px" },
-        { label: "游戏开放", prop: "open", width: "279px" },
-        { label: "扣费", prop: "deduction", width: "279px" },
-        { label: "下级玩家总数", prop: "lowerplayernum", width: "279px" },
-        { label: "状态", prop: "status", width: "279px" },
-        { label: "创建时间", prop: "createtime", width: "279px" },
-        { label: "操作", prop: "operate", width: "279px" }
+        { label: "包ID", prop: "packageid", width: "" },
+        { label: "标识", prop: "mark", width: "" },
+        { label: "平台名称", prop: "platform", width: "" },
+        { label: "包所属用户", prop: "belong", width: "" },
+        { label: "下载地址", prop: "download", width: "205" },
+        { label: "大厅热更新", prop: "update", width: "" },
+        { label: "游戏开放", prop: "open", width: "230" },
+        { label: "扣费", prop: "deduction", width: "" },
+        { label: "下级玩家总数", prop: "lowerplayernum", width: "" },
+        { label: "状态", prop: "status", width: "" },
+        { label: "创建时间", prop: "createtime", width: "205" },
+        { label: "操作", prop: "operate", width: "250" }
       ],
       records: [
         {
@@ -184,7 +178,7 @@ export default {
           mark: "2",
           platform: "666",
           belong: ["已绑定用户ID：100001", "已绑定管理员账号：000000001"],
-          download: "www.baidu.com",
+          download: "www.baidudsfse.com",
           update: "开启",
           open: "游戏1、游戏2、游戏3、游戏4",
           deduction: "-",

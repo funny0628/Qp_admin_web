@@ -48,7 +48,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="所属角色" prop="belongrole">
-                <el-select v-model="ruleForm.belongrole" placeholder="用户角色">
+                <el-select v-model="ruleForm.belongrole" placeholder="用户角色" class="changewidth">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
@@ -190,5 +190,8 @@ export default {
 }
 .confirm{
   margin-left: 100px;
+}
+.changewidth{
+  width: 100%
 }
 </style>
