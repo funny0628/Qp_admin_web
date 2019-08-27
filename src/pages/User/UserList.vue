@@ -11,6 +11,7 @@
         size="medium"
         placeholder="请输入注册时间"
         :picker-options="pickerOptions"
+        style="width: 180px"
       ></el-date-picker>
       <el-select v-model="value" filterable placeholder="用户状态" size="medium">
         <el-option
@@ -116,26 +117,28 @@
     </div>
     <!--修改会员信息 -->
     <div>
-      <el-dialog title="修改会员信息" :visible.sync="dialogModifyVisible">
+      <el-dialog title="修改会员信息" :visible.sync="dialogModifyVisible" width="40%">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="用户信息" name="first">
             <el-form
               :model="userData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
+              label-width="80px"
+              :rules="rules"
             >
-              <el-form-item label="用户ID" label-width="70px" style="width: 50%;">
+              <el-form-item label="用户ID" style="width: 50%;" prop="id">
                 <el-input v-model="userData.id" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="昵称" label-width="70px" style="width: 50%;">
+              <el-form-item label="昵称" style="width: 50%;" >
                 <el-input v-model="userData.desc" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="手机号" label-width="70px" style="width: 50%;">
-                <el-input v-model="userData.tel" autocomplete="off"></el-input>
+              <el-form-item label="手机号" style="width: 50%;" prop="phone">
+                <el-input v-model="userData.phone" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="用户身份" label-width="70px" style="width: 50%;">
+              <el-form-item label="用户身份" style="width: 50%;">
                 <el-input v-model="userData.ide" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="会员分层" label-width="70px" style="width: 50%;">
+              <el-form-item label="会员分层" style="width: 50%;">
                 <el-input v-model="userData.lay" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -144,22 +147,23 @@
             <el-form
               :model="collectionData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
+              label-width="80px"
             >
-              <el-form-item label="银行卡" label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label="支付宝" label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label="卡号" label-width="70px" style="width: 50%;">
+              <el-form-item label="银行卡"  style="width: 50%;"></el-form-item>
+              <el-form-item label="支付宝"  style="width: 50%;"></el-form-item>
+              <el-form-item label="卡号"  style="width: 50%;">
                 <el-input v-model="collectionData.card" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="账户" label-width="70px" style="width: 50%;">
+              <el-form-item label="账户"  style="width: 50%;">
                 <el-input v-model="collectionData.account" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="开户行" label-width="70px" style="width: 50%;">
+              <el-form-item label="开户行"  style="width: 50%;">
                 <el-input v-model="collectionData.bank" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="姓名" label-width="70px" style="width: 50%;">
+              <el-form-item label="姓名"  style="width: 50%;">
                 <el-input v-model="collectionData.bank_name" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="姓名" label-width="70px" style="width: 50%;">
+              <el-form-item label="姓名"  style="width: 50%;">
                 <el-input v-model="collectionData.alipay_name" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -168,19 +172,20 @@
             <el-form
               :model="passwordData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
+              label-width="80px"
             >
-              <el-form-item label="登录密码" label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label="资金密码" label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label="新密码" label-width="70px" style="width: 50%;">
+              <el-form-item label="登录密码"  style="width: 50%;"></el-form-item>
+              <el-form-item label="资金密码"  style="width: 50%;"></el-form-item>
+              <el-form-item label="新密码"  style="width: 50%;">
                 <el-input v-model="passwordData.loginPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="新密码" label-width="70px" style="width: 50%;">
+              <el-form-item label="新密码"  style="width: 50%;">
                 <el-input v-model="passwordData.moneyPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="确定密码" label-width="70px" style="width: 50%;">
+              <el-form-item label="确定密码"  style="width: 50%;">
                 <el-input v-model="passwordData.loginSure" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="确定密码" label-width="70px" style="width: 50%;">
+              <el-form-item label="确定密码" style="width: 50%;">
                 <el-input v-model="passwordData.moneySure" type="password" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -189,19 +194,20 @@
             <el-form
               :model="gameData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
+              label-width="80px"
             >
-              <el-form-item label="游戏返点" label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label label-width="70px" style="width: 50%;"></el-form-item>
-              <el-form-item label="游戏1" label-width="70px" style="width: 50%;">
+              <el-form-item label="游戏返点"  style="width: 50%;"></el-form-item>
+              <el-form-item label  style="width: 50%;"></el-form-item>
+              <el-form-item label="游戏1" style="width: 50%;">
                 <el-input v-model="gameData.game1" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏2" label-width="70px" style="width: 50%;">
+              <el-form-item label="游戏2"  style="width: 50%;">
                 <el-input v-model="gameData.game2" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏3" label-width="70px" style="width: 50%;">
+              <el-form-item label="游戏3"  style="width: 50%;">
                 <el-input v-model="gameData.game3" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏4" label-width="70px" style="width: 50%;">
+              <el-form-item label="游戏4"  style="width: 50%;">
                 <el-input v-model="gameData.game4" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -374,7 +380,7 @@ export default {
       userData: {
         id: "",
         desc: "",
-        tel: "",
+        phone: "",
         ide: "",
         lay: ""
       },
@@ -411,7 +417,11 @@ export default {
           { min: 6, max: 8, message: "长度在 6 到 8个字符" },
           { pattern: /^(\w){6,8}$/, message: "只能输入6-8个数字" }
         ],
-        tel: [{ required: true, validator: checkPhone, trigger: "blur" }]
+        tel: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        id:[
+          { required: true, message: "请输入用户id", trigger: "blur" },
+        ],
+        phone:[{ required: true, validator: checkPhone, trigger: "blur" }]
       }
     };
   },
@@ -426,7 +436,7 @@ export default {
       }
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(tab);
     },
     //获取用户列表
     getUserList() {
@@ -469,9 +479,6 @@ export default {
                 }
               });
             }
-          });
-
-          this.records.map(item => {
             item.action = [
               {
                 label: "修改",
@@ -493,9 +500,8 @@ export default {
             item.account_person = personArr;
           });
         }
-        console.log(this.records);
+        // console.log(this.records);
       });
-      //银行卡列表
     }
   },
   mounted() {

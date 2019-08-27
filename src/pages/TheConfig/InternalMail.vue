@@ -83,6 +83,8 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+import HallHandler from "../../script/handlers/HallHandler";
+
 const cityOptions = ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"];
 export default {
   name: "InternalMail",
@@ -91,20 +93,20 @@ export default {
   data() {
     return {
       tableStyle: [
-        { label: "标题", prop: "title", width: "" },
+        { label: "标题", prop: "subject", width: "" },
         { label: "内容", prop: "content", width: "" },
-        { label: "接收者", prop: "receiver", width: "" },
-        { label: "发送人", prop: "sender", width: "" },
-        { label: "发送时间", prop: "send_time", width: "" },
+        { label: "接收者", prop: "recipients", width: "" },
+        { label: "发送人", prop: "form", width: "" },
+        { label: "发送时间", prop: "send_at", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [
         {
-          title: "金币兑换通知",
+          subject: "金币兑换通知",
           content: "这边是内容",
-          receiver: "vip1",
-          sender: "admin",
-          send_time: "2019-01-01 12:00:00",
+          recipients: "vip1",
+          form: "admin",
+          send_at: "2019-01-01 12:00:00",
           action: [
             { label: "修改", type: "edit" },
             { label: "删除", type: "delete" }
@@ -137,7 +139,29 @@ export default {
         this.dialogTitleType = "修改大厅海报";
         this.dialogVisible = true;
       }
+    },
+    getMailList() {
+      let data = {
+        page_index: "",
+        page_size: ""
+      };
+      HallHandler.email_list(data).promise.then(res => {
+        console.log(res)
+        if (Number(res.code) === 200) {
+          this.records = res.data;
+        }
+        //数据处理
+        this.records.map(item => {
+          item.action = [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ];
+        });
+      });
     }
+  },
+  mounted() {
+    this.getMailList();
   }
 };
 </script>

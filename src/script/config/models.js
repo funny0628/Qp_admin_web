@@ -114,6 +114,11 @@ const models = {
         name:'moneyFlow',
         text:'资金流水',
         vue: r => require.ensure([], () => r(require('../../pages/Financial/MoneyFlow')), 'moneyFlow'),
+      },
+      {
+        name:'record',
+        text:'赠送记录',
+        vue: r => require.ensure([], () => r(require('../../pages/Financial/Record')), 'record'),
       }
     ]
   },

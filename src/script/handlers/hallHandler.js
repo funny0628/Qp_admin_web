@@ -2,16 +2,20 @@ import BaseHandler from "./BaseHandler";
 
 class HallHandler extends BaseHandler {
   //滚动公告
-  roll_list(data) {
-    return this.get_v1('/roll_list', data);
+  notice_list(data) {
+    return this.get_v1('/notice_list', data);
   }
   //修改滚动公告
-  roll_set(data, notice_id) {
-    return this.set_v1('/roll_set', data)
+  notice_set(data) {
+    return this.set_v1('/notice_set', data)
   }
   //删除滚动公告
-  roll_delete(user_id, data) {
-    return this.set_v1('/roll_delete/' + 'user_id', data)
+  notice_delete( data) {
+    return this.set_v1('/notice_delete' , data)
+  }
+  //增加公告
+  notice_add(data){
+    return this.set_v1('/notice_add',data)
   }
   //内部邮件
   email_list(data) {
@@ -38,8 +42,8 @@ class HallHandler extends BaseHandler {
     return this.set_v1('/popup_add', data)
   }
   //大厅海报
-  poster_list(data) {
-    return this.get_v1('/poster_list', data)
+  poster_list() {
+    return this.get_v1('/poster_list')
   }
   //修改大厅海报
   poster_set(poster_id, data) {

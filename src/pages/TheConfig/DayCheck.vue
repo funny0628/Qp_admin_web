@@ -4,8 +4,8 @@
       每日签到设置
     </div>
     <div class="content">
-      <el-form ref="form" :model="formDate" label-width="100px" style="padding: 30px 0 30px 30px;">
-        <el-form-item label="活动开启/关闭">
+      <el-form ref="form" :model="formDate" style="padding: 30px 0 30px 30px;">
+        <el-form-item label="活动开启/关闭" label-width="100px">
           <el-switch
             v-model="formDate.active"
             active-color="#13ce66"

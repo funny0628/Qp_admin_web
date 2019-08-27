@@ -18,10 +18,9 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
-            >
-              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
+            <template v-if="'user_type'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  == 1">代理</span>
+              <span v-else>普通用户</span>
             </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
@@ -35,7 +34,7 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
+              v-if="['action', 'user_type'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
@@ -67,22 +66,22 @@ export default {
       },
       /*表格*/
       tableStyle: [
-        { label: "渠道ID", prop: "channel_id", width: "" },
+        { label: "渠道ID", prop: "platform_id", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
-        { label: "用户昵称", prop: "user_desc", width: "" },
-        { label: "用户身份", prop: "user_ide", width: "" },
-        { label: "代理链接", prop: "agent_link", width: "" },
-        { label: "注册人数", prop: "register_number", width: "" },
+        { label: "用户昵称", prop: "nickname", width: "" },
+        { label: "用户身份", prop: "user_type", width: "" },
+        { label: "代理链接", prop: "websit", width: "" },
+        { label: "注册人数", prop: "used", width: "" },
         { label: "操作", prop: "action", width: "200" }
       ],
       records: [
         {
-          channel_id: "01",
+          platform_id: "01",
           user_id: "1001100",
-          user_desc: "大牛比较懒",
-          user_ide: "第一级代理",
-          agent_link: "t.cn/auidna",
-          register_number: "10",
+          nickname: "大牛比较懒",
+          user_type: "第一级代理",
+          websit: "t.cn/auidna",
+          used: "10",
           action: [
             {
               label: "查看链接",
@@ -109,9 +108,18 @@ export default {
       };
       UserHandler.spread_list(data).promise.then(res => {
         // console.log(res);
-        if(Number(res.code) === 200){
-          
+        if (Number(res.code) === 200) {
+          this.records = [...res.data.list, ...this.records];
         }
+        //数据处理
+        this.records.map(item => {
+          item.action = [
+            {
+              label: "查看链接",
+              type: "search"
+            }
+          ];
+        });
       });
     }
   },

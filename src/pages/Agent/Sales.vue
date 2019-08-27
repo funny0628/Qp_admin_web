@@ -22,7 +22,7 @@
           >
             <template slot-scope="scope">
               <div>
-                <el-input size="" v-model="scope.row.min_result" placeholder="请输入业绩"></el-input>
+                <el-input size="" v-model="scope.row.min_result" placeholder="请输入业绩" style="width: 80%;"></el-input>
               </div>
             </template>
           </el-table-column>
@@ -32,7 +32,7 @@
             width="30"
             align="center"
           >
-            <template slot-scope="scope">
+            <template>
               <div>
                 <span>-</span>
               </div>
@@ -47,7 +47,7 @@
           >
             <template slot-scope="scope">
               <div>
-                <el-input size="" v-model="scope.row.max_result" placeholder="请输入业绩"></el-input>
+                <el-input size="" v-model="scope.row.max_result" placeholder="请输入业绩" style="width: 80%;"></el-input>
               </div>
             </template>
           </el-table-column>
@@ -60,8 +60,11 @@
           >
             <template slot-scope="scope">
               <div style="display: flex;">
-                <el-button type="info">万分之</el-button>
-                <el-input size="" v-model="scope.row.rate_result"></el-input>
+                <button
+                  style="width: 70px; height: 40px; border: none; border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
+                  万分之
+                </button>
+                <el-input size="" v-model="scope.row.rate_result" style="width: 80%;"></el-input>
               </div>
             </template>
           </el-table-column>
@@ -82,11 +85,11 @@
 </template>
 
 <script>
-import BaseIframe from '../../plugin/script/common/BaseIframe';
+  import BaseIframe from '../../plugin/script/common/BaseIframe';
 
   export default {
     name: "Sales",
-    extends:BaseIframe,
+    extends: BaseIframe,
     data() {
       return {
         formData: {

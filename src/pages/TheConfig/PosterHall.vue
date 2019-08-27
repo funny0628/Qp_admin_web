@@ -114,6 +114,7 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import InputArea from "../../plugin/components/InputArea";
+import HallHandler from "../../script/handlers/HallHandler";
 
 const cityOptions = ["上海", "北京", "广州", "深圳"];
 export default {
@@ -131,21 +132,7 @@ export default {
         { label: "开始时间／结束时间", prop: "time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [
-        {
-          id: "1",
-          title: "活动banner",
-          images:
-            "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3319449337,2452395002&fm=26&gp=0.jpg",
-          sort: "1",
-          status: "启用",
-          time: ["2019-01-01 12:00:00", "2019-01-04 12:00:00"],
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
       /*dialog*/
       dialogTitleType: "",
@@ -212,7 +199,26 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    //大厅海报
+    getPosterList() {
+      HallHandler.poster_list().promise.then(res => {
+        // console.log(res);
+        if (Number(res.code) === 200) {
+          this.records.push(res.data);
+        }
+        //数据处理
+        this.records.map(item => {
+          item.action = [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ];
+        });
+      });
     }
+  },
+  mounted() {
+    this.getPosterList();
   }
 };
 </script>

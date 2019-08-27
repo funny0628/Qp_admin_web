@@ -13,6 +13,7 @@
               <div class="el-input el-input-group el-input-group--prepend">
                 <div class="el-input-group__prepend"><i class="anticon el-icon-mobile-phone"></i></div>
                 <input type="tel" autocomplete="off" placeholder="手机号码" class="el-input__inner"><!----><!----><!---->
+<!--                <effect-input  type="hoshi" placeholder="手机号码" class="el-input__inner"></effect-input>-->
               </div><!----></div>
           </div>
           <div class="el-form-item is-required"><!---->
@@ -43,7 +44,6 @@
   .login-view {
     width: 100%;
     height: 100%;
-    /*background: url(../../assets/img/demo-1-bg.jpg) top;*/
     background: url(https://static.zhihu.com/heifetz/assets/sign_bg.db29b0fb.png) top;
     background-size: cover
   }

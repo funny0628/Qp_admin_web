@@ -29,7 +29,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handeClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -45,12 +45,12 @@
     <!--修改会员银行卡 -->
     <div>
       <el-dialog title="修改会员银行卡" :visible.sync="dialogModifyVisible" width="30%" center>
-        <el-form :model="modify_member_card">
+        <el-form :model="dialogData">
           <el-form-item label="持卡人姓名" label-width="100px">
-            <el-input v-model="modify_member_card.name" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属银行" label-width="100px">
-            <el-select v-model="modify_member_card.value" placeholder="请选择" style="width: 100%;">
+            <el-select v-model="dialogData.bank" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in banks"
                 :key="item.value"
@@ -60,13 +60,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="银行卡号" label-width="100px">
-            <el-input v-model="modify_member_card.bank_card" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.card" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="银行卡开户行" label-width="100px">
-            <el-input v-model="modify_member_card.open_bank" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.subbranch" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属省份" label-width="100px">
-            <el-select v-model="modify_member_card.province" placeholder="请选择" style="width: 100%;">
+            <el-select v-model="dialogData.province" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in provinces"
                 :key="item.value"
@@ -76,7 +76,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="所属城市" label-width="100px">
-            <el-select v-model="modify_member_card.city" placeholder="请选择" style="width: 100%;">
+            <el-select v-model="dialogData.city" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in citys"
                 :key="item.value"
@@ -152,11 +152,11 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
       /*修改银行卡信息*/
       dialogModifyVisible: false,
-      modify_member_card: {
+      dialogData: {
         name: "",
-        value: "",
-        bank_card: "",
-        open_bank: "",
+        bank: "",
+        card: "",
+        subbranch: "",
         province: "",
         city: ""
       },
@@ -232,9 +232,39 @@ export default {
     search() {
       console.log("这是查询");
     },
-    handeClick(btn) {
+    handeClick(btn,row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
+        // console.log(row)
+        this.dialogData.name = row.bank_user;
+        this.dialogData.bank = row.bank_name;
+        this.dialogData.card = row.bank_card;
+        this.dialogData.subbranch = row.subbranch;
+        this.dialogData.province = row.province;
+        this.dialogData.city = row.city
+      }else{
+        // console.log('这是删除')
+        let data = {
+          bank_id : row.bank_id
+        };
+        this.$confirm('确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          UserHandler.bank_delete(data).promise.then(res=>{
+            console.log(res)
+          });
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       }
     },
     //会员银行卡列表

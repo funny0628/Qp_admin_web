@@ -4,8 +4,8 @@
         转盘活动设置
       </div>
       <div class="content">
-        <el-form ref="form" :model="formDate" label-width="100px" style="padding: 30px 0 30px 30px;">
-          <el-form-item label="活动开启/关闭">
+        <el-form ref="form" :model="formDate"  style="padding: 30px 0 30px 30px;">
+          <el-form-item label="活动开启/关闭" label-width="100px">
             <el-switch
               v-model="formDate.active"
               active-color="#13ce66"
@@ -26,7 +26,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="获得次数">
-            <el-input v-model="formDate.number" style="width: 15%;"></el-input>
+            <el-input v-model="formDate.number" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="奖励配置">
             <el-table

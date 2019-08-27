@@ -35,6 +35,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -115,7 +116,7 @@ export default {
         { label: "提交时间／到账时间", prop: "submit_time", width: "160" },
         { label: "操作用户", prop: "operation_user", width: "160" },
         { label: "订单备注", prop: "order_note", width: "160" },
-        { label: "操作", prop: "action", width: "200" }
+        { label: "操作", prop: "action", width: "180" }
       ],
       records: [
         {

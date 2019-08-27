@@ -11,6 +11,11 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 Vue.use(iView);
 
+import EffectInput from 'effect-input'
+import 'effect-input/dist/index.css'
+
+Vue.use(EffectInput);
+
 Vue.config.productionTip = false;
 Vue.use(install, {
   config: config,

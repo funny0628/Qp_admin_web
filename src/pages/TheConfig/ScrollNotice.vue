@@ -11,6 +11,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hidePage="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -89,7 +90,7 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import InputArea from "../../plugin/components/InputArea";
-import hallHandler from "../../script/handlers/hallHandler";
+import HallHandler from "../../script/handlers/HallHandler";
 
 export default {
   name: "ScrollNotice",
@@ -100,22 +101,11 @@ export default {
       tableStyle: [
         { label: "标题", prop: "title", width: "" },
         { label: "内容", prop: "content", width: "" },
-        { label: "排序", prop: "sort", width: "" },
+        { label: "排序", prop: "notice_id", width: "" },
         { label: "开始时间／结束时间", prop: "time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [
-        {
-          title: "维护通知",
-          content: "这边是内容",
-          sort: "1",
-          time: ["2019-01-01 12:00:00", "2019-01-04 12:00:00"],
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
       /*dialog*/
       dialogTitleType: "",
@@ -145,8 +135,27 @@ export default {
     },
     //滚动公告
     getrollList() {
-      hallHandler.roll_list().promise.then(res => {
-        console.log(res);
+      let data = {
+        notice_type: 1
+      };
+      HallHandler.notice_list(data).promise.then(res => {
+        // console.log(res.data);
+        if (Number(res.code) === 200) {
+          this.records = res.data
+        }
+        // console.log(this.records)
+        //数据处理
+        let timeArr = [];
+        this.records.map(item=>{
+          // console.log(item)
+          timeArr = [item.created_at,item.updated_at];
+          // console.log(timeArr)
+          item.action = [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ];
+          item.time = timeArr;
+        })
       });
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <div id="Manual-main">
-    <div class="manual-form" style="max-width: 900px;padding: 40px 30px">
-      <el-form ref="form" :model="form" label-width="80px">
+    <div class="manual-form" style="max-width: 900px;padding: 40px 20px">
+      <el-form ref="form" :model="form" label-width="76">
         <el-form-item label="模式：">
           <el-radio-group v-model="form.resource">
             <el-radio label="上分"></el-radio>

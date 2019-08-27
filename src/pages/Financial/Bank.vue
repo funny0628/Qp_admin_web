@@ -14,7 +14,7 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="['bank_logo'].indexOf(scope.prop) >= 0">
+            <template v-if="['icon'].indexOf(scope.prop) >= 0">
               <img :src="scope.row[scope.prop]" alt style="max-width: 80px;max-height: 30px;" />
             </template>
             <template
@@ -34,7 +34,7 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time','bank_logo'].indexOf(scope.prop) < 0"
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time','icon'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
@@ -83,6 +83,7 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+import ConfigHandler from "../../script/handlers/ConfigHandler";
 
 export default {
   name: "Bank",
@@ -93,17 +94,17 @@ export default {
       //表格数据
       tableStyle: [
         { label: "银行ID", prop: "bank_id", width: "" },
-        { label: "银行缩写", prop: "bank_abbr", width: "" },
+        { label: "银行缩写", prop: "bank_code", width: "" },
         { label: "银行名称", prop: "bank_name", width: "" },
-        { label: "银行logo", prop: "bank_logo", width: "" },
+        { label: "银行logo", prop: "icon", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [
         {
           bank_id: "1",
-          bank_abbr: "CMB",
+          bank_code: "CMB",
           bank_name: "招商银行",
-          bank_logo: "https://www.baidu.com/img/bd_logo1.png",
+          icon: "https://www.baidu.com/img/bd_logo1.png",
           action: [
             { label: "修改", type: "edit" },
             { label: "删除", type: "delete" }
@@ -142,10 +143,34 @@ export default {
     },
     handlePreview(file) {
       console.log(file);
+    },
+    //银行卡列表
+    getBankList() {
+      let data = {
+        platform_id: 1000
+      };
+      ConfigHandler.bank_list(data).promise.then(res => {
+        // console.log(res)
+        if (Number(res.code) === 200) {
+          this.records = res.data;
+        }
+        //数据处理
+        this.records.map(item => {
+          item.action = [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ];
+
+        });
+      });
     }
+  },
+  mounted() {
+    this.getBankList();
   }
 };
 </script>
 
 <style scoped>
 </style>
+

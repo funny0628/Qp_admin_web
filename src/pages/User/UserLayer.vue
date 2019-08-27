@@ -81,8 +81,7 @@ export default {
         { label: "充值笔数", prop: "pay_count", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
       //弹窗数据
       dialogTitleType: "",
@@ -113,9 +112,9 @@ export default {
     },
     vip_list(){
       UserHandler.vip_list().promise.then(res=>{
-        // console.log(res)
+        console.log(res);
         if(Number(res.code) === 200){
-          this.records = res.data.list
+          this.records = res.data
         }
         //数据处理
         this.records.map((item)=>{
