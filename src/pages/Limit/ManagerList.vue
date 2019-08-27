@@ -194,4 +194,11 @@ export default {
 .changewidth{
   width: 100%
 }
+.select-time{
+  margin-right: 20px !important;
+}
+#managerlist .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
+}
 </style>

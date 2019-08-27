@@ -240,4 +240,11 @@ export default {
 #packagemanage .bd p {
   margin: 0;
 }
+.select-time{
+  margin-right: 20px !important;
+}
+#packagemanage .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
+}
 </style>

@@ -57,4 +57,11 @@ export default {
 .el-input{
     margin-right: 10px;
 }
+.select-time{
+  margin-right: 20px !important;
+}
+#operate .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
+}
 </style>

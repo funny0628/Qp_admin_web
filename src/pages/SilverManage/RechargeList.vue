@@ -112,4 +112,11 @@ export default {
   margin: 0;
   font-size: 13px;
 }
+.select-time{
+  margin-right: 20px !important;
+}
+#rechargelist .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
+}
 </style>

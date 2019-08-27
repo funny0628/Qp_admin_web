@@ -48,7 +48,7 @@
           </template>
         </el-table-column>
       </el-table>
-       <div class="t-c" style="margin-top:20px">
+      <div class="t-c" style="margin-top:20px">
         <el-button type="info" size="medium" @click="back()">取消</el-button>
         <permission-button :action="ActionType.EDIT">
           <el-button type="primary" size="medium">提交</el-button>
@@ -62,7 +62,7 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  components: {InputArea, PermissionButton },
+  components: { InputArea, PermissionButton },
   extends: BaseIframe,
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
         { label: "菜单", prop: "menu", width: "" },
         { label: "全选", prop: "model", width: "" }
       ],
-      originchecklist:{}
+      originchecklist: {}
     };
   },
   created() {
@@ -168,11 +168,11 @@ export default {
         };
         return selectLs(examplePermission);
       })();
-      
-    this.originchecklist=JSON.parse(JSON.stringify(this.checkList));
-    for(let prop in this.checkList){
-      this.checkList[prop]=[];
-    }
+
+      this.originchecklist = JSON.parse(JSON.stringify(this.checkList));
+      for (let prop in this.checkList) {
+        this.checkList[prop] = [];
+      }
       console.log(this.modelPath);
       console.log(this.originchecklist);
     },
@@ -185,121 +185,123 @@ export default {
         // 判断当前点击是否为第一层级
         if (this.modelPath.hasOwnProperty(model)) {
           //  选中
-          if(val){
-            for(let prop of this.modelPath[model]){
-              this.checkList[prop]=this.originchecklist[prop]
+          if (val) {
+            for (let prop of this.modelPath[model]) {
+              this.checkList[prop] = this.originchecklist[prop];
             }
           }
           // 非选中
-          else{
-            for(let prop of this.modelPath[model]){
-              this.checkList[prop]=[];
+          else {
+            for (let prop of this.modelPath[model]) {
+              this.checkList[prop] = [];
             }
           }
         }
         // 非第一层级
-        else{
+        else {
           // 选中
-          if(val){
-            this.checkList[model]=this.originchecklist[model];
-            let count=0;
-            for(let p in this.modelPath){
-              if(this.modelPath[p].indexOf(model)!=-1){
-                for(let k of this.modelPath[p]){
-                  if(this.checkList[k].length==this.originchecklist[k].length){
-                    count++
+          if (val) {
+            this.checkList[model] = this.originchecklist[model];
+            let count = 0;
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                for (let k of this.modelPath[p]) {
+                  if (
+                    this.checkList[k].length == this.originchecklist[k].length
+                  ) {
+                    count++;
                   }
                 }
-                if(count==this.modelPath[p].length){
-                  this.checkList[p]=this.originchecklist[p]
-                }
-                else{
-                  this.checkList[p]=[]
+                if (count == this.modelPath[p].length) {
+                  this.checkList[p] = this.originchecklist[p];
+                } else {
+                  this.checkList[p] = [];
                 }
               }
             }
           }
           // 非选中
-          else{
-            this.checkList[model]=[];
-            for(let p in this.modelPath){
-              if(this.modelPath[p].indexOf(model)!=-1){
-                this.checkList[p]=[];
+          else {
+            this.checkList[model] = [];
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                this.checkList[p] = [];
               }
             }
           }
         }
       }
       // 非全选
-      else{
+      else {
         // 判断当前行是否已经全选
-        if(val){
-          let value =JSON.parse(JSON.stringify(this.originchecklist[model])).slice(1)
-          if(this.checkList[model].length==value.length){
-            this.checkList[model]=this.originchecklist[model]
+        if (val) {
+          let value = JSON.parse(
+            JSON.stringify(this.originchecklist[model])
+          ).slice(1);
+          if (this.checkList[model].length == value.length) {
+            this.checkList[model] = this.originchecklist[model];
 
             // 判断所有行是否已经全选
-            let count=0;
-            for(let p in this.modelPath){
-              if(this.modelPath[p].indexOf(model)!=-1){
-                for(let k of this.modelPath[p]){
-                  if(this.checkList[k].length==this.originchecklist[k].length){
-                    count++
+            let count = 0;
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                for (let k of this.modelPath[p]) {
+                  if (
+                    this.checkList[k].length == this.originchecklist[k].length
+                  ) {
+                    count++;
                   }
                 }
-                if(count==this.modelPath[p].length){
-                  this.checkList[p]=this.originchecklist[p]
-                }
-                else{
-                  this.checkList[p]=[]
+                if (count == this.modelPath[p].length) {
+                  this.checkList[p] = this.originchecklist[p];
+                } else {
+                  this.checkList[p] = [];
                 }
               }
             }
           }
-        }
-        else{
-          for(let i=0;i<this.checkList[model].length;i++){
-            if(this.checkList[model][i]=='all'){
-              this.checkList[model].splice(i,i+1)
+        } else {
+          for (let i = 0; i < this.checkList[model].length; i++) {
+            if (this.checkList[model][i] == "all") {
+              this.checkList[model].splice(i, i + 1);
             }
           }
-          for(let p in this.modelPath){
-            if(this.modelPath[p].indexOf(model)!=-1){
-              this.checkList[p]=[];
+          for (let p in this.modelPath) {
+            if (this.modelPath[p].indexOf(model) != -1) {
+              this.checkList[p] = [];
             }
           }
         }
       }
     }
   },
-    computed: {
-      modelPath() {
-        let obj = {};
-        for (let i = 0; i < this.permission.length; i++) {
-          let permissionObj = this.permission[i];
-          let item = {};
-          let name = permissionObj.model['key'];
-          item = ((ls) => {
-            let l = [];
-            for (let j = 0; j < ls.length; j++) {
-              l.push(ls[j].model['key']);
-            }
-            return l;
-          })(permissionObj.children || []);
-          obj[name] = item;
-        }
-        return obj;
-      },
-    },
-
-};
- class PermissionCheckbox {
-    constructor(name, text, val) {
-      this.name = name;
-      this.text = text;
-      this.val = val;
+  computed: {
+    modelPath() {
+      let obj = {};
+      for (let i = 0; i < this.permission.length; i++) {
+        let permissionObj = this.permission[i];
+        let item = {};
+        let name = permissionObj.model["key"];
+        item = (ls => {
+          let l = [];
+          for (let j = 0; j < ls.length; j++) {
+            l.push(ls[j].model["key"]);
+          }
+          return l;
+        })(permissionObj.children || []);
+        obj[name] = item;
+      }
+      return obj;
     }
   }
+};
+class PermissionCheckbox {
+  constructor(name, text, val) {
+    this.name = name;
+    this.text = text;
+    this.val = val;
+  }
+}
 </script>
 <style scoped>
 #setlimit {

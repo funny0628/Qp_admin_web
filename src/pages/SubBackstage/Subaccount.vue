@@ -84,23 +84,33 @@
       </span>
     </el-dialog>
     <!-- 游戏管理设置 -->
-    <el-dialog title="游戏管理" :visible.sync="gamemanagedialog" width="40%">
-      <div class="checkbox">
-        <el-checkbox
-          :indeterminate="isIndeterminate"
-          v-model="checkAll"
-          @change="handleCheckAllChange"
-        >全选</el-checkbox>
-        <div style="margin: 15px 0;"></div>
-        <el-checkbox-group v-model="checkedGames" @change="handleCheckedGamesChange">
-          <el-checkbox v-for="game in games" :label="game" :key="game">{{game}}</el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="gamemanagedialog = false">取 消</el-button>
-        <el-button type="primary" @click="gamemanagedialog = false">确 定</el-button>
-      </span>
-    </el-dialog>
+    <el-dialog
+  title="游戏管理"
+  :visible.sync="gamemanage"
+  width="30%">
+  <div class="checkbox">
+ <el-table
+      ref="multipleTable"
+      :data="tableData"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+      :header-cell-style="{background:'#f2f2f2'}"
+      :border="true"
+    >
+      <el-table-column type="selection" align="center" min-width="50">
+      </el-table-column>
+      <el-table-column label="游戏名称" align="center">
+        <template slot-scope="scope" >{{ scope.row.game }}</template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="gamemanage = false">取 消</el-button>
+    <el-button type="primary" @click="gamemanage = false">确 定</el-button>
+  </span>
+</el-dialog>
+   
   </div>
 </template>
 
@@ -130,11 +140,7 @@ export default {
       sub_name: "",
       date: [],
       addsub: false,
-      gamemanagedialog: false,
-      checkAll:false,
-       isIndeterminate: true,
-       checkedGames:['游戏1','游戏2'],
-       games:['游戏1','游戏2','游戏3','游戏4','游戏5'],
+      gamemanage:false,
       ruleForm: {
         substage: "",
         subaccount: "",
@@ -198,28 +204,38 @@ export default {
           ]
         }
       ],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0)
+      pageInfo: new PageInfo(0, [10, 15, 20], 0),
+      tableData: [
+        { game: "游戏1" },
+        { game: "游戏2" },
+        { game: "游戏3" },
+        { game: "游戏4" },
+        { game: "游戏5" }
+      ],
+      multipleTable: []
     };
   },
   methods: {
     search() {},
     handeClick(btn) {
       if (btn.type === "gamemanage") {
-        this.gamemanagedialog = true;
+        this.gamemanage = true;
       }
       if (btn.type === "edit") {
         this.forward("setpermission");
       }
     },
-    handleCheckAllChange(val){
-      console.log(val)
-       this.checkedGames = val ? games : [];
-        this.isIndeterminate = false;
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
     },
-    handleCheckedGamesChange(value){
-        let checkedCount = value.length;
-        this.checkAll = checkedCount === this.games.length;
-        this.isIndeterminate = checkedCount > 0 && checkedCount < this.games.length;
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     }
   }
 };
@@ -253,7 +269,9 @@ export default {
 .changewidth {
   width: 100%;
 }
-.checkbox {
-  border:1px solid #e4e4e4 ;
+
+#subaccount .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
 }
 </style>

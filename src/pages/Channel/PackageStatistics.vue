@@ -62,4 +62,11 @@ export default {
 </script>
 
 <style scoped>
+.select-time{
+  margin-right: 20px !important;
+}
+#packagestatistics .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
+}
 </style>
