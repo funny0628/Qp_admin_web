@@ -4,36 +4,36 @@
       <p class="config">玩家配置</p>
       <div class="playerbox">
         <el-row>
-          <el-col :span="4">注册填写手机号赠送</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">注册填写手机号赠送</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputtel" class="haveinput"></el-input>
             <span class="coins">金币</span>
           </el-col>
-          <el-col :span="4">新用户绑定银行卡赠送</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">新用户绑定银行卡赠送</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputbank" class="haveinput"></el-input>
             <span class="coins">金币</span>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4">游客赠送</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">游客赠送</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputvisitor" class="haveinput"></el-input>
             <span class="coins">金币</span>
           </el-col>
-          <el-col :span="4">兑换限额</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">兑换限额</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputlimit" class="haveinput"></el-input>
             <span class="coins">金币</span>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4">兑换手续费</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">兑换手续费</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputfee" class="haveinput"></el-input>
           </el-col>
-          <el-col :span="4">免手续费模式</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">免手续费模式</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <div class="btnbox">
               <div class="fee_btn active">每日</div>
               <div class="fee_btn">每周</div>
@@ -42,22 +42,22 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4">每日兑换次数限制</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">每日兑换次数限制</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="inputday" class="haveinput"></el-input>
           </el-col>
-          <el-col :span="4">金币汇率</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">金币汇率</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model=" exchangerate" class="haveinput" disabled></el-input>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4">银行账号绑定数</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">银行账号绑定数</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <el-input v-model="binding" class="haveinput"></el-input>
           </el-col>
-          <el-col :span="4"></el-col>
-          <el-col :span="8"></el-col>
+          <el-col :lg="4" :sm="8" :xs="8"></el-col>
+          <el-col :lg="8" :sm="16" :xs="16"></el-col>
         </el-row>
       </div>
       <p class="savebtnbox">
@@ -70,8 +70,8 @@
       <p class="config">平台设置</p>
       <div class="platformbox">
         <el-row>
-          <el-col :span="4">登录开关设置</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">登录开关设置</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <div class="loginbox">
               <el-checkbox-group v-model="checkboxGroup">
                 <el-checkbox label="微信登录" border size="small"></el-checkbox>
@@ -80,8 +80,8 @@
               </el-checkbox-group>
             </div>
           </el-col>
-          <el-col :span="4">保险箱功能</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">保险箱功能</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <div class="safebox">
               <el-radio-group v-model="radio" size="small">
                 <el-radio label="open" border>开启</el-radio>
@@ -91,8 +91,8 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4">平台logo</el-col>
-          <el-col :span="8">
+          <el-col :lg="4" :sm="8" :xs="8">平台logo</el-col>
+          <el-col :lg="8" :sm="16" :xs="16">
             <div class="logobox">
               <div class="imgbox">
                 <img src alt />
@@ -108,8 +108,8 @@
               </el-upload>
             </div>
           </el-col>
-          <el-col :span="4"></el-col>
-          <el-col :span="8"></el-col>
+          <el-col :lg="4" :sm="8" :xs="8"></el-col>
+          <el-col :lg="8" :sm="16" :xs="16"></el-col>
         </el-row>
       </div>
       <p class="savebtnbox">
@@ -147,7 +147,7 @@ export default {
 </script>
 <style scoped>
 .global {
-  margin: 20px;
+  margin: 2%;
 }
 .player {
   border: 1px solid rgba(228, 228, 228, 1);
@@ -160,60 +160,75 @@ export default {
   color: #333;
   padding: 15px 20px;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
+  
 }
 .playerbox,
 .platformbox {
   margin: 30px 20px;
-  border: 1px solid rgba(228, 228, 228, 1);
+  border-top: 1px solid rgba(228, 228, 228, 1);
 }
-.playerbox .el-row,
-.platformbox .el-row {
-  height: 60px;
-  border-bottom: 1px solid rgba(228, 228, 228, 1);
-}
-.playerbox .el-row:nth-last-child(1),
-.platformbox .el-row:nth-last-child(1) {
-  border-bottom: none;
-}
-.playerbox .el-col,
-.platformbox .el-col {
-  height: 100%;
-  border-right: 1px solid rgba(228, 228, 228, 1);
-  position: relative;
-}
-.playerbox .el-col.el-col-4,
-.platformbox .el-col.el-col-4 {
+
+/* 提示输入部分基本样式 */
+.playerbox .el-col.el-col-lg-4,
+.platformbox .el-col.el-col-lg-4,
+.playerbox .el-col.el-col-sm-8,
+.platformbox .el-col.el-col-sm-8,
+.playerbox .el-col.el-col-xs-8,
+.platformbox .el-col.el-col-xs-8{
   background-color: #f2f2f2;
   text-align: center;
-  font-size: 13px;
   color: #333333;
   font-weight: 400;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-bottom: 1px solid rgba(228, 228, 228, 1);
+  border-right: 1px solid rgba(228, 228, 228, 1); 
+  border-left: 1px solid rgba(228, 228, 228, 1); 
+
 }
-.haveinput {
+/* 输入框盒子基本样式 */
+.playerbox .el-col.el-col-lg-8,
+.platformbox .el-col.el-col-lg-8,
+.playerbox .el-col.el-col-sm-16,
+.platformbox .el-col.el-col-sm-16,
+.playerbox .el-col.el-col-xs-16,
+.platformbox .el-col.el-col-xs-16{
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(228, 228, 228, 1);
+  border-right: 1px solid rgba(228, 228, 228, 1); 
+}
+/* 宽度大于1200px时 */
+@media (min-width: 1201px) {
+.playerbox .el-row,
+.platformbox .el-row {
+  height: 60px;
+}
+.playerbox .el-col,
+.platformbox .el-col {
+  height: 100%;
+  position: relative;
+  display: flex;
+}
+  .playerbox .el-col.el-col-lg-4:nth-last-child(2),
+  .platformbox .el-col.el-col-lg-4:nth-last-child(2){
+     border-left: none
+  }
+  .playerbox .el-col.el-col-lg-4,
+  .platformbox .el-col.el-col-lg-4{
+    font-size: 13px;
+  }
+.playerbox .el-col.el-col-lg-8 .haveinput {
   width: 260px;
   height: 43px;
-  margin-left: 60px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  margin-left: 10%;
 }
-.coins {
-  position: absolute;
-  right: 140px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
+.playerbox .el-col.el-col-lg-8 .coins{
+  font-size: 13px;
   color: #333;
   font-weight: 400;
-}
-.btnbox {
-  position: absolute;
-  left: 60px;
-  top: 50%;
-  transform: translateY(-50%);
+  margin-left: 5%;
 }
 .fee_btn {
   display: inline-block;
@@ -226,6 +241,105 @@ export default {
   margin-right: 10px;
   font-size: 13px;
   color: #333;
+}
+}
+/* 宽度大于等于780px,小于等于1200px时 */
+@media (min-width: 768px) and (max-width: 1200px){
+.playerbox .el-row,
+.platformbox .el-row {
+  height: 60px;
+}
+.playerbox .el-col,
+.platformbox .el-col {
+  height: 100%;
+  position: relative;
+  display: flex;
+}
+  .playerbox .el-col.el-col-sm-8,
+  .platformbox .el-col.el-col-sm-16{
+    font-size: 13px;
+  }
+.playerbox .el-col.el-col-sm-16 .haveinput {
+  width: 260px;
+  height: 43px;
+  margin-left: 10%;
+}
+.playerbox .el-col.el-col-sm-16 .coins{
+  font-size: 13px;
+  color: #333;
+  font-weight: 400;
+  margin-left: 5%;
+}
+.fee_btn {
+  display: inline-block;
+  text-align: center;
+  line-height: 36px;
+  width: 96px;
+  height: 36px;
+  background-color: #e4e4e4;
+  border: 1px solid rgba(188, 188, 188, 1);
+  margin-right: 10px;
+  font-size: 13px;
+  color: #333;
+}
+/* .playerbox .el-col.el-col-sm-8:nth-last-child(1){
+    display: none
+  } */
+ 
+}
+/* 宽度小于等于767时 */
+@media (max-width: 767px) {
+  .playerbox .el-row,
+.platformbox .el-row {
+  height: 60px;
+}
+.playerbox .el-col,
+.platformbox .el-col {
+  height: 100%;
+  position: relative;
+  display: flex;
+}
+  .playerbox .el-col.el-col-lg-4,
+  .platformbox .el-col.el-col-lg-4{
+    font-size: 12px;
+  }
+  .playerbox .el-col.el-col-xs-16 .haveinput {
+  width: 140px;
+  height: 43px;
+  margin-left: 10%;
+}
+.playerbox .el-col.el-col-xs-16 .coins{
+  font-size: 12px;
+  color: #333;
+  font-weight: 400;
+  margin-left: 5%;
+}
+.fee_btn {
+  display: inline-block;
+  text-align: center;
+  line-height: 30px;
+  width: 50px;
+  height: 30px;
+  background-color: #e4e4e4;
+  border: 1px solid rgba(188, 188, 188, 1);
+  margin-right: 4px;
+  font-size: 12px;
+  color: #333;
+}
+  .el-checkbox{
+    margin-right: 4px;
+  }
+  .el-radio{
+    margin-right: 4px;
+  }
+  .imgbox{
+    width: 85px!important;
+    height: 30px!important;
+    line-height: 30px!important;
+  }
+}
+.btnbox {
+   margin-left: 10%;
 }
 .active {
   background-color: rgba(0, 121, 254, 1);
@@ -249,10 +363,8 @@ export default {
 .loginbox,
 .safebox,
 .logobox {
-  position: absolute;
-  left: 60px;
-  top: 50%;
-  transform: translateY(-50%);
+ margin-left: 10%;
+ display: flex;
 }
 .imgbox {
   width: 130px;
@@ -266,9 +378,6 @@ export default {
 }
 .upload-demo{
     display: inline-block;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left:200px;
+   align-self: center;
 }
 </style>
