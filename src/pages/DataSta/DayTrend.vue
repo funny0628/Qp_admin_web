@@ -127,9 +127,6 @@ export default {
               color: "#666"
             }
           },
-          // axisLabel:{
-          //   show:false,
-          // },
           axisLine: {
             lineStyle: {
               color: "#e8e8e8"

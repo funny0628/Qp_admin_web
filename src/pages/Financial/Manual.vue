@@ -29,32 +29,31 @@
 </template>
 
 <script>
-import BaseIframe from '../../plugin/script/common/BaseIframe';
-  export default {
-    name: "Manual",
-    extends:BaseIframe,
-    data(){
-      return{
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        }
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+export default {
+  name: "Manual",
+  extends: BaseIframe,
+  data() {
+    return {
+      form: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: ""
       }
-    },
-    methods:{
-      onSubmit() {
-        console.log('submit!');
-      }
+    };
+  },
+  methods: {
+    onSubmit() {
+      console.log("submit!");
     }
   }
+};
 </script>
 
 <style scoped>
-
 </style>

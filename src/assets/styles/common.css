@@ -1,42 +1,77 @@
-.t-l {text-align: left}
-.t-c {text-align: center}
-.t-r {text-align: right}
+.t-l {
+  text-align: left;
+}
+.t-c {
+  text-align: center;
+}
+.t-r {
+  text-align: right;
+}
 
-#home .el-main .input-area {padding: 20px}
-#home .el-main .input-area .el-input--medium {width: 180px;margin-right: 10px}
-#home .el-main .input-area .el-input--medium.w-160 {width: 160px}
-#home .el-main .input-area .el-input--medium.w-240 {width: 240px}
-#home .el-main .input-area .el-date-editor {margin-right:10px;}
-#home .el-main .el-radio-button:hover {color:#2a7cf5}
-#home .el-main .el-radio-button__orig-radio:checked+.el-radio-button__inner {color:#2a7cf5;border-color:#2a7cf5;background: #fff}
-#home .el-main .el-button--primary,#home .el-main .el-button--info {width: 80px;margin-left: 20px;font-size: 12px;}
-#home .el-main .el-button--primary {background: #006efe}
+#home .el-main .input-area {
+  padding: 20px;
+}
+#home .el-main .input-area .el-input--medium {
+  width: 180px;
+  margin-right: 10px;
+}
+#home .el-main .input-area .el-input--medium.w-160 {
+  width: 160px;
+}
+#home .el-main .input-area .el-input--medium.w-240 {
+  width: 240px;
+}
+#home .el-main .input-area .el-date-editor {
+  margin-right: 10px;
+}
+#home .el-main .el-radio-button:hover {
+  color: #2a7cf5;
+}
+#home .el-main .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  color: #2a7cf5;
+  border-color: #2a7cf5;
+  background: #fff;
+}
+#home .el-main .el-button--primary,
+#home .el-main .el-button--info {
+  width: 80px;
+  margin-left: 20px;
+  font-size: 12px;
+}
+#home .el-main .el-button--primary {
+  background: #006efe;
+}
 
-#home .el-main .bd {padding:0 20px;text-align: center}
+#home .el-main .bd {
+  padding: 0 20px;
+  text-align: center;
+}
 #userList—main .el-dialog .el-dialog__header {
   text-align: center;
 }
 /*手动上下分*/
-#Manual-main .el-form-item__label{
+#Manual-main .el-form-item__label {
   font-weight: 700;
   font-size: 16px;
 }
 #Manual-main .el-textarea__inner {
-  height:140px;
+  height: 140px;
 }
 /*内部邮件*/ /*滚动公告*/
-#InternalMail-main .el-textarea__inner , #ScrollNotice-main .el-textarea__inner, #PopNotice-main .el-textarea__inner {
+#InternalMail-main .el-textarea__inner,
+#ScrollNotice-main .el-textarea__inner,
+#PopNotice-main .el-textarea__inner {
   height: 80px;
 }
 
 /*充值优惠*/
-#TopPref-main .el-button--warning , #Sales-main .el-button--warning {
+#TopPref-main .el-button--warning,
+#Sales-main .el-button--warning {
   width: 120px;
 }
-/*业绩返佣*/
 
 /*客服设置*/
-#SetService-main  .el-textarea__inner {
+#SetService-main .el-textarea__inner {
   height: 80px;
 }
 /* 包管理 */
@@ -45,29 +80,27 @@
 #packagemanage .el-dialog__header,
 #accountlist .el-dialog__header,
 #managerlist .el-dialog__header,
-#subaccount .el-dialog__header{
+#subaccount .el-dialog__header {
   text-align: center;
-  padding-top: 35px
+  padding-top: 35px;
 }
 
 /* 弹框底部按钮位置 */
-.el-dialog__footer{
+.el-dialog__footer {
   text-align: center;
   padding-bottom: 80px;
-  margin-top: -40px
+  margin-top: -40px;
 }
-
-
 
 #packagemanage .el-dialog__body,
 #accountlist .el-dialog__body,
 #managerlist .el-dialog__body,
-#subaccount .el-dialog__body{
-  padding:5px 80px 30px;
+#subaccount .el-dialog__body {
+  padding: 5px 80px 30px;
 }
 
 /* 包管理弹框多选间隔 */
-#packagemanage .el-checkbox{
+#packagemanage .el-checkbox {
   margin-right: 50px;
 }
 
@@ -77,7 +110,7 @@
   padding: 0 20px;
 }
 #setlimit .permission-bd th {
-  background: #f2f2f2!important;
+  background: #f2f2f2 !important;
   font-weight: normal;
 }
 #setlimit .permission-bd th,
@@ -89,27 +122,27 @@
   margin-left: 0;
 }
 #packagemanage .el-form-item__label,
-#accountlist  .el-form-item__label,
+#accountlist .el-form-item__label,
 #managerlist .el-form-item__label,
-#subaccount .el-form-item__label{
+#subaccount .el-form-item__label {
   text-align: left;
 }
- 
+
 /* 系统管理中玩家设置的输入框 */
-.global .el-input__inner{
+.global .el-input__inner {
   border-radius: 0;
   border: 1px solid rgba(228, 228, 228, 1);
 }
 
 /* 权限管理-管理员列表-电话、备注 */
 .managerlist-tel .el-form-item__label,
-.managerlist-tips .el-form-item__label{
+.managerlist-tips .el-form-item__label {
   padding-left: 8px;
 }
 
 /* 银商管理账号列表,权限管理管理员列表输入框高度 */
 #accountlist .el-input__inner,
 #managerlist .el-input__inner,
-#rechargelist .el-input__inner{
+#rechargelist .el-input__inner {
   height: 36px;
 }

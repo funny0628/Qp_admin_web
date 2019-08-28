@@ -76,7 +76,7 @@
           </el-table-column>
         </el-table>
         <div class="footer" style="text-align: center;padding-top: 30px;">
-          <el-button><i class="el-icon-plus"></i> 添 加</el-button>
+          <el-button><i class="el-icon-plus" @click="handelAdd()"></i> 添 加</el-button>
           <el-button type="primary">保 存</el-button>
         </div>
       </div>
@@ -96,12 +96,18 @@
           active: false,
           switch: true,
         },
+        //表格数据
         tableData: [{min_result: '1.00', max_result: '10000.00', rate_result: '1'}]
       }
     },
     methods: {
+      //删除
       handleDelete(row) {
         console.log(row)
+      },
+      //新增
+      handelAdd(){
+
       }
     }
   }

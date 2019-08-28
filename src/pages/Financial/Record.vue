@@ -36,8 +36,7 @@
             </template>
             <template
               v-if="['action', 'user_type'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}
-            </template>
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -46,61 +45,65 @@
 </template>
 
 <script>
-  import InfoTable from "../../plugin/components/InfoTable";
-  import PageInfo from "../../plugin/script/common/PageInfo";
-  import BaseIframe from "../../plugin/script/common/BaseIframe";
-  import PermissionButton from "../../plugin/components/PermissionButton";
-  import InputArea from "../../plugin/components/InputArea";
-  import SelectTime from "../../plugin/components/SelectTime";
-  import InfoTableItem from "../../plugin/components/InfoTableItem";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InputArea from "../../plugin/components/InputArea";
+import SelectTime from "../../plugin/components/SelectTime";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
-  export default {
-    name: "Record",
-    extends: BaseIframe,
-    components: {InfoTableItem, InputArea, InfoTable, PermissionButton, SelectTime},
-    data() {
-      return {
-        format: {
-          user_id: '',
-          nickname: '',
-          ip: ''
-        },
-        date: [],
-        tableStyle: [
-          {label: "编号", prop: "id", width: ""},
-          {label: "用户ID", prop: "user_id", width: ""},
-          {label: "用户昵称", prop: "nickname", width: ""},
-          {label: "赠送前金额", prop: "before_money", width: ""},
-          {label: "赠送金额", prop: "giv_money", width: ""},
-          {label: "赠送后金额", prop: "after_money", width: ""},
-          {label: "IP地址", prop: "ip", width: ""},
-          {label: "赠送时间", prop: "giv_time", width: ""},
-          {label: "赠送原因", prop: "reason", width: ""},
-        ],
-        records: [
-          {
-            id: '09287673429137',
-            user_id: '1001001',
-            nickname: '测试玩家',
-            before_money: '100.00',
-            giv_money: '2.00',
-            after_money: '102.00',
-            ip: '192.168.0.0',
-            giv_time: '2019-01-01 12:00:00',
-            reason: '充值赠送'
-          }
-        ],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0)
-      }
-    },
-    methods: {
-      search() {
-      }
-    }
+export default {
+  name: "Record",
+  extends: BaseIframe,
+  components: {
+    InfoTableItem,
+    InputArea,
+    InfoTable,
+    PermissionButton,
+    SelectTime
+  },
+  data() {
+    return {
+      format: {
+        user_id: "",
+        nickname: "",
+        ip: ""
+      },
+      date: [],
+      tableStyle: [
+        { label: "编号", prop: "id", width: "" },
+        { label: "用户ID", prop: "user_id", width: "" },
+        { label: "用户昵称", prop: "nickname", width: "" },
+        { label: "赠送前金额", prop: "before_money", width: "" },
+        { label: "赠送金额", prop: "giv_money", width: "" },
+        { label: "赠送后金额", prop: "after_money", width: "" },
+        { label: "IP地址", prop: "ip", width: "" },
+        { label: "赠送时间", prop: "giv_time", width: "" },
+        { label: "赠送原因", prop: "reason", width: "" }
+      ],
+      records: [
+        {
+          id: "09287673429137",
+          user_id: "1001001",
+          nickname: "测试玩家",
+          before_money: "100.00",
+          giv_money: "2.00",
+          after_money: "102.00",
+          ip: "192.168.0.0",
+          giv_time: "2019-01-01 12:00:00",
+          reason: "充值赠送"
+        }
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0)
+    };
+  },
+  methods: {
+    search() {}
   }
+};
 </script>
 
 <style scoped>
-
 </style>
 <!--赠送记录-->

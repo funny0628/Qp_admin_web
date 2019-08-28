@@ -42,15 +42,15 @@
     </div>
     <!-- 新增、修改 -->
     <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
-      <el-form :model="change_bank">
+      <el-form :model="fromData">
         <el-form-item label="银行ID" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="change_bank.bank_id"></el-input>
+          <el-input autocomplete="off" v-model="fromData.bank_id"></el-input>
         </el-form-item>
         <el-form-item label="银行缩写" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="change_bank.bank_abbr"></el-input>
+          <el-input autocomplete="off" v-model="fromData.bank_abbr"></el-input>
         </el-form-item>
         <el-form-item label="银行名称" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="change_bank.bank_name"></el-input>
+          <el-input autocomplete="off" v-model="fromData.bank_name"></el-input>
         </el-form-item>
         <el-form-item label="银行logo" :label-width="labelWidth">
           <el-upload
@@ -58,14 +58,14 @@
             action="https://jsonplaceholder.typicode.com/posts/"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
-            :file-list="change_bank.bank_logo"
+            :file-list="fromData.bank_logo"
             list-type="picture"
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label="是否启用">
-          <el-switch v-model="change_bank.delivery"></el-switch>
+          <el-switch v-model="fromData.delivery"></el-switch>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -116,7 +116,7 @@ export default {
       dialogTitleType: "",
       dialogVisible: false,
       labelWidth: "70px",
-      change_bank: {
+      fromData: {
         bank_id: "",
         bank_abbr: "",
         bank_logo: [],
@@ -160,7 +160,6 @@ export default {
             { label: "修改", type: "edit" },
             { label: "删除", type: "delete" }
           ];
-
         });
       });
     }

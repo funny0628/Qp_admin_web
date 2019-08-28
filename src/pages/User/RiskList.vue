@@ -13,21 +13,26 @@
         :page-info="pageInfo"
       >
         <info-table-item :table-style="tableStyle">
-           <template slot-scope="scope">
+          <template slot-scope="scope">
             <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0">
+              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
+            >
               <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[scope.prop]" :key="index" @click="handeClick(btn)"
-                                 style="cursor: pointer; padding-left: 5px;">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handeClick(btn)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0">
-              {{scope.row[scope.prop]}}
-            </template>
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -52,49 +57,50 @@
 </template>
 
 <script>
-  import InfoTable from '../../plugin/components/InfoTable'
-  import PageInfo from "../../plugin/script/common/PageInfo"
-  import BaseIframe from "../../plugin/script/common/BaseIframe"
-  import PermissionButton from "../../plugin/components/PermissionButton"
-  import InputArea from "../../plugin/components/InputArea";
-  import InfoTableItem from "../../plugin/components/InfoTableItem";
-  export default {
-    name: "RiskList",
-    extends: BaseIframe,
-    components: {InfoTableItem, InputArea, InfoTable, PermissionButton},
-    data(){
-      return {
-        tableStyle: [
-          {label: '渠道ID', prop: 'channel_id', width: ''},
-          {label: '用户ID', prop: 'user_id', width: ''},
-          {label: '用户昵称', prop: 'user_name', width: ''},
-          {label: '盈亏', prop: 'loss', width: ''},
-          {label: '用户输赢局数', prop: 'win_num', width: ''},
-        ],
-        records: [{
-          channel_id: '100',
-          user_id: '1001100',
-          user_name: '测试玩家1',
-          loss: '300000.000',
-          win_num: '6',
-        }],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
-        dialogVisible:false,
-        formData:{
-          greater:'',
-          greater_num:''
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+export default {
+  name: "RiskList",
+  extends: BaseIframe,
+  components: { InfoTableItem, InputArea, InfoTable, PermissionButton },
+  data() {
+    return {
+      tableStyle: [
+        { label: "渠道ID", prop: "channel_id", width: "" },
+        { label: "用户ID", prop: "user_id", width: "" },
+        { label: "用户昵称", prop: "user_name", width: "" },
+        { label: "盈亏", prop: "loss", width: "" },
+        { label: "用户输赢局数", prop: "win_num", width: "" }
+      ],
+      records: [
+        {
+          channel_id: "100",
+          user_id: "1001100",
+          user_name: "测试玩家1",
+          loss: "300000.000",
+          win_num: "6"
         }
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      dialogVisible: false,
+      formData: {
+        greater: "",
+        greater_num: ""
       }
-    },
-    methods:{
-      search(){
-        this.dialogVisible = true
-      }
+    };
+  },
+  methods: {
+    search() {
+      this.dialogVisible = true;
     }
   }
+};
 </script>
 
 <style scoped>
-
 </style>
 <!--风控列表-->

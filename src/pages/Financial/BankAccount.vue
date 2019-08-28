@@ -46,17 +46,17 @@
     <div class="dialog">
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
         <el-form
-          :v-model="bank_account"
+          :v-model="formData"
           style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
         >
           <el-form-item label="银行名称" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.bank_name" autocomplete="off"></el-input>
+            <el-input v-model="formData.bank_name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="是否启用" :label-width="labelWidth" style="width: 50%;">
-            <el-switch v-model="bank_account.delivery"></el-switch>
+            <el-switch v-model="formData.delivery"></el-switch>
           </el-form-item>
           <el-form-item label="收款账号" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.payment" autocomplete="off"></el-input>
+            <el-input v-model="formData.payment" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="二维码收款" :label-width="labelWidth" style="width: 50%;">
             <el-upload
@@ -64,28 +64,28 @@
               action="https://jsonplaceholder.typicode.com/posts/"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
-              :file-list="bank_account.fileList"
+              :file-list="formData.fileList"
               list-type="picture"
             >
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
           <el-form-item label="收款姓名" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.collection_name" autocomplete="off"></el-input>
+            <el-input v-model="formData.collection_name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="用户分层" :label-width="labelWidth" style="width: 50%;">
             <el-checkbox-group
-              v-model="bank_account.user_layer"
+              v-model="formData.user_layer"
               @change="handleCheckedCitiesChange"
             >
               <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="开户行" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.open_account" autocomplete="off"></el-input>
+            <el-input v-model="formData.open_account" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="预设金额" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.preset_money" autocomplete="off"></el-input>
+            <el-input v-model="formData.preset_money" autocomplete="off"></el-input>
             <el-tag
               :key="tag"
               v-for="tag in dynamicTags"
@@ -106,10 +106,10 @@
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
           </el-form-item>
           <el-form-item label="单笔最小额度" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.min_account" autocomplete="off"></el-input>
+            <el-input v-model="formData.min_account" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="单笔最大额度" :label-width="labelWidth" style="width: 50%;">
-            <el-input v-model="bank_account.max_account" autocomplete="off"></el-input>
+            <el-input v-model="formData.max_account" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -179,7 +179,7 @@ export default {
       dialogTitle: "",
       labelWidth: "120px",
       dialogVisible: false,
-      bank_account: {
+      formData: {
         bank_name: "",
         delivery: false,
         payment: "",

@@ -1,25 +1,5 @@
 <template>
   <div id="Universal">
-    <!-- <div class="content" style="padding: 100px 20px 0 20px">
-      <template>
-        <el-table
-          :data="tableData"
-          border
-          :header-cell-style="{background:'#f2f2f2',color:'#606266'}"
-          style="width: 100%"
-        >
-          <el-table-column prop="level" label="代理层级" align="center" width></el-table-column>
-          <el-table-column prop="amount_tol" label="总发放金额" align="center" width></el-table-column>
-          <el-table-column prop="proportion" align="center" label="分成比例"></el-table-column>
-          <el-table-column prop="commission" align="center" label="返佣比例（%）"></el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-              <el-button type="text" size="small">修改</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-    </div>-->
     <input-area>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <select-time :date="date" :select-time.sync="date"></select-time>
@@ -65,12 +45,7 @@
       </info-table>
     </div>
     <div class="dialog">
-      <el-dialog
-        title="全民返佣设置"
-        :visible.sync="dialogVisible"
-        width="30%"
-        center
-      >
+      <el-dialog title="全民返佣设置" :visible.sync="dialogVisible" width="30%" center>
         <el-form :model="formData" ref="formData">
           <el-form-item label="返佣模式：" label-width="140px" prop="mode">
             <el-input v-model="formData.mode" autocomplete="off" style="width: 80%;"></el-input>
@@ -101,7 +76,7 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import InputArea from "../../plugin/components/InputArea";
 import SelectTime from "../../plugin/components/SelectTime";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-import { truncate } from 'fs';
+import { truncate } from "fs";
 
 export default {
   name: "Universal",
@@ -143,13 +118,11 @@ export default {
       }
     };
   },
-  methods:{
-    search(){
+  methods: {
+    search() {
       this.dialogVisible = true;
     },
-    handeClick(btn){
-
-    }
+    handeClick(btn) {}
   }
 };
 </script>

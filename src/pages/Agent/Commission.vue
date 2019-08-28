@@ -75,7 +75,7 @@ export default {
   components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
-      /**table */
+      // 表格数据
       tableStyle: [
         { label: "代理层级", prop: "level", width: "" },
         { label: "最小业绩", prop: "min_results", width: "" },
@@ -93,9 +93,8 @@ export default {
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      /***type 判断现在是添加还是修改*/
+      // 弹框数据
       dialogTitleType: "",
-      /***dialog */
       dialogVisible: false,
       labelWidth: "70px",
       formData: {
@@ -108,11 +107,12 @@ export default {
   },
   methods: {
     search() {},
+    // 新增代理分层
     handelAddClick() {
       this.dialogTitleType = "新增代理分层";
       this.dialogVisible = true;
     },
-    /**edit */
+    // 修改代理分层
     handeClick(btn) {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改代理分层";

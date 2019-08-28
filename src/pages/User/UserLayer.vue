@@ -50,7 +50,7 @@
           <el-input autocomplete="off" v-model="dataForm.up_number"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer" >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editAddClick">确 定</el-button>
       </span>
@@ -63,14 +63,14 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import InfoTable from "../../plugin/components/InfoTable";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import PageInfo from "../../plugin/script/common/PageInfo";
-import UserHandler from '../../script/handlers/UserHandler'
+import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   name: "UserLayer",
   extends: BaseIframe,
-  components: {InfoTableItem, InputArea, PermissionButton, InfoTable },
+  components: { InfoTableItem, InputArea, PermissionButton, InfoTable },
   data() {
     return {
       /* table */
@@ -101,7 +101,7 @@ export default {
       this.dialogVisible = true;
     },
     /* edit */
-    handeClick(btn,row) {
+    handeClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改用户分层";
         this.dialogVisible = true;
@@ -110,22 +110,20 @@ export default {
         this.dataForm.pay_count = row.pay_count;
       }
     },
-    vip_list(){
-      UserHandler.vip_list().promise.then(res=>{
+    vip_list() {
+      UserHandler.vip_list().promise.then(res => {
         console.log(res);
-        if(Number(res.code) === 200){
-          this.records = res.data
+        if (Number(res.code) === 200) {
+          this.records = res.data;
         }
         //数据处理
-        this.records.map((item)=>{
-          item.action = [
-            { label: "修改", type: "edit" }
-          ]
-        })
-      })
+        this.records.map(item => {
+          item.action = [{ label: "修改", type: "edit" }];
+        });
+      });
     },
     //新增、修改
-    editAddClick(){
+    editAddClick() {
       /*this.$refs.dataForm.validate(valid => {
         if (valid) {
           if (!this.dataForm.tier){
