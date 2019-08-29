@@ -35,6 +35,7 @@
         :records="records"
         :page-info="pageInfo"
       >
+        item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template
@@ -68,14 +69,19 @@
       <!-- 添加会员 -->
       <el-dialog title="添加会员" :visible.sync="dialogAddVisible" width="40%" center>
         <el-form :model="form" :rules="rules" ref="form">
-          <el-form-item label="用户名" label-width="100px" style="display: inline-block;" prop="name">
-            <el-input v-model="form.name" autocomplete="off" style="width: 200px;"></el-input>
+          <el-form-item label="昵称" label-width="100px" style="display: inline-block;">
+            <el-input v-model="form.desc" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
           <el-form-item label="上级用户" label-width="100px" style="display: inline-block;">
             <el-input v-model="form.higher_user" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="昵称" label-width="100px" style="display: inline-block;">
-            <el-input v-model="form.desc" autocomplete="off" style="width: 200px;"></el-input>
+          <el-form-item label="资金密码" label-width="100px" style="display: inline-block;">
+            <el-input
+              v-model="form.password"
+              autocomplete="off"
+              type="password"
+              style="width: 200px;"
+            ></el-input>
           </el-form-item>
           <el-form-item
             label="登录密码"
@@ -90,23 +96,18 @@
               style="width: 200px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="资金密码" label-width="100px" style="display: inline-block;">
-            <el-input
-              v-model="form.password"
-              autocomplete="off"
-              type="password"
-              style="width: 200px;"
-            ></el-input>
+          <el-form-item label="会员身份" label-width="100px" style="display: inline-block;">
+            <el-select v-model="form.identity" placeholder="请选择" style="width: 200px;">
+              <el-option
+                v-for="item in idents"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="手机号" label-width="100px" style="display: inline-block;" prop="tel">
             <el-input v-model="form.tel" autocomplete="off" style="width: 200px;" maxlength="11"></el-input>
-          </el-form-item>
-          <el-form-item label="会员身份" label-width="100px" style="display: inline-block;">
-            <el-radio-group v-model="form.identity">
-              <el-radio :label="1">测试用户</el-radio>
-              <el-radio :label="2">代理用户</el-radio>
-              <el-radio :label="3">普通玩家</el-radio>
-            </el-radio-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -366,14 +367,17 @@ export default {
       //添加会员弹框
       dialogAddVisible: false,
       form: {
-        name: "",
         higher_user: "",
         desc: "",
         login_password: "",
         password: "",
         tel: "",
-        identity: 1
+        identity: '1'
       },
+      idents: [
+        { value: "1", label: "测试用户" },
+        { value: "2", label: "普通用户" }
+      ],
       //修改会员信息
       activeName: "first",
       dialogModifyVisible: false,

@@ -63,6 +63,9 @@
 #PopNotice-main .el-textarea__inner {
   height: 80px;
 }
+#prepaidRecord-main .el-textarea__inner {
+  height: 100px;
+}
 
 /*充值优惠*/
 #TopPref-main .el-button--warning,

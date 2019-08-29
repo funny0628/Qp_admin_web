@@ -232,7 +232,7 @@ export default {
     search() {
       console.log("这是查询");
     },
-    handeClick(btn,row) {
+    handeClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
         // console.log(row)
@@ -241,30 +241,32 @@ export default {
         this.dialogData.card = row.bank_card;
         this.dialogData.subbranch = row.subbranch;
         this.dialogData.province = row.province;
-        this.dialogData.city = row.city
-      }else{
+        this.dialogData.city = row.city;
+      } else {
         // console.log('这是删除')
         let data = {
-          bank_id : row.bank_id
+          bank_id: row.bank_id
         };
-        this.$confirm('确定删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          UserHandler.bank_delete(data).promise.then(res=>{
-            console.log(res)
+        this.$confirm("确定删除?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            UserHandler.bank_delete(data).promise.then(res => {
+              console.log(res);
+            });
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
           });
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
       }
     },
     //会员银行卡列表

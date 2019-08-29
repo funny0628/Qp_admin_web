@@ -1,3 +1,4 @@
+<!--充值记录查询-->
 <template>
   <div id="prepaidRecord-main">
     <input-area>
@@ -52,6 +53,52 @@
         </info-table-item>
       </info-table>
     </div>
+    <div class="dialog">
+      <el-dialog title="充值审核" :visible.sync="DialogVisible" width="30%" center>
+        <el-form
+          :model="formData"
+          :label-position="labelPosition"
+          style="display: flex; justify-content: space-between;flex-wrap:wrap;padding:0 50px;"
+        >
+          <el-form-item label="订单号：" :label-width="formLabelWidth" style="width:100%;">
+            <span>{{formData.order_num}}</span>
+          </el-form-item>
+          <el-form-item label="充值金额：" :label-width="formLabelWidth" style="width:100%;">
+            <span>{{formData.up_money}}</span>
+          </el-form-item>
+          <el-form-item label="支付商户：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.pay_mer}}</span>
+          </el-form-item>
+          <el-form-item label="所属类型：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.type}}</span>
+          </el-form-item>
+          <el-form-item label="用户ID：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.user_id}}</span>
+          </el-form-item>
+          <el-form-item label="用户名：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.user_name}}</span>
+          </el-form-item>
+          <el-form-item label="渠道ID：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.platform_id}}</span>
+          </el-form-item>
+          <el-form-item label="平台ID：" :label-width="formLabelWidth" style="width:50%;">
+            <span>{{formData.platformId}}</span>
+          </el-form-item>
+          <el-form-item label="备注：" :label-width="formLabelWidth" style="width:100%;">
+            <el-input
+              type="textarea"
+              placeholder="请输入内容"
+              v-model="formData.note"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="DialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="DialogVisible = false">锁 定</el-button>
+          <el-button type="primary" @click="DialogVisible = false">审核通过</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -76,6 +123,7 @@ export default {
   },
   data() {
     return {
+      //搜索框数据
       aresData: {
         user_id: "",
         account_id: "",
@@ -83,7 +131,6 @@ export default {
         status: "", //订单状态
         type: ""
       },
-      /*date*/
       date: [],
       order_status: [
         {
@@ -105,7 +152,7 @@ export default {
         { value: "3", label: "手工入款" },
         { value: "4", label: "北京支行" }
       ],
-      /*table*/
+      //表格数据
       tableStyle: [
         { label: "订单编号", prop: "order_num", width: "160" },
         { label: "用户ID", prop: "user_id", width: "" },
@@ -135,13 +182,25 @@ export default {
           submit_time: ["2019-01-01 12:00:00", " 2019-01-01 12:00:59"],
           operation_user: "",
           order_note: "",
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
+          action: [{ label: "审核", type: "edit" }]
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0)
+      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      //弹窗数据
+      DialogVisible: false,
+      formLabelWidth: "100px",
+      labelPosition: "left",
+      formData: {
+        order_num: "cz201908212008220701",
+        up_money: "1000.00",
+        pay_mer: "支付宝",
+        type: "线上支付",
+        user_id: "1001002",
+        user_name: "张三",
+        platform_id: "10000",
+        platformId: "110",
+        note: ""
+      }
     };
   },
   methods: {
@@ -149,8 +208,7 @@ export default {
     /***修改、删除 */
     handeClick(btn) {
       if (btn.type === "edit") {
-      }
-      if (btn.type === "delete") {
+        this.DialogVisible = true;
       }
     }
   }
@@ -162,4 +220,3 @@ export default {
   margin: 0;
 }
 </style>
-<!--充值记录查询-->

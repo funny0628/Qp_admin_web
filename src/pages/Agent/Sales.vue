@@ -10,129 +10,108 @@
           </i-switch>
         </el-form-item>
       </el-form>
-      <div class="tb" style="width: 95%; margin: 0 auto;">
-        <el-table
-          :data="tableData"
+      <div class="bd">
+        <info-table
+          :search="search"
+          :table-style="tableStyle"
+          :records="records"
+          :page-info="pageInfo"
+          :hide-page="true"
         >
-          <el-table-column
-            prop="min_result"
-            label="业绩区间"
-            width=""
-            align="center"
-          >
+          <info-table-item :table-style="tableStyle">
             <template slot-scope="scope">
-              <div>
-                <el-input size="" v-model="scope.row.min_result" placeholder="请输入业绩" style="width: 80%;"></el-input>
-              </div>
+              <template v-if="['rate_result'].indexOf(scope.prop) >= 0">
+                <span placeholder="请输入内容">
+                  <template slot="prepend">万分之</template>
+                </span>
+              </template>
+              <template v-if="scope.prop === 'action'">
+                <permission-button
+                  :action="btn.type"
+                  v-for="(btn,index) in scope.row[scope.prop]"
+                  :key="index"
+                  @click="handeClick(btn)"
+                  style="cursor: pointer; padding-left: 5px;"
+                >
+                  <span>{{btn.label}}</span>
+                </permission-button>
+              </template>
+              <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
             </template>
-          </el-table-column>
-
-          <el-table-column
-            label=""
-            width="30"
-            align="center"
-          >
-            <template>
-              <div>
-                <span>-</span>
-              </div>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            prop="max_result"
-            label="业绩区间"
-            width=""
-            align="center"
-          >
-            <template slot-scope="scope">
-              <div>
-                <el-input size="" v-model="scope.row.max_result" placeholder="请输入业绩" style="width: 80%;"></el-input>
-              </div>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            prop="rate_result"
-            label="业绩返佣比例"
-            width=""
-            align="center"
-          >
-            <template slot-scope="scope">
-              <div style="display: flex;">
-                <button
-                  style="width: 70px; height: 40px; border: none; border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
-                  万分之
-                </button>
-                <el-input size="" v-model="scope.row.rate_result" style="width: 80%;"></el-input>
-              </div>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="操作" width="" align="center">
-            <template slot-scope="scope">
-              <el-button size="" type="warning" @click="handleDelete(scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="footer" style="text-align: center;padding-top: 30px;">
-          <el-button><i class="el-icon-plus" @click="handelAdd()"></i> 添 加</el-button>
-          <el-button type="primary">保 存</el-button>
-        </div>
+          </info-table-item>
+        </info-table>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import BaseIframe from '../../plugin/script/common/BaseIframe';
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 
-  export default {
-    name: "Sales",
-    extends: BaseIframe,
-    data() {
-      return {
-        formData: {
-          active: false,
-          switch: true,
-        },
-        //表格数据
-        tableData: [{min_result: '1.00', max_result: '10000.00', rate_result: '1'}]
-      }
-    },
-    methods: {
-      //删除
-      handleDelete(row) {
-        console.log(row)
+export default {
+  name: "Sales",
+  extends: BaseIframe,
+  components: { PermissionButton, InfoTable, InfoTableItem },
+  data() {
+    return {
+      formData: {
+        active: false,
+        switch: true
       },
-      //新增
-      handelAdd(){
-
-      }
-    }
+      //表格数据
+      tableStyle: [
+        { label: "业绩区间", prop: "min_result", width: "" },
+        { label: "业绩区间", prop: "max_result", width: "" },
+        { label: "业绩返佣比例", prop: "rate_result", width: "" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
+        {
+          min_result: "1.00",
+          max_result: "10000.00",
+          rate_result: "1",
+          action:[
+            {label:''}
+          ]
+        }
+      ]
+    };
+  },
+  methods: {
+    //删除
+    handleDelete(row) {
+      console.log(row);
+    },
+    //新增
+    handelAdd() {}
   }
+};
 </script>
 
 <style scoped>
-  #Sales-main {
-    width: 100%;
-    padding: 15px 20px 0 20px;
-  }
+#Sales-main {
+  width: 100%;
+  padding: 15px 20px 0 20px;
+}
 
-  #Sales-main .title {
-    width: 100%;
-    height: 50px;
-    border: 1px solid #e9e9e9;
-    line-height: 50px;
-    padding-left: 15px;
-    font-weight: bold;
-    font-size: 16px;
-  }
+#Sales-main .title {
+  width: 100%;
+  height: 50px;
+  border: 1px solid #e9e9e9;
+  line-height: 50px;
+  padding-left: 15px;
+  font-weight: bold;
+  font-size: 16px;
+}
 
-  #Sales-main .content {
-    border: 1px solid #e9e9e9;
-    border-top: none;
-    height: 600px;
-    width: 100%;
-  }
+#Sales-main .content {
+  border: 1px solid #e9e9e9;
+  border-top: none;
+  height: 600px;
+  width: 100%;
+}
 </style>

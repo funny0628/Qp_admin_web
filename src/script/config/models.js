@@ -216,6 +216,18 @@ const models = {
       }
     ]
   },
+  gameMan:{
+    name:'gameMan',
+    vue:null,
+    text:'游戏管理',
+    children:[
+      {
+        name:'gameRec',
+        text:'游戏记录',
+        vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
+      }
+    ]
+  },
   channel:{
     name:'channel',
     vue: null,
