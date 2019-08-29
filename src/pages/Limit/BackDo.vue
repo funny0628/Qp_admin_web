@@ -1,5 +1,5 @@
 <template>
-  <div id="rechargelist">
+  <div id="backdo">
     <input-area>
       <el-input v-model="user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="operatemodule" placeholder="操作模块" size="medium"></el-input>
@@ -57,5 +57,12 @@ export default {
 <style scoped>
 .el-input{
     margin-right: 10px;
+}
+.select-time{
+  margin-right: 20px !important;
+}
+#backdo .el-button.el-button--primary.el-button--medium{
+margin-left: 0px!important;
+  margin-right: 20px !important;
 }
 </style>

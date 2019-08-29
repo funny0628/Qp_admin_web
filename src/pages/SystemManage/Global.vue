@@ -160,7 +160,6 @@ export default {
   color: #333;
   padding: 15px 20px;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
-  
 }
 .playerbox,
 .platformbox {
@@ -174,7 +173,7 @@ export default {
 .playerbox .el-col.el-col-sm-8,
 .platformbox .el-col.el-col-sm-8,
 .playerbox .el-col.el-col-xs-8,
-.platformbox .el-col.el-col-xs-8{
+.platformbox .el-col.el-col-xs-8 {
   background-color: #f2f2f2;
   text-align: center;
   color: #333333;
@@ -183,8 +182,8 @@ export default {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
-  border-right: 1px solid rgba(228, 228, 228, 1); 
-  border-left: 1px solid rgba(228, 228, 228, 1); 
+  border-right: 1px solid rgba(228, 228, 228, 1);
+  border-left: 1px solid rgba(228, 228, 228, 1);
   height: 60px;
 }
 /* 输入框盒子基本样式 */
@@ -193,143 +192,175 @@ export default {
 .playerbox .el-col.el-col-sm-16,
 .platformbox .el-col.el-col-sm-16,
 .playerbox .el-col.el-col-xs-16,
-.platformbox .el-col.el-col-xs-16{
+.platformbox .el-col.el-col-xs-16 {
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
-  border-right: 1px solid rgba(228, 228, 228, 1); 
+  border-right: 1px solid rgba(228, 228, 228, 1);
   height: 60px;
 }
 /* 宽度大于1200px时 */
 @media (min-width: 1201px) {
-.playerbox .el-col,
-.platformbox .el-col {
-  height: 100%;
-  position: relative;
-  display: flex;
-}
+
+  .playerbox .el-col,
+  .platformbox .el-col {
+    height: 100%;
+    position: relative;
+    display: flex;
+  }
   .playerbox .el-col.el-col-lg-4:nth-last-child(2),
-  .platformbox .el-col.el-col-lg-4:nth-last-child(2){
-     border-left: none
+  .platformbox .el-col.el-col-lg-4:nth-last-child(2) {
+    border-left: none;
   }
   .playerbox .el-col.el-col-lg-4,
-  .platformbox .el-col.el-col-lg-4{
+  .platformbox .el-col.el-col-lg-4 {
     font-size: 13px;
   }
-.playerbox .el-col.el-col-lg-8 .haveinput {
-  width: 260px;
-  height: 43px;
-  margin-left: 10%;
-}
-.playerbox .el-col.el-col-lg-8 .coins{
-  font-size: 13px;
-  color: #333;
-  font-weight: 400;
-  margin-left: 5%;
-}
-.fee_btn {
-  display: inline-block;
-  text-align: center;
-  line-height: 36px;
-  width: 96px;
-  height: 36px;
-  background-color: #e4e4e4;
-  border: 1px solid rgba(188, 188, 188, 1);
-  margin-right: 10px;
-  font-size: 13px;
-  color: #333;
-}
+  .playerbox .el-col.el-col-lg-8 .haveinput {
+    width: 260px;
+    height: 43px;
+    margin-left: 10%;
+  }
+  .playerbox .el-col.el-col-lg-8 .coins {
+    font-size: 13px;
+    color: #333;
+    font-weight: 400;
+    margin-left: 5%;
+  }
+  .fee_btn {
+    display: inline-block;
+    text-align: center;
+    line-height: 36px;
+    width: 95px;
+    height: 36px;
+    background-color: #e4e4e4;
+    border: 1px solid rgba(188, 188, 188, 1);
+    margin-right: 10px;
+    font-size: 13px;
+    color: #333;
+  }
 }
 /* 宽度大于等于780px,小于等于1200px时 */
-@media (min-width: 768px) and (max-width: 1200px){
-.playerbox .el-col,
-.platformbox .el-col {
-  height: 100%;
-  position: relative;
-  display: flex;
-}
+@media (min-width: 768px) and (max-width: 1200px) {
+
+  .playerbox .el-col,
+  .platformbox .el-col {
+    height: 100%;
+    position: relative;
+    display: flex;
+  }
   .playerbox .el-col.el-col-sm-8,
-  .platformbox .el-col.el-col-sm-16{
+  .platformbox .el-col.el-col-sm-16 {
     font-size: 13px;
   }
-.playerbox .el-col.el-col-sm-16 .haveinput {
-  width: 260px;
-  height: 43px;
-  margin-left: 10%;
-}
-.playerbox .el-col.el-col-sm-16 .coins{
-  font-size: 13px;
-  color: #333;
-  font-weight: 400;
-  margin-left: 5%;
-}
-.fee_btn {
-  display: inline-block;
-  text-align: center;
-  line-height: 36px;
-  width: 96px;
-  height: 36px;
-  background-color: #e4e4e4;
-  border: 1px solid rgba(188, 188, 188, 1);
-  margin-right: 10px;
-  font-size: 13px;
-  color: #333;
-}
- 
+  .playerbox .el-col.el-col-sm-16 .haveinput {
+    width: 260px;
+    height: 43px;
+    margin-left: 10%;
+  }
+  .playerbox .el-col.el-col-sm-16 .coins {
+    font-size: 13px;
+    color: #333;
+    font-weight: 400;
+    margin-left: 5%;
+  }
+  .fee_btn {
+    display: inline-block;
+    text-align: center;
+    line-height: 36px;
+    width: 96px;
+    height: 36px;
+    background-color: #e4e4e4;
+    border: 1px solid rgba(188, 188, 188, 1);
+    margin-right: 10px;
+    font-size: 13px;
+    color: #333;
+  }
+
 }
 /* 宽度小于等于767时 */
 @media (max-width: 767px) {
+    /* .playerbox .el-row:nth-last-child(1) div:nth-last-child(1),
+.playerbox .el-row:nth-last-child(1) div:nth-last-child(2),
+.platform .el-row:nth-last-child(1) div:nth-last-child(1),
+.platform .el-row:nth-last-child(1) div:nth-last-child(2){
+display: none
+} */
   .platformbox .el-col.el-col-xs-8,
-.platformbox .el-col.el-col-xs-16{
-  height: 140px;
-}
-.playerbox .el-col,
-.platformbox .el-col {
-  height: 100%;
-  position: relative;
-  display: flex;
-}
+  .platformbox .el-col.el-col-xs-16 {
+    height: 140px;     
+  }
+  .el-checkbox.is-bordered + .el-checkbox.is-bordered {
+    margin-left: 0px;
+    
+  }
+  .el-checkbox.is-bordered.el-checkbox--small:nth-child(1),
+  .el-checkbox.is-bordered.el-checkbox--small:nth-child(2) {
+    margin-bottom: 10px;
+   margin-right: 20px;
+  }
+  .playerbox .el-col,
+  .platformbox .el-col {
+    height: 100%;
+    position: relative;
+    display: flex;
+  }
   .playerbox .el-col.el-col-lg-4,
-  .platformbox .el-col.el-col-lg-4{
+  .platformbox .el-col.el-col-lg-4 {
     font-size: 12px;
   }
   .playerbox .el-col.el-col-xs-16 .haveinput {
-  width: 140px;
-  height: 43px;
-  margin-left: 10%;
-}
-.playerbox .el-col.el-col-xs-16 .coins{
-  font-size: 12px;
-  color: #333;
-  font-weight: 400;
-  margin-left: 5%;
-}
-.fee_btn {
-  display: inline-block;
-  text-align: center;
-  line-height: 30px;
-  width: 50px;
-  height: 30px;
-  background-color: #e4e4e4;
-  border: 1px solid rgba(188, 188, 188, 1);
-  margin-right: 4px;
-  font-size: 12px;
-  color: #333;
-}
-  .el-checkbox{
+    width: 140px;
+    height: 43px;
+    margin-left: 10%;
+  }
+  .playerbox .el-col.el-col-xs-16 .coins {
+    font-size: 12px;
+    color: #333;
+    font-weight: 400;
+    margin-left: 5%;
+  }
+  .fee_btn {
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    width: 50px;
+    height: 30px;
+    background-color: #e4e4e4;
+    border: 1px solid rgba(188, 188, 188, 1);
+    margin-right: 4px;
+    font-size: 12px;
+    color: #333;
+  }
+  .el-checkbox {
     margin-right: 4px;
   }
-  .el-radio{
+  .el-radio {
     margin-right: 4px;
   }
-  .imgbox{
-    width: 85px!important;
-    height: 30px!important;
-    line-height: 30px!important;
+  .imgbox {
+    width: 85px !important;
+    height: 30px !important;
+    line-height: 30px !important;
   }
 }
+/* 宽度小于等于360时 */
+/* @media (max-width: 360px) {
+  .fee_btn {
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    width: 45px;
+    height: 30px;
+    background-color: #e4e4e4;
+    border: 1px solid rgba(188, 188, 188, 1);
+    margin-right: 4px;
+    font-size: 12px;
+    color: #333;
+  }
+} */
 .btnbox {
-   margin-left: 10%;
+  margin-left: 10%;
 }
 .active {
   background-color: rgba(0, 121, 254, 1);
@@ -353,21 +384,25 @@ export default {
 .loginbox,
 .safebox,
 .logobox {
- margin-left: 10%;
- display: flex;
+  margin-left: 10%;
+  display: flex;
 }
 .imgbox {
   width: 130px;
   height: 40px;
   border: 1px solid black;
   display: inline-block;
-}
+}              
 .imgbox img {
   width: 100%;
   height: 100%;
 }
-.upload-demo{
-    display: inline-block;
-   align-self: center;
+.upload-demo {
+  display: inline-block;
+  align-self: center;
 }
+.upload-demo .el-button--small{
+  padding: 9px 10px !important;
+  margin-left: 15px !important;
+} 
 </style>
