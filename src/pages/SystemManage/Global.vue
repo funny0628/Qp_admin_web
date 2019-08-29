@@ -185,7 +185,7 @@ export default {
   border-bottom: 1px solid rgba(228, 228, 228, 1);
   border-right: 1px solid rgba(228, 228, 228, 1); 
   border-left: 1px solid rgba(228, 228, 228, 1); 
-
+  height: 60px;
 }
 /* 输入框盒子基本样式 */
 .playerbox .el-col.el-col-lg-8,
@@ -198,13 +198,10 @@ export default {
   align-items: center;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
   border-right: 1px solid rgba(228, 228, 228, 1); 
+  height: 60px;
 }
 /* 宽度大于1200px时 */
 @media (min-width: 1201px) {
-.playerbox .el-row,
-.platformbox .el-row {
-  height: 60px;
-}
 .playerbox .el-col,
 .platformbox .el-col {
   height: 100%;
@@ -245,10 +242,6 @@ export default {
 }
 /* 宽度大于等于780px,小于等于1200px时 */
 @media (min-width: 768px) and (max-width: 1200px){
-.playerbox .el-row,
-.platformbox .el-row {
-  height: 60px;
-}
 .playerbox .el-col,
 .platformbox .el-col {
   height: 100%;
@@ -282,16 +275,13 @@ export default {
   font-size: 13px;
   color: #333;
 }
-/* .playerbox .el-col.el-col-sm-8:nth-last-child(1){
-    display: none
-  } */
  
 }
 /* 宽度小于等于767时 */
 @media (max-width: 767px) {
-  .playerbox .el-row,
-.platformbox .el-row {
-  height: 60px;
+  .platformbox .el-col.el-col-xs-8,
+.platformbox .el-col.el-col-xs-16{
+  height: 140px;
 }
 .playerbox .el-col,
 .platformbox .el-col {
