@@ -242,7 +242,6 @@ export default {
 }
 /* 宽度大于等于780px,小于等于1200px时 */
 @media (min-width: 768px) and (max-width: 1200px) {
-
   .playerbox .el-col,
   .platformbox .el-col {
     height: 100%;
@@ -280,12 +279,7 @@ export default {
 }
 /* 宽度小于等于767时 */
 @media (max-width: 767px) {
-    /* .playerbox .el-row:nth-last-child(1) div:nth-last-child(1),
-.playerbox .el-row:nth-last-child(1) div:nth-last-child(2),
-.platform .el-row:nth-last-child(1) div:nth-last-child(1),
-.platform .el-row:nth-last-child(1) div:nth-last-child(2){
-display: none
-} */
+
   .platformbox .el-col.el-col-xs-8,
   .platformbox .el-col.el-col-xs-16 {
     height: 140px;     
