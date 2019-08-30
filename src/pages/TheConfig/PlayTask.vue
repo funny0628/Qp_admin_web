@@ -7,7 +7,7 @@
           <el-switch v-model="formData.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
       </el-form>
-      <el-table :data="tableData" style="width: 95%;margin: 0 auto;">
+      <!-- <el-table :data="tableData" style="width: 95%;margin: 0 auto;">
         <el-table-column prop="enabled" label="任务需求" width align="center">
           <template slot-scope="scope">
             <el-select v-model="scope.row.enabled" size>
@@ -56,6 +56,32 @@
           <i class="el-icon-plus"></i> 添 加
         </el-button>
         <el-button type="primary">保 存</el-button>
+      </div>-->
+      <div class="bd" style="width: 95%;margin: 0 auto;">
+        <info-table
+          :search="search"
+          :table-style="tableStyle"
+          :records="records"
+          :page-info="pageInfo"
+          :hide-page="true"
+        >
+          <info-table-item :table-style="tableStyle">
+            <template slot-scope="scope">
+              <template v-if="scope.prop === 'action'">
+                <permission-button
+                  :action="btn.type"
+                  v-for="(btn,index) in scope.row[scope.prop]"
+                  :key="index"
+                  @click="handeClick(btn)"
+                  style="cursor: pointer; padding-left: 5px;"
+                >
+                  <span>{{btn.label}}</span>
+                </permission-button>
+              </template>
+              <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            </template>
+          </info-table-item>
+        </info-table>
       </div>
     </div>
   </div>
@@ -63,16 +89,49 @@
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
   name: "PlayTask",
   extends: BaseIframe,
+  components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
       formData: {
         active: false
       },
-      tableData: [{ game_type: "" }]
+      tableStyle: [
+        { label: "任务需求", prop: "enabled", width: "" },
+        { label: "游戏类型", prop: "type", width: "" },
+        { label: "任务描述", prop: "description", width: "" },
+        { label: "达到条件", prop: "condition", width: "" },
+        { label: "赠送金币", prop: "present", width: "" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
+        {
+          enabled: "流水",
+          type: "射击类",
+          description: "按时完成",
+          condition: "10000",
+          present: "100",
+          action: [{ label: "删除", type: "delete" }]
+        }
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0)
     };
+  },
+  methods: {
+    //表格操作
+    search() {},
+    handeClick(btn, row) {
+      // consoloe.log(btn)
+      if (btn.type === "delete") {
+        console.log("删除");
+      }
+    }
   }
 };
 </script>

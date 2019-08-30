@@ -139,17 +139,13 @@ export default {
         notice_type: 1
       };
       HallHandler.notice_list(data).promise.then(res => {
-        // console.log(res.data);
         if (Number(res.code) === 200) {
           this.records = res.data;
         }
-        // console.log(this.records)
         //数据处理
         let timeArr = [];
         this.records.map(item => {
-          // console.log(item)
           timeArr = [item.created_at, item.updated_at];
-          // console.log(timeArr)
           item.action = [
             { label: "修改", type: "edit" },
             { label: "删除", type: "delete" }

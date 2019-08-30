@@ -21,9 +21,7 @@
           <info-table-item :table-style="tableStyle">
             <template slot-scope="scope">
               <template v-if="['rate_result'].indexOf(scope.prop) >= 0">
-                <span placeholder="请输入内容">
-                  <template slot="prepend">万分之</template>
-                </span>
+                <span placeholder="请输入内容"></span>
               </template>
               <template v-if="scope.prop === 'action'">
                 <permission-button
@@ -66,7 +64,7 @@ export default {
       tableStyle: [
         { label: "业绩区间", prop: "min_result", width: "" },
         { label: "业绩区间", prop: "max_result", width: "" },
-        { label: "业绩返佣比例", prop: "rate_result", width: "" },
+        { label: "业绩返佣比例", prop: "rate_result", width: "120" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [
@@ -74,20 +72,20 @@ export default {
           min_result: "1.00",
           max_result: "10000.00",
           rate_result: "1",
-          action:[
-            {label:''}
-          ]
+          action: [{ label: "删除", type: "delete" }]
         }
-      ]
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0) // page pageSizes total
     };
   },
   methods: {
-    //删除
-    handleDelete(row) {
-      console.log(row);
-    },
-    //新增
-    handelAdd() {}
+    search() {},
+    handeClick(btn, row) {
+      // consoloe.log(btn)
+      if (btn.type === "delete") {
+        console.log("删除");
+      }
+    }
   }
 };
 </script>

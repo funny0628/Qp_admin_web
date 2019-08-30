@@ -10,23 +10,34 @@
           <el-date-picker v-model="formDate.begin_time" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="奖励配置">
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="user_level" label="用户层级" width align="center"></el-table-column>
-            <el-table-column prop="one" label="第一天" width align="center"></el-table-column>
-            <el-table-column prop="two" label="第二天" align="center"></el-table-column>
-            <el-table-column prop="three" label="第三天" align="center"></el-table-column>
-            <el-table-column prop="four" label="第四天" align="center"></el-table-column>
-            <el-table-column prop="five" label="第五天" align="center"></el-table-column>
-            <el-table-column prop="six" label="第六天" align="center"></el-table-column>
-            <el-table-column prop="seven" label="第七天" align="center"></el-table-column>
-            <el-table-column label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div class="bd" style="padding-right:15px;">
+            <info-table
+              :search="search"
+              :table-style="tableStyle"
+              :records="records"
+              :page-info="pageInfo"
+              :hide-page="true"
+            >
+              <info-table-item :table-style="tableStyle">
+                <template slot-scope="scope">
+                  <template v-if="scope.prop === 'action'">
+                    <permission-button
+                      :action="btn.type"
+                      v-for="(btn,index) in scope.row[scope.prop]"
+                      :key="index"
+                      @click="handeClick(btn)"
+                      style="cursor: pointer; padding-left: 5px;"
+                    >
+                      <span>{{btn.label}}</span>
+                    </permission-button>
+                  </template>
+                  <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+                </template>
+              </info-table-item>
+            </info-table>
+          </div>
         </el-form-item>
-        <div class="footer">
+        <div class="footer" style="text-align:center;">
           <el-button>
             <i class="el-icon-plus"></i> 添 加
           </el-button>
@@ -39,32 +50,56 @@
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
   name: "DayCheck",
   extends: BaseIframe,
+  components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
       formDate: {
         active: false,
         begin_time: ""
       },
-      tableData: [
+      //表格数据
+      tableStyle: [
+        { label: "用户层级", prop: "user_level", width: "" },
+        { label: "第一天", prop: "one", width: "" },
+        { label: "第二天", prop: "two", width: "" },
+        { label: "第三天", prop: "three", width: "" },
+        { label: "第四天", prop: "four", width: "" },
+        { label: "第五天", prop: "five", width: "" },
+        { label: "第六天", prop: "six", width: "" },
+        { label: "第七天", prop: "seven", width: "" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
         {
-          user_level: "2016-05-02",
-          one: "王小虎",
-          two: "上海",
-          three: "普陀区",
-          four: "上海市普陀区",
-          five: 200333,
-          six: "家",
-          seven:'jio'
+          user_level: "vip0",
+          one: "10000.00",
+          two: "1",
+          three: "1",
+          four: "1",
+          five: "1",
+          six: "1",
+          seven: "1",
+          action: [{ label: "删除", type: "delete" }]
         }
-      ]
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0) // page pageSizes total
     };
   },
   methods: {
-    handleDelete(row) {
-      console.log(row);
+    search() {},
+    //表格操作
+    handeClick(btn, row) {
+      // consoloe.log(btn)
+      if (btn.type === "delete") {
+        console.log("删除");
+      }
     }
   }
 };

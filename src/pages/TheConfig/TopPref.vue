@@ -2,41 +2,32 @@
   <div id="TopPref-main">
     <div class="title">活动配置</div>
     <div class="content">
-      <el-table :data="tableData" style="width: 95%;margin: 0 auto;">
-        <el-table-column prop="up_channel" label="充值渠道" width align="center">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.up_channel" size placeholder="选择充值渠道">
-              <el-option label="支付宝" value="0"></el-option>
-              <el-option label="银行卡" value="1"></el-option>
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="game_type" label="充值金额(元)" width align="center">
-          <template slot-scope="scope">
-            <div>
-              <el-input size v-model="scope.row.up_money" placeholder="请输入充值金额"></el-input>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="given_type" label="赠送方式:" width align="center">
-          <template>
-            <div></div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="game_type" label="赠送金额（固定金额单位为元）" width align="center">
-          <template slot-scope="scope">
-            <div>
-              <el-input size v-model="scope.row.given_money" placeholder="请输入充值金额"></el-input>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width align="center">
-          <template slot-scope="scope">
-            <el-button size type="warning" @click="handleDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="bd" style="padding-right:15px;">
+        <info-table
+          :search="search"
+          :table-style="tableStyle"
+          :records="records"
+          :page-info="pageInfo"
+          :hide-page="true"
+        >
+          <info-table-item :table-style="tableStyle">
+            <template slot-scope="scope">
+              <template v-if="scope.prop === 'action'">
+                <permission-button
+                  :action="btn.type"
+                  v-for="(btn,index) in scope.row[scope.prop]"
+                  :key="index"
+                  @click="handeClick(btn)"
+                  style="cursor: pointer; padding-left: 5px;"
+                >
+                  <span>{{btn.label}}</span>
+                </permission-button>
+              </template>
+              <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            </template>
+          </info-table-item>
+        </info-table>
+      </div>
       <div class="footer" style="text-align: center;padding-top: 30px;">
         <el-button>
           <i class="el-icon-plus"></i> 添 加
@@ -49,15 +40,49 @@
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+
 export default {
   name: "TopPref",
   extends: BaseIframe,
+  components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
-      tableData: [
-        { up_channel: "0", up_money: "", given_type: "", given_money: "" }
+      //表格数据
+      tableStyle: [
+        { label: "充值通道", prop: "up_channel", width: "" },
+        { label: "充值金额（元）", prop: "up_money", width: "" },
+        { label: "赠送方式：", prop: "given_type", width: "" },
+        {
+          label: "赠送金额（固定金额单位为元）",
+          prop: "given_money",
+          width: ""
+        },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
+        {
+          up_channel: "0",
+          up_money: "10000",
+          given_type: "固定金额",
+          given_money: "100000",
+          action: [{ label: "删除", type: "delete" }]
+        }
       ]
     };
+  },
+  methods: {
+    search() {},
+    //表格操作
+    handeClick(btn, row) {
+      // consoloe.log(btn)
+      if (btn.type === "delete") {
+        console.log("删除");
+      }
+    }
   }
 };
 </script>

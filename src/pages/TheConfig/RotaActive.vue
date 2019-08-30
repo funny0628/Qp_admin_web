@@ -18,7 +18,7 @@
           <el-input v-model="formDate.number" style="width:220px;"></el-input>
         </el-form-item>
         <el-form-item label="奖励配置">
-          <el-table :data="tableData" style="width: 100%">
+          <!-- <el-table :data="tableData" style="width: 100%">
             <el-table-column prop="date" label="用户层级" width align="center"></el-table-column>
             <el-table-column prop="name" label="ID" width align="center"></el-table-column>
             <el-table-column prop="address" label="金额" align="center"></el-table-column>
@@ -28,7 +28,33 @@
                 <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </el-table>-->
+          <div class="bd" style="padding-right:15px;">
+            <info-table
+              :search="search"
+              :table-style="tableStyle"
+              :records="records"
+              :page-info="pageInfo"
+              :hide-page="true"
+            >
+              <info-table-item :table-style="tableStyle">
+                <template slot-scope="scope">
+                  <template v-if="scope.prop === 'action'">
+                    <permission-button
+                      :action="btn.type"
+                      v-for="(btn,index) in scope.row[scope.prop]"
+                      :key="index"
+                      @click="handeClick(btn)"
+                      style="cursor: pointer; padding-left: 5px;"
+                    >
+                      <span>{{btn.label}}</span>
+                    </permission-button>
+                  </template>
+                  <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+                </template>
+              </info-table-item>
+            </info-table>
+          </div>
         </el-form-item>
         <div class="footer" style="text-align: center;">
           <el-button>
@@ -43,10 +69,16 @@
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+
 const cityOptions = ["新用户首次进入", "每日充值任意金额", "每日登陆"];
 export default {
   name: "RotaActive",
   extends: BaseIframe,
+  components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
       formDate: {
@@ -56,20 +88,33 @@ export default {
       },
       checkedCities: [],
       cities: cityOptions,
-      tableData: [
+      tableStyle: [
+        { label: "用户层级", prop: "user_level", width: "" },
+        { label: "ID", prop: "id", width: "" },
+        { label: "金额", prop: "money", width: "" },
+        { label: "概率", prop: "probability ", width: "" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [
         {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区"
+          user_level: "普陀区",
+          id: "王小虎",
+          money: "上海",
+          probability: "35%",
+          action: [{ label: "删除", type: "delete" }]
         }
-      ]
+      ],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0)
     };
   },
   methods: {
-    handleDelete(row) {
-      console.log(row);
+    search() {},
+    //表格操作
+    handeClick(btn, row) {
+      // consoloe.log(btn)
+      if (btn.type === "delete") {
+        console.log("删除");
+      }
     }
   }
 };
@@ -92,7 +137,7 @@ export default {
 #RotaActive-main .content {
   border: 1px solid #e9e9e9;
   border-top: none;
-  height: 500px;
+  height: 600px;
   width: 100%;
 }
 </style>
