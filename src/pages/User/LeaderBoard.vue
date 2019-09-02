@@ -8,7 +8,8 @@
         v-for="(item,index) in btnList"
         :key="index"
         style="width: 140px; line-height:36px; height: 36px; display: inline-block; padding: 0;"
-      >{{item}}</div>
+      >{{item}}
+      </div>
       <div class="tab-Right">
         <el-button style="width: 120px; background:#0079f1; color: #fff;" @click="openDialog">排行榜设置</el-button>
       </div>
@@ -29,17 +30,17 @@
             <div style="display: flex;  flex-wrap:nowrap;">
               <div class="earn">
                 <el-button type="success" style="border-radius: 0;">今日盈利排行</el-button>
-                <button
+                <span
                   class="el-icon-check"
-                  style="height: 40px;width: 40px; border-color: #e4e4e4; border: none;"
-                ></button>
+                  style="height: 40px;width: 40px;background-color: #8e8e8e;line-height: 40px; text-align: center; border-color: #e4e4e4; border: none;"
+                ></span>
               </div>
               <div class="result" style="padding-left: 10px;">
                 <el-button style="border-radius: 0;">个人业绩排行</el-button>
-                <button
+                <span
                   class="el-icon-check"
-                  style="height: 40px;width: 40px; border-color: #e4e4e4; border: none;"
-                ></button>
+                  style="height: 40px;width: 40px; line-height: 40px; text-align: center; background-color: #8e8e8e; border-color: #e4e4e4; border: none;"
+                ></span>
               </div>
             </div>
           </el-form-item>
@@ -73,83 +74,83 @@
 </template>
 
 <script>
-export default {
-  name: "LeaderBoard",
-  data() {
-    return {
-      btnList: ["今日盈利排行", "个人业绩排行"],
-      num: 0,
-      tabIndex: 0,
-      /*tb*/
-      tableData: [
-        {
-          rank: "1",
-          player_name: "职业玩家",
-          player_id: "10001",
-          earn: "1000000.00",
-          result: "1238.00"
+  export default {
+    name: "LeaderBoard",
+    data() {
+      return {
+        btnList: ["今日盈利排行", "个人业绩排行"],
+        num: 0,
+        tabIndex: 0,
+        /*tb*/
+        tableData: [
+          {
+            rank: "1",
+            player_name: "职业玩家",
+            player_id: "10001",
+            earn: "1000000.00",
+            result: "1238.00"
+          }
+        ],
+        dialogVisible: false,
+        formData: {
+          region: ""
         }
-      ],
-      dialogVisible: false,
-      formData: {
-        region: ""
-      }
-    };
-  },
-  methods: {
-    btnShow(index) {
-      this.tabIndex = index;
-      this.num = index;
+      };
     },
-    openDialog() {
-      this.dialogVisible = true;
+    methods: {
+      btnShow(index) {
+        this.tabIndex = index;
+        this.num = index;
+      },
+      openDialog() {
+        this.dialogVisible = true;
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>
-#LeaderBoard .tab-btns {
-  padding: 30px 20px 10px 20px;
-}
+  #LeaderBoard .tab-btns {
+    padding: 30px 20px 10px 20px;
+  }
 
-#LeaderBoard .tab-btns .btn {
-  line-height: 1.5;
-  display: inline-block;
-  font-weight: 400;
-  text-align: center;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid #d9d9d9;
-  white-space: nowrap;
-  padding: 0 15px;
-  font-size: 14px;
-  height: 50px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  -o-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  position: relative;
-  color: rgba(0, 0, 0, 0.65);
-  background-color: #fff;
-}
+  #LeaderBoard .tab-btns .btn {
+    line-height: 1.5;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    white-space: nowrap;
+    padding: 0 15px;
+    font-size: 14px;
+    height: 50px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -o-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    position: relative;
+    color: rgba(0, 0, 0, 0.65);
+    background-color: #fff;
+  }
 
-#LeaderBoard .tab-btns .active {
-  background-color: #0079f1;
-  color: #fff;
-}
+  #LeaderBoard .tab-btns .active {
+    background-color: #0079f1;
+    color: #fff;
+  }
 
-#LeaderBoard .tab-btns .tab-Right {
-  float: right;
-}
+  #LeaderBoard .tab-btns .tab-Right {
+    float: right;
+  }
 
-#LeaderBoard .tb {
-  padding: 30px 20px 10px 20px;
-}
+  #LeaderBoard .tb {
+    padding: 30px 20px 10px 20px;
+  }
 </style>
 <!--排行榜数据-->

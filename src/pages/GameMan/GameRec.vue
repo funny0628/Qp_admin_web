@@ -91,7 +91,7 @@ export default {
       },
       date:[],
       //表格数据
-            tableStyle: [
+      tableStyle: [
         { label: "游戏开始时间", prop: "begin_time", width: "160" },
         { label: "游戏结束时间", prop: "end_time", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },

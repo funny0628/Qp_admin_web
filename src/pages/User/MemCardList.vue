@@ -88,7 +88,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogModifyVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogModifyVisible = false">确 定</el-button>
+          <el-button type="primary" @click="handelEdit">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -232,6 +232,7 @@ export default {
     search() {
       console.log("这是查询");
     },
+    //表格操作
     handeClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
@@ -253,9 +254,7 @@ export default {
           type: "warning"
         })
           .then(() => {
-            UserHandler.bank_delete(data).promise.then(res => {
-              console.log(res);
-            });
+           this.handelDelete(data);
             this.$message({
               type: "success",
               message: "删除成功!"
@@ -296,7 +295,19 @@ export default {
           ];
         });
       });
-    }
+    },
+    //删除方法
+    handelDelete(data){
+      UserHandler.bank_delete(data).promise.then(res => {
+        console.log(res);
+      });
+    },
+    //编辑方法
+    handelEdit(data,user_id){
+      UserHandler.bank_set(data,user_id).promise.then(res=>{
+        console.log(res);
+      })
+    },
   },
   mounted() {
     this.getBank_list();
