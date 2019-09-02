@@ -7,7 +7,7 @@ class UserHandler extends BaseHandler {
   }
   //查询用户银行
   bank_info(data, user_id) {
-    return this.get_v1('/bank_info/'+ user_id , data)
+    return this.get_v1('/c/'+ user_id , data)
   }
   //添加会员
   add(data) {
@@ -52,6 +52,11 @@ class UserHandler extends BaseHandler {
   //修改用户分层
   vip_set(data){
     return this.get_v1('/vip_set',data)
+  }
+  
+// 后台用户查看用户列表
+  admin_list(data,user_id){
+    return this.set_v1('/admin_list/'+user_id,data)
   }
 }
 

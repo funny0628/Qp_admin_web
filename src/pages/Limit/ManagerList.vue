@@ -170,6 +170,9 @@ export default {
 </script>
 
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
 .el-row {
   margin: 10px 0 30px;
 }

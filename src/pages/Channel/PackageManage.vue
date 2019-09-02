@@ -1,6 +1,16 @@
 <template>
   <div id="packagemanage">
     <input-area>
+     <el-select v-model="runvalue" placeholder="运营" size="medium">
+    <el-option
+      v-for="item in runoptions"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+>
+      
+    </el-option>
+  </el-select>
       <el-input v-model="package_id" placeholder="请输入包id" size="medium"></el-input>
       <el-input v-model="mark" placeholder="标示" size="medium" class="w-160"></el-input>
       <el-input v-model="package_status" placeholder="包状态" size="medium"></el-input>
@@ -131,6 +141,8 @@ export default {
       package_status: "",
       date: [],
       addpackage: false,
+      runvalue:'',
+      platformvalue:'',
       ruleForm: {
         platform: "",
         mark: "",
@@ -193,6 +205,18 @@ export default {
           ]
         }
       ],
+      runoptions:[
+        {
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+      ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
     };
   },
@@ -213,6 +237,9 @@ export default {
 </script>
 
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
 .el-row {
   margin: 10px 0 30px;
 }

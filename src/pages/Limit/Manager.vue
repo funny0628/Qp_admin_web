@@ -9,7 +9,21 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
-      ></info-table>
+      >
+       <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="scope.prop==='operate'">
+              <el-button
+                type="text"
+                v-for="(btn,i) in scope.row[scope.prop]"
+                :key="i"
+                @click="handeClick(btn)"
+              >{{btn.label}}</el-button>
+            </template>
+            <template v-if="['operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template>
+        </info-table-item>
+      </info-table>
     </div>
 </div>
 
@@ -19,9 +33,11 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+
 export default {
   extends: BaseIframe,
-  components: { InfoTable, PermissionButton },
+  components: { InfoTable, PermissionButton ,InfoTableItem},
   data(){
       return{
         tableStyle: [
@@ -31,7 +47,28 @@ export default {
         { label: "状态", prop: "status", width: "" },
         { label: "操作", prop: "operate", width: "" },
       ],
-      records: [],
+      records: [
+         {
+          id: 111,
+          role: "会计",
+          roledescribe: "-",
+          status: '启用',
+          operate: [
+            {
+              label: "编辑",
+              type: "edit"
+            },
+            {
+              label: "删除",
+              type: "delete"
+            },
+             {
+              label: "禁用",
+              type: "delete"
+            }
+          ]
+        }
+      ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
       }
   },
@@ -41,6 +78,9 @@ export default {
 }
 </script>
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
 .addnewbtn{
     margin: 10px 20px;
     font-size: 16px!important;

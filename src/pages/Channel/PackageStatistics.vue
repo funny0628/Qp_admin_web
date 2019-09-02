@@ -62,6 +62,9 @@ export default {
 </script>
 
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
 .select-time{
   margin-right: 20px !important;
 }

@@ -10,6 +10,14 @@
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
     </input-area>
+    <div class="checkpage">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/' }">游戏平台</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <a href="/">活动管理</a>
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="bd">
       <info-table
         :search="search"
@@ -84,33 +92,28 @@
       </span>
     </el-dialog>
     <!-- 游戏管理设置 -->
-    <el-dialog
-  title="游戏管理"
-  :visible.sync="gamemanage"
-  width="30%">
-  <div class="checkbox">
- <el-table
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-      :header-cell-style="{background:'#f2f2f2'}"
-      :border="true"
-    >
-      <el-table-column type="selection" align="center" min-width="50">
-      </el-table-column>
-      <el-table-column label="游戏名称" align="center">
-        <template slot-scope="scope" >{{ scope.row.game }}</template>
-      </el-table-column>
-    </el-table>
-  </div>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="gamemanage = false">取 消</el-button>
-    <el-button type="primary" @click="gamemanage = false">确 定</el-button>
-  </span>
-</el-dialog>
-   
+    <el-dialog title="游戏管理" :visible.sync="gamemanage" width="30%">
+      <div class="checkbox">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+          :header-cell-style="{background:'#f2f2f2'}"
+          :border="true"
+        >
+          <el-table-column type="selection" align="center" min-width="50"></el-table-column>
+          <el-table-column label="游戏名称" align="center">
+            <template slot-scope="scope">{{ scope.row.game }}</template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="gamemanage = false">取 消</el-button>
+        <el-button type="primary" @click="gamemanage = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -121,6 +124,7 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+import UserHandler from "../../script/handlers/UserHandler";
 
 export default {
   extends: BaseIframe,
@@ -140,7 +144,7 @@ export default {
       sub_name: "",
       date: [],
       addsub: false,
-      gamemanage:false,
+      gamemanage: false,
       ruleForm: {
         substage: "",
         subaccount: "",
@@ -164,13 +168,14 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "子后台ID", prop: "substageid", width: "" },
-        { label: "子后台名称", prop: "substagename", width: "" },
-        { label: "子后台账号", prop: "substageaccount", width: "" },
+        { label: "运营后台ID", prop: "substageid", width: "" },
+        { label: "运营后台名称", prop: "substagename", width: "" },
+        { label: "运营后台账号", prop: "substageaccount", width: "" },
         { label: "下级后台数", prop: "lowerstage", width: "" },
         { label: "用户类型", prop: "usertype", width: "" },
         { label: "运营后台描述", prop: "substagedescribe", width: "" },
-        { label: "操作", prop: "operate", width: "" }
+        { label: "状态", prop: "status", width: "" },
+        { label: "操作", prop: "operate", width: "260" }
       ],
       records: [
         {
@@ -221,8 +226,11 @@ export default {
       if (btn.type === "gamemanage") {
         this.gamemanage = true;
       }
-      if (btn.type === "edit") {
+      if (btn.type === "authorization") {
         this.forward("setpermission");
+      }
+      if (btn.type === "edit") {
+        this.addsub = true;
       }
     },
     toggleSelection(rows) {
@@ -236,12 +244,29 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    getadminlist() {
+      let data = {};
+      UserHandler.admin_list(data, 1000).promise.then(res => {
+        if (Number(res.code) === 200) {
+        }
+      });
     }
+  },
+  mounted() {
+    this.getadminlist();
   }
 };
 </script>
 
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
+.checkpage{
+  margin-left:20px;
+  margin-bottom: 20px;
+}
 .el-row {
   margin: 10px 0 30px;
 }
@@ -270,8 +295,8 @@ export default {
   width: 100%;
 }
 
-#subaccount .el-button.el-button--primary.el-button--medium{
-margin-left: 0px!important;
+#subaccount .el-button.el-button--primary.el-button--medium {
+  margin-left: 0px !important;
   margin-right: 20px !important;
 }
 </style>

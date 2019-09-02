@@ -49,6 +49,9 @@ export default {
 </script>
 
 <style scoped>
+.bd{
+  margin: 0 20px;
+}
 .el-input{
     margin-right: 10px;
 }
