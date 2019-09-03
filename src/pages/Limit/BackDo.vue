@@ -26,14 +26,17 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
+import LogHandler from "../../script/handlers/LogHandler";
 
 export default {
   extends: BaseIframe,
   components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {
-      user_id: "",
+      user_id: '',
       operatemodule:'',
+      current_user:1002,
+      module:'',
       date: [],
       tableStyle: [
         { label: "日志编号", prop: "journalid", width: "" },
@@ -41,15 +44,33 @@ export default {
         { label: "管理员名称", prop: "adminname", width: "" },
         { label: "操作模块", prop: "operatemodule", width: "" },
         { label: "操作详情", prop: "operatedetail", width: "" },
+        { label: "状态", prop: "status", width: "" },
         { label: "操作IP", prop: "operateip", width: "" },
         { label: "操作时间", prop: "operatetime", width: "" }
       ],
       records: [],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0)
+       pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      current_page:1
     };
   },
   methods: {
     search() {},
+    getOperateList(){
+      let data={
+          module:"",
+          operator:this.user_id,
+          start_date:"",
+          stop_date:"",
+          page_index:this.current_page
+      }
+      LogHandler.member_operate(data,this.current_user).promise.then(res=>{
+         console.log(res)
+      })
+    }
+  },
+  created(){
+    this.getOperateList();
+    console.log(this.date)
   }
 };
 </script>

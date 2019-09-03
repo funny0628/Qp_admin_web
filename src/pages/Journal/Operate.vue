@@ -49,6 +49,12 @@ export default {
   },
   methods: {
     search() {},
+    getmsg(){
+      
+    }
+  },
+  created(){
+    this.getmsg();
   }
 };
 </script>

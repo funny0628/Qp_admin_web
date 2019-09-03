@@ -24,7 +24,8 @@
               <p v-for="(ite,ind) in scope.row[scope.prop]" :key="ind">{{ite}}</p>
             </template>
             <template v-if="scope.prop==='operate'">
-              <el-button type="text" v-for="(btn,i) in scope.row[scope.prop]" :key="i">{{btn.label}}</el-button>
+              <el-button type="text">审核</el-button>
+              <el-button type="text">驳回</el-button>
             </template>
             <template
               v-if="['moneyexchange','submittime','operate'].indexOf(scope.prop) < 0"
@@ -89,10 +90,6 @@ export default {
           submittime: ["2018-09-01 12:00:00", "2019-08-01 12:00:00"],
           operater: "admin",
           ordertip: "",
-          operate: [
-            { label: "审核", type: "check" },
-            { label: "驳回", type: "reject" }
-          ]
         }
       ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)

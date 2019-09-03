@@ -3,12 +3,18 @@
     <input-area>
      <el-select v-model="runvalue" placeholder="运营" size="medium">
     <el-option
-      v-for="item in runoptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
->
-      
+      v-for="item1 in runoptions"
+      :key="item1.value1"
+      :label="item1.label1"
+      :value="item1.value1"> 
+    </el-option>
+  </el-select>
+    <el-select v-model="platformvalue" placeholder="平台" size="medium">
+    <el-option
+      v-for="item2 in platformoptions"
+      :key="item2.value2"
+      :label="item2.label2"
+      :value="item2.value2"> 
     </el-option>
   </el-select>
       <el-input v-model="package_id" placeholder="请输入包id" size="medium"></el-input>
@@ -31,11 +37,13 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.column===3">
+            <template v-if="scope.prop==='belong'">
               <p v-for="(ite,ind) in scope.row[scope.prop]" :key="ind">{{ite}}</p>
             </template>
             <template v-if="scope.prop==='operate'">
-              <el-button type="text" v-for="(btn,i) in scope.row[scope.prop]" :key="i">{{btn.label}}</el-button>
+              <el-button type="text" @click="addpackage=true">编辑</el-button>
+              <el-button type="text">禁用</el-button>
+              <el-button type="text">推广链接</el-button>
             </template>
             <template v-if="['belong','operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
@@ -174,7 +182,7 @@ export default {
         { label: "包ID", prop: "packageid", width: "" },
         { label: "标识", prop: "mark", width: "" },
         { label: "平台名称", prop: "platform", width: "" },
-        { label: "包所属用户", prop: "belong", width: "" },
+        { label: "包所属用户", prop: "belong", width: "260" },
         { label: "下载地址", prop: "download", width: "205" },
         { label: "大厅热更新", prop: "update", width: "" },
         { label: "游戏开放", prop: "open", width: "230" },
@@ -197,24 +205,30 @@ export default {
           lowerplayernum: "100",
           status: "开启",
           createtime: "20190822 12:00:00",
-          operate: [
-            { label: "绑定", type: "binding" },
-            { label: "编辑", type: "edit" },
-            { label: "禁用", type: "ban" },
-            { label: "推广链接", type: "expand" }
-          ]
         }
       ],
       runoptions:[
         {
-          value: '选项1',
-          label: '黄金糕'
+          value1: '选项1',
+          label1: '黄金糕'
         }, {
-          value: '选项2',
-          label: '双皮奶'
+          value1: '选项2',
+          label1: '双皮奶'
         }, {
-          value: '选项3',
-          label: '蚵仔煎'
+          value1: '选项3',
+          label1: '蚵仔煎'
+        },
+      ],
+      platformoptions:[
+          {
+          value2: '选项1',
+          label2: '黄金糕'
+        }, {
+          value2: '选项2',
+          label2: '双皮奶'
+        }, {
+          value2: '选项3',
+          label2: '蚵仔煎'
         },
       ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
@@ -268,10 +282,10 @@ export default {
   margin: 0;
 }
 .select-time{
-  margin-right: 20px !important;
+  margin-right: 10px !important;
 }
 #packagemanage .el-button.el-button--primary.el-button--medium{
 margin-left: 0px!important;
-  margin-right: 20px !important;
+  margin-right: 5px !important;
 }
 </style>

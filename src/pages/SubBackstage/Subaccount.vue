@@ -11,12 +11,12 @@
       </permission-button>
     </input-area>
     <div class="checkpage">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">游戏平台</el-breadcrumb-item>
-        <el-breadcrumb-item>
-          <a href="/">活动管理</a>
-        </el-breadcrumb-item>
-      </el-breadcrumb>
+      <span
+        v-for="(item,index) in breadlist"
+        :key="index"
+        @click="getmsg(item.id,index)"
+        style="color:#409EFF;cursor: pointer;"
+      >{{item.name}}</span>
     </div>
     <div class="bd">
       <info-table
@@ -27,15 +27,24 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop==='operate'">
-              <el-button
-                type="text"
-                v-for="(btn,i) in scope.row[scope.prop]"
-                :key="i"
-                @click="handeClick(btn)"
-              >{{btn.label}}</el-button>
+            <template v-if="scope.prop=='substagename'">
+              <span
+                @click="fn(scope.row.substageid,scope.row.substagename)"
+                class="platformchoice"
+              >{{scope.row[scope.prop]}}</span>
             </template>
-            <template v-if="['operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop==='operate'">
+              <span @click="handeClick($event)">
+                <el-button type="text">游戏管理</el-button>
+                <el-button type="text">授权</el-button>
+                <el-button type="text">编辑</el-button>
+                <el-button type="text" @click="runstop()">{{scope.row.statu==0?'启用':'禁用'}}</el-button>
+                <el-button type="text">结算</el-button>
+              </span>
+            </template>
+            <template
+              v-if="['operate','substagename'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -140,6 +149,7 @@ export default {
       }
     };
     return {
+      breadlist: [{ name: "游戏平台" }],
       sub_id: "",
       sub_name: "",
       date: [],
@@ -185,28 +195,38 @@ export default {
           lowerstage: 10,
           usertype: "超级管理员",
           substagedescribe: "-",
-          operate: [
-            {
-              label: "游戏管理",
-              type: "gamemanage"
-            },
-            {
-              label: "授权",
-              type: "authorization"
-            },
-            {
-              label: "编辑",
-              type: "edit"
-            },
-            {
-              label: "禁用",
-              type: "ban"
-            },
-            {
-              label: "结算",
-              type: "settlement"
-            }
-          ]
+          statu:0,
+           status:'禁用'
+        },
+        {
+          substageid: 111,
+          substagename: "游戏平台2",
+          substageaccount: "a-admin",
+          lowerstage: 15,
+          usertype: "管理员",
+          substagedescribe: "-",
+              statu:1,
+           status:'启用'
+        }
+      ],
+      childrenrecords: [
+        {
+          substageid: 111,
+          substagename: "游戏平台1-1",
+          substageaccount: "a-admin",
+          lowerstage: 10,
+          usertype: "超级管理员",
+          substagedescribe: "-",
+    
+        },
+        {
+          substageid: 111,
+          substagename: "游戏平台1-2",
+          substageaccount: "a-admin",
+          lowerstage: 15,
+          usertype: "管理员",
+          substagedescribe: "-",
+         
         }
       ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0),
@@ -222,14 +242,15 @@ export default {
   },
   methods: {
     search() {},
-    handeClick(btn) {
-      if (btn.type === "gamemanage") {
+    handeClick(event) {
+      //  console.log(event)
+      if (event.target.innerText === "游戏管理") {
         this.gamemanage = true;
       }
-      if (btn.type === "authorization") {
+      if (event.target.innerText === "授权") {
         this.forward("setpermission");
       }
-      if (btn.type === "edit") {
+      if (event.target.innerText === "编辑") {
         this.addsub = true;
       }
     },
@@ -248,10 +269,27 @@ export default {
     getadminlist() {
       let data = {};
       UserHandler.admin_list(data, 1000).promise.then(res => {
+        console.log(res)
         if (Number(res.code) === 200) {
         }
       });
-    }
+    },
+    // 实现面包屑，存入需要的数据
+    fn(id, name) {
+      // xxx.then( res=>{
+      let obj = {};
+      obj.name = `/${name}`;
+      this.breadlist.push(obj);
+      this.records = this.childrenrecords; //返回的新表格数据覆盖records
+      // })
+    },
+    // 实现面包屑反选，将存入的数据传入
+    getmsg(id, index) {
+      //  裁剪面包屑列表
+      this.breadlist.splice(index + 1, this.breadlist.length - 1);
+      // 执行请求表格数据，获取最新的表格
+    },
+    runstop(){}
   },
   mounted() {
     this.getadminlist();
@@ -260,11 +298,11 @@ export default {
 </script>
 
 <style scoped>
-.bd{
+.bd {
   margin: 0 20px;
 }
-.checkpage{
-  margin-left:20px;
+.checkpage {
+  margin-left: 20px;
   margin-bottom: 20px;
 }
 .el-row {
@@ -298,5 +336,9 @@ export default {
 #subaccount .el-button.el-button--primary.el-button--medium {
   margin-left: 0px !important;
   margin-right: 20px !important;
+}
+.platformchoice {
+  cursor: pointer;
+  color: #409eff;
 }
 </style>

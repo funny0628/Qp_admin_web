@@ -15,10 +15,16 @@
             <template v-if="scope.prop==='operate'">
               <el-button
                 type="text"
-                v-for="(btn,i) in scope.row[scope.prop]"
-                :key="i"
-                @click="handeClick(btn)"
-              >{{btn.label}}</el-button>
+               v-if="scope.row.role=='超级管理员'"
+              >编辑</el-button>
+              <span v-else>
+              <el-button
+                type="text">编辑</el-button>
+                <el-button
+                type="text">删除</el-button>
+                <el-button
+                type="text" @click="runstop()">{{scope.row.status==0?'启用':'禁用'}}</el-button>
+              </span>
             </template>
             <template v-if="['operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
@@ -50,23 +56,15 @@ export default {
       records: [
          {
           id: 111,
+          role: "超级管理员",
+          roledescribe: "-",
+          status: '启用',
+        },
+       {
+          id: 222,
           role: "会计",
           roledescribe: "-",
           status: '启用',
-          operate: [
-            {
-              label: "编辑",
-              type: "edit"
-            },
-            {
-              label: "删除",
-              type: "delete"
-            },
-             {
-              label: "禁用",
-              type: "delete"
-            }
-          ]
         }
       ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
@@ -74,6 +72,7 @@ export default {
   },
   methods: {
     search() {},
+    runstop(){}
   }
 }
 </script>
