@@ -22,7 +22,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -30,7 +30,8 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'money_change', 'time'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            >{{scope.row[scope.prop]}}
+            </template>
           </template>
         </info-table-item>
       </info-table>
@@ -38,13 +39,13 @@
     <div class="dialog">
       <!-- 新增、修改 -->
       <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
-        <el-form :model="formDate">
+        <el-form :model="formData">
           <el-form-item label="标题：" :label-width="labelWidth">
-            <el-input autocomplete="off" v-model="formDate.title" placeholder="请输入标题"></el-input>
+            <el-input autocomplete="off" v-model="formData.title" placeholder="请输入标题"></el-input>
           </el-form-item>
           <el-form-item label="发送时间：" :label-width="labelWidth">
             <el-date-picker
-              v-model="formDate.begin_time"
+              v-model="formData.begin_time"
               type="date"
               style="width: 100%"
               placeholder="请选择开始时间"
@@ -53,23 +54,23 @@
           <el-form-item label="内容：" :label-width="labelWidth">
             <el-input
               autocomplete="off"
-              v-model="formDate.content"
+              v-model="formData.content"
               type="textarea"
               placeholder="请输入内部邮件内容"
             ></el-input>
           </el-form-item>
           <el-form-item label="接收人：" :label-width="labelWidth">
-            <el-input autocomplete="off" v-model="formDate.render" placeholder="请输入接受人"></el-input>
+            <el-input autocomplete="off" v-model="formData.render" placeholder="请输入接受人"></el-input>
           </el-form-item>
           <el-form-item label="接收层级：" :label-width="labelWidth">
-            <el-checkbox-group v-model="formDate.checkedCities" style="width: 60%">
+            <el-checkbox-group v-model="formData.checkedCities" style="width: 60%">
               <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="AddEditClick">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -77,98 +78,122 @@
 </template>
 
 <script>
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InfoTable from "../../plugin/components/InfoTable";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-import HallHandler from "../../script/handlers/HallHandler";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from "../../plugin/components/InfoTable";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+  import HallHandler from "../../script/handlers/HallHandler";
 
-const cityOptions = ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"];
-export default {
-  name: "InternalMail",
-  extends: BaseIframe,
-  components: { InfoTableItem, InputArea, PermissionButton, InfoTable },
-  data() {
-    return {
-      tableStyle: [
-        { label: "标题", prop: "subject", width: "" },
-        { label: "内容", prop: "content", width: "" },
-        { label: "接收者", prop: "recipients", width: "" },
-        { label: "发送人", prop: "form", width: "" },
-        { label: "发送时间", prop: "send_at", width: "" },
-        { label: "操作", prop: "action", width: "" }
-      ],
-      records: [
-        {
-          subject: "金币兑换通知",
-          content: "这边是内容",
-          recipients: "vip1",
-          form: "admin",
-          send_at: "2019-01-01 12:00:00",
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      /*dialog*/
-      dialogTitleType: "",
-      dialogVisible: false,
-      labelWidth: "100px",
-      formDate: {
-        title: "",
-        begin_time: "",
-        content: "",
-        render: "",
-        checkedCities: ["vip1", "vip2"]
-      },
-      cities: cityOptions
-    };
-  },
-  methods: {
-    search() {
-      this.dialogTitleType = "新增大厅海报";
-      this.dialogVisible = true;
-    },
-    /**edit */
-    handeClick(btn) {
-      if (btn.type === "edit") {
-        this.dialogTitleType = "修改大厅海报";
-        this.dialogVisible = true;
-      }
-    },
-    getMailList() {
-      let data = {
-        page_index: "",
-        page_size: ""
+  export default {
+    name: "InternalMail",
+    extends: BaseIframe,
+    components: {InfoTableItem, InputArea, PermissionButton, InfoTable},
+    data() {
+      return {
+        tableStyle: [
+          {label: "标题", prop: "subject", width: ""},
+          {label: "内容", prop: "content", width: ""},
+          {label: "接收者", prop: "recipients", width: ""},
+          {label: "发送人", prop: "sender", width: ""},
+          {label: "发送时间", prop: "send_at", width: ""},
+          {label: "操作", prop: "action", width: ""}
+        ],
+        records: [
+          {
+            subject: "金币兑换通知",
+            content: "这边是内容",
+            recipients: "vip1",
+            sender: "admin",
+            send_at: "2019-01-01 12:00:00",
+            action: [
+              {label: "删除", type: "delete"}
+            ]
+          }
+        ],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        //弹窗数据
+        dialogTitleType: "",
+        dialogVisible: false,
+        labelWidth: "100px",
+        formData: {
+          title: "",
+          begin_time: "",
+          content: "",
+          render: "",
+          checkedCities: ["vip1", "vip2"]
+        },
+        cities: ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"]
       };
-      HallHandler.email_list(data).promise.then(res => {
-        console.log(res)
-        if (Number(res.code) === 200) {
-          this.records = res.data;
-        }
-        //数据处理
-        this.records.map(item => {
-          item.action = [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ];
+    },
+    methods: {
+      search() {
+        this.dialogTitleType = "新增大厅海报";
+        this.dialogVisible = true;
+      },
+      //表格操作
+      handelClick(btn, row) {
+        let data = {
+          platform_id: 1000,
+          email_id: row.email_id
+        };
+        this.handelDelete(data)
+      },
+      //获取内部邮件列表
+      getMailList() {
+        let data = {
+          platform_id: 1000,
+          page_index: "",
+          page_size: ""
+        };
+        HallHandler.email_list(data).promise.then(res => {
+          console.log(res);
+          if (Number(res.code) === 200) {
+            this.records = [...this.records, ...res.data.list];
+          }
+          //数据处理
+          this.records.map(item => {
+            item.action = [
+              {label: "删除", type: "delete"}
+            ];
+          });
         });
-      });
+      },
+      AddEditClick() {
+        let data = {
+          platform_id: 1000,
+          subject: this.formData.subject,
+          content: this.formData.content,
+          sender: this.formData.sender,
+          recipients: this.formData.recipients,
+          send_at: this.formData.send_at,
+          vip: this.formData.vip
+        };
+        this.handelAdd(data)
+      },
+      //删除方法
+      handelDelete(data) {
+        HallHandler.email_delete(data).promise.then(rs => {
+          console.log(rs);
+        })
+      },
+      //新增方法
+      handelAdd(data) {
+        HallHandler.email_add(data).promise.then(rs => {
+          console.log(rs);
+        })
+      },
+    },
+    mounted() {
+      this.getMailList();
     }
-  },
-  mounted() {
-    this.getMailList();
-  }
-};
+  };
 </script>
 
 <style scoped>
-#ScrollNotice-main .bd p {
-  margin: 0;
-}
+  #ScrollNotice-main .bd p {
+    margin: 0;
+  }
 </style>
 <!--内部邮件-->

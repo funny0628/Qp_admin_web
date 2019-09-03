@@ -96,7 +96,7 @@ export default {
   methods: {
     /***查询搜索 */
     search() {},
-    /***查看链接 */
+    //表格操作
     handeClick(btn) {},
     getSpreadList() {
       let data = {
