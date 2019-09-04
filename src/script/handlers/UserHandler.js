@@ -58,12 +58,12 @@ class UserHandler extends BaseHandler {
 
   //添加用户分层
   vip_add(data) {
-    return this.get_v1('/vip_add', data)
+    return this.set_v1('/vip_add', data)
   }
 
   //修改用户分层
   vip_set(data) {
-    return this.get_v1('/vip_set', data)
+    return this.set_v1('/vip_set', data)
   }
 
   // 后台用户查看用户列表

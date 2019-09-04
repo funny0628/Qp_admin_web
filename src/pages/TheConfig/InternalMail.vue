@@ -138,7 +138,8 @@
           platform_id: 1000,
           email_id: row.email_id
         };
-        this.handelDelete(data)
+        this.handelDelete(data);
+        this.getMailList();
       },
       //获取内部邮件列表
       getMailList() {
@@ -167,10 +168,12 @@
           content: this.formData.content,
           sender: this.formData.sender,
           recipients: this.formData.recipients,
-          send_at: this.formData.send_at,
-          vip: this.formData.vip
+          send_at: this.formData.begin_time,
+          vip: this.formData.checkedCities
         };
-        this.handelAdd(data)
+        this.handelAdd(data);
+        this.getMailList();
+        this.dialogVisible = false;
       },
       //删除方法
       handelDelete(data) {

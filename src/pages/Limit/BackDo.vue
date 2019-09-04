@@ -53,16 +53,25 @@ export default {
   },
   methods: {
     search(val){
+      var fd = new FormData();
+
       val = val||this.pageInfo.page;
-      let data={
-          module:this.operatemodule,
-          operator:this.user_id,
-          start_date:this.date[0]||"",
-          stop_date:this.date[1]||"",
-          page_index:val
-      }
-      console.log('111',data)
-      LogHandler.member_operate(data,this.current_user).promise.then(res=>{
+      // let data={
+      //     module:this.operatemodule,
+      //     operator:this.user_id,
+      //     start_date:this.date[0]||"",
+      //     stop_date:this.date[1]||"",
+      //     page_index:val
+      // };
+      fd.append("module",this.operatemodule);
+      fd.append("operator","");
+      fd.append("start_date","");
+      fd.append("stop_date","");
+      fd.append("page_index",val);
+
+      console.log(fd);
+
+      LogHandler.member_operate(fd,this.current_user).promise.then(res=>{
          const { data, msg, code } = res;
          if(Number(code)==200){
            this.records=data.ls

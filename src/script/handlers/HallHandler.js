@@ -57,8 +57,8 @@ class HallHandler extends BaseHandler {
   }
 
   //大厅海报
-  poster_list() {
-    return this.get_v1('/poster_list')
+  poster_list(data) {
+    return this.get_v1('/poster_list',data)
   }
 
   //修改大厅海报

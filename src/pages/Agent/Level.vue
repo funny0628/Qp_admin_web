@@ -80,7 +80,7 @@ export default {
         { label: "操作", prop: "action", width: "" }
       ],
       records: [],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      pageInfo: new PageInfo(4, [5, 10, 15], 4),
       //新增、编辑数据
       dialogTitleType: "",
       dialogVisible: false,
@@ -115,10 +115,9 @@ export default {
     //代理层级
     getList() {
       tierHandler.list().promise.then(res => {
-        // console.log(res);
         if (Number(res.code) === 200) {
           // cache = res.data;
-          this.records = res.data.list;
+          this.records = res.data;
           storage.set("list", this.records);
         }
         //数据处理
@@ -136,9 +135,7 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler
-              .add(data)
-              .promise.then(res => {
+            tierHandler.add(data).promise.then(res => {
                 // console.log(res)
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
@@ -176,9 +173,6 @@ export default {
         }
       });
     }
-    // reset(){
-    //   this.$refs["dataForm"].resetFields();// 失效
-    // }
   },
   mounted() {
     this.getList();

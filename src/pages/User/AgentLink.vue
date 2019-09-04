@@ -70,7 +70,7 @@ export default {
         { label: "用户ID", prop: "user_id", width: "" },
         { label: "用户昵称", prop: "nickname", width: "" },
         { label: "用户身份", prop: "user_type", width: "" },
-        { label: "代理链接", prop: "websit", width: "" },
+        { label: "代理链接", prop: "website", width: "" },
         { label: "注册人数", prop: "used", width: "" },
         { label: "操作", prop: "action", width: "200" }
       ],
@@ -80,7 +80,7 @@ export default {
           user_id: "1001100",
           nickname: "大牛比较懒",
           user_type: "第一级代理",
-          websit: "t.cn/auidna",
+          website: "t.cn/auidna",
           used: "10",
           action: [
             {

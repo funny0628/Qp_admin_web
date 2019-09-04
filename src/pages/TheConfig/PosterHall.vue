@@ -132,20 +132,7 @@
           {label: "开始时间／结束时间", prop: "time", width: ""},
           {label: "操作", prop: "action", width: ""}
         ],
-        records: [
-          {
-            poster_id: "1",
-            title: "活动banner",
-            image: "http://192.168.0.187:7300/public/images/group-default.png",
-            poster_sorted: "1",
-            status: 1,
-            time: ['2019-01-01 12:00:00', '2019-01-04 12:00:00'],
-            action: [
-              {label: "修改", type: "edit"},
-              {label: "删除", type: "delete"}
-            ]
-          }
-        ],
+        records: [],
         pageInfo: new PageInfo(0, [5, 10, 15], 0),
         //弹窗数据
         dialogTitleType: "",
@@ -224,17 +211,22 @@
       },
       //获取大厅海报
       getPosterList() {
-        HallHandler.poster_list().promise.then(res => {
+        let data = {
+          platform_id:1000
+        };
+        HallHandler.poster_list(data).promise.then(res => {
           // console.log(res);
           if (Number(res.code) === 200) {
-            this.records.push(res.data);
+            this.records = [...this.records,...res.data]
           }
           //数据处理
           this.records.map(item => {
+            let time = [item.created_at,item.enabled_at];
             item.action = [
               {label: "修改", type: "edit"},
               {label: "删除", type: "delete"}
             ];
+            item.time = time;
           });
         });
       },

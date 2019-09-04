@@ -71,7 +71,8 @@ export default {
           given_money: "100000",
           action: [{ label: "删除", type: "delete" }]
         }
-      ]
+      ],
+      pageInfo: new PageInfo(4, [5, 10, 15], 4),
     };
   },
   methods: {

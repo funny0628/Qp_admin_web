@@ -510,7 +510,7 @@
         UserHandler.list(data).promise.then(res => {
           // console.log(res);
           if (Number(res.code) === 200) {
-            this.records = [...res.data.list, ...this.records];
+            this.records = res.data.list;
             //数据处理
             let goldArr = []; //用户金币
             let top_up_amount = ""; //充值金额/笔数
@@ -522,6 +522,7 @@
               goldArr.push("理财：" + item.fanancial);
               top_up_amount = item.pay_sum + "/" + item.pay_count;
               change_amount = item.draw_sum + "/" + item.draw_count;
+              console.log(item.bank_info.length);
               if (item.bank_info.length > 0) {
                 item.bank_info.map(bank => {
                   if (Number(bank.bank_id) !== 1) {
