@@ -24,6 +24,7 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
+import LogHandler from "../../script/handlers/LogHandler";
 
 export default {
   extends: BaseIframe,
@@ -32,6 +33,7 @@ export default {
     return {
       user_id: "",
       loginip:'',
+      current_user:1002,
       date: [],
       tableStyle: [
         { label: "管理员ID", prop: "adminid", width: "" },
@@ -40,11 +42,32 @@ export default {
         { label: "操作时间", prop: "operatetime", width: "" }
       ],
       records: [],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0)
+      pageInfo: new PageInfo(1, [10, 15, 20], 0)
     };
   },
   methods: {
-    search() {},
+      search(val){
+      val = val||this.pageInfo.page;
+      let data={
+          user_id:this.user_id,
+          ip:this.loginip,
+          // start_date:this.date[0]||"",
+          // stop_date:this.date[1]||"",
+          page_index:val
+      }
+      // console.log('111',data)
+      LogHandler.member_login(data,this.current_user).promise.then(res=>{
+         console.log(res)
+         const { data, msg, code } = res;
+        //  if(Number(code)==200){
+        //    this.records=data.ls
+        //  }
+          // this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
+      })
+    }
+  },
+  created(){
+    this.search();
   }
 };
 </script>

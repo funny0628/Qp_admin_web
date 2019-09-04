@@ -36,41 +36,44 @@ export default {
       user_id: '',
       operatemodule:'',
       current_user:1002,
-      module:'',
       date: [],
       tableStyle: [
-        { label: "日志编号", prop: "journalid", width: "" },
-        { label: "管理员ID", prop: "adminid", width: "" },
-        { label: "管理员名称", prop: "adminname", width: "" },
-        { label: "操作模块", prop: "operatemodule", width: "" },
-        { label: "操作详情", prop: "operatedetail", width: "" },
-        { label: "状态", prop: "status", width: "" },
-        { label: "操作IP", prop: "operateip", width: "" },
-        { label: "操作时间", prop: "operatetime", width: "" }
+        { label: "日志编号", prop: "log_id", width: "" },
+        { label: "管理员ID", prop: "operator", width: "" },
+        { label: "管理员名称", prop: "operator_name", width: "" },
+        { label: "操作模块", prop: "power_parents", width: "" },
+        { label: "操作详情", prop: "power", width: "" },
+        { label: "状态", prop: "result", width: "" },
+        { label: "操作IP", prop: "ip", width: "" },
+        { label: "操作时间", prop: "created_at", width: "" }
       ],
       records: [],
-       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      current_page:1
+       pageInfo: new PageInfo(1, [5, 10, 15], 0),
     };
   },
   methods: {
-    search() {},
-    getOperateList(){
+    search(val){
+      val = val||this.pageInfo.page;
       let data={
-          module:"",
+          module:this.operatemodule,
           operator:this.user_id,
-          start_date:"",
-          stop_date:"",
-          page_index:this.current_page
+          start_date:this.date[0]||"",
+          stop_date:this.date[1]||"",
+          page_index:val
       }
+      console.log('111',data)
       LogHandler.member_operate(data,this.current_user).promise.then(res=>{
-         console.log(res)
+         const { data, msg, code } = res;
+         if(Number(code)==200){
+           this.records=data.ls
+         }
+          this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
       })
     }
   },
   created(){
-    this.getOperateList();
-    console.log(this.date)
+    this.search();
+     console.log(this.pageInfo.page)
   }
 };
 </script>
