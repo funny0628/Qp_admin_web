@@ -57,6 +57,8 @@
               type="date"
               placeholder="请选择开始时间"
               style="width: 100%;"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间：" :label-width="labelWidth">
@@ -65,6 +67,8 @@
               type="date"
               placeholder="请选择结束时间"
               style="width: 100%;"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="内容：" :label-width="labelWidth">
@@ -131,8 +135,8 @@
             ]
           }
         ],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
-        /*dialog*/
+        pageInfo: new PageInfo(0, [5, 10, 15], 5), // page pageSizes total
+        //弹窗数据
         dialogTitleType: "",
         dialogVisible: false,
         labelWidth: "90px",

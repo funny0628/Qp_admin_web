@@ -15,11 +15,6 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
-            >
-              <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
-            </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
                 :action="btn.type"
@@ -31,9 +26,7 @@
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -79,7 +72,14 @@ export default {
         { label: "别名", prop: "tier_alias", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [],
+      records: [
+        {
+          tier: "1",
+          tier_name: "第一级代理",
+          tier_alias: "董事长",
+          action: [{ label: "修改", type: "edit" }]
+        }
+      ],
       pageInfo: new PageInfo(4, [5, 10, 15], 4),
       //新增、编辑数据
       dialogTitleType: "",
@@ -135,8 +135,9 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler.add(data).promise.then(res => {
-                // console.log(res)
+            tierHandler
+              .add(data)
+              .promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
                 }
@@ -155,7 +156,6 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            // console.log(data);
             tierHandler
               .set(data)
               .promise.then(res => {

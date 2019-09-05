@@ -53,25 +53,24 @@ export default {
   },
   methods: {
     search(val){
-      var fd = new FormData();
-
+      // var fd = new FormData();
       val = val||this.pageInfo.page;
-      // let data={
-      //     module:this.operatemodule,
-      //     operator:this.user_id,
-      //     start_date:this.date[0]||"",
-      //     stop_date:this.date[1]||"",
-      //     page_index:val
-      // };
-      fd.append("module",this.operatemodule);
-      fd.append("operator","");
-      fd.append("start_date","");
-      fd.append("stop_date","");
-      fd.append("page_index",val);
+      let data={
+          module:this.operatemodule,
+          operator:this.user_id,
+          start_date:this.date[0]||"",
+          stop_date:this.date[1]||"",
+          page_index:val
+      };
+      // fd.append("module",this.operatemodule);
+      // fd.append("operator","");
+      // fd.append("start_date","");
+      // fd.append("stop_date","");
+      // fd.append("page_index",val);
 
-      console.log(fd);
+      // console.log(fd);
 
-      LogHandler.member_operate(fd,this.current_user).promise.then(res=>{
+      LogHandler.member_operate(data,this.current_user).promise.then(res=>{
          const { data, msg, code } = res;
          if(Number(code)==200){
            this.records=data.ls
@@ -92,13 +91,13 @@ export default {
   margin: 0 20px;
 }
 .el-input{
-    margin-right: 10px;
+  margin-right: 10px;
 }
 .select-time{
   margin-right: 20px !important;
 }
 #backdo .el-button.el-button--primary.el-button--medium{
-margin-left: 0px!important;
+  margin-left: 0px!important;
   margin-right: 20px !important;
 }
 </style>

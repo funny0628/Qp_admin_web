@@ -364,7 +364,7 @@
             ]
           }
         ],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        pageInfo: new PageInfo(0, [5, 10, 15], 5),
         //添加会员弹框
         dialogAddVisible: false,
         form: {
@@ -378,15 +378,9 @@
         idents: [
           {value: "1", label: "代理"},
           {value: "2", label: "普通用户"},
-          {
-            value: '3', label: "游客"
-          },
-          {
-            value: '4', label: "试玩"
-          },
-          {
-            value: '5', label: '测试号'
-          }
+          {value: '3', label: "游客"},
+          {value: '4', label: "试玩"},
+          {value: '5', label: '测试号'}
         ],
         //修改会员信息
         activeName: "first",

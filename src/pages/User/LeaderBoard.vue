@@ -19,8 +19,8 @@
         <el-table-column prop="rank" label="排名" align="center" width></el-table-column>
         <el-table-column prop="player_name" align="center" label="玩家昵称"></el-table-column>
         <el-table-column prop="player_id" align="center" label="玩家ID"></el-table-column>
-        <el-table-column prop="earn" align="center" v-if="tabIndex == 0" label="今日盈利（元）"></el-table-column>
-        <el-table-column prop="result" align="center" v-if="tabIndex == 1" label="今日业绩（元）"></el-table-column>
+        <el-table-column prop="earn" align="center" v-if="tabIndex === 0" label="今日盈利（元）"></el-table-column>
+        <el-table-column prop="result" align="center" v-if="tabIndex === 1" label="今日业绩（元）"></el-table-column>
       </el-table>
     </div>
     <div class="dialog">
@@ -81,7 +81,7 @@
         btnList: ["今日盈利排行", "个人业绩排行"],
         num: 0,
         tabIndex: 0,
-        /*tb*/
+        //表格数据
         tableData: [
           {
             rank: "1",

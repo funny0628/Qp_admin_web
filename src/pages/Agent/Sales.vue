@@ -1,50 +1,64 @@
 <template>
   <div id="Sales-main">
-    <div class="title">业绩返佣</div>
-    <div class="content">
-      <el-form ref="form" :model="formData" label-width="100px" style="padding: 30px 0 30px 30px;">
-        <el-form-item label="活动开启/关闭">
-          <i-switch v-model="formData.switch" size="large">
-            <span slot="open">开启</span>
-            <span slot="close">关闭</span>
-          </i-switch>
-        </el-form-item>
-      </el-form>
-      <div class="bd">
-        <info-table
-          :search="search"
-          :table-style="tableStyle"
-          :records="records"
-          :page-info="pageInfo"
-          :hide-page="true"
-        >
-          <info-table-item :table-style="tableStyle">
-            <template slot-scope="scope">
-              <template v-if="['rate_result'].indexOf(scope.prop) >= 0">
-                <span placeholder="请输入内容"></span>
-              </template>
-              <template v-if="scope.prop === 'action'">
-                <permission-button
-                  :action="btn.type"
-                  v-for="(btn,index) in scope.row[scope.prop]"
-                  :key="index"
-                  @click="handeClick(btn)"
-                  style="cursor: pointer; padding-left: 5px;"
-                >
-                  <span>{{btn.label}}</span>
-                </permission-button>
-              </template>
-              <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+    <input-area>
+      <permission-button :action="ActionType.ADD" @click="handelAddClick">
+        <el-button type="primary" size="medium">新增</el-button>
+      </permission-button>
+    </input-area>
+    <div class="bd">
+      <info-table
+        :search="search"
+        :table-style="tableStyle"
+        :records="records"
+        :page-info="pageInfo"
+        :hidePage="true"
+      >
+        <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handleClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
+              </permission-button>
             </template>
-          </info-table-item>
-        </info-table>
-      </div>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template>
+        </info-table-item>
+      </info-table>
+    </div>
+    <div class="dialog">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
+        <el-form :model="dataForm" ref="dataForm">
+          <el-form-item label="代理层级" :label-width="labelWidth" prop="level">
+            <el-input autocomplete="off" v-model="dataForm.level"></el-input>
+          </el-form-item>
+          <el-form-item label="最小业绩" :label-width="labelWidth" prop="min_pre">
+            <el-input autocomplete="off" v-model="dataForm.min_pre"></el-input>
+          </el-form-item>
+          <el-form-item label="最大业绩" :label-width="labelWidth" prop="max_pre">
+            <el-input autocomplete="off" v-model="dataForm.max_pre"></el-input>
+          </el-form-item>
+          <el-form-item label="返佣比例" :label-width="labelWidth" prop="ratio">
+            <el-input autocomplete="off" v-model="dataForm.ratio"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="AddEditClick">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import InputArea from "../../plugin/components/InputArea";
 import PermissionButton from "../../plugin/components/PermissionButton";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
@@ -53,18 +67,14 @@ import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
   name: "Sales",
   extends: BaseIframe,
-  components: { PermissionButton, InfoTable, InfoTableItem },
+  components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
-      formData: {
-        active: false,
-        switch: true
-      },
       //表格数据
       tableStyle: [
         { label: "业绩区间", prop: "min_result", width: "" },
         { label: "业绩区间", prop: "max_result", width: "" },
-        { label: "业绩返佣比例", prop: "rate_result", width: "120" },
+        { label: "业绩返佣比例", prop: "rate_result", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [
@@ -72,44 +82,39 @@ export default {
           min_result: "1.00",
           max_result: "10000.00",
           rate_result: "1",
-          action: [{ label: "删除", type: "delete" }]
+          action: [{ label: "修改", type: "edit" }]
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0) // page pageSizes total
+      pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
+      //弹窗数据
+      dialogTitle: "",
+      dialogVisible: false,
+      labelWidth: "70px",
+      dataForm: {
+        level: "",
+        min_pre: "",
+        max_pre: "",
+        ratio: ""
+      }
     };
   },
   methods: {
     search() {},
+    //打开新增的弹窗方法
+    handelAddClick() {
+      this.dialogTitle = "新增代理返佣设置";
+    },
+    //表单操作
     handeClick(btn, row) {
-      // consoloe.log(btn)
-      if (btn.type === "delete") {
-        console.log("删除");
-      }
+      this.dialogTitle = "修改代理返佣设置";
+    },
+    //新增方法
+    AddEditClick() {
+      // 通过层级id是否为真来判断是新增还是修改
     }
   }
 };
 </script>
 
 <style scoped>
-#Sales-main {
-  width: 100%;
-  padding: 15px 20px 0 20px;
-}
-
-#Sales-main .title {
-  width: 100%;
-  height: 50px;
-  border: 1px solid #e9e9e9;
-  line-height: 50px;
-  padding-left: 15px;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-#Sales-main .content {
-  border: 1px solid #e9e9e9;
-  border-top: none;
-  height: 600px;
-  width: 100%;
-}
 </style>
