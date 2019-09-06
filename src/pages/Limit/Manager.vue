@@ -12,6 +12,8 @@
       >
        <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop==='status'">{{scope.row.status==0?'禁用':'启用'}}</template>
+            <!-- <template v-if="'status'.indexOf(scope.prop) > 0">{{scope.row.status==0?'禁用':'启用'}}</template> -->
             <template v-if="scope.prop==='operate'">
               <el-button
                 type="text"
@@ -26,7 +28,7 @@
                 type="text" @click="runstop()">{{scope.row.status==0?'启用':'禁用'}}</el-button>
               </span>
             </template>
-            <template v-if="['operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="['operate','status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -40,39 +42,56 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+import RoleHandler from "../../script/handlers/RoleHandler";
 
 export default {
   extends: BaseIframe,
   components: { InfoTable, PermissionButton ,InfoTableItem},
   data(){
       return{
+        user_id:1004,
         tableStyle: [
-        { label: "序号", prop: "id", width: "" },
-        { label: "角色名称", prop: "role", width: "" },
-        { label: "角色描述", prop: "roledescribe", width: "" },
+        { label: "序号", prop: "role_id", width: "" },
+        { label: "角色名称", prop: "role_name", width: "" },
+        { label: "角色描述", prop: "remark", width: "" },
         { label: "状态", prop: "status", width: "" },
         { label: "操作", prop: "operate", width: "" },
       ],
       records: [
-         {
-          id: 111,
-          role: "超级管理员",
-          roledescribe: "-",
-          status: '启用',
-        },
-       {
-          id: 222,
-          role: "会计",
-          roledescribe: "-",
-          status: '启用',
-        }
+      //    {
+      //     id: 111,
+      //     role: "超级管理员",
+      //     roledescribe: "-",
+      //     status: '启用',
+      //   },
+      //  {
+      //     id: 222,
+      //     role: "会计",
+      //     roledescribe: "-",
+      //     status: '启用',
+      //   }
       ],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0)
+      pageInfo: new PageInfo(1, [10, 15, 20], 0)
       }
   },
   methods: {
-    search() {},
+    search(val) {
+      let data = {};
+      RoleHandler.managerList(data, this.user_id).promise.then(res => {
+             console.log(res)
+         const { data, msg, code } = res;
+         if(Number(code)==200){
+           this.records=data
+          // this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
+         }else {
+          return this.$message.error("msg");
+        }
+      });
+    },
     runstop(){}
+  },
+  created(){
+    this.search()
   }
 }
 </script>

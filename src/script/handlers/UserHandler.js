@@ -73,3 +73,4 @@ class UserHandler extends BaseHandler {
 }
 
 export default new UserHandler('/user');
+ 

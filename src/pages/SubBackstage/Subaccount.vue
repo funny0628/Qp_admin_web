@@ -27,9 +27,9 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop=='substagename'">
+            <template v-if="scope.prop=='display_name'">
               <span
-                @click="fn(scope.row.substageid,scope.row.substagename)"
+                @click="fn(scope.row.substageid,scope.row.display_name)"
                 class="platformchoice"
               >{{scope.row[scope.prop]}}</span>
             </template>
@@ -43,7 +43,7 @@
               </span>
             </template>
             <template
-              v-if="['operate','substagename'].indexOf(scope.prop) < 0"
+              v-if="['operate','display_name'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
@@ -152,6 +152,7 @@ export default {
       breadlist: [{ name: "游戏平台" }],
       sub_id: "",
       sub_name: "",
+      current_user:1004,
       date: [],
       addsub: false,
       gamemanage: false,
@@ -178,58 +179,58 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "运营后台ID", prop: "substageid", width: "" },
-        { label: "运营后台名称", prop: "substagename", width: "" },
-        { label: "运营后台账号", prop: "substageaccount", width: "" },
-        { label: "下级后台数", prop: "lowerstage", width: "" },
-        { label: "用户类型", prop: "usertype", width: "" },
-        { label: "运营后台描述", prop: "substagedescribe", width: "" },
+        { label: "运营后台ID", prop: "user_id", width: "" },
+        { label: "运营后台名称", prop: "display_name", width: "" },
+        { label: "运营后台账号", prop: "user_name", width: "" },
+        { label: "下级后台数", prop: "sub_user_count", width: "" },
+        { label: "用户类型", prop: "user_role", width: "" },
+        { label: "运营后台描述", prop: "remark", width: "" },
         { label: "状态", prop: "status", width: "" },
         { label: "操作", prop: "operate", width: "260" }
       ],
       records: [
-        {
-          substageid: 111,
-          substagename: "游戏平台1",
-          substageaccount: "a-admin",
-          lowerstage: 10,
-          usertype: "超级管理员",
-          substagedescribe: "-",
-          statu:0,
-           status:'禁用'
-        },
-        {
-          substageid: 111,
-          substagename: "游戏平台2",
-          substageaccount: "a-admin",
-          lowerstage: 15,
-          usertype: "管理员",
-          substagedescribe: "-",
-              statu:1,
-           status:'启用'
-        }
+        // {
+        //   substageid: 111,
+        //   display_name: "游戏平台1",
+        //   substageaccount: "a-admin",
+        //   lowerstage: 10,
+        //   usertype: "超级管理员",
+        //   substagedescribe: "-",
+        //   statu:0,
+        //    status:'禁用'
+        // },
+        // {
+        //   substageid: 111,
+        //   display_name: "游戏平台2",
+        //   substageaccount: "a-admin",
+        //   lowerstage: 15,
+        //   usertype: "管理员",
+        //   substagedescribe: "-",
+        //       statu:1,
+        //    status:'启用'
+        // }
       ],
-      childrenrecords: [
-        {
-          substageid: 111,
-          substagename: "游戏平台1-1",
-          substageaccount: "a-admin",
-          lowerstage: 10,
-          usertype: "超级管理员",
-          substagedescribe: "-",
+      // childrenrecords: [
+      //   {
+      //     substageid: 111,
+      //     display_name: "游戏平台1-1",
+      //     substageaccount: "a-admin",
+      //     lowerstage: 10,
+      //     usertype: "超级管理员",
+      //     substagedescribe: "-",
     
-        },
-        {
-          substageid: 111,
-          substagename: "游戏平台1-2",
-          substageaccount: "a-admin",
-          lowerstage: 15,
-          usertype: "管理员",
-          substagedescribe: "-",
+      //   },
+      //   {
+      //     substageid: 111,
+      //     display_name: "游戏平台1-2",
+      //     substageaccount: "a-admin",
+      //     lowerstage: 15,
+      //     usertype: "管理员",
+      //     substagedescribe: "-",
          
-        }
-      ],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0),
+      //   }
+      // ],
+      pageInfo: new PageInfo(1, [10, 15, 20], 0),
       tableData: [
         { game: "游戏1" },
         { game: "游戏2" },
@@ -241,7 +242,6 @@ export default {
     };
   },
   methods: {
-    search() {},
     handeClick(event) {
       //  console.log(event)
       if (event.target.innerText === "游戏管理") {
@@ -266,11 +266,16 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    getadminlist() {
+    search(val) {
       let data = {};
-      UserHandler.admin_list(data, 1000).promise.then(res => {
-        console.log(res)
-        if (Number(res.code) === 200) {
+      UserHandler.admin_list(data, this.current_user).promise.then(res => {
+             console.log(res)
+         const { data, msg, code } = res;
+         if(Number(code)==200){
+           this.records=data
+          // this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
+         }else {
+          return this.$message.error("msg");
         }
       });
     },
@@ -292,7 +297,7 @@ export default {
     runstop(){}
   },
   mounted() {
-    this.getadminlist();
+    this.search();
   }
 };
 </script>

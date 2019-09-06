@@ -33,13 +33,13 @@ export default {
     return {
       user_id: "",
       loginip:'',
-      current_user:1002,
+      current_user:1004,
       date: [],
       tableStyle: [
-        { label: "管理员ID", prop: "adminid", width: "" },
-        { label: "管理员名称", prop: "adminname", width: "" },
-        { label: "登录IP", prop: "loginip", width: "" },
-        { label: "操作时间", prop: "operatetime", width: "" }
+        { label: "管理员ID", prop: "user_id", width: "" },
+        { label: "管理员名称", prop: "user_name", width: "" },
+        { label: "登录IP", prop: "ip", width: "" },
+        { label: "操作时间", prop: "created_at", width: "" }
       ],
       records: [],
       pageInfo: new PageInfo(1, [10, 15, 20], 0)
@@ -49,20 +49,20 @@ export default {
       search(val){
       val = val||this.pageInfo.page;
       let data={
-          user_id:this.user_id,
+          admin_uid:this.user_id,
           ip:this.loginip,
-          // start_date:this.date[0]||"",
-          // stop_date:this.date[1]||"",
           page_index:val
       }
       // console.log('111',data)
       LogHandler.member_login(data,this.current_user).promise.then(res=>{
          console.log(res)
          const { data, msg, code } = res;
-        //  if(Number(code)==200){
-        //    this.records=data.ls
-        //  }
-          // this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
+         if(Number(code)==200){
+           this.records=data.ls
+          this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
+         }else {
+          return this.$message.error("msg");
+        }
       })
     }
   },
