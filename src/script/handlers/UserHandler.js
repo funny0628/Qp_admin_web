@@ -70,6 +70,20 @@ class UserHandler extends BaseHandler {
   admin_list(data, user_id) {
     return this.set_v1('/admin_list/' + user_id, data)
   }
+
+  // 权限管理管理员列表
+  limit_manager(data,user_id){
+    return this.set_v1('/user_list/' + user_id, data)
+  }
+  
+  // 权限管理管理员列表新增管理员
+  new_manager(data,user_id){
+    return this.set_v1('/create_user/' + user_id, data)
+  }
+  // 权限管理管理员列表编辑管理员
+  edit_manager(data,user_id){
+    return this.set_v1('/edit_user/' + user_id, data)
+  }
 }
 
 export default new UserHandler('/user');

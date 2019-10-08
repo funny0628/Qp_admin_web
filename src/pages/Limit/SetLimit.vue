@@ -88,7 +88,8 @@ export default {
           menu: "账户管理",
           model: {
             key: "user",
-            list: [new PermissionCheckbox("all", "全部", 1)]
+            // list: [new PermissionCheckbox("all", "全部", 1)]
+            list: [{ name: "all", text: "全部", val: 1 }]
           },
           children: [
             {

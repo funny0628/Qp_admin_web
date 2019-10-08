@@ -35,7 +35,7 @@ export default {
     return {
       user_id: '',
       operatemodule:'',
-      current_user:1002,
+      current_user:1004,
       date: [],
       tableStyle: [
         { label: "日志编号", prop: "log_id", width: "" },

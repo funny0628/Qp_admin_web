@@ -17,7 +17,22 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
-      ></info-table>
+      >
+        <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="scope.prop==='status'">{{scope.row.status==0?'禁用':'启用'}}</template>
+            <template v-if="scope.prop==='operate'">
+              <el-button type="text" v-if="scope.row.role=='超级管理员'" @click="edit()">编辑</el-button>
+              <span v-else>
+                <el-button type="text" @click="edit()">编辑</el-button>
+                <el-button type="text">删除</el-button>
+                <el-button type="text" @click="runstop()">{{scope.row.status==0?'启用':'禁用'}}</el-button>
+              </span>
+            </template>
+            <template v-if="['operate','status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template>
+        </info-table-item>
+      </info-table>
     </div>
     <el-dialog :visible.sync="addsilver" width="50%" title="新增管理员">
       <div class="checkbox">
@@ -49,8 +64,8 @@
             <el-col :span="12">
               <el-form-item label="所属角色" prop="belongrole">
                 <el-select v-model="ruleForm.belongrole" placeholder="用户角色" class="changewidth">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                  <el-option label="角色1" value="1021"></el-option>
+                  <el-option label="角色2" value="1022"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -69,14 +84,14 @@
           </el-row>
         </el-form>
       </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="addsilver = false" class="cancel">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="addsilver = false,submitForm('ruleForm')"
-              class="confirm"
-            >确 定</el-button>
-          </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addsilver = false,close()" class="cancel">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="addsilver = false,submitForm('ruleForm')"
+          class="confirm"
+        >确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -88,10 +103,18 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+import UserHandler from "../../script/handlers/UserHandler";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, SelectTime, InfoTable, PermissionButton },
+  components: {
+    InputArea,
+    SelectTime,
+    InfoTable,
+    PermissionButton,
+    InfoTableItem
+  },
   data() {
     var validatePass = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
@@ -118,6 +141,7 @@ export default {
       username: "",
       addsilver: false,
       date: [],
+      user_id: 1004,
       ruleForm: {
         admin: "",
         password: "",
@@ -139,38 +163,92 @@ export default {
         phone: [{ validator: validatephone, trigger: "blur" }]
       },
       tableStyle: [
-        { label: "ID", prop: "id", width: "" },
-        { label: "管理员名称", prop: "admin", width: "" },
-        { label: "手机号", prop: "tel", width: "" },
-        { label: "角色名", prop: "role", width: "" },
-        { label: "备注", prop: "tip", width: "" },
-        { label: "登录时间", prop: "logintime", width: "" },
-        { label: "登录IP", prop: "loginip", width: "" },
+        { label: "ID", prop: "user_id", width: "" },
+        { label: "管理员名称", prop: "user_name", width: "" },
+        { label: "手机号", prop: "phone", width: "" },
+        { label: "角色名", prop: "role_name", width: "" },
+        { label: "备注", prop: "remark", width: "" },
+        { label: "登录时间", prop: "login_at", width: "" },
+        { label: "登录IP", prop: "login_ip", width: "" },
         { label: "状态", prop: "status", width: "" },
         { label: "操作", prop: "operate", width: "" }
       ],
       records: [],
-      pageInfo: new PageInfo(0, [10, 15, 20], 0)
+      pageInfo: new PageInfo(1, [10, 15, 20], 0)
     };
   },
   methods: {
-    search() {},
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
+    search(val) {
+      val = val || this.pageInfo.page;
+      let data = {
+        admin_id: this.id,
+        admin_name: this.username,
+        start_date: this.date[0] || "",
+        stop_date: this.date[1] || "",
+        page_index: val
+      };
+      UserHandler.limit_manager(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          this.records = data.ls;
+          this.pageInfo = new PageInfo(
+            1,
+            [5, 10, 15],
+            Number(data.total_count)
+          );
         } else {
-          console.log("error submit!!");
-          return false;
+          return this.$message.error(msg);
         }
       });
-    }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        // if (valid) {
+        //   alert("submit!");
+        // } else {
+        //   console.log("error submit!!");
+        //   return false;
+        // }
+        let data = {
+       user_name:this.ruleForm.admin,
+       password:this.ruleForm.password,
+       display_name:this.ruleForm.realname,
+       role_id:this.ruleForm.belongrole,
+       phone:this.ruleForm.phone,
+       remark:this.ruleForm.tips,
+      };
+      UserHandler.new_manager(data, this.user_id).promise.then(res=>{
+            console.log(res)
+      })
+      });
+    },
+    close() {
+      this.$nextTick(() => {
+        this.$refs["ruleForm"].resetFields();
+      });
+    },
+    edit() {
+      let data = {
+        admin_id: this.id,
+        admin_name: this.username,
+        start_date: this.date[0] || "",
+        stop_date: this.date[1] || "",
+        page_index: val
+      };
+      UserHandler.edit_manager(data, this.user_id).promise.then(res => {
+   
+      });
+    },
+    runstop() {}
+  },
+  created() {
+    this.search();
   }
 };
 </script>
 
 <style scoped>
-.bd{
+.bd {
   margin: 0 20px;
 }
 .el-row {
@@ -191,17 +269,17 @@ export default {
   border: transparent;
   margin-right: 100px;
 }
-.confirm{
+.confirm {
   margin-left: 100px;
 }
-.changewidth{
-  width: 100%
+.changewidth {
+  width: 100%;
 }
-.select-time{
+.select-time {
   margin-right: 20px !important;
 }
-#managerlist .el-button.el-button--primary.el-button--medium{
-margin-left: 0px!important;
+#managerlist .el-button.el-button--primary.el-button--medium {
+  margin-left: 0px !important;
   margin-right: 20px !important;
 }
 </style>
