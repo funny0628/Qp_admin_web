@@ -84,6 +84,8 @@ class UserHandler extends BaseHandler {
   edit_manager(data,user_id){
     return this.set_v1('/edit_user/' + user_id, data)
   }
+  
+
 }
 
 export default new UserHandler('/user');

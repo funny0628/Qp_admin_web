@@ -4,5 +4,11 @@ class RoleHandler extends BaseHandler {
 managerList(data,user_id) {
     return this.set_v1('/role_list/'+user_id, data)
   }
+
+  // 权限管理管理员列表删除管理员
+  del_managerList(data,user_id) {
+    return this.set_v1('/delete_admin/'+user_id, data)
+  }
+
 }
 export default new RoleHandler('/role');

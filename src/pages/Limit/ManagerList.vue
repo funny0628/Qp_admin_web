@@ -22,10 +22,10 @@
           <template slot-scope="scope">
             <template v-if="scope.prop==='status'">{{scope.row.status==0?'禁用':'启用'}}</template>
             <template v-if="scope.prop==='operate'">
-              <el-button type="text" v-if="scope.row.role=='超级管理员'" @click="edit()">编辑</el-button>
+              <el-button type="text" v-if="scope.row.role_name=='超级管理员'" @click="edit()">编辑</el-button>
               <span v-else>
                 <el-button type="text" @click="edit()">编辑</el-button>
-                <el-button type="text">删除</el-button>
+                <el-button type="text" @click="delet(scope.row)">删除</el-button>
                 <el-button type="text" @click="runstop()">{{scope.row.status==0?'启用':'禁用'}}</el-button>
               </span>
             </template>
@@ -105,6 +105,7 @@ import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import UserHandler from "../../script/handlers/UserHandler";
+import roleHandler from "../../script/handlers/RoleHandler";
 
 export default {
   extends: BaseIframe,
@@ -190,12 +191,16 @@ export default {
       UserHandler.limit_manager(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
-          this.records = data.ls;
-          this.pageInfo = new PageInfo(
-            1,
-            [5, 10, 15],
-            Number(data.total_count)
-          );
+          if (data.ls.length === 0) {
+            return;
+          } else {
+            this.records = data.ls;
+            this.pageInfo = new PageInfo(
+              1,
+              [5, 10, 15],
+              Number(data.total_count)
+            );
+          }
         } else {
           return this.$message.error(msg);
         }
@@ -203,23 +208,25 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        // if (valid) {
-        //   alert("submit!");
-        // } else {
-        //   console.log("error submit!!");
-        //   return false;
-        // }
         let data = {
-       user_name:this.ruleForm.admin,
-       password:this.ruleForm.password,
-       display_name:this.ruleForm.realname,
-       role_id:this.ruleForm.belongrole,
-       phone:this.ruleForm.phone,
-       remark:this.ruleForm.tips,
-      };
-      UserHandler.new_manager(data, this.user_id).promise.then(res=>{
-            console.log(res)
-      })
+          user_name: this.ruleForm.admin,
+          password: this.ruleForm.password,
+          display_name: this.ruleForm.realname,
+          role_id: this.ruleForm.belongrole,
+          phone: this.ruleForm.phone,
+          remark: this.ruleForm.tips
+        };
+        UserHandler.new_manager(data, this.user_id).promise.then(res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            this.search();
+            this.$message.success(msg);
+            this.close();
+            return;
+          } else {
+            return this.$message.error(msg);
+          }
+        });
       });
     },
     close() {
@@ -235,9 +242,34 @@ export default {
         stop_date: this.date[1] || "",
         page_index: val
       };
-      UserHandler.edit_manager(data, this.user_id).promise.then(res => {
-   
-      });
+      UserHandler.edit_manager(data, this.user_id).promise.then(res => {});
+    },
+    delet(row) {
+      console.log(row);
+      this.$confirm("是否删除该文件?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      })
+        .then(() => {
+          let data = { admin_id: row.user_id };
+          roleHandler.del_managerList(data, this.user_id).promise.then(res => {
+            console.log(res);
+            const { data, msg, code } = res;
+            if (Number(code) == 200) {
+              this.search();
+              if (row.role_name === "超级管理员") {
+                this.$message.error(msg);
+              } else {
+                this.$message.success(msg);
+              }
+            }
+          });
+        })
+        .catch(() => {
+          return;
+        });
     },
     runstop() {}
   },
