@@ -80,12 +80,15 @@ class UserHandler extends BaseHandler {
   new_manager(data,user_id){
     return this.set_v1('/create_user/' + user_id, data)
   }
-  // 权限管理管理员列表编辑管理员
+  // 权限管理管理员列表编辑管理员取值
   edit_manager(data,user_id){
-    return this.set_v1('/edit_user/' + user_id, data)
+    return this.get_v1('/edit_user_init/' + user_id, data)
   }
   
-
+  // 权限管理管理员列表编辑管理员点击确定
+  edit_manager_sure(data,user_id){
+    return this.set_v1('/edit_user/' + user_id, data)
+  }
 }
 
 export default new UserHandler('/user');

@@ -10,5 +10,9 @@ managerList(data,user_id) {
     return this.set_v1('/delete_admin/'+user_id, data)
   }
 
+  // 权限管理管理员列表启用禁用管理员
+runstop_manager(data,user_id){
+  return this.set_v1('/status_admin/' + user_id, data)
+}
 }
 export default new RoleHandler('/role');
