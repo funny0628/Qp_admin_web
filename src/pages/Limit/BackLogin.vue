@@ -28,12 +28,12 @@ import LogHandler from "../../script/handlers/LogHandler";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, InfoTable, PermissionButton },
+  components: { InputArea, InfoTable, PermissionButton },
   data() {
     return {
       user_id: "",
-      loginip:'',
-      current_user:1004,
+      loginip: "",
+      current_user: 1004,
       date: [],
       tableStyle: [
         { label: "管理员ID", prop: "user_id", width: "" },
@@ -46,37 +46,45 @@ export default {
     };
   },
   methods: {
-      search(val){
-      val = val||this.pageInfo.page;
-      let data={
-          admin_uid:this.user_id,
-          ip:this.loginip,
-          page_index:val
-      }
+    search(val) {
+      val = val || this.pageInfo.page;
+      let data = {
+        admin_uid: this.user_id,
+        ip: this.loginip,
+        page_index: val
+      };
       // console.log('111',data)
-      LogHandler.member_login(data,this.current_user).promise.then(res=>{
-         console.log(res)
-         const { data, msg, code } = res;
-         if(Number(code)==200){
-           this.records=data.ls
-          this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
-         }else {
-          return this.$message.error("msg");
+      LogHandler.member_login(data, this.current_user).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          if (Number(data.total_count) > 0) {
+            this.records = data.ls;
+            this.pageInfo = new PageInfo(
+              1,
+              [5, 10, 15],
+              Number(data.total_count)
+            );
+          }else{
+             this.records = [];
+            return;
+          }
+        } else {
+          return this.$message.error(msg);
         }
-      })
+      });
     }
   },
-  created(){
+  created() {
     this.search();
   }
 };
 </script>
 
 <style scoped>
-.bd{
+.bd {
   margin: 0 20px;
 }
-.el-input{
-    margin-right: 10px;
+.el-input {
+  margin-right: 10px;
 }
 </style>

@@ -30,12 +30,12 @@ import LogHandler from "../../script/handlers/LogHandler";
 
 export default {
   extends: BaseIframe,
-  components: {InputArea, SelectTime, InfoTable, PermissionButton },
+  components: { InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {
-      user_id: '',
-      operatemodule:'',
-      current_user:1004,
+      user_id: "",
+      operatemodule: "",
+      current_user: 1004,
       date: [],
       tableStyle: [
         { label: "日志编号", prop: "log_id", width: "" },
@@ -48,56 +48,58 @@ export default {
         { label: "操作时间", prop: "created_at", width: "" }
       ],
       records: [],
-       pageInfo: new PageInfo(1, [5, 10, 15], 0),
+      pageInfo: new PageInfo(1, [5, 10, 15], 0)
     };
   },
   methods: {
-    search(val){
-      // var fd = new FormData();
-      val = val||this.pageInfo.page;
-      let data={
-          module:this.operatemodule,
-          operator:this.user_id,
-          start_date:this.date[0]||"",
-          stop_date:this.date[1]||"",
-          page_index:val
+    search(val) {
+      val = val || this.pageInfo.page;
+      let data = {
+        module: this.operatemodule,
+        operator: this.user_id,
+        start_date: this.date[0] || "",
+        stop_date: this.date[1] || "",
+        page_index: val
       };
-      // fd.append("module",this.operatemodule);
-      // fd.append("operator","");
-      // fd.append("start_date","");
-      // fd.append("stop_date","");
-      // fd.append("page_index",val);
 
-      // console.log(fd);
-
-      LogHandler.member_operate(data,this.current_user).promise.then(res=>{
-         const { data, msg, code } = res;
-         if(Number(code)==200){
-           this.records=data.ls
-         }
-          this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
-      })
+      LogHandler.member_operate(data, this.current_user).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          if (Number(data.total_count) > 0) {
+            this.records = data.ls;
+            this.pageInfo = new PageInfo(
+              1,
+              [5, 10, 15],
+              Number(data.total_count)
+            );
+          } else {
+            this.records = [];
+            return;
+          }
+        }else{
+            return this.$message.error(msg);
+        }
+      });
     }
   },
-  created(){
+  created() {
     this.search();
-     console.log(this.pageInfo.page)
   }
 };
 </script>
 
 <style scoped>
-.bd{
+.bd {
   margin: 0 20px;
 }
-.el-input{
+.el-input {
   margin-right: 10px;
 }
-.select-time{
+.select-time {
   margin-right: 20px !important;
 }
-#backdo .el-button.el-button--primary.el-button--medium{
-  margin-left: 0px!important;
+#backdo .el-button.el-button--primary.el-button--medium {
+  margin-left: 0px !important;
   margin-right: 20px !important;
 }
 </style>

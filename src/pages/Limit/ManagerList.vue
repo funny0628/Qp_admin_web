@@ -34,7 +34,12 @@
         </info-table-item>
       </info-table>
     </div>
-    <el-dialog :visible.sync="addsilver" width="50%" :title="flag?'编辑管理员':'新增管理员'">
+    <el-dialog
+      :visible.sync="addsilver"
+      width="50%"
+      :title="flag?'编辑管理员':'新增管理员'"
+      @closed="closed()"
+    >
       <div class="checkbox">
         <el-form
           :model="ruleForm"
@@ -46,7 +51,11 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="管理员名称" prop="user_name" class="formleft">
-                <el-input v-model="ruleForm.user_name" placeholder="请输入名称"></el-input>
+                <el-input
+                  v-model="ruleForm.user_name"
+                  placeholder="请输入名称"
+                  :disabled="flag?true:false"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -65,7 +74,7 @@
               <el-form-item label="所属角色" prop="role_id">
                 <el-select v-model="ruleForm.role_id" placeholder="用户角色" class="changewidth">
                   <el-option label="角色1" value="1021"></el-option>
-                  <el-option label="角色2" value="1022"></el-option>
+                  <!-- <el-option label="角色2" value="1022"></el-option> -->
                 </el-select>
               </el-form-item>
             </el-col>
@@ -85,10 +94,10 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addsilver = false,close()" class="cancel">取 消</el-button>
+        <el-button @click="addsilver = false" class="cancel">取 消</el-button>
         <el-button
           type="primary"
-          @click="addsilver = false,flag=false?submitForm('ruleForm'):editconfirm('ruleForm')"
+          @click="addsilver = false,flag?editconfirm('ruleForm'):submitForm('ruleForm')"
           class="confirm"
         >确 定</el-button>
       </span>
@@ -143,8 +152,8 @@ export default {
       addsilver: false,
       date: [],
       user_id: 1004,
-      flag: false,
-      editid:'',
+      flag: "",
+      editid: "",
       ruleForm: {
         user_name: "",
         password: "",
@@ -154,15 +163,17 @@ export default {
         remark: ""
       },
       rules: {
-        user_name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        user_name: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
         ],
-        display_name: [{ required: true, message: "请输入昵称", trigger: "blur" }],
-        role_id: [
-          { required: true, message: "请选择角色", trigger: "change" }
+        display_name: [
+          { required: true, message: "请输入昵称", trigger: "blur" }
         ],
+        role_id: [{ required: true, message: "请选择角色", trigger: "change" }],
         phone: [{ validator: validatephone, trigger: "blur" }]
       },
       tableStyle: [
@@ -191,17 +202,19 @@ export default {
         page_index: val
       };
       UserHandler.limit_manager(data, this.user_id).promise.then(res => {
+        console.log(res)
         const { data, msg, code } = res;
         if (Number(code) == 200) {
-          if (data.ls.length === 0) {
-            return;
-          } else {
+          if (Number(data.total_count)>0) {
             this.records = data.ls;
             this.pageInfo = new PageInfo(
               1,
               [5, 10, 15],
               Number(data.total_count)
             );
+          } else {
+            this.records=[];
+            return;
           }
         } else {
           return this.$message.error(msg);
@@ -210,54 +223,66 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        let data = {
-          user_name: this.ruleForm.user_name,
-          password: this.ruleForm.password,
-          display_name: this.ruleForm.display_name,
-          role_id: this.ruleForm.role_id,
-          phone: this.ruleForm.phone,
-          remark: this.ruleForm.remark
-        };
-        UserHandler.new_manager(data, this.user_id).promise.then(res => {
-          const { data, msg, code } = res;
-          if (Number(code) == 200) {
-            this.search();
-            this.$message.success(msg);
-            this.close();
-            return;
-          } else {
-            return this.$message.error(msg);
-            this.close();
-          }
-        });
+        if (valid) {
+          let data = {
+            user_name: this.ruleForm.user_name,
+            password: this.ruleForm.password,
+            display_name: this.ruleForm.display_name,
+            role_id: this.ruleForm.role_id,
+            phone: this.ruleForm.phone,
+            remark: this.ruleForm.remark
+          };
+          UserHandler.new_manager(data, this.user_id).promise.then(res => {
+            const { data, msg, code } = res;
+            if (Number(code) == 200) {
+              this.search();
+              this.$message.success(msg);
+              this.closed();
+              return;
+            } else {
+              this.closed();
+              return this.$message.error(msg);
+            }
+          });
+        } else {
+          this.$message.error("提交失败");
+          this.closed();
+          return false;
+        }
       });
     },
     editconfirm(formName) {
       this.$refs[formName].validate(valid => {
-        let data = {
-          admin_id:Number(this.editid),
-          user_name: this.ruleForm.user_name,
-          password: this.ruleForm.password,
-          display_name: this.ruleForm.display_name,
-          role_id: this.ruleForm.role_id,
-          phone: this.ruleForm.phone,
-          remark: this.ruleForm.remark
-        };
-        UserHandler.edit_manager_sure(data, this.user_id).promise.then(res => {
-          const { data, msg, code } = res;
-          if (Number(code) == 200) {
-            this.search();
-            this.$message.success(msg);
-            
-          } else {
-           this.$message.error(msg);
-          }
-          this.close();
-          this.flag=false;
-        });
+        if (valid) {
+          let data = {
+            admin_id: Number(this.editid),
+            user_name: this.ruleForm.user_name,
+            password: this.ruleForm.password,
+            display_name: this.ruleForm.display_name,
+            role_id: this.ruleForm.role_id,
+            phone: this.ruleForm.phone,
+            remark: this.ruleForm.remark
+          };
+          UserHandler.edit_manager_sure(data, this.user_id).promise.then(
+            res => {
+              const { data, msg, code } = res;
+              if (Number(code) == 200) {
+                this.search();
+                this.$message.success(msg);
+              } else {
+                this.$message.error(msg);
+              }
+              this.closed();
+            }
+          );
+        } else {
+          this.$message.error("提交失败");
+          this.closed();
+          return false;
+        }
       });
     },
-    close() {
+    closed() {
       this.$nextTick(() => {
         this.$refs["ruleForm"].resetFields();
       });
@@ -265,16 +290,18 @@ export default {
     edit(row) {
       this.addsilver = true;
       this.flag = true;
-      this.editid=row.user_id;
-      let data = {admin_id:row.user_id};
+      this.editid = row.user_id;
+      let data = { admin_id: row.user_id };
       UserHandler.edit_manager(data, this.user_id).promise.then(res => {
-        console.log(res)
-          const { data, msg, code } = res;
-            if (Number(code) == 200){
-              Object.assign(this.ruleForm,data);
-              this.ruleForm.password=Number(data.password);
-              this.ruleForm.phone=Number(data.phone);
-            }
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          Object.assign(this.ruleForm, data);
+          this.ruleForm.password = Number(data.password);
+          this.ruleForm.phone = Number(data.phone);
+        } else {
+          this.addsilver = false;
+          this.$message.error(msg);
+        }
       });
     },
     delet(row) {
@@ -310,7 +337,7 @@ export default {
       } else {
         changestatus = 1;
       }
-      let data = { admin_id: row.user_id, status:changestatus };
+      let data = { admin_id: row.user_id, status: changestatus };
       roleHandler.runstop_manager(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
@@ -319,12 +346,15 @@ export default {
         } else {
           this.$message.error(msg);
         }
-        
       });
+    },
+    getrole(){
+
     }
   },
   created() {
     this.search();
+    this.getrole();
   }
 };
 </script>
