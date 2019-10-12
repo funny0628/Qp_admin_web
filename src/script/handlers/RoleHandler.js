@@ -19,5 +19,20 @@ managerList(data,user_id) {
 runstop_manager(data,user_id){
   return this.set_v1('/status_admin/' + user_id, data)
 }
+
+  // 权限管理管理员列表新增编辑时获取角色列表
+  getmanagerrole(data,user_id){
+    return this.get_v1('/all_roles/' + user_id, data)
+  }
+
+    // 权限管理管理员角色启用禁用角色
+runstop_role(data,user_id){
+  return this.set_v1('/status_role/' + user_id, data)
+}
+
+    // 权限管理管理员角色新增角色
+  newrole(data,user_id){
+      return this.get_v1('/role_power_menu/' + user_id, data)
+    }
 }
 export default new RoleHandler('/role');

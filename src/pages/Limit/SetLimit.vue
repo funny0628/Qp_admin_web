@@ -61,6 +61,8 @@
 import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InputArea from "../../plugin/components/InputArea";
+import RoleHandler from "../../script/handlers/RoleHandler";
+
 export default {
   components: { InputArea, PermissionButton },
   extends: BaseIframe,
@@ -68,7 +70,9 @@ export default {
     return {
       user_name: "",
       user_describe: "",
+      user_id: 2000,
       permission: [],
+      datalist:[],
       checkList: {},
       tableStyle: [
         { label: "菜单", prop: "menu", width: "" },
@@ -79,6 +83,7 @@ export default {
   },
   created() {
     this.init();
+    this.getmsg();
   },
   methods: {
     init() {
@@ -88,8 +93,8 @@ export default {
           menu: "账户管理",
           model: {
             key: "user",
-            // list: [new PermissionCheckbox("all", "全部", 1)]
-            list: [{ name: "all", text: "全部", val: 1 }]
+            list: [new PermissionCheckbox("all", "全部", 1)]
+            // list: [{ name: "all", text: "全部", val: 1 }]
           },
           children: [
             {
@@ -174,8 +179,8 @@ export default {
       for (let prop in this.checkList) {
         this.checkList[prop] = [];
       }
-      console.log(this.modelPath);
-      console.log(this.originchecklist);
+      // console.log(this.modelPath);
+      // console.log(this.originchecklist);
     },
     // TODO 硬编码
     singleCheckboxChange(val, name, model) {
@@ -274,6 +279,31 @@ export default {
           }
         }
       }
+    },
+    getmsg(){
+      let data={}
+      RoleHandler.newrole(data, this.user_id).promise.then(res=>{
+        console.log(res)
+        const { data, msg, code } = res;
+        if(Number(code) == 200){
+          if(data.length>0){
+             for(let i=0;i<data.length;i++){  
+               this.datalist[i]={};
+               this.datalist[i].model={};
+                this.datalist[i].power_name=data[i].power_name;
+                this.datalist[i].power=data[i].power;
+
+
+
+           }
+           console.log('--------',this.datalist)
+          }else{
+            return;
+          }
+        } else {
+          return this.$message.error(msg);
+        }
+      })
     }
   },
   computed: {
@@ -281,7 +311,7 @@ export default {
       let obj = {};
       for (let i = 0; i < this.permission.length; i++) {
         let permissionObj = this.permission[i];
-        let item = {};
+        let item =[];
         let name = permissionObj.model["key"];
         item = (ls => {
           let l = [];

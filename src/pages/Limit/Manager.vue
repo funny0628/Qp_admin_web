@@ -104,7 +104,7 @@ export default {
       })
         .then(() => {
           let data = { role_id: row.user_id };
-          roleHandler.del_manager(data, this.user_id).promise.then(res => {
+          RoleHandler.del_manager(data, this.user_id).promise.then(res => {
             const { data, msg, code } = res;
             if (Number(code) == 200) {
               this.search();
@@ -121,14 +121,15 @@ export default {
         });
     },
      runstop(row) {
+       console.log(row)
       let changestatus;
       if (Number(row.status) === 1) {
         changestatus = 2;
       } else {
         changestatus = 1;
       }
-      let data = { admin_id: row.user_id, status: changestatus };
-      roleHandler.runstop_manager(data, this.user_id).promise.then(res => {
+      let data = {role_id: row.role_id, status: changestatus };
+      RoleHandler.runstop_role(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.search();

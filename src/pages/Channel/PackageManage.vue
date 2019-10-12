@@ -1,7 +1,7 @@
 <template>
   <div id="packagemanage">
     <input-area>
-     <el-select v-model="runvalue" placeholder="运营" size="medium">
+     <el-select v-model="runvalue" placeholder="运营" style="width:170px;margin-right:10px">
     <el-option
       v-for="item1 in runoptions"
       :key="item1.value1"
@@ -9,7 +9,7 @@
       :value="item1.value1"> 
     </el-option>
   </el-select>
-    <el-select v-model="platformvalue" placeholder="平台" size="medium">
+    <el-select v-model="platformvalue" placeholder="平台" style="width:170px;margin-right:10px">
     <el-option
       v-for="item2 in platformoptions"
       :key="item2.value2"
@@ -17,9 +17,9 @@
       :value="item2.value2"> 
     </el-option>
   </el-select>
-      <el-input v-model="package_id" placeholder="请输入包id" size="medium"></el-input>
-      <el-input v-model="mark" placeholder="标示" size="medium" class="w-160"></el-input>
-      <el-input v-model="package_status" placeholder="包状态" size="medium"></el-input>
+      <el-input v-model="package_id" placeholder="请输入包id" style="width:170px;margin-right:10px"></el-input>
+      <el-input v-model="mark" placeholder="标示" style="width:170px;margin-right:10px" class="w-160"></el-input>
+      <el-input v-model="package_status" placeholder="包状态" style="width:170px;margin-right:10px"></el-input>
       <select-time :date="date" :select-date.sync="date"></select-time>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
@@ -283,6 +283,9 @@ export default {
 }
 .select-time{
   margin-right: 10px !important;
+}
+.el-input__inner{
+  height: 36px!important;
 }
 #packagemanage .el-button.el-button--primary.el-button--medium{
 margin-left: 0px!important;

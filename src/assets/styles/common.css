@@ -78,6 +78,11 @@
   height: 80px;
 }
 /* 包管理 */
+/* 包管理输入框大小调整 */
+#packagemanage .el-input--suffix .el-input__inner,
+#packagemanage .el-input__inner{
+  height: 36px;
+}
 
 /* 包管理弹框头部内容位置调整 */
 #packagemanage .el-dialog__header,

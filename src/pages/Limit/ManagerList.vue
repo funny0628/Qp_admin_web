@@ -73,7 +73,7 @@
             <el-col :span="12">
               <el-form-item label="所属角色" prop="role_id">
                 <el-select v-model="ruleForm.role_id" placeholder="用户角色" class="changewidth">
-                  <el-option label="角色1" value="1021"></el-option>
+                  <el-option v-for="item in rolelist" :key="item.role_id" :label="item.role_name" :value="item.role_id"></el-option>
                   <!-- <el-option label="角色2" value="1022"></el-option> -->
                 </el-select>
               </el-form-item>
@@ -162,6 +162,7 @@ export default {
         phone: "",
         remark: ""
       },
+      rolelist:[],
       rules: {
         user_name: [
           { required: true, message: "请输入用户名", trigger: "blur" }
@@ -349,7 +350,11 @@ export default {
       });
     },
     getrole(){
-
+      let data = {};
+      roleHandler.getmanagerrole(data, this.user_id).promise.then(res=>{
+        const { data, msg, code } = res;
+        this.rolelist=data;
+      })
     }
   },
   created() {
