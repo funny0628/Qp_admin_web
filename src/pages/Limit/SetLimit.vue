@@ -72,7 +72,7 @@ export default {
       user_describe: "",
       user_id: 2000,
       permission: [],
-      datalist:[],
+      datalist: [],
       checkList: {},
       tableStyle: [
         { label: "菜单", prop: "menu", width: "" },
@@ -280,30 +280,48 @@ export default {
         }
       }
     },
-    getmsg(){
-      let data={}
-      RoleHandler.newrole(data, this.user_id).promise.then(res=>{
-        console.log(res)
+    getmsg() {
+      let data = {};
+      RoleHandler.newrole(data, this.user_id).promise.then(res => {
+        console.log("1000", res);
         const { data, msg, code } = res;
-        if(Number(code) == 200){
-          if(data.length>0){
-             for(let i=0;i<data.length;i++){  
-               this.datalist[i]={};
-               this.datalist[i].model={};
-                this.datalist[i].power_name=data[i].power_name;
-                this.datalist[i].power=data[i].power;
+        if (Number(code) == 200) {
+          if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+               var getlist=this.datalist[i]
+              getlist = {};
+              getlist.power_name = data[i].power_name;
+              getlist.model = {};
+              getlist.model.power = data[i].power;
+              getlist.model.list = [];
+              getlist.children = [];
+              var addallobj = {};
+              addallobj = { name: "all", text: "全部", val: data[i].status };
+              getlist.model.getlist.push(addallobj);
+              for(let j=0;j<data[i].children.length;j++){
+                getlist.children[j].power_name=data[i].children[j].power_name;
+                 getlist.children[j].model={};
+                 getlist.children[j].model.power=data[i].children[j].power;
+                 getlist.children[j].model.getlist=[];
+                 var adddetailobj={};
+                 data[i].children[j].Children.forEach(element => {
+                   adddetailobj={name:item.power,text:item.power_name,val:item.status}
+                  getlist.children[j].model.getlist.push(adddetailobj)
+                });
+                 var addchildallobj={} ;
+                addchildallobj = { name: "all", text: "全部", val: data[i].children[j].status };
+               getlist.model.children[j].getlist.unshift(addallobj);
 
-
-
-           }
-           console.log('--------',this.datalist)
-          }else{
+              }
+            }
+            console.log("--------", this.datalist);
+          } else {
             return;
           }
         } else {
           return this.$message.error(msg);
         }
-      })
+      });
     }
   },
   computed: {
@@ -311,7 +329,7 @@ export default {
       let obj = {};
       for (let i = 0; i < this.permission.length; i++) {
         let permissionObj = this.permission[i];
-        let item =[];
+        let item = [];
         let name = permissionObj.model["key"];
         item = (ls => {
           let l = [];
