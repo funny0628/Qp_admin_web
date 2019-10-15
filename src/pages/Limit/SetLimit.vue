@@ -50,7 +50,7 @@
       </el-table>
       <div class="t-c" style="margin-top:20px">
         <el-button type="info" size="medium" @click="back()">取消</el-button>
-        <permission-button :action="ActionType.EDIT">
+        <permission-button :action="ActionType.EDIT" @click="confirm()">
           <el-button type="primary" size="medium">提交</el-button>
         </permission-button>
       </div>
@@ -72,8 +72,8 @@ export default {
       user_describe: "",
       user_id: 2000,
       permission: [],
-      datalist: [],
       checkList: {},
+      cache_data: {},
       tableStyle: [
         { label: "菜单", prop: "menu", width: "" },
         { label: "全选", prop: "model", width: "" }
@@ -150,37 +150,48 @@ export default {
         }
       ];
 
-      this.permission = examplePermission;
-      this.checkList = (function() {
-        let selectLs = ls => {
-          let obj = {};
-          for (let i = 0; i < ls.length; i++) {
-            let item = ls[i];
-            obj[item.model.key] = (function() {
-              let ls = [];
-              for (let j = 0; j < item.model.list.length; j++) {
-                let it = item.model.list[j];
-                if (it.val === 1) {
-                  ls.push(it.name);
-                }
-              }
-              return ls;
-            })();
-
-            if (item.children && item.children.length > 0)
-              obj = { ...obj, ...selectLs(item.children) };
-          }
-          return obj;
-        };
-        return selectLs(examplePermission);
-      })();
-
-      this.originchecklist = JSON.parse(JSON.stringify(this.checkList));
+      this.permission = [];
+      this.checkList = this.getCheckList(this.permission)['obj'];
+      this.originchecklist = this.getCheckList(this.permission)['checkObj'];
       for (let prop in this.checkList) {
         this.checkList[prop] = [];
       }
       // console.log(this.modelPath);
       // console.log(this.originchecklist);
+    },
+    getCheckList(list) {
+      let selectLs = ls => {
+        let obj = {};
+        let checkObj = {};
+        for (let i = 0; i < ls.length; i++) {
+          let item = ls[i];
+          obj[item.model.key] = (function() {
+            let ls = [];
+            for (let j = 0; j < item.model.list.length; j++) {
+              let it = item.model.list[j];
+              if (Number(it.val) === 1) {
+                ls.push(it.name);
+              }
+            }
+            return ls;
+          })();
+          checkObj[item.model.key] = (function() {
+            let ls = [];
+            for (let j = 0; j < item.model.list.length; j++) {
+              let it = item.model.list[j];
+              ls.push(it.name);
+            }
+            return ls;
+          })();
+
+          if (item.children && item.children.length > 0) {
+            obj = { ...obj, ...(selectLs(item.children)['obj']) };
+            checkObj = {...checkObj, ...(selectLs(item.children)['checkObj'])}
+          }
+        }
+        return {obj:obj, checkObj: checkObj};
+      };
+      return selectLs(list);
     },
     // TODO 硬编码
     singleCheckboxChange(val, name, model) {
@@ -193,6 +204,7 @@ export default {
           //  选中
           if (val) {
             for (let prop of this.modelPath[model]) {
+              // this.checkList[prop] = this.originchecklist[prop];
               this.checkList[prop] = this.originchecklist[prop];
             }
           }
@@ -280,48 +292,82 @@ export default {
         }
       }
     },
-    getmsg() {
-      let data = {};
-      RoleHandler.newrole(data, this.user_id).promise.then(res => {
-        console.log("1000", res);
-        const { data, msg, code } = res;
-        if (Number(code) == 200) {
-          if (data.length > 0) {
-            for (let i = 0; i < data.length; i++) {
-               var getlist=this.datalist[i]
-              getlist = {};
-              getlist.power_name = data[i].power_name;
-              getlist.model = {};
-              getlist.model.power = data[i].power;
-              getlist.model.list = [];
-              getlist.children = [];
-              var addallobj = {};
-              addallobj = { name: "all", text: "全部", val: data[i].status };
-              getlist.model.getlist.push(addallobj);
-              for(let j=0;j<data[i].children.length;j++){
-                getlist.children[j].power_name=data[i].children[j].power_name;
-                 getlist.children[j].model={};
-                 getlist.children[j].model.power=data[i].children[j].power;
-                 getlist.children[j].model.getlist=[];
-                 var adddetailobj={};
-                 data[i].children[j].Children.forEach(element => {
-                   adddetailobj={name:item.power,text:item.power_name,val:item.status}
-                  getlist.children[j].model.getlist.push(adddetailobj)
-                });
-                 var addchildallobj={} ;
-                addchildallobj = { name: "all", text: "全部", val: data[i].children[j].status };
-               getlist.model.children[j].getlist.unshift(addallobj);
+    getmsg(){
+      let data={}
 
+      let model = {}
+
+      let classify = (list, permission, level)=>{
+        level = !level?1: level;
+        for (let i = 0; i < list.length; i ++) {
+          let item = list[i];
+
+          // 第一, 二层
+          if (level !== 3) {
+            permission[i] = {
+              menu: item.power_name,
+              model: {key: item.power, list: [new PermissionCheckbox("all", "全部", Number(item.status) || 2)]}
+            };
+            level === 1 && (permission[i].children = [])
+          } else {
+            permission.push(new PermissionCheckbox(item.power, item.power_name, Number(item.status) || 2))
+          }
+          if (item.Children.length > 0) {
+            classify(item.Children, level ===2?permission[i].model.list : permission[i].children, level + 1);
+          }
+        }
+        return permission;
+      };
+
+      let $this = this;
+      RoleHandler.newrole(data, this.user_id).promise.then(res=>{
+        let list = [];
+        $this.cache_data = res.data;
+        classify(JSON.parse(JSON.stringify(res.data)), list);
+        this.permission = list;
+        this.checkList = this.getCheckList(this.permission)['obj'];
+        this.originchecklist = this.getCheckList(this.permission)['checkObj'];
+      })
+    },
+    confirm() {
+
+      function classifyCheck(checkDict) {
+        let selectDict = {};
+        for (let key in checkDict) {
+          let item = checkDict[key];
+          if (item.length > 0) {
+            for (let j = 0; j < item.length; j ++) {
+              let it = item[j];
+              if (it === 'all') {
+                selectDict[key] = 1;
+              } else {
+                selectDict[it] = 1;
               }
             }
-            console.log("--------", this.datalist);
           } else {
-            return;
+            selectDict[key] = 2;
           }
-        } else {
-          return this.$message.error(msg);
         }
-      });
+        return selectDict;
+      }
+
+      /**
+       * 更新权限传参
+       * @param list 原始数据
+       * @param selectDict  界面点击选中按钮状态字典
+       */
+      let resetClassify = (list, selectDict) => {
+        for (let i = 0; i < list.length; i ++) {
+          let item = list[i];
+          item.status = selectDict[item.power] || 2;
+
+          if (item.Children && item.Children.length > 0) {
+            resetClassify(item.Children, selectDict);
+          }
+        }
+      };
+  
+      resetClassify(this.cache_data, classifyCheck(this.checkList));
     }
   },
   computed: {
@@ -329,7 +375,7 @@ export default {
       let obj = {};
       for (let i = 0; i < this.permission.length; i++) {
         let permissionObj = this.permission[i];
-        let item = [];
+        let item =[];
         let name = permissionObj.model["key"];
         item = (ls => {
           let l = [];
