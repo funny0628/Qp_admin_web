@@ -321,9 +321,12 @@ export default {
 
       let $this = this;
       RoleHandler.newrole(data, this.user_id).promise.then(res=>{
+        console.log('--------------0',res)
         let list = [];
         $this.cache_data = res.data;
+        console.log($this.cache_data)
         classify(JSON.parse(JSON.stringify(res.data)), list);
+        console.log('------------1',list)
         this.permission = list;
         this.checkList = this.getCheckList(this.permission)['obj'];
         this.originchecklist = this.getCheckList(this.permission)['checkObj'];
