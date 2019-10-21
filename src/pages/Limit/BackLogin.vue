@@ -24,10 +24,11 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
-import LogHandler from "../../script/handlers/LogHandler";
+import AdminLogHandler from "../../script/handlers/AdminLogHandler";
 
 export default {
   extends: BaseIframe,
+  name:'BackLogin',
   components: { InputArea, InfoTable, PermissionButton },
   data() {
     return {
@@ -54,7 +55,7 @@ export default {
         page_index: val
       };
       // console.log('111',data)
-      LogHandler.member_login(data, this.current_user).promise.then(res => {
+      AdminLogHandler.member_login(data, this.current_user).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           if (Number(data.total_count) > 0) {

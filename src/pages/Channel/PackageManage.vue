@@ -132,6 +132,7 @@ import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
+   name: "PackageManage",
   components: {InputArea, SelectTime, InfoTable, PermissionButton,InfoTableItem },
   data() {
     var validateid = (rule, value, callback) => {

@@ -27,6 +27,7 @@ import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
+  name:'LoginLog',
   components: {InputArea, InfoTable, PermissionButton },
   data() {
     return {

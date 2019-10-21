@@ -27,6 +27,7 @@ import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
+  name:'PackageStatistics',
   components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {

@@ -113,11 +113,12 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-import UserHandler from "../../script/handlers/UserHandler";
-import roleHandler from "../../script/handlers/RoleHandler";
+import AdminUserHandler from "../../script/handlers/AdminUserHandler";
+import AdminRoleHandler from "../../script/handlers/AdminRoleHandler";
 
 export default {
   extends: BaseIframe,
+  name:'ManagerList',
   components: {
     InputArea,
     SelectTime,
@@ -151,7 +152,7 @@ export default {
       username: "",
       addsilver: false,
       date: [],
-      user_id: 1004,
+      user_id: 2000,
       flag: "",
       editid: "",
       ruleForm: {
@@ -202,7 +203,7 @@ export default {
         stop_date: this.date[1] || "",
         page_index: val
       };
-      UserHandler.limit_manager(data, this.user_id).promise.then(res => {
+      AdminUserHandler.limit_manager(data, this.user_id).promise.then(res => {
         console.log(res)
         const { data, msg, code } = res;
         if (Number(code) == 200) {
@@ -233,7 +234,7 @@ export default {
             phone: this.ruleForm.phone,
             remark: this.ruleForm.remark
           };
-          UserHandler.new_manager(data, this.user_id).promise.then(res => {
+          AdminUserHandler.new_manager(data, this.user_id).promise.then(res => {
             const { data, msg, code } = res;
             if (Number(code) == 200) {
               this.search();
@@ -264,7 +265,7 @@ export default {
             phone: this.ruleForm.phone,
             remark: this.ruleForm.remark
           };
-          UserHandler.edit_manager_sure(data, this.user_id).promise.then(
+          AdminUserHandler.edit_manager_sure(data, this.user_id).promise.then(
             res => {
               const { data, msg, code } = res;
               if (Number(code) == 200) {
@@ -293,7 +294,7 @@ export default {
       this.flag = true;
       this.editid = row.user_id;
       let data = { admin_id: row.user_id };
-      UserHandler.edit_manager(data, this.user_id).promise.then(res => {
+      AdminUserHandler.edit_manager(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           Object.assign(this.ruleForm, data);
@@ -315,7 +316,7 @@ export default {
       })
         .then(() => {
           let data = { admin_id: row.user_id };
-          roleHandler.del_managerList(data, this.user_id).promise.then(res => {
+          AdminRoleHandler.del_managerList(data, this.user_id).promise.then(res => {
             const { data, msg, code } = res;
             if (Number(code) == 200) {
               this.search();
@@ -339,7 +340,7 @@ export default {
         changestatus = 1;
       }
       let data = { admin_id: row.user_id, status: changestatus };
-      roleHandler.runstop_manager(data, this.user_id).promise.then(res => {
+      AdminRoleHandler.runstop_manager(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.search();
@@ -351,7 +352,7 @@ export default {
     },
     getrole(){
       let data = {};
-      roleHandler.getmanagerrole(data, this.user_id).promise.then(res=>{
+      AdminRoleHandler.getmanagerrole(data, this.user_id).promise.then(res=>{
         const { data, msg, code } = res;
         this.rolelist=data;
       })

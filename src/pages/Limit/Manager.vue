@@ -35,14 +35,15 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-import RoleHandler from "../../script/handlers/RoleHandler";
+import AdminRoleHandler from "../../script/handlers/AdminRoleHandler";
 
 export default {
   extends: BaseIframe,
+  name:'Manager',
   components: { InfoTable, PermissionButton, InfoTableItem },
   data() {
     return {
-      user_id: 1004,
+      user_id: 2000,
       current_page: 1,
       tableStyle: [
         { label: "序号", prop: "role_id", width: "" },
@@ -74,7 +75,7 @@ export default {
       let data = {
         page_index: val
       };
-      RoleHandler.managerList(data, this.user_id).promise.then(res => {
+      AdminRoleHandler.managerList(data, this.user_id).promise.then(res => {
         console.log(res);
         const { data, msg, code } = res;
         if (Number(code) == 200) {
@@ -103,8 +104,8 @@ export default {
         center: true
       })
         .then(() => {
-          let data = { role_id: row.user_id };
-          RoleHandler.del_manager(data, this.user_id).promise.then(res => {
+          let data = { role_id: row.role_id };
+          AdminRoleHandler.del_manager(data, this.user_id).promise.then(res => {
             const { data, msg, code } = res;
             if (Number(code) == 200) {
               this.search();
@@ -129,7 +130,7 @@ export default {
         changestatus = 1;
       }
       let data = {role_id: row.role_id, status: changestatus };
-      RoleHandler.runstop_role(data, this.user_id).promise.then(res => {
+      AdminRoleHandler.runstop_role(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.search();
@@ -141,7 +142,9 @@ export default {
     },
   },
   created() {
+    this.$nextTick(()=>{
     this.search();
+    })
   }
 };
 </script>

@@ -84,6 +84,7 @@ import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
+  name:'AccountList',
   components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     var validatePass = (rule, value, callback) => {

@@ -137,6 +137,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 
 export default {
   extends: BaseIframe,
+  name:'Subaccount',
   components: { InputArea, InfoTable, PermissionButton, InfoTableItem },
   data() {
     var validatePass = (rule, value, callback) => {

@@ -26,10 +26,11 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import SelectTime from "../../plugin/components/SelectTime";
 import InputArea from "../../plugin/components/InputArea";
-import LogHandler from "../../script/handlers/LogHandler";
+import AdminLogHandler from "../../script/handlers/AdminLogHandler";
 
 export default {
   extends: BaseIframe,
+  name:'BackDo',
   components: { InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {
@@ -62,7 +63,7 @@ export default {
         page_index: val
       };
 
-      LogHandler.member_operate(data, this.current_user).promise.then(res => {
+      AdminLogHandler.member_operate(data, this.current_user).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           if (Number(data.total_count) > 0) {

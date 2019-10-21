@@ -61,16 +61,20 @@
 import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import InputArea from "../../plugin/components/InputArea";
-import RoleHandler from "../../script/handlers/RoleHandler";
+import AdminRoleHandler from "../../script/handlers/AdminRoleHandler";
+import PageInfo from "../../plugin/script/common/PageInfo";
+
 
 export default {
   components: { InputArea, PermissionButton },
   extends: BaseIframe,
+  name:'SetLimit',
   data() {
     return {
       user_name: "",
       user_describe: "",
       user_id: 2000,
+      pageInfo: new PageInfo(1, [10, 15, 20], 0),
       permission: [],
       checkList: {},
       cache_data: {},
@@ -150,15 +154,16 @@ export default {
         }
       ];
 
-      this.permission = [];
-      this.checkList = this.getCheckList(this.permission)['obj'];
-      this.originchecklist = this.getCheckList(this.permission)['checkObj'];
+      // this.permission = [];
+      // this.checkList = this.getCheckList(this.permission)['obj'];
+      // this.originchecklist = this.getCheckList(this.permission)['checkObj'];
       for (let prop in this.checkList) {
         this.checkList[prop] = [];
       }
       // console.log(this.modelPath);
       // console.log(this.originchecklist);
     },
+    // 再次整理数据，obj为选中状态下的数据，checkobj为所有数据
     getCheckList(list) {
       let selectLs = ls => {
         let obj = {};
@@ -185,11 +190,11 @@ export default {
           })();
 
           if (item.children && item.children.length > 0) {
-            obj = { ...obj, ...(selectLs(item.children)['obj']) };
-            checkObj = {...checkObj, ...(selectLs(item.children)['checkObj'])}
+            obj = { ...obj, ...selectLs(item.children)["obj"] };
+            checkObj = { ...checkObj, ...selectLs(item.children)["checkObj"] };
           }
         }
-        return {obj:obj, checkObj: checkObj};
+        return { obj: obj, checkObj: checkObj };
       };
       return selectLs(list);
     },
@@ -292,56 +297,75 @@ export default {
         }
       }
     },
-    getmsg(){
-      let data={}
+    getmsg() {
+      let data = {};
 
-      let model = {}
+      let model = {};
 
-      let classify = (list, permission, level)=>{
-        level = !level?1: level;
-        for (let i = 0; i < list.length; i ++) {
+      let classify = (list, permission, level) => {
+        level = !level ? 1 : level;
+        for (let i = 0; i < list.length; i++) {
           let item = list[i];
 
-          // 第一, 二层
+          //  获取整理好的数据
           if (level !== 3) {
             permission[i] = {
               menu: item.power_name,
-              model: {key: item.power, list: [new PermissionCheckbox("all", "全部", Number(item.status) || 2)]}
+              model: {
+                key: item.power,
+                list: [
+                  new PermissionCheckbox(
+                    "all",
+                    "全部",
+                    Number(item.status) || 2
+                  )
+                ]
+              }
             };
-            level === 1 && (permission[i].children = [])
+            level === 1 && (permission[i].children = []);
           } else {
-            permission.push(new PermissionCheckbox(item.power, item.power_name, Number(item.status) || 2))
+            permission.push(
+              new PermissionCheckbox(
+                item.power,
+                item.power_name,
+                Number(item.status) || 2
+              )
+            );
           }
           if (item.Children.length > 0) {
-            classify(item.Children, level ===2?permission[i].model.list : permission[i].children, level + 1);
+            classify(
+              item.Children,
+              level === 2 ? permission[i].model.list : permission[i].children,
+              level + 1
+            );
           }
         }
         return permission;
       };
 
       let $this = this;
-      RoleHandler.newrole(data, this.user_id).promise.then(res=>{
-        console.log('--------------0',res)
+      AdminRoleHandler.newrole(data, this.user_id).promise.then(res => {
+        console.log("--------------0", res);
         let list = [];
         $this.cache_data = res.data;
-        console.log($this.cache_data)
+        console.log($this.cache_data);
         classify(JSON.parse(JSON.stringify(res.data)), list);
-        console.log('------------1',list)
+        console.log("------------1", list);
         this.permission = list;
-        this.checkList = this.getCheckList(this.permission)['obj'];
-        this.originchecklist = this.getCheckList(this.permission)['checkObj'];
-      })
+        this.checkList = this.getCheckList(this.permission)["obj"];
+        this.originchecklist = this.getCheckList(this.permission)["checkObj"];
+        console.log("---666666---------", this.getCheckList(this.permission));
+      });
     },
     confirm() {
-
       function classifyCheck(checkDict) {
         let selectDict = {};
         for (let key in checkDict) {
           let item = checkDict[key];
           if (item.length > 0) {
-            for (let j = 0; j < item.length; j ++) {
+            for (let j = 0; j < item.length; j++) {
               let it = item[j];
-              if (it === 'all') {
+              if (it === "all") {
                 selectDict[key] = 1;
               } else {
                 selectDict[it] = 1;
@@ -351,6 +375,7 @@ export default {
             selectDict[key] = 2;
           }
         }
+        console.log("result", selectDict);
         return selectDict;
       }
 
@@ -360,7 +385,7 @@ export default {
        * @param selectDict  界面点击选中按钮状态字典
        */
       let resetClassify = (list, selectDict) => {
-        for (let i = 0; i < list.length; i ++) {
+        for (let i = 0; i < list.length; i++) {
           let item = list[i];
           item.status = selectDict[item.power] || 2;
 
@@ -368,9 +393,51 @@ export default {
             resetClassify(item.Children, selectDict);
           }
         }
+
+        return list;
       };
-  
+
       resetClassify(this.cache_data, classifyCheck(this.checkList));
+      console.log("传值", this.cache_data);
+        let data = {
+        role_name:this.user_name,
+        remark:this.user_describe,
+        power_list:this.cache_data
+      };
+      AdminRoleHandler.create_role(data, this.user_id).promise.then(res=>{
+          const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          this.$message.success(msg);
+          this.forward('manager',{type: 'add'});
+        }else{
+          this.$message.error(msg);
+        }
+      })
+      
+    },
+    // 提交后返回列表界面
+    search(){
+        let data = {
+        page_index: 1
+      };
+      AdminRoleHandler.managerList(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          if (Number(data.total_count) > 0) {
+            this.records = data.ls;
+            this.pageInfo = new PageInfo(
+              1,
+              [5, 10, 15],
+              Number(data.total_count)
+            );
+          } else {
+            this.records = [];
+            return;
+          }
+        } else {
+          return this.$message.error(msg);
+        }
+      });
     }
   },
   computed: {
@@ -378,7 +445,7 @@ export default {
       let obj = {};
       for (let i = 0; i < this.permission.length; i++) {
         let permissionObj = this.permission[i];
-        let item =[];
+        let item = [];
         let name = permissionObj.model["key"];
         item = (ls => {
           let l = [];

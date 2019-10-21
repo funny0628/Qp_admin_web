@@ -125,6 +125,7 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 export default {
   extends: BaseIframe,
+  name:'Global',
   components: { PermissionButton },
   data() {
     return {

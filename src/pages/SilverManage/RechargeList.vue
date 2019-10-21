@@ -48,6 +48,7 @@ import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
+  name:'RechargeList',
   components: {
     InputArea,
     SelectTime,

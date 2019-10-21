@@ -8,4 +8,4 @@ member_login(data,user_id) {
     return this.set_v1('/log_login/'+user_id, data)
   }
 }
-export default new LogHandler('/log');
+export default new LogHandler('/admin_log');

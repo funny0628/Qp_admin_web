@@ -1,5 +1,5 @@
 import BaseHandler from "./BaseHandler";
-class RoleHandler extends BaseHandler {
+class AdminRole extends BaseHandler {
 // 管理员角色列表
 managerList(data,user_id) {
     return this.set_v1('/role_list/'+user_id, data)
@@ -34,5 +34,10 @@ runstop_role(data,user_id){
   newrole(data,user_id){
       return this.get_v1('/role_power_menu/' + user_id, data)
     }
+  
+    // 权限管理管理员角色新增角色确认提交
+  create_role(data,user_id){
+    return this.set_v1('/create_role/' + user_id, data)
+  }
 }
-export default new RoleHandler('/role');
+export default new AdminRole('/admin_role');

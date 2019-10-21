@@ -28,6 +28,7 @@ import InputArea from "../../plugin/components/InputArea";
 
 export default {
   extends: BaseIframe,
+  name:'Report',
   components: {InputArea, SelectTime, InfoTable, PermissionButton },
   data() {
     return {

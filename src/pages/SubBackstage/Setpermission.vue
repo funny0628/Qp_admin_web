@@ -47,6 +47,7 @@ import BaseIframe from "../../plugin/script/common/BaseIframe";
 export default {
   components: { PermissionButton },
   extends: BaseIframe,
+  name:'Setpermission',
   data() {
     return {
       permission: [],
