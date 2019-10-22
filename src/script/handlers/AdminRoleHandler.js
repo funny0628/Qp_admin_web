@@ -39,5 +39,10 @@ runstop_role(data,user_id){
   create_role(data,user_id){
     return this.set_v1('/create_role/' + user_id, data)
   }
+
+  // 管理员角色编辑权限
+  edit_role(data,user_id){
+    return this.get_v1('/role_info/' + user_id, data)
+  }
 }
 export default new AdminRole('/admin_role');

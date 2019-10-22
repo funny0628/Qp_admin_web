@@ -17,7 +17,7 @@
             <template v-if="scope.prop==='operate'">
               <el-button type="text" v-if="scope.row.role_name=='超级管理员'">禁止编辑</el-button>
               <span v-else>
-                <el-button type="text">编辑</el-button>
+                <el-button type="text" @click="forward('setlimit',scope.row)">编辑</el-button>
                 <el-button type="text" @click="delet(scope.row)">删除</el-button>
                 <el-button type="text" @click="runstop(scope.row)">{{scope.row.status==1?'启用':'禁用'}}</el-button>
               </span>
@@ -95,8 +95,10 @@ export default {
         }
       });
     },
+    // edit(row){
+    //   console.log(row);
+    // },
     delet(row) {
-      console.log(row);
       this.$confirm("是否删除该文件?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

@@ -64,17 +64,15 @@ import InputArea from "../../plugin/components/InputArea";
 import AdminRoleHandler from "../../script/handlers/AdminRoleHandler";
 import PageInfo from "../../plugin/script/common/PageInfo";
 
-
 export default {
   components: { InputArea, PermissionButton },
   extends: BaseIframe,
-  name:'SetLimit',
+  name: "SetLimit",
   data() {
     return {
       user_name: "",
       user_describe: "",
       user_id: 2000,
-      pageInfo: new PageInfo(1, [10, 15, 20], 0),
       permission: [],
       checkList: {},
       cache_data: {},
@@ -82,11 +80,12 @@ export default {
         { label: "菜单", prop: "menu", width: "" },
         { label: "全选", prop: "model", width: "" }
       ],
-      originchecklist: {}
+      originchecklist: {},
+      fromclickedit: ""
     };
   },
   created() {
-    this.init();
+    this.fromclickedit = this.$pageInfo.param.role_id;
     this.getmsg();
   },
   methods: {
@@ -97,7 +96,7 @@ export default {
           menu: "账户管理",
           model: {
             key: "user",
-            list: [new PermissionCheckbox("all", "全部", 1)]
+            list: [new PermissionCheckbox("all", "全部", 2)]
             // list: [{ name: "all", text: "全部", val: 1 }]
           },
           children: [
@@ -106,7 +105,7 @@ export default {
               model: {
                 key: "depositRecords",
                 list: [
-                  new PermissionCheckbox("all", "全部", 1),
+                  new PermissionCheckbox("all", "全部", 2),
                   new PermissionCheckbox("read", "查看", 1)
                 ]
               }
@@ -157,9 +156,14 @@ export default {
       // this.permission = [];
       // this.checkList = this.getCheckList(this.permission)['obj'];
       // this.originchecklist = this.getCheckList(this.permission)['checkObj'];
-      for (let prop in this.checkList) {
-        this.checkList[prop] = [];
-      }
+      // if (!this.fromclickedit) {
+      //   for (let prop in this.checkList) {
+      //     this.checkList[prop] = [];
+      //   }
+      // }else{
+      //   return
+      // }
+
       // console.log(this.modelPath);
       // console.log(this.originchecklist);
     },
@@ -298,28 +302,58 @@ export default {
       }
     },
     getmsg() {
-      let data = {};
-
       let model = {};
+      let check_dict = {};
+      let classify2 = (list, level, alldict) => {
+        level = !level ? 1 : level;
+        let dict = alldict?alldict: {};
+        let commit_parent_change = (item, dict) => {
+          let parent_id = item.parent;
+          let parentIt = dict[parent_id];
+          parentIt.check_count ++;
+          if (parentIt.check_count >= parentIt.children_count) {
+            parentIt.check = true;
+
+            if (parentIt.parent) {
+              commit_parent_change(parentIt, dict);
+            }
+          }
+        };
+
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i];
+          !dict[item.power] && (dict[item.power] = {});
+          dict[item.power].children_count = item.Children.length;
+          dict[item.power].parent = item.parents;
+          dict[item.power].check_count = 0;
+          dict[item.power].check = false;
+          dict[item.power].level = level;
+
+          if (item.Children.length > 0)  {
+            let d = classify2(item.Children, level + 1, dict);
+            dict = {...dict, ...d};
+          }
+
+          if (level === 3) {
+            dict[item.power].check = Number(item.status) === 1;
+            dict[item.power].check && (commit_parent_change(dict[item.power], dict))
+          }
+        }
+
+        return dict;
+      };
 
       let classify = (list, permission, level) => {
         level = !level ? 1 : level;
         for (let i = 0; i < list.length; i++) {
           let item = list[i];
-
           //  获取整理好的数据
           if (level !== 3) {
             permission[i] = {
               menu: item.power_name,
               model: {
                 key: item.power,
-                list: [
-                  new PermissionCheckbox(
-                    "all",
-                    "全部",
-                    Number(item.status) || 2
-                  )
-                ]
+                list: [new PermissionCheckbox("all", "全部", check_dict[item.power].check?1:2)]
               }
             };
             level === 1 && (permission[i].children = []);
@@ -328,7 +362,7 @@ export default {
               new PermissionCheckbox(
                 item.power,
                 item.power_name,
-                Number(item.status) || 2
+                check_dict[item.power].check?1:2
               )
             );
           }
@@ -342,20 +376,56 @@ export default {
         }
         return permission;
       };
-
       let $this = this;
-      AdminRoleHandler.newrole(data, this.user_id).promise.then(res => {
-        console.log("--------------0", res);
-        let list = [];
-        $this.cache_data = res.data;
-        console.log($this.cache_data);
-        classify(JSON.parse(JSON.stringify(res.data)), list);
-        console.log("------------1", list);
-        this.permission = list;
-        this.checkList = this.getCheckList(this.permission)["obj"];
-        this.originchecklist = this.getCheckList(this.permission)["checkObj"];
-        console.log("---666666---------", this.getCheckList(this.permission));
-      });
+
+      if (this.fromclickedit) {
+        let data = { role_id: this.fromclickedit };
+        AdminRoleHandler.edit_role(data, this.user_id).promise.then(res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            let list = [];
+            this.user_name = data.role_name;
+            this.user_describe = data.remark;
+            $this.cache_data = data.power_list;
+            check_dict = classify2(JSON.parse(JSON.stringify(data.power_list)));
+            console.log(check_dict)
+            classify(JSON.parse(JSON.stringify(data.power_list)), list);
+
+            this.permission = list;
+            this.checkList = this.getCheckList(this.permission)["obj"];
+
+            this.originchecklist = this.getCheckList(this.permission)[
+              "checkObj"
+            ];
+          } else {
+            return this.$message.error(msg);
+          }
+        });
+      } else {
+        let data = {};
+        AdminRoleHandler.newrole(data, this.user_id).promise.then(res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            let list = [];
+            $this.cache_data = data;
+            check_dict = classify2(JSON.parse(JSON.stringify(data)));
+            classify(JSON.parse(JSON.stringify(data)), list);
+
+            this.permission = list;
+            this.checkList = this.getCheckList(this.permission)["obj"];
+
+            this.originchecklist = this.getCheckList(this.permission)[
+              "checkObj"
+            ];
+          } else {
+            return this.$message.error(msg);
+          }
+        });
+        for (let prop in this.checkList) {
+          this.checkList[prop] = [];
+        }
+      }
+      // this.init();
     },
     confirm() {
       function classifyCheck(checkDict) {
@@ -366,7 +436,7 @@ export default {
             for (let j = 0; j < item.length; j++) {
               let it = item[j];
               if (it === "all") {
-                selectDict[key] = 1;
+                selectDict[key] = 2;
               } else {
                 selectDict[it] = 1;
               }
@@ -375,7 +445,7 @@ export default {
             selectDict[key] = 2;
           }
         }
-        console.log("result", selectDict);
+        // console.log("result", selectDict);
         return selectDict;
       }
 
@@ -398,44 +468,19 @@ export default {
       };
 
       resetClassify(this.cache_data, classifyCheck(this.checkList));
-      console.log("传值", this.cache_data);
-        let data = {
-        role_name:this.user_name,
-        remark:this.user_describe,
-        power_list:this.cache_data
+      // console.log("传值", this.cache_data);
+      let data = {
+        role_name: this.user_name,
+        remark: this.user_describe,
+        power_list: this.cache_data
       };
-      AdminRoleHandler.create_role(data, this.user_id).promise.then(res=>{
-          const { data, msg, code } = res;
-        if (Number(code) == 200) {
-          this.$message.success(msg);
-          this.forward('manager',{type: 'add'});
-        }else{
-          this.$message.error(msg);
-        }
-      })
-      
-    },
-    // 提交后返回列表界面
-    search(){
-        let data = {
-        page_index: 1
-      };
-      AdminRoleHandler.managerList(data, this.user_id).promise.then(res => {
+      AdminRoleHandler.create_role(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
-          if (Number(data.total_count) > 0) {
-            this.records = data.ls;
-            this.pageInfo = new PageInfo(
-              1,
-              [5, 10, 15],
-              Number(data.total_count)
-            );
-          } else {
-            this.records = [];
-            return;
-          }
+          this.$message.success(msg);
+          this.forward("manager", { type: "add" });
         } else {
-          return this.$message.error(msg);
+          this.$message.error(msg);
         }
       });
     }
