@@ -20,7 +20,9 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop==='status'">{{scope.row.status==1?'禁用':'启用'}}</template>
+            <template v-if="scope.prop==='status'">
+              <span  :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}">{{scope.row.status==1?'禁用':'启用'}}</span>
+              </template>
             <template v-if="scope.prop==='operate'">
               <el-button type="text" v-if="scope.row.role_name=='超级管理员'">禁止编辑</el-button>
               <span v-else>
@@ -399,5 +401,11 @@ export default {
 #managerlist .el-button.el-button--primary.el-button--medium {
   margin-left: 0px !important;
   margin-right: 20px !important;
+}
+.stopcolor{
+  color: #ff3300;
+}
+.runcolor{
+  color: #6BDAB5;
 }
 </style>

@@ -68,10 +68,7 @@ class UserHandler extends BaseHandler {
     return this.set_v1('/vip_set', data)
   }
 
-  // 后台用户查看用户列表
-  admin_list(data, user_id) {
-    return this.set_v1('/admin_list/' + user_id, data)
-  }
+ 
 
   
 }

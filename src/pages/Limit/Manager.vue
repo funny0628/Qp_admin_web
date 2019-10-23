@@ -12,8 +12,11 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop==='status'">{{scope.row.status==1?'禁用':'启用'}}</template>
-            <!-- <template v-if="'status'.indexOf(scope.prop) > 0">{{scope.row.status==0?'禁用':'启用'}}</template> -->
+            <template v-if="scope.prop==='status'">
+              <span
+                :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
+              >{{scope.row.status==1?'禁用':'启用'}}</span>
+            </template>
             <template v-if="scope.prop==='operate'">
               <el-button type="text" v-if="scope.row.role_name=='超级管理员'">禁止编辑</el-button>
               <span v-else>
@@ -39,12 +42,11 @@ import AdminRoleHandler from "../../script/handlers/AdminRoleHandler";
 
 export default {
   extends: BaseIframe,
-  name:'Manager',
+  name: "Manager",
   components: { InfoTable, PermissionButton, InfoTableItem },
   data() {
     return {
       user_id: 2000,
-      current_page: 1,
       tableStyle: [
         { label: "序号", prop: "role_id", width: "" },
         { label: "角色名称", prop: "role_name", width: "" },
@@ -123,15 +125,15 @@ export default {
           return;
         });
     },
-     runstop(row) {
-       console.log(row)
+    runstop(row) {
+      console.log(row);
       let changestatus;
       if (Number(row.status) === 1) {
         changestatus = 2;
       } else {
         changestatus = 1;
       }
-      let data = {role_id: row.role_id, status: changestatus };
+      let data = { role_id: row.role_id, status: changestatus };
       AdminRoleHandler.runstop_role(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
@@ -142,11 +144,14 @@ export default {
         }
       });
     },
+    asdad(row) {
+      console.log(row);
+    }
   },
   created() {
-    this.$nextTick(()=>{
-    this.search();
-    })
+    this.$nextTick(() => {
+      this.search();
+    });
   }
 };
 </script>
@@ -159,5 +164,11 @@ export default {
   font-size: 16px !important;
   width: 120px !important;
   height: 35px !important;
+}
+.stopcolor {
+  color: #ff3300;
+}
+.runcolor {
+  color: #6bdab5;
 }
 </style>

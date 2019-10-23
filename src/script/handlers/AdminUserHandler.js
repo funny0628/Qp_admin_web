@@ -18,5 +18,15 @@ limit_manager(data,user_id){
   edit_manager_sure(data,user_id){
     return this.set_v1('/edit_user/' + user_id, data)
   }
+
+  // 运营后台管理查看运营账号列表
+  admin_list(data, user_id) {
+    return this.set_v1('/admin_list/' + user_id, data)
+  }
+
+  // 运营后台管理公司管理查看公司列表
+  company_list(data, user_id) {
+    return this.get_v1('/company_list/' + user_id, data)
+  }
 }
 export default new AdminUser('/admin_user');

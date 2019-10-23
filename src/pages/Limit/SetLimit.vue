@@ -304,13 +304,15 @@ export default {
     getmsg() {
       let model = {};
       let check_dict = {};
+      // 整理返回的数据，将正式使用的数据的status变为只关注最里层的status
       let classify2 = (list, level, alldict) => {
         level = !level ? 1 : level;
-        let dict = alldict?alldict: {};
+        let dict = alldict ? alldict : {};
+        // 等到最内层的check为true时，再执行此方法以判断父级是否变为选中状态。接收一个最内层的选项代表的对象，找到其父级。check_count代表最内层选项的选中数量，若等于该父级的孩子数量，则要选中
         let commit_parent_change = (item, dict) => {
           let parent_id = item.parent;
           let parentIt = dict[parent_id];
-          parentIt.check_count ++;
+          parentIt.check_count++;
           if (parentIt.check_count >= parentIt.children_count) {
             parentIt.check = true;
 
@@ -319,7 +321,7 @@ export default {
             }
           }
         };
-
+        // 递归循环返回数据的每一层，处理为以每一层的power为属性名的新对象dict
         for (let i = 0; i < list.length; i++) {
           let item = list[i];
           !dict[item.power] && (dict[item.power] = {});
@@ -328,15 +330,15 @@ export default {
           dict[item.power].check_count = 0;
           dict[item.power].check = false;
           dict[item.power].level = level;
-
-          if (item.Children.length > 0)  {
+          // 递归处理
+          if (item.Children.length > 0) {
             let d = classify2(item.Children, level + 1, dict);
-            dict = {...dict, ...d};
+            dict = { ...dict, ...d };
           }
-
+          // 为最内层的数据时，若最内层的选项为选中状态（status=1），该层判断的选中标志check变为true，继续执行commit_parent_change函数判断父级的check，将该最内层的power代表的对象以及整个dict对象通过该函数传出
           if (level === 3) {
             dict[item.power].check = Number(item.status) === 1;
-            dict[item.power].check && (commit_parent_change(dict[item.power], dict))
+            dict[item.power].check &&commit_parent_change(dict[item.power], dict);
           }
         }
 
@@ -353,7 +355,13 @@ export default {
               menu: item.power_name,
               model: {
                 key: item.power,
-                list: [new PermissionCheckbox("all", "全部", check_dict[item.power].check?1:2)]
+                list: [
+                  new PermissionCheckbox(
+                    "all",
+                    "全部",
+                    check_dict[item.power].check ? 1 : 2
+                  )
+                ]
               }
             };
             level === 1 && (permission[i].children = []);
@@ -362,7 +370,7 @@ export default {
               new PermissionCheckbox(
                 item.power,
                 item.power_name,
-                check_dict[item.power].check?1:2
+                check_dict[item.power].check ? 1 : 2
               )
             );
           }
@@ -388,15 +396,13 @@ export default {
             this.user_describe = data.remark;
             $this.cache_data = data.power_list;
             check_dict = classify2(JSON.parse(JSON.stringify(data.power_list)));
-            console.log(check_dict)
+            console.log("check_dict", check_dict);
             classify(JSON.parse(JSON.stringify(data.power_list)), list);
 
             this.permission = list;
             this.checkList = this.getCheckList(this.permission)["obj"];
 
-            this.originchecklist = this.getCheckList(this.permission)[
-              "checkObj"
-            ];
+            this.originchecklist = this.getCheckList(this.permission)["checkObj"];
           } else {
             return this.$message.error(msg);
           }
@@ -414,9 +420,7 @@ export default {
             this.permission = list;
             this.checkList = this.getCheckList(this.permission)["obj"];
 
-            this.originchecklist = this.getCheckList(this.permission)[
-              "checkObj"
-            ];
+            this.originchecklist = this.getCheckList(this.permission)["checkObj"];
           } else {
             return this.$message.error(msg);
           }
@@ -445,7 +449,7 @@ export default {
             selectDict[key] = 2;
           }
         }
-        // console.log("result", selectDict);
+        console.log("result", selectDict);
         return selectDict;
       }
 
@@ -468,21 +472,39 @@ export default {
       };
 
       resetClassify(this.cache_data, classifyCheck(this.checkList));
-      // console.log("传值", this.cache_data);
-      let data = {
-        role_name: this.user_name,
-        remark: this.user_describe,
-        power_list: this.cache_data
-      };
-      AdminRoleHandler.create_role(data, this.user_id).promise.then(res => {
-        const { data, msg, code } = res;
-        if (Number(code) == 200) {
-          this.$message.success(msg);
-          this.forward("manager", { type: "add" });
-        } else {
-          this.$message.error(msg);
-        }
-      });
+      console.log("传值", this.cache_data);
+      if (this.fromclickedit) {
+        let data = {
+          role_id: this.fromclickedit,
+          role_name: this.user_name,
+          remark: this.user_describe,
+          power_list: this.cache_data
+        };
+        AdminRoleHandler.confirm_edit(data, this.user_id).promise.then(res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            this.$message.success(msg);
+            this.forward("manager", { type: "add" });
+          } else {
+            this.$message.error(msg);
+          }
+        });
+      } else {
+        let data = {
+          role_name: this.user_name,
+          remark: this.user_describe,
+          power_list: this.cache_data
+        };
+        AdminRoleHandler.create_role(data, this.user_id).promise.then(res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            this.$message.success(msg);
+            this.forward("manager", { type: "add" });
+          } else {
+            this.$message.error(msg);
+          }
+        });
+      }
     }
   },
   computed: {

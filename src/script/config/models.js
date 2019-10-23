@@ -300,7 +300,12 @@ const models = {
             vue: r => require.ensure([], () => r(require('../../pages/SubBackstage/Setpermission.vue')), 'setpermission'),
           },
         ]
-      }
+      },
+      {
+        name:'companymanage',
+        text:'公司管理',
+        vue: r => require.ensure([], () => r(require('../../pages/SubBackstage/CompanyManage.vue')), 'companymanage'),
+      },
     ]
   },
   limit:{

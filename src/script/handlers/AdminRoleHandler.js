@@ -44,5 +44,10 @@ runstop_role(data,user_id){
   edit_role(data,user_id){
     return this.get_v1('/role_info/' + user_id, data)
   }
+
+   // 权限管理管理员角色编辑角色确认提交
+     confirm_edit(data,user_id){
+      return this.set_v1('/edit_role/' + user_id, data)
+    }
 }
 export default new AdminRole('/admin_role');

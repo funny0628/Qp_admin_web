@@ -33,6 +33,11 @@
                 class="platformchoice"
               >{{scope.row[scope.prop]}}</span>
             </template>
+               <template v-if="scope.prop==='status'">
+              <span
+                :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
+              >{{scope.row.status==1?'禁用':'启用'}}</span>
+            </template>
             <template v-if="scope.prop==='operate'">
               <span @click="handeClick($event)">
                 <el-button type="text">游戏管理</el-button>
@@ -43,7 +48,7 @@
               </span>
             </template>
             <template
-              v-if="['operate','display_name'].indexOf(scope.prop) < 0"
+              v-if="['operate','display_name','status'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
@@ -78,7 +83,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="所属角色" prop="belongrole" class="reducewidth">
+              <el-form-item label="所属公司" prop="belongrole" class="reducewidth">
                 <el-select v-model="ruleForm.belongrole" placeholder="用户角色" class="changewidth">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
@@ -133,11 +138,11 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-import UserHandler from "../../script/handlers/UserHandler";
+import AdminUserHandler from "../../script/handlers/AdminUserHandler";
 
 export default {
   extends: BaseIframe,
-  name:'Subaccount',
+  name: "Subaccount",
   components: { InputArea, InfoTable, PermissionButton, InfoTableItem },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -153,7 +158,7 @@ export default {
       breadlist: [{ name: "游戏平台" }],
       sub_id: "",
       sub_name: "",
-      current_user:1004,
+      user_id: 2000,
       date: [],
       addsub: false,
       gamemanage: false,
@@ -219,7 +224,7 @@ export default {
       //     lowerstage: 10,
       //     usertype: "超级管理员",
       //     substagedescribe: "-",
-    
+
       //   },
       //   {
       //     substageid: 111,
@@ -228,7 +233,7 @@ export default {
       //     lowerstage: 15,
       //     usertype: "管理员",
       //     substagedescribe: "-",
-         
+
       //   }
       // ],
       pageInfo: new PageInfo(1, [10, 15, 20], 0),
@@ -268,15 +273,25 @@ export default {
       this.multipleSelection = val;
     },
     search(val) {
-      let data = {};
-      UserHandler.admin_list(data, this.current_user).promise.then(res => {
-             console.log(res)
-         const { data, msg, code } = res;
-         if(Number(code)==200){
-           this.records=data
-          // this.pageInfo = new PageInfo(1,[5,10,15],Number(data.total_count))
-         }else {
-          return this.$message.error("msg");
+      val = val || this.pageInfo.page;
+      let data = { page_index: val };
+      AdminUserHandler.admin_list(data, this.user_id).promise.then(res => {
+        console.log(res);
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          if (Number(data.total_count) > 0) {
+            this.records = data.ls;
+            this.pageInfo = new PageInfo(
+              1,
+              [5, 10, 15],
+              Number(data.total_count)
+            );
+          } else {
+            this.records = [];
+            return;
+          }
+        } else {
+          return this.$message.error(msg);
         }
       });
     },
@@ -295,7 +310,7 @@ export default {
       this.breadlist.splice(index + 1, this.breadlist.length - 1);
       // 执行请求表格数据，获取最新的表格
     },
-    runstop(){}
+    runstop() {}
   },
   mounted() {
     this.search();
@@ -346,5 +361,11 @@ export default {
 .platformchoice {
   cursor: pointer;
   color: #409eff;
+}
+.stopcolor {
+  color: #ff3300;
+}
+.runcolor {
+  color: #6bdab5;
 }
 </style>
