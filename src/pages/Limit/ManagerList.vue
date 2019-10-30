@@ -76,7 +76,7 @@
               <el-form-item label="所属角色" prop="role_id">
                 <el-select v-model="ruleForm.role_id" placeholder="用户角色" class="changewidth">
                   <el-option v-for="item in rolelist" :key="item.role_id" :label="item.role_name" :value="item.role_id"></el-option>
-                  <!-- <el-option label="角色2" value="1022"></el-option> -->
+           
                 </el-select>
               </el-form-item>
             </el-col>

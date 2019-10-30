@@ -80,17 +80,20 @@
 /* 包管理 */
 /* 包管理输入框大小调整 */
 #packagemanage .el-input--suffix .el-input__inner,
-#packagemanage .el-input__inner{
+#packagemanage .el-input__inner,
+#subaccount .el-input__inner{
   height: 36px;
 }
 
-/* 包管理弹框头部内容位置调整 */
+/* 包管理,运营后台管理公司管理弹框头部内容位置调整 */
 #packagemanage .el-dialog__header,
 #accountlist .el-dialog__header,
 #managerlist .el-dialog__header,
-#subaccount .el-dialog__header {
+#subaccount .el-dialog__header,
+#companymanage .el-dialog__header {
   text-align: center;
   padding-top: 35px;
+  padding-bottom: 35px;
 }
 
 /* 弹框底部按钮位置 */
@@ -102,7 +105,8 @@
 #packagemanage .el-dialog__body,
 #accountlist .el-dialog__body,
 #managerlist .el-dialog__body,
-#subaccount .el-dialog__body {
+#subaccount .el-dialog__body,
+#companymanage  .el-dialog__body{
   padding: 5px 80px 30px;
 }
 
@@ -111,7 +115,7 @@
   margin-right: 50px;
 }
 
-/* 权限设置表格样式改变 */
+/* 权限设置,运营后台管理弹框样式改变 */
 
 #setlimit .permission-bd {
   padding: 0 20px;
@@ -131,7 +135,8 @@
 #packagemanage .el-form-item__label,
 #accountlist .el-form-item__label,
 #managerlist .el-form-item__label,
-#subaccount .el-form-item__label {
+#subaccount .el-form-item__label,
+#companymanage .el-form-item__label{
   text-align: left;
 }
 
@@ -147,10 +152,11 @@
   padding-left: 8px;
 }
 
-/* 银商管理账号列表,权限管理管理员列表输入框高度 */
+/* 银商管理账号列表,权限管理管理员列表,运营后台管理公司管理弹框输入框高度 */
 #accountlist .el-input__inner,
 #managerlist .el-input__inner,
-#rechargelist .el-input__inner {
+#rechargelist .el-input__inner,
+#companymanage  .el-input__inner{
   height: 36px;
 }
 /* 手机适配多选框间距 */

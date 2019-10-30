@@ -3,6 +3,11 @@
     <input-area>
       <el-input v-model="sub_id" placeholder="子后台ID" size="medium"></el-input>
       <el-input v-model="sub_name" placeholder="子后台名称" size="medium"></el-input>
+      <!-- root用户显示所属公司下拉框 -->
+      <!-- <el-select v-model="belongcompany" placeholder="所属公司" style="width:170px;margin-right:10px">
+        <el-option label="腾讯" value="1"></el-option>
+        <el-option label="阿里" value="2"></el-option>
+      </el-select> -->
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
@@ -33,7 +38,7 @@
                 class="platformchoice"
               >{{scope.row[scope.prop]}}</span>
             </template>
-               <template v-if="scope.prop==='status'">
+            <template v-if="scope.prop==='status'">
               <span
                 :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
               >{{scope.row.status==1?'禁用':'启用'}}</span>
@@ -139,6 +144,7 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import AdminUserHandler from "../../script/handlers/AdminUserHandler";
+import { constants } from "crypto";
 
 export default {
   extends: BaseIframe,
@@ -158,6 +164,7 @@ export default {
       breadlist: [{ name: "游戏平台" }],
       sub_id: "",
       sub_name: "",
+      belongcompany: "",
       user_id: 2000,
       date: [],
       addsub: false,
@@ -244,7 +251,7 @@ export default {
         { game: "游戏4" },
         { game: "游戏5" }
       ],
-      multipleTable: []
+      multipleSelection: []
     };
   },
   methods: {
@@ -260,16 +267,8 @@ export default {
         this.addsub = true;
       }
     },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
     handleSelectionChange(val) {
+      console.log(val);
       this.multipleSelection = val;
     },
     search(val) {
