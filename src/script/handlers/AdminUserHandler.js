@@ -28,5 +28,11 @@ limit_manager(data,user_id){
   company_list(data, user_id) {
     return this.get_v1('/company_list/' + user_id, data)
   }
+
+  // 运营后台管理公司管理新增公司
+  newaddcompany(data,user_id){
+    return this.set_v1('/create_company/' + user_id, data)
+
+  }
 }
 export default new AdminUser('/admin_user');

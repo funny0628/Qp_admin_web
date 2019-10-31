@@ -46,7 +46,7 @@
           <el-form
             :model="ruleFormnew"
             :rules="rulesnew"
-            ref="ruleForm"
+            ref="ruleFormnew"
             label-width="110px"
             class="demo-ruleFormnew"
           >
@@ -58,14 +58,14 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="平台标识" prop="mark">
-                  <el-input v-model.number="ruleFormnew.mark" placeholder="请输入平台标识"></el-input>
+                  <el-input v-model="ruleFormnew.mark" placeholder="请输入平台标识"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="充值兑换比例" prop="newproportion" class="formleft">
-                  <el-input v-model="ruleFormnew.newproportion" placeholder="直接填写数字"></el-input>
+                  <el-input v-model.number="ruleFormnew.newproportion" placeholder="直接填写数字"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -81,7 +81,11 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="newadd = false" class="cancel">取 消</el-button>
-          <el-button type="primary" @click="newadd = false" class="confirm">确 定</el-button>
+          <el-button
+            type="primary"
+            @click="newadd = false,addnewcompany(ruleFormnew)"
+            class="confirm"
+          >确 定</el-button>
         </span>
         <!-- 公司管理编辑弹框 -->
       </el-dialog>
@@ -161,6 +165,11 @@ export default {
     InfoTableItem
   },
   data() {
+    var validatenewproportion = (rule, value, callback) => {
+      if (!Number.isInteger(value)) {
+        return callback(new Error("请输入数字"));
+      }
+    };
     return {
       companyid: "",
       companyname: "",
@@ -203,7 +212,8 @@ export default {
         ],
         mark: [{ required: true, message: "请输入平台标识", trigger: "blur" }],
         newproportion: [
-          { required: true, message: "请输入充值兑换比例", trigger: "blur" }
+          { required: true, message: "请输入充值兑换比例", trigger: "blur" },
+          { validator: validatenewproportion, trigger: "blur" }
         ],
         newaddstatus: [
           { required: true, message: "请选择状态", trigger: "change" }
@@ -248,15 +258,45 @@ export default {
       });
     },
     closed() {
-      this.$nextTick(() => {
-        this.$refs["ruleForm"].resetFields();
-      });
+      // this.$nextTick(() => {
+      //   this.$refs["ruleForm"].resetFields()
+      // });
     },
     handleSelectionChange(val) {
       console.log(val);
       this.multipleSelection = val;
+    },
+    addnewcompany(ruleFormnew) {
+      this.$refs[ruleFormnew].validate(valid => {
+        if (valid) {
+          // let data = {
+          //   company_name: this.ruleFormnew.company_name,
+          //   static_path: this.ruleFormnew.mark,
+          //   exchange: this.ruleFormnew.newproportion,
+          //   status: this.ruleFormnew.newaddstatus
+          // };
+
+          // AdminUserHandler.newaddcompany(data, this.user_id).promise.then(
+          //   res => {
+          //     console.log(res);
+          //     const { data, msg, code } = res;
+          //     if (Number(code) == 200) {
+          //       this.search();
+          //       return this.$message.success(msg);
+          //     } else {
+          //       return this.$message.error(msg);
+          //     }
+          //   }
+          // );
+        } else {
+          this.$message.error("提交失败");
+          this.closed();
+          return false;
+        }
+      });
     }
   },
+
   created() {
     this.search();
   }

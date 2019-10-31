@@ -1,13 +1,13 @@
 <template>
   <div id="subaccount">
     <input-area>
-      <el-input v-model="sub_id" placeholder="子后台ID" size="medium"></el-input>
-      <el-input v-model="sub_name" placeholder="子后台名称" size="medium"></el-input>
+      <el-input v-model="sub_id" placeholder="运营后台ID" size="medium"></el-input>
+      <el-input v-model="sub_name" placeholder="运营后台名称" size="medium"></el-input>
       <!-- root用户显示所属公司下拉框 -->
-      <!-- <el-select v-model="belongcompany" placeholder="所属公司" style="width:170px;margin-right:10px">
+      <el-select v-model="belongcompany" placeholder="所属公司" style="width:170px;margin-right:10px" v-if="user_id===1000">
         <el-option label="腾讯" value="1"></el-option>
         <el-option label="阿里" value="2"></el-option>
-      </el-select> -->
+      </el-select>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
@@ -33,22 +33,19 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop=='display_name'">
-              <span
-                @click="fn(scope.row.substageid,scope.row.display_name)"
-                class="platformchoice"
-              >{{scope.row[scope.prop]}}</span>
+              <span @click="fn(scope.row)" class="platformchoice">{{scope.row[scope.prop]}}</span>
             </template>
             <template v-if="scope.prop==='status'">
               <span
                 :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
-              >{{scope.row.status==1?'禁用':'启用'}}</span>
+              >{{scope.row.status==1?'启用':'禁用'}}</span>
             </template>
             <template v-if="scope.prop==='operate'">
               <span @click="handeClick($event)">
                 <el-button type="text">游戏管理</el-button>
                 <el-button type="text">授权</el-button>
                 <el-button type="text">编辑</el-button>
-                <el-button type="text" @click="runstop()">{{scope.row.statu==0?'启用':'禁用'}}</el-button>
+                <el-button type="text" @click="runstop()">{{scope.row.status==1?'禁用':'启用'}}</el-button>
                 <el-button type="text">结算</el-button>
               </span>
             </template>
@@ -161,9 +158,10 @@ export default {
       }
     };
     return {
-      breadlist: [{ name: "游戏平台" }],
+      breadlist: [{ name: "游戏平台" ,id:''}],
       sub_id: "",
       sub_name: "",
+      gameplateform:'',
       belongcompany: "",
       user_id: 2000,
       date: [],
@@ -194,6 +192,7 @@ export default {
       tableStyle: [
         { label: "运营后台ID", prop: "user_id", width: "" },
         { label: "运营后台名称", prop: "display_name", width: "" },
+        { label: "所属公司", prop: "company_name", width: "" },
         { label: "运营后台账号", prop: "user_name", width: "" },
         { label: "下级后台数", prop: "sub_user_count", width: "" },
         { label: "用户类型", prop: "user_role", width: "" },
@@ -273,7 +272,13 @@ export default {
     },
     search(val) {
       val = val || this.pageInfo.page;
-      let data = { page_index: val };
+      let data = { 
+        base_superadmin_id:this.gameplateform,
+        superadmin_id:this.sub_id,
+        superadmin_name:this.sub_name,
+        company_name:this.belongcompany,
+        page_index: val 
+        };
       AdminUserHandler.admin_list(data, this.user_id).promise.then(res => {
         console.log(res);
         const { data, msg, code } = res;
@@ -295,19 +300,22 @@ export default {
       });
     },
     // 实现面包屑，存入需要的数据
-    fn(id, name) {
-      // xxx.then( res=>{
+    fn(row) {
+      // console.log(row)
+      this.gameplateform=row.user_id
+      this.search();
       let obj = {};
-      obj.name = `/${name}`;
+      obj.name = `/${row.display_name}`;
+      obj.id=`${row.user_id}`
       this.breadlist.push(obj);
-      this.records = this.childrenrecords; //返回的新表格数据覆盖records
-      // })
+      // console.log(this.breadlist)
     },
     // 实现面包屑反选，将存入的数据传入
     getmsg(id, index) {
       //  裁剪面包屑列表
       this.breadlist.splice(index + 1, this.breadlist.length - 1);
-      // 执行请求表格数据，获取最新的表格
+      this.gameplateform=id;
+      this.search()
     },
     runstop() {}
   },
