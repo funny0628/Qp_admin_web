@@ -1,3 +1,4 @@
+<!--滚动公告-->
 <template>
   <div id="ScrollNotice-main">
     <input-area>
@@ -269,4 +270,4 @@
     margin: 0;
   }
 </style>
-<!--滚动公告-->
+

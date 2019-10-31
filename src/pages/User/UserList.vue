@@ -1,7 +1,14 @@
 <template>
   <div id="userList—main">
     <input-area>
-      <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>
+<!--      <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>-->
+      <!--连级选择器-->
+      <el-cascader
+        :options="childs"
+        :props="{ checkStrictly: true }"
+        clearable
+        size="medium"
+        @change="handelChange"></el-cascader>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
       <el-date-picker
@@ -268,6 +275,28 @@
             label: "启用"
           }
         ],
+        childs:[
+          {
+            value:'zhinan',
+            label:'指南',
+            children:[
+              {
+                value:'shejiyuanze',
+                label:'设计原则',
+                children:[
+                  {
+                    value: 'yizhi',
+                    label:'一致'
+                  },
+                  {
+                    value:'fankui',
+                    label:'反馈'
+                  },
+                ]
+              }
+            ]
+          }
+        ],
         value: "", //用户状态
         // date: [],
         format: {
@@ -431,6 +460,10 @@
       };
     },
     methods: {
+      //多级连查
+      handelChange(value){
+        console.log(value)
+      },
       search() {
       },
       //添加会员
@@ -448,7 +481,7 @@
           user_type: this.form.user_type
         };
         UserHandler.add(data).promise.then(res => {
-          // console.log(res)
+          console.log(res);
           if (Number(res.code) === 200) {
             this.$message(res.msg)
           }
@@ -500,9 +533,8 @@
           page_index: 1, //页码
           page_size: "" //分页大小
         };
-        //查询用户列表
-        UserHandler.list(data).promise.then(res => {
-          // console.log(res);
+        let user_id = 1000;
+        UserHandler.list(data,user_id).promise.then(res => {
           if (Number(res.code) === 200) {
             this.records = res.data.list;
             //数据处理

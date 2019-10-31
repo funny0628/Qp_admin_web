@@ -1,3 +1,4 @@
+<!--内部邮件-->
 <template>
   <div id="InternalMail-main">
     <input-area>
@@ -199,4 +200,3 @@
     margin: 0;
   }
 </style>
-<!--内部邮件-->

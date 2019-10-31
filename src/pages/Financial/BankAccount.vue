@@ -1,3 +1,4 @@
+<!--银行收款账号-->
 <template>
   <div id="BankAccount-main">
     <input-area>

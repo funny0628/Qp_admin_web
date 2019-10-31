@@ -230,7 +230,6 @@ export default {
       //     lowerstage: 10,
       //     usertype: "超级管理员",
       //     substagedescribe: "-",
-
       //   },
       //   {
       //     substageid: 111,
@@ -239,7 +238,6 @@ export default {
       //     lowerstage: 15,
       //     usertype: "管理员",
       //     substagedescribe: "-",
-
       //   }
       // ],
       pageInfo: new PageInfo(1, [10, 15, 20], 0),

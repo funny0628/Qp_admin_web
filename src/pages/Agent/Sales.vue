@@ -1,3 +1,4 @@
+<!--业绩返佣-->
 <template>
   <div id="Sales-main">
     <input-area>
@@ -20,7 +21,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handleClick(btn,scope.row)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -32,19 +33,18 @@
       </info-table>
     </div>
     <div class="dialog">
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%">
         <el-form :model="dataForm" ref="dataForm">
-          <el-form-item label="代理层级" :label-width="labelWidth" prop="level">
-            <el-input autocomplete="off" v-model="dataForm.level"></el-input>
-          </el-form-item>
           <el-form-item label="最小业绩" :label-width="labelWidth" prop="min_pre">
             <el-input autocomplete="off" v-model="dataForm.min_pre"></el-input>
           </el-form-item>
           <el-form-item label="最大业绩" :label-width="labelWidth" prop="max_pre">
             <el-input autocomplete="off" v-model="dataForm.max_pre"></el-input>
           </el-form-item>
-          <el-form-item label="返佣比例" :label-width="labelWidth" prop="ratio">
-            <el-input autocomplete="off" v-model="dataForm.ratio"></el-input>
+          <el-form-item label="返佣比例" :label-width="labelWidth" prop="column">
+            <el-input placeholder="请输入内容" v-model="dataForm.column">
+              <template slot="prepend">万分之</template>
+            </el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -91,10 +91,10 @@ export default {
       dialogVisible: false,
       labelWidth: "70px",
       dataForm: {
-        level: "",
-        min_pre: "",
-        max_pre: "",
-        ratio: ""
+        // level: "",
+        min_pre: "0",
+        max_pre: "10000.00",
+        column: "1"
       }
     };
   },
@@ -102,11 +102,14 @@ export default {
     search() {},
     //打开新增的弹窗方法
     handelAddClick() {
-      this.dialogTitle = "新增代理返佣设置";
+      this.dialogVisible = true;
+      this.dialogTitle = "业绩返佣新增";
     },
     //表单操作
-    handeClick(btn, row) {
-      this.dialogTitle = "修改代理返佣设置";
+    // handelClick
+    handelClick(btn, row) {
+      this.dialogVisible = true;
+      this.dialogTitle = "业绩返佣修改";
     },
     //新增方法
     AddEditClick() {

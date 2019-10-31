@@ -1,3 +1,4 @@
+<!--银行管理-->
 <template>
   <div id="Bank-main">
     <input-area>
@@ -41,10 +42,10 @@
       </info-table>
     </div>
     <!-- 新增、修改 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="fromData">
         <el-form-item label="银行ID" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="fromData.bank_id"></el-input>
+          <el-input autocomplete="off" v-model="fromData.bank_id" disabled></el-input>
         </el-form-item>
         <el-form-item label="银行缩写" :label-width="labelWidth">
           <el-input autocomplete="off" v-model="fromData.bank_abbr"></el-input>
@@ -117,8 +118,9 @@ export default {
       dialogVisible: false,
       labelWidth: "70px",
       fromData: {
-        bank_id: "",
-        bank_abbr: "",
+        bank_id: "10002",
+        bank_abbr: "ICBC",
+        bank_name:'工商银行',
         bank_logo: [],
         delivery: false
       }

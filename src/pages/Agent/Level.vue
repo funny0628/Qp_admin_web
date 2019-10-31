@@ -1,3 +1,4 @@
+<!--代理层级-->
 <template>
   <div id="Level-main">
     <input-area>
@@ -32,7 +33,7 @@
       </info-table>
     </div>
     <!-- 新增、修改 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="dataForm" ref="dataForm">
         <el-form-item label="层级名称" :label-width="labelWidth" prop="hierarchy_name">
           <el-input autocomplete="off" v-model="dataForm.hierarchy_name"></el-input>

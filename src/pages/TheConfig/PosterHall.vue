@@ -1,3 +1,4 @@
+<!--大厅海报-->
 <template>
   <div id="PosterHall-main">
     <input-area>
@@ -215,7 +216,7 @@
           platform_id:1000
         };
         HallHandler.poster_list(data).promise.then(res => {
-          // console.log(res);
+          console.log(res);
           if (Number(res.code) === 200) {
             this.records = [...this.records,...res.data]
           }
@@ -235,7 +236,6 @@
         this.$refs.formData.validate(vaild => {
           if (vaild) {
             if (this.formData.poster_id) {
-              const {poster_id,poster_type,title,status,enabled_at,expired_at,image,act,link,} = this.formDate
               let data = {
                 poster_id:this.formData.poster_id,
                 platform_id:1000,
@@ -319,4 +319,4 @@
     margin: 0;
   }
 </style>
-<!--大厅海报-->
+

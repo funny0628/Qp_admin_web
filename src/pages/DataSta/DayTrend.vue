@@ -1,3 +1,4 @@
+<!--每日趋势-->
 <template>
   <div id="DayTrend-main">
     <div class="analysis">

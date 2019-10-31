@@ -1,3 +1,4 @@
+<!--赠送记录-->
 <template>
   <div id="Record-main">
     <input-area>

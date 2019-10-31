@@ -1,3 +1,4 @@
+<!--排行榜数据-->
 <template>
   <div id="LeaderBoard">
     <div class="tab-btns">
@@ -29,18 +30,10 @@
           <el-form-item label="排行榜显示：">
             <div style="display: flex;  flex-wrap:nowrap;">
               <div class="earn">
-                <el-button type="success" style="border-radius: 0;">今日盈利排行</el-button>
-                <span
-                  class="el-icon-check"
-                  style="height: 40px;width: 40px;background-color: #8e8e8e;line-height: 40px; text-align: center; border-color: #e4e4e4; border: none;"
-                ></span>
+                <el-button :type="tabIndex === 0 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 0">今日盈利排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
               </div>
               <div class="result" style="padding-left: 10px;">
-                <el-button style="border-radius: 0;">个人业绩排行</el-button>
-                <span
-                  class="el-icon-check"
-                  style="height: 40px;width: 40px; line-height: 40px; text-align: center; background-color: #8e8e8e; border-color: #e4e4e4; border: none;"
-                ></span>
+                <el-button :type="tabIndex === 1 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 1">个人业绩排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
               </div>
             </div>
           </el-form-item>
@@ -66,7 +59,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="handelList">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -74,6 +67,7 @@
 </template>
 
 <script>
+  import UserHandeler from '../../script/handlers/UserHandler'
   export default {
     name: "LeaderBoard",
     data() {
@@ -104,7 +98,31 @@
       },
       openDialog() {
         this.dialogVisible = true;
+      },
+      //获取排行榜数据
+      rankList(){
+        let data = {
+          platform_id : 1000
+        };
+        UserHandeler.rank_list(data).promise.then(res=>{
+          console.log(res);
+        }).catch(err=>{
+          console.log(err);
+        })
+      },
+      //排行榜配置
+      handelList(){
+        let data = {};
+        UserHandeler.rank_set(data).promise.then(res=>{
+          console.log(res);
+          this.dialogVisible = false;
+        }).catch(err=>{
+          console.log(err);
+        })
       }
+    },
+    mounted() {
+      this.rankList()
     }
   };
 </script>
@@ -153,4 +171,4 @@
     padding: 30px 20px 10px 20px;
   }
 </style>
-<!--排行榜数据-->
+

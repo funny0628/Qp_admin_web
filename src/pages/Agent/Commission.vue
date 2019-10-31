@@ -1,3 +1,4 @@
+<!--代理返佣设置-->
 <template>
   <div id="Commission-main">
     <input-area>
@@ -38,7 +39,7 @@
       </info-table>
     </div>
     <!-- 新增、修改 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="formData">
         <el-form-item label="代理层级" :label-width="labelWidth">
           <el-input autocomplete="off" v-model="formData.level"></el-input>

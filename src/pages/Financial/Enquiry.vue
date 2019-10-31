@@ -1,3 +1,4 @@
+<!--兑换记录查询-->
 <template>
   <div id="prepaidRecord-main">
     <input-area>

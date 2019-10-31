@@ -1,3 +1,4 @@
+<!--用户分层-->
 <template>
   <div id="UserLayer-main">
     <input-area>
@@ -38,7 +39,7 @@
       </info-table>
     </div>
     <!-- 新增、修改 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="dataForm" ref="dataForm">
         <el-form-item label="层级名称" :label-width="labelWidth" prop="vip_name">
           <el-input autocomplete="off" v-model="dataForm.vip_name"></el-input>
@@ -157,7 +158,7 @@ export default {
             this.dialogVisible = false;
             this.getVipList();
             this.$refs["dataForm"].resetFields(); // 失效
-            console.log(dataForm)
+            // console.log(dataForm)
           } else {
             let data = {
               platform_id: 1000,

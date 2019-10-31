@@ -1,3 +1,4 @@
+<!--玩家任务-->
 <template>
   <div id="PlayTask-main">
     <div class="title">任务设置</div>
@@ -159,4 +160,4 @@ export default {
   border-top: none;
 }
 </style>
-<!--玩家任务-->
+

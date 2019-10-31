@@ -66,7 +66,12 @@
 #prepaidRecord-main .el-textarea__inner {
   height: 100px;
 }
-
+/*用户分层*/
+/*#UserLayer-main .el-form-item{
+  margin: 0 auto;
+  margin-top: 20px;
+  width: 90%;
+}*/
 /*充值优惠*/
 #TopPref-main .el-button--warning,
 #Sales-main .el-button--warning {

@@ -1,3 +1,4 @@
+<!--银行卡列表-->
 <template>
   <div id="MemCardList—main">
     <input-area>
@@ -317,4 +318,4 @@ export default {
 
 <style scoped>
 </style>
-<!--银行卡列表-->
+

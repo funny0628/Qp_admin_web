@@ -1,3 +1,4 @@
+<!--弹窗公告-->
 <template>
   <div id="PopNotice-main">
     <input-area>
@@ -144,4 +145,4 @@ export default {
 
 <style scoped>
 </style>
-<!--弹窗公告-->
+

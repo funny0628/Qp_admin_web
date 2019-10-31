@@ -1,3 +1,4 @@
+<!--游戏报表-->
 <template>
   <div id="TaxSta-main">
     <input-area>

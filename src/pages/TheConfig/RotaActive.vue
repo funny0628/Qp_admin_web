@@ -1,3 +1,4 @@
+<!--转盘活动-->
 <template>
   <div id="RotaActive-main">
     <div class="title">转盘活动设置</div>
@@ -18,17 +19,6 @@
           <el-input v-model="formDate.number" style="width:220px;"></el-input>
         </el-form-item>
         <el-form-item label="奖励配置">
-          <!-- <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="date" label="用户层级" width align="center"></el-table-column>
-            <el-table-column prop="name" label="ID" width align="center"></el-table-column>
-            <el-table-column prop="address" label="金额" align="center"></el-table-column>
-            <el-table-column prop="address" label="概率" align="center"></el-table-column>
-            <el-table-column label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>-->
           <div class="bd" style="padding-right:15px;">
             <info-table
               :search="search"
@@ -141,4 +131,4 @@ export default {
   width: 100%;
 }
 </style>
-<!--转盘活动-->
+

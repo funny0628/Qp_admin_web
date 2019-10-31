@@ -2,8 +2,8 @@ import BaseHandler from "./BaseHandler";
 
 class UserHandler extends BaseHandler {
   //查询用户列表
-  list(data) {
-    return this.get_v1('/list', data);
+  list(data,user_id) {
+    return this.get_v1(`/list/${user_id}` , data);
   }
 
   //查询用户银行
@@ -33,8 +33,6 @@ class UserHandler extends BaseHandler {
 
   //银行卡列表
   bank_list(data) {
-
-
     return this.get_v1('/bank_list', data)
   }
 
@@ -67,11 +65,15 @@ class UserHandler extends BaseHandler {
   vip_set(data) {
     return this.set_v1('/vip_set', data)
   }
+  //排行榜
+  rank_list(data){
+    return this.get_v1('/rank_list',data)
+  }
+  //排行榜配置
+  rank_set(data){
+    return this.set_v1('/rank_set',data)
+  }
 
- 
-
-  
 }
 
 export default new UserHandler('/user');
- 

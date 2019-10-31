@@ -1,3 +1,4 @@
+<!--每日签到-->
 <template>
   <div id="DayCheck-main">
     <div class="title">每日签到设置</div>
@@ -128,4 +129,4 @@ export default {
   width: 100%;
 }
 </style>
-<!--每日签到-->
+
