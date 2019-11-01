@@ -136,9 +136,7 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler
-              .add(data)
-              .promise.then(res => {
+            tierHandler.add(data).promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
                 }
@@ -157,9 +155,7 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler
-              .set(data)
-              .promise.then(res => {
+            tierHandler.set(data).promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
                 }

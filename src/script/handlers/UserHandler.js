@@ -22,8 +22,8 @@ class UserHandler extends BaseHandler {
   }
 
   //修改会员登录、资金密码
-  password_set(data, user_id) {
-    return this.set_v1('/password_set' + user_id, data)
+  password_set(data, id) {
+    return this.get_v1(`/password_set/${id}`, data)
   }
 
   //修改会员信息-返点设置
@@ -37,8 +37,8 @@ class UserHandler extends BaseHandler {
   }
 
   //修改会员银行卡
-  bank_set(user_id, data) {
-    return this.set_v1('/bank_set/' + user_id, data)
+  bank_set(id, data) {
+    return this.get_v1(`/bank_set/${id}`, data)
   }
 
   //删除会员银行卡
@@ -72,6 +72,16 @@ class UserHandler extends BaseHandler {
   //排行榜配置
   rank_set(data){
     return this.set_v1('/rank_set',data)
+  }
+
+  //平台筛选框数据 (如果是root登录，则传公司id,其他用户则传platform_id)
+  platform_menu(data,id){
+    return this.get_v1(`/platform_menu/${id}`,data)
+  }
+
+  //__编辑用户信息（玩家信息）前获取用户信息
+  user_info(data,id){
+    return this.get_v1(`/user_info/${id}`,data)
   }
 
 }

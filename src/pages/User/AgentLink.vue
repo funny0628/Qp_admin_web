@@ -28,15 +28,13 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template
-              v-if="['action', 'user_type'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action', 'user_type'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -65,7 +63,6 @@ export default {
         channel_id: "",
         agent_link: ""
       },
-      /*表格*/
       tableStyle: [
         { label: "渠道ID", prop: "platform_id", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
@@ -97,8 +94,12 @@ export default {
   methods: {
     /***查询搜索 */
     search() {},
-    //表格操作
-    handeClick(btn) {},
+    //查看链接
+    handelClick(btn,row) {
+      console.log(btn,row);
+      let url = row.website;
+      window.open(url)
+    },
     getSpreadList() {
       let data = {
         platform_id: 1000,

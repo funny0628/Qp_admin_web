@@ -25,7 +25,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn,scope.row)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -110,8 +110,8 @@ export default {
       this.dialogTitleType = "新增用户分层";
       this.dialogVisible = true;
     },
-    /* edit */
-    handeClick(btn, row) {
+    //修改
+    handelClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改用户分层";
         this.dialogVisible = true;

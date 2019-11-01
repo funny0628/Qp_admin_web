@@ -25,7 +25,6 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -95,9 +94,10 @@ export default {
     };
   },
   methods: {
+    //添加条件
     search() {
       this.dialogVisible = true;
-    }
+    },
   }
 };
 </script>

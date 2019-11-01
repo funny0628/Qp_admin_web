@@ -30,7 +30,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn,scope.row)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -234,10 +234,9 @@ export default {
       console.log("这是查询");
     },
     //表格操作
-    handeClick(btn, row) {
+    handelClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
-        // console.log(row)
         this.dialogData.name = row.bank_user;
         this.dialogData.bank = row.bank_name;
         this.dialogData.card = row.bank_card;
@@ -245,7 +244,6 @@ export default {
         this.dialogData.province = row.province;
         this.dialogData.city = row.city;
       } else {
-        // console.log('这是删除')
         let data = {
           bank_id: row.bank_id
         };

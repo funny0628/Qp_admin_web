@@ -1,14 +1,22 @@
 <template>
   <div id="userList—main">
     <input-area>
-<!--      <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>-->
-      <!--连级选择器-->
-      <el-cascader
-        :options="childs"
-        :props="{ checkStrictly: true }"
-        clearable
-        size="medium"
-        @change="handelChange"></el-cascader>
+      <el-select v-model="value" placeholder="运营" size="medium">
+        <el-option
+          v-for="item in operas"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select v-model="value" placeholder="平台" size="medium">
+        <el-option
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
       <el-date-picker
@@ -59,7 +67,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -253,7 +261,7 @@
     },
     data() {
       //校验手机号
-      var checkPhone = (rule, value, callback) => {
+      let checkPhone = (rule, value, callback) => {
         if (!value) {
           return callback(new Error("手机号不能为空"));
         } else {
@@ -275,30 +283,27 @@
             label: "启用"
           }
         ],
-        childs:[
+        platforms:[
           {
-            value:'zhinan',
-            label:'指南',
-            children:[
-              {
-                value:'shejiyuanze',
-                label:'设计原则',
-                children:[
-                  {
-                    value: 'yizhi',
-                    label:'一致'
-                  },
-                  {
-                    value:'fankui',
-                    label:'反馈'
-                  },
-                ]
-              }
-            ]
+            value:1,
+            label:"平台1"
+          },
+          {
+            value:2,
+            label:"平台2"
+          }
+        ],
+        operas:[
+          {
+            value:1,
+            label:"运营1"
+          },
+          {
+            value:2,
+            label:"运营2"
           }
         ],
         value: "", //用户状态
-        // date: [],
         format: {
           child_id: "", //子后台id
           user_id: "", //用户id
@@ -413,7 +418,7 @@
         ],
         //修改会员信息
         activeName: "first",
-        dialogModifyVisible: false,
+        dialogModifyVisible: false, //模态框
         userData: {
           id: "",
           desc: "",
@@ -460,12 +465,8 @@
       };
     },
     methods: {
-      //多级连查
-      handelChange(value){
-        console.log(value)
-      },
-      search() {
-      },
+      //搜索
+      search() {},
       //添加会员
       addUser() {
         this.dialogAddVisible = true;
@@ -488,30 +489,25 @@
         })
       },
       //修改会员信息
-      handeClick(btn) {
+      handelClick(btn) {
         if (btn.type === "edit") {
           this.dialogModifyVisible = true;
         }
       },
       handelEdit(user_id) {
         if (this.activeName === 'first') {
-          console.log('第一个');
           UserHandler.info_set(data, user_id).promise.then(res => {
             console.log(res)
           })
         } else if (this.activeName === 'second') {
-          console.log('第2个');
           UserHandler.bank_set(data, user_id).promise.then(res => {
             console.log(res)
           })
         } else if (this.activeName === 'third') {
-          console.log('第3个');
-
           UserHandler.password_set(data, user_id).promise.then(res => {
             console.log(res)
           })
         } else {
-          console.log('第4个');
           UserHandler.rebate_set(data, user_id).promise.then(res => {
             console.log(res)
           })
@@ -583,12 +579,25 @@
               item.account_person = personArr;
             });
           }
-          // console.log(this.records);
         });
+      },
+      //获取用户列表页中平台筛选框
+      getUserPlatform(){
+        let data = {
+          company_id:"", //公司编号
+          platform_id:"", //平台编号
+        };
+        let id = 1000;
+        UserHandler.platform_menu(data,id).promise.then(res=>{
+          console.log(res);
+        }).catch(err=>{
+          console.log(err);
+        })
       }
     },
     mounted() {
       this.getUserList();
+      // this.getUserPlatform()
     }
   };
 </script>
