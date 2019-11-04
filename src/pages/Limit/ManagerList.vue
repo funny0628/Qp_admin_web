@@ -226,7 +226,11 @@ export default {
       });
     },
     submitForm(formName) {
+      console.log('111',formName);
+
       this.$refs[formName].validate(valid => {
+      console.log('222',formName);
+
         if (valid) {
           let data = {
             user_name: this.ruleForm.user_name,

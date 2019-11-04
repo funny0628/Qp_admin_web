@@ -41,7 +41,7 @@
         </info-table-item>
       </info-table>
       <!-- 公司管理新增弹框 -->
-      <el-dialog :visible.sync="newadd" width="50%" title="新增公司名称" @closed="closed()">
+      <el-dialog :visible.sync="newadd" width="50%" title="新增公司名称" @closed="closed('ruleFormnew')">
         <div class="checkbox">
           <el-form
             :model="ruleFormnew"
@@ -83,18 +83,18 @@
           <el-button @click="newadd = false" class="cancel">取 消</el-button>
           <el-button
             type="primary"
-            @click="newadd = false,addnewcompany(ruleFormnew)"
+            @click="newadd = false,addnewcompany('ruleFormnew')"
             class="confirm"
           >确 定</el-button>
         </span>
         <!-- 公司管理编辑弹框 -->
       </el-dialog>
-      <el-dialog :visible.sync="editdia" width="50%" title="新增公司名称" @closed="closed()">
+      <el-dialog :visible.sync="editdia" width="50%" title="编辑公司名称" @closed="closed('ruleFormedit')">
         <div class="checkbox">
           <el-form
             :model="ruleFormedit"
             :rules="rulesedit"
-            ref="ruleForm"
+            ref="ruleFormedit"
             label-width="110px"
             class="demo-ruleFormedit"
           >
@@ -168,6 +168,8 @@ export default {
     var validatenewproportion = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
         return callback(new Error("请输入数字"));
+      }else{
+        callback()
       }
     };
     return {
@@ -257,40 +259,46 @@ export default {
         }
       });
     },
-    closed() {
-      // this.$nextTick(() => {
-      //   this.$refs["ruleForm"].resetFields()
-      // });
+    closed(formname) {
+      this.$nextTick(() => {
+        this.$refs[formname].resetFields();
+      });
     },
     handleSelectionChange(val) {
-      console.log(val);
       this.multipleSelection = val;
     },
     addnewcompany(ruleFormnew) {
-      this.$refs[ruleFormnew].validate(valid => {
-        if (valid) {
-          // let data = {
-          //   company_name: this.ruleFormnew.company_name,
-          //   static_path: this.ruleFormnew.mark,
-          //   exchange: this.ruleFormnew.newproportion,
-          //   status: this.ruleFormnew.newaddstatus
-          // };
+      console.log('xxxxxxx',ruleFormnew)
+      this.$refs[ruleFormnew].validate((valid) => {
+        // console.log("1211111", this.$refs[ruleFormnew]);
+        // console.log("12", this.$refs.ruleFormnew);
+  
 
-          // AdminUserHandler.newaddcompany(data, this.user_id).promise.then(
-          //   res => {
-          //     console.log(res);
-          //     const { data, msg, code } = res;
-          //     if (Number(code) == 200) {
-          //       this.search();
-          //       return this.$message.success(msg);
-          //     } else {
-          //       return this.$message.error(msg);
-          //     }
-          //   }
-          // );
+        if (valid) {
+          let data = {
+            company_name: this.ruleFormnew.company_name,
+            static_path: this.ruleFormnew.mark,
+            exchange: this.ruleFormnew.newproportion,
+            status: this.ruleFormnew.newaddstatus
+          };
+          console.log('data',data)
+          AdminUserHandler.newaddcompany(data, this.user_id).promise.then(
+            res => {
+              console.log("xxxxx", res);
+              const { data, msg, code } = res;
+              if (Number(code) == 200) {
+                this.$message.success("提交成功");
+
+                this.search();
+                return this.$message.success(msg);
+              } else {
+                return this.$message.error(msg);
+              }
+            }
+          );
         } else {
           this.$message.error("提交失败");
-          this.closed();
+          // this.closed();
           return false;
         }
       });
