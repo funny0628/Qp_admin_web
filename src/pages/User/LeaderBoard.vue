@@ -18,7 +18,7 @@
     <div class="tb">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="rank" label="排名" align="center" width></el-table-column>
-        <el-table-column prop="player_name" align="center" label="玩家昵称"></el-table-column>
+        <el-table-column prop="nickname" align="center" label="玩家昵称"></el-table-column>
         <el-table-column prop="player_id" align="center" label="玩家ID"></el-table-column>
         <el-table-column prop="earn" align="center" v-if="tabIndex === 0" label="今日盈利（元）"></el-table-column>
         <el-table-column prop="result" align="center" v-if="tabIndex === 1" label="今日业绩（元）"></el-table-column>
@@ -38,23 +38,23 @@
             </div>
           </el-form-item>
           <el-form-item label="金币上榜条件：" style="display: inline-block;">
-            <el-input v-model="formData.region" style="width: 200px;" placeholder="上榜条件（元）"></el-input>
+            <el-input v-model="formData.money" style="width: 200px;" placeholder="上榜条件（元）"></el-input>
           </el-form-item>
           <el-form-item label="业绩上榜条件：" style="display: inline-block; padding-left: 10px;">
-            <el-input v-model="formData.region" style="width: 200px;" placeholder="上榜条件（元）"></el-input>
+            <el-input v-model="formData.performance" style="width: 200px;" placeholder="上榜条件（元）"></el-input>
           </el-form-item>
           <el-form-item label="刷新时间：">
-            <el-input v-model="formData.region" style="width: 200px;" placeholder="分钟"></el-input>
+            <el-input v-model="formData.refresh" style="width: 200px;" placeholder="分钟"></el-input>
           </el-form-item>
           <el-form-item label="盈利排行奖励：">
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第一名"></el-input>
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第二名"></el-input>
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第三名"></el-input>
+            <el-input v-model="formData.profit_reward" style="width: 180px;" placeholder="第一名"></el-input>
+            <el-input v-model="formData.profit_reward" style="width: 180px;" placeholder="第二名"></el-input>
+            <el-input v-model="formData.profit_reward" style="width: 180px;" placeholder="第三名"></el-input>
           </el-form-item>
           <el-form-item label="业绩排行奖励：">
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第一名"></el-input>
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第二名"></el-input>
-            <el-input v-model="formData.region" style="width: 180px;" placeholder="第三名"></el-input>
+            <el-input v-model="formData.performance_reward" style="width: 180px;" placeholder="第一名"></el-input>
+            <el-input v-model="formData.performance_reward" style="width: 180px;" placeholder="第二名"></el-input>
+            <el-input v-model="formData.performance_reward" style="width: 180px;" placeholder="第三名"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -79,7 +79,7 @@
         tableData: [
           {
             rank: "1",
-            player_name: "职业玩家",
+            nickname: "职业玩家",
             player_id: "10001",
             earn: "1000000.00",
             result: "1238.00"
@@ -87,7 +87,11 @@
         ],
         dialogVisible: false,
         formData: {
-          region: ""
+          money: "",
+          performance:'',
+          refresh:'',
+          profit_reward:'',
+          performance_reward:''
         }
       };
     },

@@ -48,7 +48,7 @@
       <el-dialog title="修改会员银行卡" :visible.sync="dialogModifyVisible" width="30%" center>
         <el-form :model="dialogData">
           <el-form-item label="持卡人姓名" label-width="100px">
-            <el-input v-model="dialogData.name" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.cardholder_name || ''" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属银行" label-width="100px">
             <el-select v-model="dialogData.bank" placeholder="请选择" style="width: 100%;">
@@ -61,10 +61,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="银行卡号" label-width="100px">
-            <el-input v-model="dialogData.card" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.bank_card || ''" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="银行卡开户行" label-width="100px">
-            <el-input v-model="dialogData.subbranch" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.bank_user || ''" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属省份" label-width="100px">
             <el-select v-model="dialogData.province" placeholder="请选择" style="width: 100%;">
@@ -237,12 +237,28 @@ export default {
     handelClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
-        this.dialogData.name = row.bank_user;
+        this.dialogData = row;
+        // console.log(this.dialogData);
+        /*this.dialogData.name = row.bank_user;
         this.dialogData.bank = row.bank_name;
         this.dialogData.card = row.bank_card;
         this.dialogData.subbranch = row.subbranch;
         this.dialogData.province = row.province;
-        this.dialogData.city = row.city;
+        this.dialogData.city = row.city;*/
+        //数据
+        let data = {
+          platform_id:'', //平台编号
+          uid:'', //用户银行编号
+          bank_id:'', //银行编号
+          bank_user:'', //开户名
+          bank_name:'', //银行名称
+          bank_card:'', //银行卡号
+          country:'', //国家
+          province: '', //开户行省份
+          city:'', //开户行城市
+          subbranch: '' //开户行支行
+        },id = 1000;
+        this.handelEdit( data, id)
       } else {
         let data = {
           bank_id: row.bank_id
@@ -276,7 +292,7 @@ export default {
         bank_user: ""
       };
       UserHandler.bank_list(data).promise.then(res => {
-        console.log(res);
+        // console.log(res);
         if (Number(res.code) === 200) {
           this.records = res.data.list;
         }
@@ -302,14 +318,29 @@ export default {
       });
     },
     //编辑方法
-    handelEdit(data,user_id){
-      UserHandler.bank_set(data,user_id).promise.then(res=>{
+    handelEdit(data,id){
+      UserHandler.bank_set(data,id).promise.then(res=>{
         console.log(res);
       })
     },
+
+    bank_info(){
+      let data = {
+        player_id:1000,
+      },user_id = 1000;
+      UserHandler.bank_info(data,user_id).promise.then(res=>{
+        console.log(res);
+        if(Number(res.code) === 200){
+
+        }
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
   },
   mounted() {
     this.getBank_list();
+    this.bank_info();
   }
 };
 </script>

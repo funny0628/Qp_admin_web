@@ -107,9 +107,8 @@ export default {
         website: "",
         page_index: "",
         page_size: ""
-      };
-      UserHandler.spread_list(data).promise.then(res => {
-        // console.log(res);
+      },id=1000;
+      UserHandler.spread_list(data,id).promise.then(res => {
         if (Number(res.code) === 200) {
           this.records = [...res.data.list, ...this.records];
         }

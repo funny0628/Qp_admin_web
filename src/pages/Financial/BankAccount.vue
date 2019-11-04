@@ -156,8 +156,7 @@ export default {
         { label: "添加时间", prop: "add_time", width: "160" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [
-        {
+      records: [{
           channel_id: "01",
           account_id: "1",
           bank_name: "招商银行",
@@ -171,8 +170,7 @@ export default {
           add_time: "2019-01-01 12:00:00",
           action: [
             { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
+            { label: "删除", type: "delete" }]
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),

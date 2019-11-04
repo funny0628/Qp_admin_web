@@ -8,7 +8,7 @@ class UserHandler extends BaseHandler {
 
   //查询用户银行
   bank_info(data, user_id) {
-    return this.get_v1('/c/' + user_id, data)
+    return this.get_v1('/bank_info/' + user_id, data)
   }
 
   //添加会员
@@ -32,8 +32,8 @@ class UserHandler extends BaseHandler {
   }
 
   //银行卡列表
-  bank_list(data) {
-    return this.get_v1('/bank_list', data)
+  bank_list(data,id) {
+    return this.get_v1(`/bank_list${id}`, data)
   }
 
   //修改会员银行卡
@@ -47,8 +47,8 @@ class UserHandler extends BaseHandler {
   }
 
   //代理链接管理
-  spread_list(data) {
-    return this.get_v1('/spread_list', data)
+  spread_list(data,id) {
+    return this.get_v1(`/spread_list/${id}`, data)
   }
 
   //用户分层

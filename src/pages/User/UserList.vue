@@ -144,19 +144,19 @@
               :rules="rules"
             >
               <el-form-item label="用户ID" style="width: 50%;" prop="id">
-                <el-input v-model="userData.id" autocomplete="off"></el-input>
+                <el-input v-model="userData.player_id" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="昵称" style="width: 50%;">
-                <el-input v-model="userData.desc" autocomplete="off"></el-input>
+                <el-input v-model="userData.nickname" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="手机号" style="width: 50%;" prop="phone">
                 <el-input v-model="userData.phone" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="用户身份" style="width: 50%;">
-                <el-input v-model="userData.ide" autocomplete="off"></el-input>
+                <el-input v-model="userData.vip" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="会员分层" style="width: 50%;">
-                <el-input v-model="userData.lay" autocomplete="off"></el-input>
+                <el-input v-model="userData.user_type" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -419,12 +419,13 @@
         //修改会员信息
         activeName: "first",
         dialogModifyVisible: false, //模态框
+        //用户信息
         userData: {
-          id: "",
-          desc: "",
+          player_id: "",
+          nickname: "",
           phone: "",
-          ide: "",
-          lay: ""
+          vip: "",
+          user_type: ""
         },
         //收款
         collectionData: {

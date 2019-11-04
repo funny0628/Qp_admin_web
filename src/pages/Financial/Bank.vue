@@ -141,7 +141,7 @@ export default {
     },
     /** 处理图片**/
     handleRemove(file, bank_logo) {
-      console.log(file, bank_logo);
+      // console.log(file, bank_logo);
     },
     handlePreview(file) {
       console.log(file);
@@ -149,10 +149,12 @@ export default {
     //银行卡列表
     getBankList() {
       let data = {
-        platform_id: 1000
-      };
-      ConfigHandler.bank_list(data).promise.then(res => {
-        // console.log(res)
+        platform_id: 1000,
+        user_id:'', //用户编号
+        bank_card:'', //银行卡号
+        bank_user:'' //姓名
+      },id = 1000;
+      ConfigHandler.bank_list(data,id).promise.then(res => {
         if (Number(res.code) === 200) {
           this.records = res.data;
         }

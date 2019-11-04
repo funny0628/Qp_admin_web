@@ -170,15 +170,26 @@
           this.formData.enabled_at = row.enabled_at;
           this.formData.expired_at = row.expired_at;
           this.formData.notice_sorted = row.notice_sorted;
-          // console.log(this.formDate)
         } else if (btn.type === 'delete') {
           //删除
           let data = row.notice_id;
           this.handelDelete(data);
         } else {
           //禁用
-          this.records.status = 2 ;
-          console.log(this.records.status);
+          row.status = 2 ;
+          this.records.map((e,ind)=>{
+            e.platfoem_id = row.platform_id;
+            row.action.map((e,index)=>{
+              // console.log(arguments)
+              console.log(index,'---',ind);
+              // if(e.type == 'disable'){
+              //   e.label="启用"
+              // }
+              // if(row.status == 2 && ind == index){
+              //   e.label="启用"
+              // }
+            })
+          })
         }
       },
       //滚动公告

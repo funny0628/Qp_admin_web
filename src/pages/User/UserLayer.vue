@@ -158,7 +158,6 @@ export default {
             this.dialogVisible = false;
             this.getVipList();
             this.$refs["dataForm"].resetFields(); // 失效
-            // console.log(dataForm)
           } else {
             let data = {
               platform_id: 1000,

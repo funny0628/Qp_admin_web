@@ -152,34 +152,8 @@
         },
         dialogImgVisible:false,
         lays: ["vip1", "vip2", "vip3", "vip4"],
-        posters: [
-          {
-            value: "1",
-            label: "轮播海报"
-          },
-          {
-            value: "2",
-            label: "弹出海报"
-          },
-          {
-            value:"3",
-            label:"绑定手机海报"
-          }
-        ],
-        actions: [
-          {
-            value: "1",
-            label: "跳转"
-          },
-          {
-            value: "2",
-            label: "复制"
-          },
-          {
-            value:'3',
-            label:"加入游戏"
-          }
-        ],
+        posters: [],
+        actions: [],
       };
     },
     methods: {
@@ -204,7 +178,7 @@
       },
       //上传图片
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        // console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
         this.formData.image = file.url;
@@ -284,7 +258,7 @@
       //增加大厅海报
       handelAdd(data) {
         HallHandler.poster_add(data).promise.then(rs => {
-          console.log(rs);
+          // console.log(rs);
         })
       },
       //大厅海报类型查询列表
@@ -293,7 +267,15 @@
           platform_id : 1000
         };
         HallHandler.poster_type_list(data).promise.then(rs=>{
-          console.log(rs);
+          // console.log(rs);
+          if(Number(rs.code) === 200){
+            let data = rs.data;
+            data.map((item)=>{
+              /*this.posters.value = item.poster_type;
+              this.posters.label = item.type_name;*/
+              this.posters.push({value:item.poster_type,label:item.type_name})
+            });
+          }
         })
       },
       //大厅海报点击动作查询列表
@@ -302,7 +284,13 @@
           platform_id : 1000
         };
         HallHandler.poster_act_list(data).promise.then(rs=>{
-          console.log(rs);
+          // console.log(rs);
+          if(Number(rs.code) === 200){
+            let data = rs.data;
+            data.map((item)=>{
+              this.actions.push({value:item.act_id,label:item.act_name})
+            });
+          }
         })
       }
     },
