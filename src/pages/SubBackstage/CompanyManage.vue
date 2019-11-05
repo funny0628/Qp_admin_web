@@ -22,7 +22,7 @@
             <template v-if="scope.prop==='status'">
               <span
                 :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
-              >{{scope.row.status==1?'禁用':'启用'}}</span>
+              >{{scope.row.status==1?'启用':'禁用'}}</span>
             </template>
             <template v-if="scope.prop==='time'">
               <p>{{scope.row.created_at}}</p>
@@ -30,7 +30,7 @@
             </template>
             <template v-if="scope.prop==='operate'">
               <span>
-                <el-button type="text" @click="editdia=true">编辑</el-button>
+                <el-button type="text" @click="edit(scope.row)">编辑</el-button>
                 <el-button type="text" @click="gamemanage=true">游戏管理</el-button>
               </span>
             </template>
@@ -83,13 +83,18 @@
           <el-button @click="newadd = false" class="cancel">取 消</el-button>
           <el-button
             type="primary"
-            @click="newadd = false,addnewcompany('ruleFormnew')"
+            @click="addnewcompany('ruleFormnew')"
             class="confirm"
           >确 定</el-button>
         </span>
         <!-- 公司管理编辑弹框 -->
       </el-dialog>
-      <el-dialog :visible.sync="editdia" width="50%" title="编辑公司名称" @closed="closed('ruleFormedit')">
+      <el-dialog
+        :visible.sync="editdia"
+        width="50%"
+        title="编辑公司名称"
+        @closed="closed('ruleFormedit')"
+      >
         <div class="checkbox">
           <el-form
             :model="ruleFormedit"
@@ -117,7 +122,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="editdia = false" class="cancel">取 消</el-button>
-          <el-button type="primary" @click="editdia = false" class="confirm">确 定</el-button>
+          <el-button type="primary" class="confirm" @click="sureeditcompany('ruleFormedit')">确 定</el-button>
         </span>
       </el-dialog>
       <!-- 游戏管理 -->
@@ -168,8 +173,8 @@ export default {
     var validatenewproportion = (rule, value, callback) => {
       if (!Number.isInteger(value)) {
         return callback(new Error("请输入数字"));
-      }else{
-        callback()
+      } else {
+        callback();
       }
     };
     return {
@@ -190,6 +195,7 @@ export default {
       newadd: false,
       editdia: false,
       gamemanage: false,
+      editid:'',
       multipleSelection: [],
       tableData: [
         { game: "游戏1" },
@@ -202,7 +208,7 @@ export default {
         company_name: "",
         mark: "",
         newproportion: "",
-        newaddstatus: ""
+        newaddstatus: "1"
       },
       ruleFormedit: {
         editproportion: "",
@@ -268,12 +274,8 @@ export default {
       this.multipleSelection = val;
     },
     addnewcompany(ruleFormnew) {
-      console.log('xxxxxxx',ruleFormnew)
-      this.$refs[ruleFormnew].validate((valid) => {
-        // console.log("1211111", this.$refs[ruleFormnew]);
-        // console.log("12", this.$refs.ruleFormnew);
-  
-
+      this.newadd = false;
+      this.$refs[ruleFormnew].validate(valid => {
         if (valid) {
           let data = {
             company_name: this.ruleFormnew.company_name,
@@ -281,14 +283,12 @@ export default {
             exchange: this.ruleFormnew.newproportion,
             status: this.ruleFormnew.newaddstatus
           };
-          console.log('data',data)
+          console.log("data", data);
           AdminUserHandler.newaddcompany(data, this.user_id).promise.then(
             res => {
               console.log("xxxxx", res);
               const { data, msg, code } = res;
               if (Number(code) == 200) {
-                this.$message.success("提交成功");
-
                 this.search();
                 return this.$message.success(msg);
               } else {
@@ -298,7 +298,48 @@ export default {
           );
         } else {
           this.$message.error("提交失败");
-          // this.closed();
+          return false;
+        }
+      });
+    },
+    edit(row) {
+      this.editdia = true;
+      this.editid=row.company_id;
+      let data = {
+        company_id: row.company_id
+      };
+      AdminUserHandler.editcompany(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          this.ruleFormedit.editproportion = data.exchange;
+          this.ruleFormedit.editstatus = data.status;
+        } else {
+          return this.$message.error(msg);
+        }
+      });
+    },
+    sureeditcompany(ruleFormedit){
+     this.editdia = false;
+       this.$refs[ruleFormedit].validate(valid => {
+        if (valid) {
+          let data = {
+            company_id:this.editid,
+            exchange:this.ruleFormedit.editproportion,
+            status: this.ruleFormedit.editstatus
+          };
+          AdminUserHandler.sureeditcompany(data, this.user_id).promise.then(
+            res => {
+              const { data, msg, code } = res;
+              if (Number(code) == 200) {
+                this.search();
+                return this.$message.success(msg);
+              } else {
+                return this.$message.error(msg);
+              }
+            }
+          );
+        } else {
+          this.$message.error("提交失败");
           return false;
         }
       });

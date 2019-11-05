@@ -4,14 +4,19 @@
       <el-input v-model="sub_id" placeholder="运营后台ID" size="medium"></el-input>
       <el-input v-model="sub_name" placeholder="运营后台名称" size="medium"></el-input>
       <!-- root用户显示所属公司下拉框 -->
-      <el-select v-model="belongcompany" placeholder="所属公司" style="width:170px;margin-right:10px" v-if="user_id===1000">
+      <el-select
+        v-model="belongcompany"
+        placeholder="所属公司"
+        style="width:170px;margin-right:10px"
+        v-if="user_id===1000"
+      >
         <el-option label="腾讯" value="1"></el-option>
         <el-option label="阿里" value="2"></el-option>
       </el-select>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-      <permission-button :action="ActionType.ADD" @click="addsub=true">
+      <permission-button :action="ActionType.ADD" @click="getcompanylist()">
         <el-button type="primary" size="medium">新增</el-button>
       </permission-button>
     </input-area>
@@ -37,7 +42,7 @@
             </template>
             <template v-if="scope.prop==='status'">
               <span
-                :class="{'runcolor':scope.row.status!=1,'stopcolor':scope.row.status==1}"
+                :class="{'runcolor':scope.row.status==1,'stopcolor':scope.row.status!=1}"
               >{{scope.row.status==1?'启用':'禁用'}}</span>
             </template>
             <template v-if="scope.prop==='operate'">
@@ -46,7 +51,7 @@
                 <el-button type="text">授权</el-button>
                 <el-button type="text">编辑</el-button>
                 <el-button type="text" @click="runstop()">{{scope.row.status==1?'禁用':'启用'}}</el-button>
-                <el-button type="text">结算</el-button>
+                <!-- <el-button type="text">结算</el-button> -->
               </span>
             </template>
             <template
@@ -57,24 +62,24 @@
       </info-table>
     </div>
     <!-- 新增运营后台账号 -->
-    <el-dialog :visible.sync="addsub" width="50%" title="新增运营后台账号">
+    <el-dialog :visible.sync="addsub" width="50%" title="新增运营后台账号" @closed="closed()">
       <div class="checkbox">
         <el-form
           :model="ruleForm"
           :rules="rules"
           ref="ruleForm"
-          label-width="100px"
+          label-width="110px"
           class="demo-ruleForm"
         >
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="子后台名称" prop="substage" class="formleft">
+              <el-form-item label="运营后台名称" prop="substage" class="formleft">
                 <el-input v-model="ruleForm.substage" placeholder="请输入名称"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="子后台账号" prop="subaccount">
-                <el-input v-model="ruleForm.subaccount" placeholder="请输入昵称"></el-input>
+              <el-form-item label="运营后台账号" prop="subaccount">
+                <el-input v-model="ruleForm.subaccount" placeholder="请输入账号"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -86,10 +91,21 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="所属公司" prop="belongrole" class="reducewidth">
-                <el-select v-model="ruleForm.belongrole" placeholder="用户角色" class="changewidth">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select
+                  v-model="ruleForm.belongrole"
+                  placeholder="用户角色"
+                  class="changewidth"
+                  v-if="user_id==1000"
+                >
+                  <el-option
+                    :label="item.company_name"
+                    :value="item.company_id"
+                    v-for="item in companylist"
+                    :key="item.company_id"
+                  ></el-option>
                 </el-select>
+                <!-- 非root用户登录，获取该用户登录时后台给的所属公司，非root用户无法更改所属公司 -->
+                <el-input v-model="ruleForm.notrootlogin" disabled v-else></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -104,7 +120,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addsub = false" class="cancel">取 消</el-button>
-        <el-button type="primary" @click="addsub = false,submitForm('ruleForm')" class="confirm">确 定</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" class="confirm">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 游戏管理设置 -->
@@ -142,6 +158,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import AdminUserHandler from "../../script/handlers/AdminUserHandler";
 import { constants } from "crypto";
+import { log } from "util";
 
 export default {
   extends: BaseIframe,
@@ -158,21 +175,26 @@ export default {
       }
     };
     return {
-      breadlist: [{ name: "游戏平台" ,id:''}],
+      breadlist: [{ name: "游戏平台", id: "" }],
       sub_id: "",
       sub_name: "",
-      gameplateform:'',
+      gameplateform: "",
       belongcompany: "",
-      user_id: 2000,
+      user_id: 1000,
       date: [],
       addsub: false,
       gamemanage: false,
+      companylist: [],
+      newestlevel: [{ name: "游戏平台", id: "" }],
+      newestlevelid: "",
       ruleForm: {
         substage: "",
         subaccount: "",
         password: "",
         belongrole: "",
-        subdescribe: ""
+        position: "",
+        subdescribe: "",
+        notrootlogin: "" //非root用户登录所属公司id
       },
       rules: {
         substage: [
@@ -184,10 +206,10 @@ export default {
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
-        ],
-        belongrole: [
-          { required: true, message: "请选择角色", trigger: "change" }
         ]
+        // belongrole: [
+        //   { required: true, message: "请选择角色", trigger: "change" }
+        // ],
       },
       tableStyle: [
         { label: "运营后台ID", prop: "user_id", width: "" },
@@ -253,7 +275,6 @@ export default {
   },
   methods: {
     handeClick(event) {
-      //  console.log(event)
       if (event.target.innerText === "游戏管理") {
         this.gamemanage = true;
       }
@@ -265,20 +286,19 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      console.log(val);
+      // console.log(val);
       this.multipleSelection = val;
     },
     search(val) {
       val = val || this.pageInfo.page;
-      let data = { 
-        base_superadmin_id:this.gameplateform,
-        superadmin_id:this.sub_id,
-        superadmin_name:this.sub_name,
-        company_name:this.belongcompany,
-        page_index: val 
-        };
+      let data = {
+        base_superadmin_id: this.gameplateform,
+        superadmin_id: this.sub_id,
+        superadmin_name: this.sub_name,
+        company_name: this.belongcompany,
+        page_index: val
+      };
       AdminUserHandler.admin_list(data, this.user_id).promise.then(res => {
-        console.log(res);
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           if (Number(data.total_count) > 0) {
@@ -299,26 +319,95 @@ export default {
     },
     // 实现面包屑，存入需要的数据
     fn(row) {
-      // console.log(row)
-      this.gameplateform=row.user_id
-      this.search();
-      let obj = {};
-      obj.name = `/${row.display_name}`;
-      obj.id=`${row.user_id}`
-      this.breadlist.push(obj);
-      // console.log(this.breadlist)
+      if (row.sub_user_count > 0) {
+        this.gameplateform = row.user_id;
+        this.search();
+        let obj = {};
+        obj.name = `/${row.display_name}`;
+        obj.id = `${row.user_id}`;
+        this.breadlist.push(obj);
+      } else {
+        return;
+      }
     },
     // 实现面包屑反选，将存入的数据传入
     getmsg(id, index) {
       //  裁剪面包屑列表
       this.breadlist.splice(index + 1, this.breadlist.length - 1);
-      this.gameplateform=id;
-      this.search()
+      this.gameplateform = id;
+      this.search();
     },
-    runstop() {}
+    runstop() {},
+    submitForm(ruleForm) {
+      this.addsub = false;
+      console.log("---------", this.newestlevel);
+      this.newestlevelid = this.newestlevel.slice(
+        this.newestlevel.length - 1,
+        this.newestlevel.length
+      )[0].id;
+      console.log("************", this.newestlevelid);
+      this.$refs[ruleForm].validate(valid => {
+        if (valid) {
+          let data = {
+            company_id: this.user_id == 1000 ? "" : this.ruleForm.notrootlogin,
+            parent: this.newestlevelid,
+            platform_name: this.ruleForm.substage,
+            user_name: this.ruleForm.subaccount,
+            password: this.ruleForm.password,
+            remark: this.ruleForm.subdescribe
+          };
+          AdminUserHandler.sureeditcompany(data, this.user_id).promise.then(
+            res => {
+              const { data, msg, code } = res;
+              if (Number(code) == 200) {
+                this.search();
+                return this.$message.success(msg);
+              } else {
+                return this.$message.error(msg);
+              }
+            }
+          );
+        } else {
+          this.$message.error("提交失败");
+          return false;
+        }
+      });
+    },
+    getcompanylist() {
+      this.addsub = true;
+      if (this.user_id == 1000) {
+        let data = {};
+        AdminUserHandler.getcompanylist(data, this.user_id).promise.then(
+          res => {
+            const { data, msg, code } = res;
+            if (Number(code) == 200) {
+              this.companylist = data;
+            } else {
+              return this.$message.error(msg);
+            }
+          }
+        );
+      } else {
+        return;
+      }
+    },
+    closed() {
+      this.$nextTick(() => {
+        this.$refs["ruleForm"].resetFields();
+      });
+    }
   },
   mounted() {
     this.search();
+  },
+  watch: {
+    breadlist: {
+      handler(newval) {
+        this.newestlevel = newval;
+        console.log("new", this.newestlevel);
+      },
+      deep: true
+    }
   }
 };
 </script>
