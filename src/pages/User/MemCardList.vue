@@ -48,7 +48,7 @@
       <el-dialog title="修改会员银行卡" :visible.sync="dialogModifyVisible" width="30%" center>
         <el-form :model="dialogData">
           <el-form-item label="持卡人姓名" label-width="100px">
-            <el-input v-model="dialogData.cardholder_name || ''" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.cardholder_name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属银行" label-width="100px">
             <el-select v-model="dialogData.bank" placeholder="请选择" style="width: 100%;">
@@ -61,10 +61,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="银行卡号" label-width="100px">
-            <el-input v-model="dialogData.bank_card || ''" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.bank_card" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="银行卡开户行" label-width="100px">
-            <el-input v-model="dialogData.bank_user || ''" autocomplete="off"></el-input>
+            <el-input v-model="dialogData.bank_user" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属省份" label-width="100px">
             <el-select v-model="dialogData.province" placeholder="请选择" style="width: 100%;">
@@ -115,7 +115,9 @@ export default {
       format: {
         child_id: "", //子后台id
         user_id: "", //用户id
-        channel_id: "" //渠道id
+        channel_id: "", //渠道id
+        bank_card:'',
+        cardholder_name:'',
       },
       tableStyle: [
         { label: "渠道ID", prop: "platform_id", width: "" },
@@ -154,10 +156,10 @@ export default {
       /*修改银行卡信息*/
       dialogModifyVisible: false,
       dialogData: {
-        name: "",
+        cardholder_name: "",
         bank: "",
-        card: "",
-        subbranch: "",
+        bank_card: "",
+        bank_user: "",
         province: "",
         city: ""
       },
@@ -230,6 +232,7 @@ export default {
     };
   },
   methods: {
+    /**搜索 */
     search() {
       console.log("这是查询");
     },
@@ -238,13 +241,7 @@ export default {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
         this.dialogData = row;
-        // console.log(this.dialogData);
-        /*this.dialogData.name = row.bank_user;
-        this.dialogData.bank = row.bank_name;
-        this.dialogData.card = row.bank_card;
-        this.dialogData.subbranch = row.subbranch;
-        this.dialogData.province = row.province;
-        this.dialogData.city = row.city;*/
+        // console.log(this.dialogData)
         //数据
         let data = {
           platform_id:'', //平台编号
@@ -258,7 +255,7 @@ export default {
           city:'', //开户行城市
           subbranch: '' //开户行支行
         },id = 1000;
-        this.handelEdit( data, id)
+        this.handelEdit( data, id);
       } else {
         let data = {
           bank_id: row.bank_id
@@ -283,20 +280,20 @@ export default {
           });
       }
     },
-    //会员银行卡列表
+    /*会员银行卡列表*/
     getBank_list() {
       let data = {
         platform_id: 1000,
         user_id: "",
         bank_card: "",
         bank_user: ""
-      };
-      UserHandler.bank_list(data).promise.then(res => {
+      },id=1000;
+      UserHandler.bank_list(data,id).promise.then(res => {
         // console.log(res);
         if (Number(res.code) === 200) {
           this.records = res.data.list;
         }
-        //数据处理
+        /*数据处理*/
         this.records.map(item => {
           item.action = [
             {
@@ -311,25 +308,25 @@ export default {
         });
       });
     },
-    //删除方法
+    /*删除方法*/
     handelDelete(data){
       UserHandler.bank_delete(data).promise.then(res => {
         console.log(res);
       });
     },
-    //编辑方法
+    /*编辑方法*/
     handelEdit(data,id){
       UserHandler.bank_set(data,id).promise.then(res=>{
         console.log(res);
       })
     },
-
-    bank_info(){
+    /**获取银行信息 */
+    bankInfo(){
       let data = {
         player_id:1000,
       },user_id = 1000;
       UserHandler.bank_info(data,user_id).promise.then(res=>{
-        console.log(res);
+        // console.log(res);
         if(Number(res.code) === 200){
 
         }
@@ -340,7 +337,7 @@ export default {
   },
   mounted() {
     this.getBank_list();
-    this.bank_info();
+    this.bankInfo();
   }
 };
 </script>

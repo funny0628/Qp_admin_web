@@ -12,8 +12,8 @@ class UserHandler extends BaseHandler {
   }
 
   //添加会员
-  add(data) {
-    return this.set_v1('/add', data);
+  add(data,id) {
+    return this.set_v1(`/add/${id}`, data);
   }
 
   //修改会员信息、用户信息
@@ -33,7 +33,7 @@ class UserHandler extends BaseHandler {
 
   //银行卡列表
   bank_list(data,id) {
-    return this.get_v1(`/bank_list${id}`, data)
+    return this.get_v1(`/bank_list/${id}`, data)
   }
 
   //修改会员银行卡

@@ -70,11 +70,11 @@ export default {
   data() {
     return {
       tableStyle: [
-        { label: "渠道ID", prop: "channel_id", width: "" },
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "用户昵称", prop: "user_name", width: "" },
-        { label: "盈亏", prop: "loss", width: "" },
-        { label: "用户输赢局数", prop: "win_num", width: "" }
+        { label: "渠道ID", prop: "channel_id"},
+        { label: "用户ID", prop: "user_id"},
+        { label: "用户昵称", prop: "user_name"},
+        { label: "盈亏", prop: "loss"},
+        { label: "用户输赢局数", prop: "win_num"}
       ],
       records: [
         {
@@ -94,7 +94,7 @@ export default {
     };
   },
   methods: {
-    //添加条件
+    /*添加条件*/
     search() {
       this.dialogVisible = true;
     },
@@ -104,4 +104,3 @@ export default {
 
 <style scoped>
 </style>
-<!--风控列表-->

@@ -75,7 +75,7 @@
         btnList: ["今日盈利排行", "个人业绩排行"],
         num: 0,
         tabIndex: 0,
-        //表格数据
+        /*表格数据*/
         tableData: [
           {
             rank: "1",
@@ -103,7 +103,7 @@
       openDialog() {
         this.dialogVisible = true;
       },
-      //获取排行榜数据
+      /*获取排行榜数据*/
       rankList(){
         let data = {
           platform_id : 1000
@@ -114,7 +114,7 @@
           console.log(err);
         })
       },
-      //排行榜配置
+      /*排行榜配置*/
       handelList(){
         let data = {};
         UserHandeler.rank_set(data).promise.then(res=>{

@@ -78,7 +78,7 @@ export default {
           user_id: "1001100",
           nickname: "大牛比较懒",
           user_type: "第一级代理",
-          website: "t.cn/auidna",
+          website: "www.baidu.com",
           used: "10",
           action: [
             {
@@ -94,11 +94,11 @@ export default {
   methods: {
     /***查询搜索 */
     search() {},
-    //查看链接
+    /*查看链接*/
     handelClick(btn,row) {
       console.log(btn,row);
       let url = row.website;
-      window.open(url)
+      // location.href = url;
     },
     getSpreadList() {
       let data = {
@@ -112,7 +112,7 @@ export default {
         if (Number(res.code) === 200) {
           this.records = [...res.data.list, ...this.records];
         }
-        //数据处理
+        /*数据处理*/
         this.records.map(item => {
           item.action = [
             {

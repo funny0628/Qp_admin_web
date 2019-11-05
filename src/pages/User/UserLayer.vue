@@ -38,7 +38,7 @@
         </info-table-item>
       </info-table>
     </div>
-    <!-- 新增、修改 -->
+    <!-- 弹框 -->
     <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="dataForm" ref="dataForm">
         <el-form-item label="层级名称" :label-width="labelWidth" prop="vip_name">
@@ -74,7 +74,6 @@ export default {
   components: { InfoTableItem, InputArea, PermissionButton, InfoTable },
   data() {
     return {
-      /* table */
       tableStyle: [
         { label: "层级ID", prop: "vip", width: "" },
         { label: "层级名称", prop: "vip_name", width: "" },
@@ -92,7 +91,7 @@ export default {
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      //弹窗数据
+      //弹框数据
       dialogTitleType: "",
       dialogVisible: false,
       labelWidth: "70px",
@@ -105,7 +104,10 @@ export default {
     };
   },
   methods: {
-    search() {},
+    /**搜索 */
+    search() {
+
+    },
     handelAddClick() {
       this.dialogTitleType = "新增用户分层";
       this.dialogVisible = true;
@@ -126,7 +128,7 @@ export default {
       this.$refs["dataForm"].resetFields();
       this.dialogVisible = false;
     },
-    //获取用户分层列表
+    /**获取用户分层列表 */
     getVipList() {
       let data = {
         platform_id: 1000
@@ -141,7 +143,7 @@ export default {
         });
       });
     },
-    //新增、修改
+    /*新增、修改*/
     editAddClick() {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
@@ -176,8 +178,7 @@ export default {
     },
     //新增方法
     handelAdd(data) {
-      UserHandler.vip_add(data)
-        .promise.then(rs => {
+      UserHandler.vip_add(data).promise.then(rs => {
           if (Number(rs.code) === 200) {
             this.$message.success(rs.msg);
           }
@@ -188,13 +189,11 @@ export default {
     },
     //修改方法
     handelEdit() {
-      UserHandler.vip_set(data)
-        .promise.then(rs => {
+      UserHandler.vip_set(data).promise.then(rs => {
           if (Number(rs.code) === 200) {
             this.$message.success(rs.msg);
           }
-        })
-        .catch(e => {
+        }).catch(e => {
           console.log(e);
         });
     }
