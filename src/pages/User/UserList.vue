@@ -69,7 +69,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handelClick(btn)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -174,7 +174,7 @@
     </div>
     <!--修改会员信息 -->
     <div>
-      <el-dialog title="修改会员信息" :visible.sync="dialogModifyVisible" width="40%">
+      <el-dialog title="修改会员信息" :visible.sync="dialogModifyVisible" width="35%">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="用户信息" name="first">
             <el-form
@@ -182,21 +182,36 @@
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
               label-width="80px"
               :rules="rules"
+              :label-position="labelPosition"
             >
-              <el-form-item label="用户ID" style="width: 50%;" prop="id">
-                <el-input v-model="userData.player_id" autocomplete="off"></el-input>
+              <el-form-item label="用户ID" style="width: 45%;" required>
+                <el-input v-model="userData.user_id" autocomplete="off" disabled></el-input>
               </el-form-item>
-              <el-form-item label="昵称" style="width: 50%;">
+              <el-form-item label="昵称" style="width: 45%;">
                 <el-input v-model="userData.nickname" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="手机号" style="width: 50%;" prop="phone">
-                <el-input v-model="userData.phone" autocomplete="off"></el-input>
+              <el-form-item label="手机号" style="width: 45%;" required>
+                <el-input v-model="userData.phone" autocomplete="off" maxLength="11"></el-input>
               </el-form-item>
-              <el-form-item label="用户身份" style="width: 50%;">
-                <el-input v-model="userData.vip" autocomplete="off"></el-input>
+              <el-form-item label="用户身份" style="width: 45%;">
+                <el-select v-model="userData.user_type" placeholder="请选择" style="width: 100%">
+                  <el-option
+                    v-for="item in userTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item label="会员分层" style="width: 50%;">
-                <el-input v-model="userData.user_type" autocomplete="off"></el-input>
+              <el-form-item label="会员分层" style="width: 45%;">
+                <el-select v-model="userData.vip" placeholder="请选择" style="width: 100%">
+                  <el-option
+                    v-for="item in vips"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -204,24 +219,51 @@
             <el-form
               :model="collectionData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
-              label-width="80px"
+              label-width="90px"
+              :label-position="labelPosition"
             >
-              <el-form-item label="银行卡" style="width: 50%;"></el-form-item>
-              <el-form-item label="支付宝" style="width: 50%;"></el-form-item>
-              <el-form-item label="卡号" style="width: 50%;">
-                <el-input v-model="collectionData.card" autocomplete="off"></el-input>
+              <el-form-item label="银行卡" class="bankCard"></el-form-item>
+              <el-form-item label="姓名" class="itemClass">
+                <el-input v-model="collectionData.bank_user" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="账户" style="width: 50%;">
-                <el-input v-model="collectionData.account" autocomplete="off"></el-input>
+              <el-form-item label="所属银行" class="itemClass">
+                <el-select v-model="collectionData.bank_name" placeholder="请选择" style="width: 100%">
+                  <el-option
+                    v-for="item in banks"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item label="开户行" style="width: 50%;">
-                <el-input v-model="collectionData.bank" autocomplete="off"></el-input>
+              <el-form-item label="卡号" class="itemClass">
+                <el-input v-model="collectionData.bank_card" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="姓名" style="width: 50%;">
-                <el-input v-model="collectionData.bank_name" autocomplete="off"></el-input>
+              <el-form-item label="开户行" class="itemClass">
+                <el-input v-model="collectionData.subbranch" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="姓名" style="width: 50%;">
-                <el-input v-model="collectionData.alipay_name" autocomplete="off"></el-input>
+              <el-form-item label="所属省份" class="itemClass">
+                <el-select v-model="collectionData.province" placeholder="请选择" style="width: 100%">
+                  <el-option
+                    v-for="item in provinces"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="所属城市" class="itemClass">
+                <el-select v-model="collectionData.city" placeholder="请选择" style="width: 100%">
+                  <el-option
+                    v-for="item in citys"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="支付宝账号" class="itemClass">
+                <el-input v-model="collectionData.alipay_account" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -230,19 +272,20 @@
               :model="passwordData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
               label-width="80px"
+              :label-position="labelPosition"
             >
-              <el-form-item label="登录密码" style="width: 50%;"></el-form-item>
-              <el-form-item label="资金密码" style="width: 50%;"></el-form-item>
-              <el-form-item label="新密码" style="width: 50%;">
+              <el-form-item label="登录密码" style="width: 45%;"></el-form-item>
+              <el-form-item label="资金密码" style="width: 45%;"></el-form-item>
+              <el-form-item label="新密码" style="width: 45%;">
                 <el-input v-model="passwordData.loginPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="新密码" style="width: 50%;">
+              <el-form-item label="新密码" style="width: 45%;">
                 <el-input v-model="passwordData.moneyPassword" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="确定密码" style="width: 50%;">
+              <el-form-item label="确定密码" style="width: 45%;">
                 <el-input v-model="passwordData.loginSure" type="password" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="确定密码" style="width: 50%;">
+              <el-form-item label="确定密码" style="width: 45%;">
                 <el-input v-model="passwordData.moneySure" type="password" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -251,20 +294,21 @@
             <el-form
               :model="gameData"
               style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
-              label-width="80px"
+              label-width="70px"
+              :label-position="labelPosition"
             >
-              <el-form-item label="游戏返点" style="width: 50%;"></el-form-item>
+              <el-form-item label="游戏返点" style="width: 45%;"></el-form-item>
               <el-form-item label style="width: 50%;"></el-form-item>
-              <el-form-item label="游戏1" style="width: 50%;">
+              <el-form-item label="游戏1" style="width: 45%;">
                 <el-input v-model="gameData.game1" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏2" style="width: 50%;">
+              <el-form-item label="游戏2" style="width: 45%;">
                 <el-input v-model="gameData.game2" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏3" style="width: 50%;">
+              <el-form-item label="游戏3" style="width: 45%;">
                 <el-input v-model="gameData.game3" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="游戏4" style="width: 50%;">
+              <el-form-item label="游戏4" style="width: 45%;">
                 <el-input v-model="gameData.game4" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -313,6 +357,8 @@ export default {
       }
     };
     return {
+      player_id:'', // 玩家id
+      labelPosition:'left', //左对齐
       options: [{ value: "1", label: "冻结" }, { value: "2", label: "启用" }],
       platforms: [
         {
@@ -375,7 +421,7 @@ export default {
       tableStyle: [
         { label: "渠道ID", prop: "platform_id", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
-        { label: "用户昵称", prop: "user_name", width: "" },
+        { label: "用户昵称", prop: "nickname", width: "" },
         { label: "用户身份", prop: "tier", width: "" },
         { label: "VIP等级", prop: "vip", width: "" },
         { label: "手机号", prop: "phone", width: "120" },
@@ -414,22 +460,40 @@ export default {
       //修改会员信息
       activeName: "first",
       dialogModifyVisible: false, //模态框
-      //用户信息
-      userData: {
-        player_id: "",
-        nickname: "",
-        phone: "",
-        vip: "",
-        user_type: ""
-      },
-      //收款
-      collectionData: {
-        card: "",
-        account: "",
-        bank: "",
-        bank_name: "",
-        alipay_name: ""
-      },
+      userData: {},
+      userTypes:[
+        {
+          value:'1',
+          label:'代理'
+        },
+        {
+          value:'2',
+          label:'普通用户'
+        },
+        {
+          value:'3',
+          label:'游客',
+        },
+        {
+          value:'4',
+          label:'试玩'
+        },
+        {
+          value:'5',
+          label:'测试号'
+        }
+      ],
+      vips:[
+        {
+          value:'0',
+          label:'VIP1'
+        },
+        {
+          value:'1',
+          label:'VIP2'
+        }
+      ],
+      collectionData: {},
       //密码
       passwordData: {
         loginPassword: "",
@@ -444,6 +508,9 @@ export default {
         game3: "",
         game4: ""
       },
+      banks:[],
+      provinces:[],
+      citys:[],
       //校验
       rules: {
         name: [
@@ -459,7 +526,7 @@ export default {
     };
   },
   methods: {
-    /*搜索*/
+    /**搜索*/
     search() {
       let data = this.format,user_id=1000;
       console.log(data);
@@ -469,7 +536,7 @@ export default {
     handelAgent(row){
       console.log(row)
     },
-    /*添加会员*/
+    /** 添加会员 */
     addUser() {
       this.dialogAddVisible = true;
     },
@@ -482,9 +549,7 @@ export default {
           agent: 100, //上级代理编号（根据用户身份来判断）
           password: this.form.password,
           user_type: this.form.user_type
-        },
-        id = 1000;
-
+        },id = 1000;
       UserHandler.add(data, id).promise.then(res => {
         if (Number(res.code) === 200) {
           this.$message(res.msg);
@@ -493,36 +558,123 @@ export default {
         }
       });
     },
-    /*修改会员信息*/
-    handelClick(btn) {
+    /**修改会员信息*/
+    handelClick(btn,row) {
       if (btn.type === "edit") {
         this.dialogModifyVisible = true;
+        this.player_id = row.uid;
+        let data = {
+          player_id: this.player_id
+        },user_id=1000;
+        UserHandler.user_info(data,user_id).promise.then(res=>{
+          if(Number(res.code) === 200){
+            this.userData = res.data;
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
       }
     },
+    /** 修改弹框信息*/
     handelEdit(user_id) {
       if (this.activeName === "first") {
+        let data = {
+          player_id:this.player_id,
+          nickname:this.userData.nickname,
+          phone:this.userData.phone,
+          vip:this.userData.vip,
+          user_type:this.userData.user_type
+        },user_id=1000;
         UserHandler.info_set(data, user_id).promise.then(res => {
           // console.log(res);
-        });
+          if(Number(res.code)===200){
+            this.$message.success(res.msg);
+            this.getUserList()
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
       } else if (this.activeName === "second") {
-        UserHandler.bank_set(data, user_id).promise.then(res => {
-          // console.log(res);
-        });
+        let data ={
+          platform_id:1000,
+          uid:this.collectionData.uid,
+          bank_id:this.collectionData.bank_id,
+          bank_user:this.collectionData.bank_user,
+          bank_name:this.collectionData.bank_name,
+          bank_card:this.collectionData.bank_card,
+          country:this.collectionData.country || 1,
+          province:this.collectionData.province || 1,
+          city:this.collectionData.city || 1,
+          subbranch: this.collectionData.subbranch || 1
+        },user_id=1000;
+        UserHandler.bank_set(data,user_id).promise.then(res => {
+          // console.log(res)
+          if(Number(res.code)===200){
+            this.$message.success(res.msg);
+            this.getUserList()
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
       } else if (this.activeName === "third") {
-        UserHandler.password_set(data, user_id).promise.then(res => {
-          // console.log(res);
-        });
+        if(this.passwordData.loginPassword !== this.passwordData.loginSure){
+          this.$message('登录密码两次密码不一致请重新输入')
+        }else if(this.passwordData.moneyPassword !== this.passwordData.moneySure){
+          this.$message('资金密码两次密码不一致请重新输入')
+        }else{
+          let data ={
+            player_id:this.player_id,
+            password:this.passwordData.loginPassword,
+            money_password: this.passwordData.moneyPassword
+          },user_id=1000;
+          UserHandler.password_set(data, user_id).promise.then(res => {
+            console.log(res);
+            if(Number(res.code)===200){
+              this.$message.success(res.msg)
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
+        }
       } else {
         UserHandler.rebate_set(data, user_id).promise.then(res => {
-          // console.log(res);
+          console.log(res);
         });
       }
     },
-    /*切换不同的tab进行修改*/
-    handleClick(tab, event) {
-      // console.log(tab, event);
+    /**切换不同的tab进行修改*/
+    handleClick(tab) {
+      /** 第二个tab*/
+      if(Number(tab.index) === 1){
+        if(Object.keys(this.collectionData).length !== 0){
+          return;
+        }else{
+          let data={
+            player_id:this.player_id
+          },user_id=1000;
+          UserHandler.bank_info(data,user_id).promise.then(res=>{
+            console.log(res);
+            if(Number(res.code) === 200){
+              this.collectionData = res.data
+            }
+          }).catch(err=>{
+            console.log(err);
+          })
+        }
+
+      }else if(Number(tab.index) === 3){
+        /** 第四个返点设置*/
+        let data={
+          player_id:this.player_id
+        },user_id=1000;
+        UserHandler.rebate_info(data,user_id).promise.then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log(err)
+        })
+      }
     },
-    /*获取用户列表*/
+    /**获取用户列表*/
     getUserList() {
       let data = {
         platform_id: 1000, //平台编号
@@ -536,7 +688,7 @@ export default {
       },user_id = 1000;
       this.userList(data,user_id)
     },
-    /*获取用户列表页中平台筛选框*/
+    /**获取用户列表页中平台筛选框*/
     getUserPlatform() {
       let data = {
           company_id: "", //公司编号
@@ -621,4 +773,10 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
+  .bankCard{
+    width: 100%;
+  }
+  .itemClass{
+    width: 45%;
+  }
 </style>

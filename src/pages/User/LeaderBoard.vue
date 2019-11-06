@@ -75,7 +75,7 @@
         btnList: ["今日盈利排行", "个人业绩排行"],
         num: 0,
         tabIndex: 0,
-        /*表格数据*/
+        /**表格数据*/
         tableData: [
           {
             rank: "1",

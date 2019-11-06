@@ -11,6 +11,11 @@ class UserHandler extends BaseHandler {
     return this.get_v1('/bank_info/' + user_id, data)
   }
 
+  //修改会员银行卡
+  bank_set(data,user_id) {
+    return this.set_v1(`/bank_set/`+user_id, data)
+  }
+
   //添加会员
   add(data,id) {
     return this.set_v1(`/add/${id}`, data);
@@ -18,27 +23,25 @@ class UserHandler extends BaseHandler {
 
   //修改会员信息、用户信息
   info_set(data, user_id) {
-    return this.set_v1('/info_set' + user_id, data)
+    return this.set_v1('/info_set/' + user_id, data)
   }
 
   //修改会员登录、资金密码
-  password_set(data, id) {
-    return this.get_v1(`/password_set/${id}`, data)
+  password_set(data, user_id) {
+    return this.set_v1(`/password_set/${user_id}`, data)
   }
 
   //修改会员信息-返点设置
   rebate_set(data, user_id) {
-    return this.set_v1('/rebate_set' + user_id, data)
+    return this.set_v1('/rebate_set/' + user_id, data)
   }
-
+  /** 返点设置，原始数据获取**/
+  rebate_info(data,user_id){
+    return this.get_v1(`/rebate_info/${user_id}`,data)
+  }
   //银行卡列表
   bank_list(data,id) {
     return this.get_v1(`/bank_list/${id}`, data)
-  }
-
-  //修改会员银行卡
-  bank_set(id, data) {
-    return this.get_v1(`/bank_set/${id}`, data)
   }
 
   //删除会员银行卡
@@ -80,8 +83,8 @@ class UserHandler extends BaseHandler {
   }
 
   //__编辑用户信息（玩家信息）前获取用户信息
-  user_info(data,id){
-    return this.get_v1(`/user_info/${id}`,data)
+  user_info(data,user_id){
+    return this.get_v1(`/user_info/${user_id}`,data)
   }
 
 }

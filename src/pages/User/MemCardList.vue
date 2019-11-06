@@ -254,8 +254,8 @@ export default {
           province: '', //开户行省份
           city:'', //开户行城市
           subbranch: '' //开户行支行
-        },id = 1000;
-        this.handelEdit( data, id);
+        },user_id = 1000;
+        this.handelEdit( data, user_id);
       } else {
         let data = {
           bank_id: row.bank_id
@@ -315,8 +315,8 @@ export default {
       });
     },
     /*编辑方法*/
-    handelEdit(data,id){
-      UserHandler.bank_set(data,id).promise.then(res=>{
+    handelEdit(data,user_id){
+      UserHandler.bank_set(data,user_id).promise.then(res=>{
         console.log(res);
       })
     },
