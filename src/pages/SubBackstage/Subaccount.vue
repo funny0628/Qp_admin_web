@@ -105,7 +105,10 @@
                   ></el-option>
                 </el-select>
                 <!-- 非root用户登录，获取该用户登录时后台给的所属公司，非root用户无法更改所属公司 -->
-                <el-input v-model="ruleForm.notrootlogin" disabled v-else></el-input>
+                <!-- <el-input v-model="ruleForm.notrootlogin" disabled v-else></el-input> -->
+                <el-select v-model="ruleForm.belongrole" class="changewidth" disabled v-else>
+                  <el-option label="测试" value="2" ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -206,7 +209,7 @@ export default {
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
-        ]
+        ],
         // belongrole: [
         //   { required: true, message: "请选择角色", trigger: "change" }
         // ],
@@ -349,7 +352,7 @@ export default {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           let data = {
-            company_id: this.user_id == 1000 ? "" : this.ruleForm.notrootlogin,
+            company_id: this.user_id == 1000 ? this.ruleForm.belongrole: this.ruleForm.notrootlogin,
             parent: this.newestlevelid,
             platform_name: this.ruleForm.substage,
             user_name: this.ruleForm.subaccount,

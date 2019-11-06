@@ -43,7 +43,7 @@
             <template v-if="scope.prop==='operate'">
               <el-button type="text" @click="addpackage=true">编辑</el-button>
               <el-button type="text">禁用</el-button>
-              <el-button type="text">推广链接</el-button>
+              <!-- <el-button type="text">推广链接</el-button> -->
             </template>
             <template v-if="['belong','operate'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
