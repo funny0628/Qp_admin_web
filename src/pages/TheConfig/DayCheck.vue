@@ -3,12 +3,12 @@
   <div id="DayCheck-main">
     <div class="title">每日签到设置</div>
     <div class="content">
-      <el-form ref="form" :model="formDate" style="padding: 30px 0 30px 30px;">
+      <el-form ref="form" :model="format" style="padding: 30px 0 30px 30px;">
         <el-form-item label="活动开启/关闭" label-width="100px">
-          <el-switch v-model="formDate.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="format.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="开始时间">
-          <el-date-picker v-model="formDate.begin_time" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="format.begin_time" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="奖励配置">
           <div class="bd" style="padding-right:15px;">
@@ -39,13 +39,52 @@
           </div>
         </el-form-item>
         <div class="footer" style="text-align:center;">
-          <el-button>
+          <el-button @click="dialogVisible = true">
             <i class="el-icon-plus"></i> 添 加
           </el-button>
           <el-button type="primary">保 存</el-button>
         </div>
       </el-form>
     </div>
+    <el-dialog :title="dialogTitleType" center :visible.sync="dialogVisible" width="25%">
+      <el-form :model="formDates" ref="dataForm" >
+        <el-form-item label="用户层级" :label-width="labelWidth" class="el-item">
+          <el-select v-model="formDates.level" clearable placeholder="请选择用户层级" style="width: 100%;">
+            <el-option
+              v-for="item in userLevels"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="第一天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day1" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第二天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day2" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第三天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day3" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第四天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day4" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第五天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day5" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第六天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day6" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="第七天" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formDates.day7" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -61,7 +100,7 @@ export default {
   components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
-      formDate: {
+      format: {
         active: false,
         begin_time: ""
       },
@@ -90,17 +129,33 @@ export default {
           action: [{ label: "删除", type: "delete" }]
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0) // page pageSizes total
+      pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
+      dialogTitleType:'每日签到设置',
+      dialogVisible:false,
+      userLevels:[],
+      labelWidth:'100px',
+      formDates:{
+        level:'',
+        day1:'',
+        day2:'',
+        day3:'',
+        day4:'',
+        day5:'',
+        day6:'',
+        day7:''
+      }
     };
   },
   methods: {
     search() {},
     //表格操作
     handeClick(btn, row) {
-      // consoloe.log(btn)
       if (btn.type === "delete") {
         console.log("删除");
       }
+    },
+    confirm(){
+
     }
   }
 };
@@ -128,5 +183,8 @@ export default {
   height: 400px;
   width: 100%;
 }
+  .el-item{
+    width: 90%;
+  }
 </style>
 

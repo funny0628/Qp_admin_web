@@ -23,7 +23,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -114,7 +114,6 @@ export default {
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      /*dialog*/
       dialogTitleType: "",
       dialogVisible: false,
       labelWidth: "90px",
@@ -133,7 +132,7 @@ export default {
       this.dialogVisible = true;
     },
     /**edit */
-    handeClick(btn) {
+    handelClick(btn) {
       if (btn.type === "edit") {
         this.dialogTitleType = "修改弹窗公告";
         this.dialogVisible = true;

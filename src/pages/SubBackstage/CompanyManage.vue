@@ -248,7 +248,7 @@ export default {
       AdminUserHandler.company_list(data, this.user_id).promise.then(res => {
         console.log(res);
         const { data, msg, code } = res;
-        if (Number(code) == 200) {
+        if (Number(code) === 200) {
           if (Number(data.total_count) > 0) {
             this.records = data.ls;
             this.pageInfo = new PageInfo(
@@ -288,7 +288,7 @@ export default {
             res => {
               console.log("xxxxx", res);
               const { data, msg, code } = res;
-              if (Number(code) == 200) {
+              if (Number(code) === 200) {
                 this.search();
                 return this.$message.success(msg);
               } else {
@@ -310,7 +310,7 @@ export default {
       };
       AdminUserHandler.editcompany(data, this.user_id).promise.then(res => {
         const { data, msg, code } = res;
-        if (Number(code) == 200) {
+        if (Number(code) === 200) {
           this.ruleFormedit.editproportion = data.exchange;
           this.ruleFormedit.editstatus = data.status;
         } else {
@@ -330,7 +330,7 @@ export default {
           AdminUserHandler.sureeditcompany(data, this.user_id).promise.then(
             res => {
               const { data, msg, code } = res;
-              if (Number(code) == 200) {
+              if (Number(code) === 200) {
                 this.search();
                 return this.$message.success(msg);
               } else {

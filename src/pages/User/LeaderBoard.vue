@@ -30,10 +30,12 @@
           <el-form-item label="排行榜显示：">
             <div style="display: flex;  flex-wrap:nowrap;">
               <div class="earn">
-                <el-button :type="tabIndex === 0 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 0">今日盈利排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
+                <el-button :type="tabIndex === 0 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 0">
+                  今日盈利排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
               </div>
               <div class="result" style="padding-left: 10px;">
-                <el-button :type="tabIndex === 1 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 1">个人业绩排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
+                <el-button :type="tabIndex === 1 ? 'success' : ''" style="border-radius: 0;" @click="tabIndex = 1">
+                  个人业绩排行 <i class="el-icon-arrow-right el-icon-check"></i></el-button>
               </div>
             </div>
           </el-form-item>
@@ -67,15 +69,15 @@
 </template>
 
 <script>
-  import UserHandeler from '../../script/handlers/UserHandler'
+  import UserHandler from '../../script/handlers/UserHandler'
+
   export default {
     name: "LeaderBoard",
     data() {
       return {
         btnList: ["今日盈利排行", "个人业绩排行"],
         num: 0,
-        tabIndex: 0,
-        /**表格数据*/
+        tabIndex: 0, //切换tab
         tableData: [
           {
             rank: "1",
@@ -88,10 +90,10 @@
         dialogVisible: false,
         formData: {
           money: "",
-          performance:'',
-          refresh:'',
-          profit_reward:'',
-          performance_reward:''
+          performance: '',
+          refresh: '',
+          profit_reward: '',
+          performance_reward: ''
         }
       };
     },
@@ -103,24 +105,24 @@
       openDialog() {
         this.dialogVisible = true;
       },
-      /*获取排行榜数据*/
-      rankList(){
+      /**获取排行榜数据*/
+      rankList() {
         let data = {
-          platform_id : 1000
-        };
-        UserHandeler.rank_list(data).promise.then(res=>{
+          platform_id: 1000
+        },user_id=1000;
+        UserHandler.rank_list(data,user_id).promise.then(res => {
           console.log(res);
-        }).catch(err=>{
+        }).catch(err => {
           console.log(err);
         })
       },
-      /*排行榜配置*/
-      handelList(){
+      /**排行榜配置*/
+      handelList() {
         let data = {};
-        UserHandeler.rank_set(data).promise.then(res=>{
+        UserHandler.rank_set(data).promise.then(res => {
           console.log(res);
           this.dialogVisible = false;
-        }).catch(err=>{
+        }).catch(err => {
           console.log(err);
         })
       }

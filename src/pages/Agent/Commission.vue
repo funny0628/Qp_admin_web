@@ -25,7 +25,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn,scope.row)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -42,7 +42,7 @@
     <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
       <el-form :model="formData">
         <el-form-item label="代理层级" :label-width="labelWidth">
-          <el-input autocomplete="off" v-model="formData.level"></el-input>
+          <el-input autocomplete="off" v-model="formData.level" disabled></el-input>
         </el-form-item>
         <el-form-item label="最小业绩" :label-width="labelWidth">
           <el-input autocomplete="off" v-model="formData.min_results"></el-input>
@@ -56,7 +56,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handelConfirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -91,34 +91,38 @@ export default {
           max_results: "10000",
           commission_col: "0.2",
           action: [{ label: "修改", type: "edit" }]
+        },
+        {
+          level: "第二级代理",
+          min_results: "0",
+          max_results: "20000",
+          commission_col: "0.15",
+          action: [{ label: "修改", type: "edit" }]
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      // 弹框数据
       dialogTitleType: "",
       dialogVisible: false,
       labelWidth: "70px",
-      formData: {
-        level: "",
-        min_results: "",
-        max_results: "",
-        commission_col: ""
-      }
+      formData: {}
     };
   },
   methods: {
     search() {},
-    // 新增代理分层
+    /**新增代理分层*/
     handelAddClick() {
       this.dialogTitleType = "新增代理分层";
       this.dialogVisible = true;
     },
-    // 修改代理分层
-    handeClick(btn) {
-      if (btn.type === "edit") {
-        this.dialogTitleType = "修改代理分层";
-        this.dialogVisible = true;
-      }
+    /**修改代理分层*/
+    handelClick(btn,row) {
+      this.dialogTitleType = "修改代理分层";
+      this.dialogVisible = true;
+      this.formData = row;
+    },
+    /** 确定按钮*/
+    handelConfirm(){
+
     }
   }
 };

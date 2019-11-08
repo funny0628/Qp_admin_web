@@ -2,10 +2,10 @@
 <template>
   <div id="AgentLink—main">
     <input-area>
-      <el-input v-model="format.child_id" placeholder="子后台ID" size="medium"></el-input>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
-      <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
-      <el-input v-model="format.agent_link" placeholder="代理链接" size="medium"></el-input>
+      <el-input v-model="format.child_id" placeholder="子后台ID" size="medium" clearable></el-input>
+      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
+      <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium" clearable></el-input>
+      <el-input v-model="format.website" placeholder="代理链接" size="medium" clearable></el-input>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
@@ -58,10 +58,10 @@ export default {
   data() {
     return {
       format: {
-        child_id: "",
+        uid: "",
         user_id: "",
-        channel_id: "",
-        agent_link: ""
+        platform_id: "",
+        website: ""
       },
       tableStyle: [
         { label: "渠道ID", prop: "platform_id", width: "" },
@@ -93,8 +93,11 @@ export default {
   },
   methods: {
     /***查询搜索 */
-    search() {},
-    /*查看链接*/
+    search() {
+      let data = this.format,user_id=1000;
+      this.listInfo(data,user_id);
+    },
+    /**查看链接*/
     handelClick(btn,row) {
       console.log(btn,row);
       let url = row.website;
@@ -107,12 +110,16 @@ export default {
         website: "",
         page_index: "",
         page_size: ""
-      },id=1000;
-      UserHandler.spread_list(data,id).promise.then(res => {
+      },user_id=1000;
+      this.listInfo(data,user_id);
+    },
+    /**获取列表信息*/
+    listInfo(data,user_id){
+      UserHandler.spread_list(data,user_id).promise.then(res => {
         if (Number(res.code) === 200) {
-          this.records = [...res.data.list, ...this.records];
+          this.records = res.data.list;
         }
-        /*数据处理*/
+        /**数据处理*/
         this.records.map(item => {
           item.action = [
             {

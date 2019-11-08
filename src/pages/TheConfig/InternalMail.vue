@@ -176,13 +176,13 @@
         this.getMailList();
         this.dialogVisible = false;
       },
-      //删除方法
+      /**删除方法*/
       handelDelete(data) {
         HallHandler.email_delete(data).promise.then(rs => {
           console.log(rs);
         })
       },
-      //新增方法
+      /**新增方法*/
       handelAdd(data) {
         HallHandler.email_add(data).promise.then(rs => {
           console.log(rs);

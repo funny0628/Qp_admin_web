@@ -45,13 +45,13 @@ class UserHandler extends BaseHandler {
   }
 
   //删除会员银行卡
-  bank_delete(user_id, data) {
-    return this.set_v1('/bank_delete/' + user_id, data)
+  bank_delete(data,user_id) {
+    return this.set_v1(`/bank_delete/${user_id}`, data)
   }
 
   //代理链接管理
-  spread_list(data,id) {
-    return this.get_v1(`/spread_list/${id}`, data)
+  spread_list(data,user_id) {
+    return this.get_v1(`/spread_list/${user_id}`, data)
   }
 
   //用户分层
@@ -69,8 +69,8 @@ class UserHandler extends BaseHandler {
     return this.set_v1('/vip_set', data)
   }
   //排行榜
-  rank_list(data){
-    return this.get_v1('/rank_list',data)
+  rank_list(data,user_id){
+    return this.get_v1(`/rank_list/${user_id}`,data)
   }
   //排行榜配置
   rank_set(data){

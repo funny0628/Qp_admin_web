@@ -32,7 +32,8 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            >{{scope.row[scope.prop]}}
+            </template>
           </template>
         </info-table-item>
       </info-table>
@@ -57,49 +58,50 @@
 </template>
 
 <script>
-import InfoTable from "../../plugin/components/InfoTable";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-export default {
-  name: "RiskList",
-  extends: BaseIframe,
-  components: { InfoTableItem, InputArea, InfoTable, PermissionButton },
-  data() {
-    return {
-      tableStyle: [
-        { label: "渠道ID", prop: "channel_id"},
-        { label: "用户ID", prop: "user_id"},
-        { label: "用户昵称", prop: "user_name"},
-        { label: "盈亏", prop: "loss"},
-        { label: "用户输赢局数", prop: "win_num"}
-      ],
-      records: [
-        {
-          channel_id: "100",
-          user_id: "1001100",
-          user_name: "测试玩家1",
-          loss: "300000.000",
-          win_num: "6"
+  import InfoTable from "../../plugin/components/InfoTable";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+
+  export default {
+    name: "RiskList",
+    extends: BaseIframe,
+    components: {InfoTableItem, InputArea, InfoTable, PermissionButton},
+    data() {
+      return {
+        tableStyle: [
+          {label: "渠道ID", prop: "channel_id"},
+          {label: "用户ID", prop: "user_id"},
+          {label: "用户昵称", prop: "user_name"},
+          {label: "盈亏", prop: "loss"},
+          {label: "用户输赢局数", prop: "win_num"}
+        ],
+        records: [
+          {
+            channel_id: "100",
+            user_id: "1001100",
+            user_name: "测试玩家1",
+            loss: "300000.000",
+            win_num: "6"
+          }
+        ],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        dialogVisible: false,
+        formData: {
+          greater: "",
+          greater_num: ""
         }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      dialogVisible: false,
-      formData: {
-        greater: "",
-        greater_num: ""
-      }
-    };
-  },
-  methods: {
-    /*添加条件*/
-    search() {
-      this.dialogVisible = true;
+      };
     },
-  }
-};
+    methods: {
+      /**添加条件*/
+      search() {
+        this.dialogVisible = true;
+      },
+    }
+  };
 </script>
 
 <style scoped>

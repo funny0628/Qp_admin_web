@@ -49,7 +49,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="AddEditClick">确 定</el-button>
+          <el-button type="primary" @click="confirm">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -91,7 +91,6 @@ export default {
       dialogVisible: false,
       labelWidth: "70px",
       dataForm: {
-        // level: "",
         min_pre: "0",
         max_pre: "10000.00",
         column: "1"
@@ -112,7 +111,7 @@ export default {
       this.dialogTitle = "业绩返佣修改";
     },
     //新增方法
-    AddEditClick() {
+    confirm() {
       // 通过层级id是否为真来判断是新增还是修改
     }
   }

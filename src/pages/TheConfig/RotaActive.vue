@@ -3,20 +3,20 @@
   <div id="RotaActive-main">
     <div class="title">转盘活动设置</div>
     <div class="content">
-      <el-form ref="form" :model="formDate" style="padding: 30px 0 30px 30px;">
+      <el-form ref="form" :model="format" style="padding: 30px 0 30px 30px;">
         <el-form-item label="活动开启/关闭" label-width="100px">
-          <el-switch v-model="formDate.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="format.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="开始时间">
-          <el-date-picker v-model="formDate.begin_time" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="format.begin_time" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="转盘次数条件">
-          <el-checkbox-group v-model="checkedCities">
+          <el-checkbox-group v-model="format.checkedCities">
             <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="获得次数">
-          <el-input v-model="formDate.number" style="width:220px;"></el-input>
+          <el-input v-model="format.number" style="width:220px;"></el-input>
         </el-form-item>
         <el-form-item label="奖励配置">
           <div class="bd" style="padding-right:15px;">
@@ -47,13 +47,39 @@
           </div>
         </el-form-item>
         <div class="footer" style="text-align: center;">
-          <el-button>
+          <el-button @click="dialogVisible = true">
             <i class="el-icon-plus"></i> 添 加
           </el-button>
           <el-button type="primary">保 存</el-button>
         </div>
       </el-form>
     </div>
+    <el-dialog :title="dialogTitle" center :visible.sync="dialogVisible" width="25%">
+      <el-form :model="formData" ref="formData">
+        <el-form-item label="金额：" :label-width="labelWidth" class="el-item">
+          <el-select
+            v-model="formData.perpaid"
+            clearable
+            placeholder="请选择充值通道"
+            style="width: 100%;"
+          >
+            <el-option
+              v-for="item in prepaidChannels"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="概率：" :label-width="labelWidth" class="el-item">
+          <el-input autocomplete="off" v-model="formData.credit" clearable placeholder="请输入充值金额"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,20 +90,20 @@ import InfoTable from "../../plugin/components/InfoTable";
 import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
-const cityOptions = ["新用户首次进入", "每日充值任意金额", "每日登陆"];
 export default {
   name: "RotaActive",
   extends: BaseIframe,
   components: { PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
-      formDate: {
+      format: {
         active: false,
         begin_time: "",
-        number: ""
+        checkedCities: "",
+        number:'',
       },
       checkedCities: [],
-      cities: cityOptions,
+      cities: ["新用户首次进入", "每日充值任意金额", "每日登陆"],
       tableStyle: [
         { label: "用户层级", prop: "user_level", width: "" },
         { label: "ID", prop: "id", width: "" },
@@ -94,18 +120,26 @@ export default {
           action: [{ label: "删除", type: "delete" }]
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0)
+      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      formData:{
+        perpaid:'',
+        credit:''
+      },
+      dialogTitle:'',
+      dialogVisible:'',
+      labelWidth:'70px',
+      prepaidChannels:[]
     };
   },
   methods: {
     search() {},
-    //表格操作
+    /***表格操作 */
     handeClick(btn, row) {
-      // consoloe.log(btn)
       if (btn.type === "delete") {
         console.log("删除");
       }
-    }
+    },
+    confirm(){}
   }
 };
 </script>
