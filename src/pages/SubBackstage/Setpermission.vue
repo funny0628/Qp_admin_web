@@ -56,7 +56,8 @@ export default {
         { label: "菜单", prop: "menu", width: "" },
         { label: "全选", prop: "model", width: "" }
       ],
-      originchecklist: {}
+      originchecklist: {},
+      fromclickedit: ""
     };
   },
   created() {

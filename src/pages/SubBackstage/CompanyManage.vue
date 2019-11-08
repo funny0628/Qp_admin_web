@@ -31,7 +31,7 @@
             <template v-if="scope.prop==='operate'">
               <span>
                 <el-button type="text" @click="edit(scope.row)">编辑</el-button>
-                <el-button type="text" @click="gamemanage=true">游戏管理</el-button>
+                <el-button type="text" @click="getgamelist(scope.row)">游戏管理</el-button>
               </span>
             </template>
             <template
@@ -81,11 +81,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="newadd = false" class="cancel">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="addnewcompany('ruleFormnew')"
-            class="confirm"
-          >确 定</el-button>
+          <el-button type="primary" @click="addnewcompany('ruleFormnew')" class="confirm">确 定</el-button>
         </span>
         <!-- 公司管理编辑弹框 -->
       </el-dialog>
@@ -139,13 +135,13 @@
           >
             <el-table-column type="selection" align="center" min-width="50"></el-table-column>
             <el-table-column label="游戏名称" align="center">
-              <template slot-scope="scope">{{ scope.row.game }}</template>
+              <template slot-scope="scope">{{ scope.row.subgame_name }}</template>
             </el-table-column>
           </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="gamemanage = false">取 消</el-button>
-          <el-button type="primary" @click="gamemanage = false">确 定</el-button>
+          <el-button type="primary" @click="confirmgame()">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -195,15 +191,11 @@ export default {
       newadd: false,
       editdia: false,
       gamemanage: false,
-      editid:'',
+      editid: "",
+      confirmgameid: "",
       multipleSelection: [],
-      tableData: [
-        { game: "游戏1" },
-        { game: "游戏2" },
-        { game: "游戏3" },
-        { game: "游戏4" },
-        { game: "游戏5" }
-      ],
+      gameresult: "",
+      tableData: [],
       ruleFormnew: {
         company_name: "",
         mark: "",
@@ -246,7 +238,6 @@ export default {
         page_index: val
       };
       AdminUserHandler.company_list(data, this.user_id).promise.then(res => {
-        console.log(res);
         const { data, msg, code } = res;
         if (Number(code) === 200) {
           if (Number(data.total_count) > 0) {
@@ -272,6 +263,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(this.multipleSelection);
     },
     addnewcompany(ruleFormnew) {
       this.newadd = false;
@@ -283,10 +275,8 @@ export default {
             exchange: this.ruleFormnew.newproportion,
             status: this.ruleFormnew.newaddstatus
           };
-          console.log("data", data);
           AdminUserHandler.newaddcompany(data, this.user_id).promise.then(
             res => {
-              console.log("xxxxx", res);
               const { data, msg, code } = res;
               if (Number(code) === 200) {
                 this.search();
@@ -304,7 +294,7 @@ export default {
     },
     edit(row) {
       this.editdia = true;
-      this.editid=row.company_id;
+      this.editid = row.company_id;
       let data = {
         company_id: row.company_id
       };
@@ -318,13 +308,13 @@ export default {
         }
       });
     },
-    sureeditcompany(ruleFormedit){
-     this.editdia = false;
-       this.$refs[ruleFormedit].validate(valid => {
+    sureeditcompany(ruleFormedit) {
+      this.editdia = false;
+      this.$refs[ruleFormedit].validate(valid => {
         if (valid) {
           let data = {
-            company_id:this.editid,
-            exchange:this.ruleFormedit.editproportion,
+            company_id: this.editid,
+            exchange: this.ruleFormedit.editproportion,
             status: this.ruleFormedit.editstatus
           };
           AdminUserHandler.sureeditcompany(data, this.user_id).promise.then(
@@ -341,6 +331,57 @@ export default {
         } else {
           this.$message.error("提交失败");
           return false;
+        }
+      });
+    },
+    getgamelist(row) {
+      this.gamemanage = true;
+      this.confirmgameid = row.company_id;
+      let data = {
+        company_id: row.company_id
+      };
+      AdminUserHandler.gamelist(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          this.tableData = data;
+          this.toggleSelection(this.tableData);
+        } else {
+          return this.$message.error(msg);
+        }
+      });
+    },
+    toggleSelection(row) {
+      console.log("选中", row);
+      var flag;
+      // row.forEach(element => {
+      //   if(element.status==1){
+      //     flag=true
+      //   }else{
+      //     flag=false;
+      //   }
+      // });
+      row.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row,true);
+          })
+
+    },
+    confirmgame() {
+      this.gamemanage = false;
+      var arr = [];
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        arr.push(this.multipleSelection[i].subgame);
+      }
+      this.gameresult = arr.join(",");
+      let data = {
+        company_id: this.confirmgameid,
+        subgames: this.gameresult
+      };
+      AdminUserHandler.confirmgame(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          return this.$message.success(msg);
+        } else {
+          return this.$message.error(msg);
         }
       });
     }

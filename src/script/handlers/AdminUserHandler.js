@@ -48,5 +48,25 @@ class AdminUser extends BaseHandler {
   getcompanylist(data, user_id) {
     return this.get_v1('/all_company/' + user_id, data)
   }
+
+ // 运营后台管理公司管理获取游戏列表
+ gamelist(data, user_id) {
+  return this.get_v1('/company_games/' + user_id, data)
+}
+  
+ // 运营后台管理公司管理确认选中游戏
+ confirmgame(data, user_id) {
+  return this.set_v1('/company_games_set/' + user_id, data)
+}
+
+ // 运营后台管理账号列表游戏管理
+ platformgames(data, user_id) {
+  return this.get_v1('/platform_games/' + user_id, data)
+}
+
+ // 运营后台管理账号列表确认选中游戏
+ platform_games_set(data, user_id) {
+  return this.set_v1('/platform_games_set/' + user_id, data)
+}
 }
 export default new AdminUser('/admin_user');

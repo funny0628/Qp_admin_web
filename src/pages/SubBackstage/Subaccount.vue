@@ -46,10 +46,10 @@
               >{{scope.row.status==1?'启用':'禁用'}}</span>
             </template>
             <template v-if="scope.prop==='operate'">
-              <span @click="handeClick($event)">
-                <el-button type="text">游戏管理</el-button>
-                <el-button type="text">授权</el-button>
-                <el-button type="text">编辑</el-button>
+              <span>
+                <el-button type="text" @click="getgamelist(scope.row)">游戏管理</el-button>
+                <el-button type="text" @click="forward('setpermission')">授权</el-button>
+                <el-button type="text" @click="edit(scope.row)">编辑</el-button>
                 <el-button type="text" @click="runstop()">{{scope.row.status==1?'禁用':'启用'}}</el-button>
                 <!-- <el-button type="text">结算</el-button> -->
               </span>
@@ -107,7 +107,7 @@
                 <!-- 非root用户登录，获取该用户登录时后台给的所属公司，非root用户无法更改所属公司 -->
                 <!-- <el-input v-model="ruleForm.notrootlogin" disabled v-else></el-input> -->
                 <el-select v-model="ruleForm.belongrole" class="changewidth" disabled v-else>
-                  <el-option label="测试" value="2" ></el-option>
+                  <el-option label="测试" value="2"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -140,13 +140,13 @@
         >
           <el-table-column type="selection" align="center" min-width="50"></el-table-column>
           <el-table-column label="游戏名称" align="center">
-            <template slot-scope="scope">{{ scope.row.game }}</template>
+            <template slot-scope="scope">{{scope.row.subgame_name}}</template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="gamemanage = false">取 消</el-button>
-        <el-button type="primary" @click="gamemanage = false">确 定</el-button>
+        <el-button type="primary" @click="confirmgame()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -209,7 +209,7 @@ export default {
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
-        ],
+        ]
         // belongrole: [
         //   { required: true, message: "请选择角色", trigger: "change" }
         // ],
@@ -225,71 +225,16 @@ export default {
         { label: "状态", prop: "status", width: "" },
         { label: "操作", prop: "operate", width: "260" }
       ],
-      records: [
-        // {
-        //   substageid: 111,
-        //   display_name: "游戏平台1",
-        //   substageaccount: "a-admin",
-        //   lowerstage: 10,
-        //   usertype: "超级管理员",
-        //   substagedescribe: "-",
-        //   statu:0,
-        //    status:'禁用'
-        // },
-        // {
-        //   substageid: 111,
-        //   display_name: "游戏平台2",
-        //   substageaccount: "a-admin",
-        //   lowerstage: 15,
-        //   usertype: "管理员",
-        //   substagedescribe: "-",
-        //       statu:1,
-        //    status:'启用'
-        // }
-      ],
-      // childrenrecords: [
-      //   {
-      //     substageid: 111,
-      //     display_name: "游戏平台1-1",
-      //     substageaccount: "a-admin",
-      //     lowerstage: 10,
-      //     usertype: "超级管理员",
-      //     substagedescribe: "-",
-      //   },
-      //   {
-      //     substageid: 111,
-      //     display_name: "游戏平台1-2",
-      //     substageaccount: "a-admin",
-      //     lowerstage: 15,
-      //     usertype: "管理员",
-      //     substagedescribe: "-",
-      //   }
-      // ],
+      records: [],
       pageInfo: new PageInfo(1, [10, 15, 20], 0),
-      tableData: [
-        { game: "游戏1" },
-        { game: "游戏2" },
-        { game: "游戏3" },
-        { game: "游戏4" },
-        { game: "游戏5" }
-      ],
-      multipleSelection: []
+      tableData: [],
+      multipleSelection: [],
+      confirmgameid:'',
+      gameresult:''
     };
   },
   methods: {
-    handeClick(event) {
-      if (event.target.innerText === "游戏管理") {
-        this.gamemanage = true;
-      }
-      if (event.target.innerText === "授权") {
-        this.forward("setpermission");
-      }
-      if (event.target.innerText === "编辑") {
-        this.addsub = true;
-      }
-    },
     handleSelectionChange(val) {
-      // console.log(val);
       this.multipleSelection = val;
     },
     search(val) {
@@ -341,18 +286,22 @@ export default {
       this.search();
     },
     runstop() {},
+    edit(row) {
+      this.addsub = true;
+    },
     submitForm(ruleForm) {
       this.addsub = false;
-      console.log("---------", this.newestlevel);
       this.newestlevelid = this.newestlevel.slice(
         this.newestlevel.length - 1,
         this.newestlevel.length
       )[0].id;
-      console.log("************", this.newestlevelid);
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           let data = {
-            company_id: this.user_id == 1000 ? this.ruleForm.belongrole: this.ruleForm.notrootlogin,
+            company_id:
+              this.user_id == 1000
+                ? this.ruleForm.belongrole
+                : this.ruleForm.notrootlogin,
             parent: this.newestlevelid,
             platform_name: this.ruleForm.substage,
             user_name: this.ruleForm.subaccount,
@@ -398,6 +347,43 @@ export default {
       this.$nextTick(() => {
         this.$refs["ruleForm"].resetFields();
       });
+    },
+    getgamelist(row) {
+      console.log(row)
+      this.gamemanage = true;
+      this.confirmgameid = row.user_id;
+      let data = {
+        superadmin_id: row.user_id
+      };
+      AdminUserHandler.platformgames(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          this.tableData = data;
+        } else {
+          return this.$message.error(msg);
+        }
+      });
+    },
+    confirmgame(){
+    this.gamemanage = false;
+    var arr = [];
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        arr.push(this.multipleSelection[i].subgame);
+      }
+      this.gameresult = arr.join(",");
+      let data = {
+        superadmin_id: this.confirmgameid,
+        subgames: this.gameresult
+      };
+      AdminUserHandler.platform_games_set(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          return this.$message.success(msg);
+        } else {
+          return this.$message.error(msg);
+        }
+      });
+       
     }
   },
   mounted() {
@@ -407,7 +393,6 @@ export default {
     breadlist: {
       handler(newval) {
         this.newestlevel = newval;
-        console.log("new", this.newestlevel);
       },
       deep: true
     }
