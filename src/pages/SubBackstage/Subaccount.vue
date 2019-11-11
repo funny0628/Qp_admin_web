@@ -48,7 +48,7 @@
             <template v-if="scope.prop==='operate'">
               <span>
                 <el-button type="text" @click="getgamelist(scope.row)">游戏管理</el-button>
-                <el-button type="text" @click="forward('setpermission')">授权</el-button>
+                <el-button type="text" @click="forward('setpermission',scope.row)">授权</el-button>
                 <el-button type="text" @click="edit(scope.row)">编辑</el-button>
                 <el-button type="text" @click="runstop()">{{scope.row.status==1?'禁用':'启用'}}</el-button>
                 <!-- <el-button type="text">结算</el-button> -->
@@ -359,8 +359,26 @@ export default {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.tableData = data;
+            let arr = [];
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (this.tableData[i].status == 1) {
+              arr.push(this.tableData[i]);
+            }
+          }
+          this.toggleSelection(arr);
         } else {
           return this.$message.error(msg);
+        }
+      });
+    },
+    toggleSelection(rows){
+      this.$nextTick(() => {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row, true);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
         }
       });
     },

@@ -263,7 +263,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
     },
     addnewcompany(ruleFormnew) {
       this.newadd = false;
@@ -344,26 +343,28 @@ export default {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.tableData = data;
-          this.toggleSelection(this.tableData);
+          let arr = [];
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (this.tableData[i].status == 1) {
+              arr.push(this.tableData[i]);
+            }
+          }
+          this.toggleSelection(arr);
         } else {
           return this.$message.error(msg);
         }
       });
     },
-    toggleSelection(row) {
-      console.log("选中", row);
-      var flag;
-      // row.forEach(element => {
-      //   if(element.status==1){
-      //     flag=true
-      //   }else{
-      //     flag=false;
-      //   }
-      // });
-      row.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row,true);
-          })
-
+    toggleSelection(rows) {
+      this.$nextTick(() => {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row, true);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      });
     },
     confirmgame() {
       this.gamemanage = false;

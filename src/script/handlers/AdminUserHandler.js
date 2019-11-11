@@ -68,5 +68,11 @@ class AdminUser extends BaseHandler {
  platform_games_set(data, user_id) {
   return this.set_v1('/platform_games_set/' + user_id, data)
 }
+
+ // 运营后台管理授权获取列表
+ user_power_menu(data, user_id) {
+  return this.get_v1('/user_power_menu/' + user_id, data)
+}
+
 }
 export default new AdminUser('/admin_user');

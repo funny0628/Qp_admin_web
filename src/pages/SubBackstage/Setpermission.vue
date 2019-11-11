@@ -44,10 +44,12 @@
 <script>
 import PermissionButton from "../../plugin/components/PermissionButton";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import AdminUserHandler from "../../script/handlers/AdminUserHandler";
+
 export default {
   components: { PermissionButton },
   extends: BaseIframe,
-  name:'Setpermission',
+  name: "Setpermission",
   data() {
     return {
       permission: [],
@@ -57,11 +59,15 @@ export default {
         { label: "全选", prop: "model", width: "" }
       ],
       originchecklist: {},
-      fromclickedit: ""
+      authorization: "",
+      user_id: 2000,
+      cache_data: []
     };
   },
   created() {
-    this.init();
+    // this.init();
+    this.authorization = this.$pageInfo.param.user_id;
+    this.getmsg();
   },
   methods: {
     init() {
@@ -173,82 +179,172 @@ export default {
             }
           }
         }
-      //   点击非第一层级的全部
-      else{
-      //选中
-        if(val){
-              this.checkList[model]=this.originchecklist[model];
-              let count=0;
-              for(let p in this.modelPath){
-                    if(this.modelPath[p].indexOf(model)!=-1){
-                          for(let k of this.modelPath[p]){
-                                if(this.checkList[k].length==this.originchecklist[k].length){
-                                      count++
-                                }
-                                else{
-                                      return
-                                }
-                          }
-                          if(count==this.modelPath[p].length){
-                                this.checkList[p]=this.originchecklist[p]
-                          }
-                          else{
-                                this.checkList[p]=[]
-                          }
-                          break
-                    }
-              }
-        }
-      //   取消选中
-      else{
-            this.checkList[model]=[];
-            for(let p in this.modelPath){
-                  if(this.modelPath[p].indexOf(model)!=-1){
-                        this.checkList[p]=[];
+        //   点击非第一层级的全部
+        else {
+          //选中
+          if (val) {
+            this.checkList[model] = this.originchecklist[model];
+            let count = 0;
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                for (let k of this.modelPath[p]) {
+                  if (
+                    this.checkList[k].length == this.originchecklist[k].length
+                  ) {
+                    count++;
+                  } else {
+                    return;
                   }
+                }
+                if (count == this.modelPath[p].length) {
+                  this.checkList[p] = this.originchecklist[p];
+                } else {
+                  this.checkList[p] = [];
+                }
+                break;
+              }
             }
-      }
-      }
+          }
+          //   取消选中
+          else {
+            this.checkList[model] = [];
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                this.checkList[p] = [];
+              }
+            }
+          }
+        }
       }
       // 非全选，点击不是all的按钮
-      else{
-            if(val){
-            // 判断当前行是否已经选完
-            let value =JSON.parse(JSON.stringify(this.originchecklist[model])).slice(1)
-            if(this.checkList[model].length==value.length){
-                  this.checkList[model]=this.originchecklist[model]
-                  let count=0;
-                  for(let p in this.modelPath){
-                        if(this.modelPath[p].indexOf(model)!=-1){
-                              for(let k of this.modelPath[p]){
-                                    if(this.checkList[k].length==this.originchecklist[k].length){
-                                          count++
-                                    }
-                              }
-                              if(count==this.modelPath[p].length){
-                                    this.checkList[p]=this.originchecklist[p]
-                              }
-                              else{
-                                    this.checkList[p]=[]
-                              }
-                        }
+      else {
+        if (val) {
+          // 判断当前行是否已经选完
+          let value = JSON.parse(
+            JSON.stringify(this.originchecklist[model])
+          ).slice(1);
+          if (this.checkList[model].length == value.length) {
+            this.checkList[model] = this.originchecklist[model];
+            let count = 0;
+            for (let p in this.modelPath) {
+              if (this.modelPath[p].indexOf(model) != -1) {
+                for (let k of this.modelPath[p]) {
+                  if (
+                    this.checkList[k].length == this.originchecklist[k].length
+                  ) {
+                    count++;
                   }
+                }
+                if (count == this.modelPath[p].length) {
+                  this.checkList[p] = this.originchecklist[p];
+                } else {
+                  this.checkList[p] = [];
+                }
+              }
             }
+          }
+        }
+        // 选中非'all'按钮，取消选中
+        else {
+          for (let i = 0; i < this.checkList[model].length; i++) {
+            if (this.checkList[model][i] == "all") {
+              this.checkList[model].splice(i, i + 1);
             }
-            // 选中非'all'按钮，取消选中
-            else{
-                  for(let i=0;i<this.checkList[model].length;i++){
-                        if(this.checkList[model][i]=='all'){
-                              this.checkList[model].splice(i,i+1)
-                        }
-                  }
-                  for(let p in this.modelPath){
-                        if(this.modelPath[p].indexOf(model)!=-1){
-                              this.checkList[p]=[];
-                        }
-                  }
+          }
+          for (let p in this.modelPath) {
+            if (this.modelPath[p].indexOf(model) != -1) {
+              this.checkList[p] = [];
             }
+          }
+        }
       }
+    },
+    getmsg() {
+      let model = {};
+      let check_dict = {};
+      let data = { superadmin_id: this.authorization };
+      AdminUserHandler.user_power_menu(data, this.user_id).promise.then(res => {
+        const { data, msg, code } = res;
+        if (Number(code) == 200) {
+          let list = [];
+          this.cache_data = data;
+          check_dict = classify2(JSON.parse(JSON.stringify(data)));
+          console.log("check_dict", check_dict);
+          classify(JSON.parse(JSON.stringify(data)), list);
+        }
+      });
+      let classify2 = (list, level, adddict) => {
+        level = !level ? 1 : level;
+        let dict = adddict ? adddict : {};
+        let commit_parent_change = (item, dict) => {
+          let parent_id = item.parent;
+          let parentIt = dict[parent_id];
+          parentIt.check_count++;
+          if (parentIt.check_count >= parentIt.children_count) {
+            parentIt.check = true;
+            if (parentIt.parent) {
+              commit_parent_change(parentIt, dict);
+            }
+          }
+        };
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i];
+          !dict[item.power] && (dict[item.power] = {});
+          dict[item.power].children_count = item.Children.length;
+          dict[item.power].parent = item.parents;
+          dict[item.power].check_count = 0;
+          dict[item.power].check = false;
+          dict[item.power].level = level;
+          if (item.Children.length > 0) {
+            let d = classify2(item.Children, level + 1, dict);
+            dict = { ...dict, ...d };
+          }
+          if (level === 3) {
+            dict[item.power].check = Number(item.status) === 1;
+            dict[item.power].check &&
+              commit_parent_change(dict[item.power], dict);
+          }
+        }
+
+        return dict;
+      };
+      let classify = (list, permission, level) => {
+        level = !level ? 1 : level;
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i];
+          if (level !== 3) {
+            permission[i] = {
+              menu: item.power_name,
+              model: {
+                key: item.power,
+                list: [
+                  new PermissionCheckbox(
+                    "all",
+                    "全部",
+                    check_dict[item.power].check ? 1 : 2
+                  )
+                ]
+              }
+            };
+            level === 1 && (permission[i].children = []);
+          } else {
+            permission.push(
+              new PermissionCheckbox(
+                item.power,
+                item.power_name,
+                check_dict[item.power].check ? 1 : 2
+              )
+            );
+          }
+          if (item.Children.length > 0) {
+            classify(item.Children,
+              level === 2 ? permission[i].model.list : permission[i].children,
+              level + 1
+            );
+          }
+        }
+        return permission;
+      };
     }
   },
 

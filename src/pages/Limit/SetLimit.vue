@@ -86,6 +86,7 @@ export default {
   },
   created() {
     this.fromclickedit = this.$pageInfo.param.role_id;
+    console.log(this.fromclickedit)
     this.getmsg();
   },
   methods: {
