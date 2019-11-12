@@ -74,5 +74,10 @@ class AdminUser extends BaseHandler {
   return this.get_v1('/user_power_menu/' + user_id, data)
 }
 
+ // 运营后台管理授权列表编辑后点击确认
+ set_user_power(data, user_id) {
+  return this.set_v1('/set_user_power/' + user_id, data)
+}
+
 }
 export default new AdminUser('/admin_user');

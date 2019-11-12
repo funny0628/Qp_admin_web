@@ -35,7 +35,7 @@
       <div class="t-c" style="margin-top:20px">
         <el-button type="info" size="medium" @click="back()">取消</el-button>
         <permission-button :action="ActionType.EDIT">
-          <el-button type="primary" size="medium">提交</el-button>
+          <el-button type="primary" size="medium" @click="confirm()">提交</el-button>
         </permission-button>
       </div>
     </div>
@@ -271,11 +271,17 @@ export default {
           check_dict = classify2(JSON.parse(JSON.stringify(data)));
           console.log("check_dict", check_dict);
           classify(JSON.parse(JSON.stringify(data)), list);
+          this.permission=list;
+          this.checkList=this.getCheckList(this.permission)["obj"];
+          this.originchecklist=this.getCheckList(this.permission)["checkObj"]
+        }else{
+          return this.$message.error(msg);
         }
       });
-      let classify2 = (list, level, adddict) => {
+      let classify2 = (list, level, alldict) => {
         level = !level ? 1 : level;
-        let dict = adddict ? adddict : {};
+        let dict = alldict ? alldict : {};
+
         let commit_parent_change = (item, dict) => {
           let parent_id = item.parent;
           let parentIt = dict[parent_id];
@@ -287,6 +293,7 @@ export default {
             }
           }
         };
+
         for (let i = 0; i < list.length; i++) {
           let item = list[i];
           !dict[item.power] && (dict[item.power] = {});
@@ -345,6 +352,92 @@ export default {
         }
         return permission;
       };
+    },
+    getCheckList(list){
+      let selectLs=ls=>{
+        let obj = {};
+        let checkObj = {};
+        for(let i=0;i<ls.length;i++){
+           let item =ls[i];
+           obj[item.model.key]=(function(){
+             let ls =[];
+             for(let j=0;j<item.model.list.length;j++){
+               let it=item.model.list[j];
+               if(Number(it.val)===1){
+                 ls.push(it.name);
+               }
+             }
+             return ls;
+           })();
+          checkObj[item.model.key]=(function(){
+             let ls =[];
+             for(let j=0;j<item.model.list.length;j++){
+               let it=item.model.list[j];
+                 ls.push(it.name);
+             }
+             return ls;
+           })();
+           if(item.children&&item.children.length>0){
+             obj={...obj,...selectLs(item.children)["obj"]};
+             checkObj={...checkObj,...selectLs(item.children)["checkObj"]};
+           }
+        }
+        return {obj:obj,checkObj:checkObj}
+      }
+      return selectLs(list)
+    },
+    confirm(){
+      /**
+       * 更新权限传参
+       * @param list 原始数据
+       * @param selectDict 界面点击选中按钮状态字典
+       */
+      let resetClassify =(list,selectDict)=>{
+         for(let i =0;i<list.length;i++){
+           let item =list[i];
+           item.status=selectDict[item.power]||2;
+           if(item.Children&&item.Children.length>0){
+             resetClassify(item.Children,selectDict);
+           }
+         }
+         return list;
+      }
+
+      function classifyCheck(checkDict){
+        let selectDict ={};
+        for(let key in checkDict){
+          let item =checkDict[key];
+          if(item.length>0){
+            for(let j=0;j<item.length;j++){
+              let it =item[j];
+              if(it ==='all'){
+                selectDict[key]=2;
+              }else{
+                selectDict[key]=1;
+              }
+            }
+          }else{
+            selectDict[key]=2;
+          }
+        }
+        return selectDict;
+      }
+
+      resetClassify(this.cache_data,classifyCheck(this.checkList));
+
+      let data={
+        superadmin_id:this.authorization,
+        power_list:this.cache_data
+      }
+      AdminUserHandler.set_user_power(data, this.user_id).promise.then(res=>{
+         const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            this.$message.success(msg);
+            this.forward("subaccount");
+          } else {
+            this.$message.error(msg);
+          }
+      })
     }
   },
 

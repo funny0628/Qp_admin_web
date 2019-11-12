@@ -86,7 +86,6 @@ export default {
   },
   created() {
     this.fromclickedit = this.$pageInfo.param.role_id;
-    console.log(this.fromclickedit)
     this.getmsg();
   },
   methods: {
@@ -339,7 +338,8 @@ export default {
           // 为最内层的数据时，若最内层的选项为选中状态（status=1），该层判断的选中标志check变为true，继续执行commit_parent_change函数判断父级的check，将该最内层的power代表的对象以及整个dict对象通过该函数传出
           if (level === 3) {
             dict[item.power].check = Number(item.status) === 1;
-            dict[item.power].check &&commit_parent_change(dict[item.power], dict);
+            dict[item.power].check &&
+              commit_parent_change(dict[item.power], dict);
           }
         }
 
@@ -400,10 +400,12 @@ export default {
             console.log("check_dict", check_dict);
             classify(JSON.parse(JSON.stringify(data.power_list)), list);
 
-            this.permission = list;
+            this.permission = list;//此处的list是classify的返回结果，是处理好格式的数据
             this.checkList = this.getCheckList(this.permission)["obj"];
 
-            this.originchecklist = this.getCheckList(this.permission)["checkObj"];
+            this.originchecklist = this.getCheckList(this.permission)[
+              "checkObj"
+            ];
           } else {
             return this.$message.error(msg);
           }
@@ -421,7 +423,9 @@ export default {
             this.permission = list;
             this.checkList = this.getCheckList(this.permission)["obj"];
 
-            this.originchecklist = this.getCheckList(this.permission)["checkObj"];
+            this.originchecklist = this.getCheckList(this.permission)[
+              "checkObj"
+            ];
           } else {
             return this.$message.error(msg);
           }
@@ -441,9 +445,9 @@ export default {
             for (let j = 0; j < item.length; j++) {
               let it = item[j];
               if (it === "all") {
-                selectDict[key] = 2;
+                selectDict[key] = 2;//此处全部这个选项为前端添加，即使选中，按后台需求，也只能改变选择项的val值，，所以父级们的val即使选中全部这个选项也只能为2
               } else {
-                selectDict[it] = 1;
+                selectDict[it] = 1;//选择项选中，将val值改为1
               }
             }
           } else {
