@@ -32,7 +32,7 @@
                 :action="btn.type"
                 v-for="(btn,index) in scope.row[scope.prop]"
                 :key="index"
-                @click="handeClick(btn)"
+                @click="handelClick(btn)"
                 style="cursor: pointer; padding-left: 5px;"
               >
                 <span>{{btn.label}}</span>
@@ -123,7 +123,8 @@ export default {
     search() {
       this.dialogVisible = true;
     },
-    handeClick(btn) {}
+    /** 表格操作 **/
+    handelClick(btn) {}
   }
 };
 </script>

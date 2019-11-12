@@ -26,7 +26,7 @@
                       :action="btn.type"
                       v-for="(btn,index) in scope.row[scope.prop]"
                       :key="index"
-                      @click="handeClick(btn)"
+                      @click="handelClick(btn)"
                       style="cursor: pointer; padding-left: 5px;"
                     >
                       <span>{{btn.label}}</span>
@@ -148,8 +148,8 @@ export default {
   },
   methods: {
     search() {},
-    //表格操作
-    handeClick(btn, row) {
+    /**表格操作*/
+    handelClick(btn, row) {
       if (btn.type === "delete") {
         console.log("删除");
       }

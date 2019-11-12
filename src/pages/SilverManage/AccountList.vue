@@ -153,9 +153,11 @@ export default {
 </script>
 
 <style scoped>
+
 .bd{
   margin: 0 20px;
 }
+
 .el-row {
   margin: 10px 0 30px;
 }
@@ -163,27 +165,32 @@ export default {
 .silvertextarea {
   width: 90%;
 }
-.cancel,
-.confirm {
+
+.cancel,.confirm {
   width: 160px !important;
   color: #fff !important;
   font-size: 15px !important;
   font-weight: 650 !important;
 }
+
 .cancel {
   background-color: #ccc;
   border: transparent;
-    margin-right: 100px;
+  margin-right: 100px;
 }
+
 .confirm{
   margin-left: 100px;
 }
+
 .checkbox{
   margin-bottom: 20px;
 }
+
 .select-time{
   margin-right: 20px !important;
 }
+
 #accountlist .el-button.el-button--primary.el-button--medium{
 margin-left: 0px!important;
   margin-right: 20px !important;

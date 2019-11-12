@@ -142,7 +142,7 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import InputArea from "../../plugin/components/InputArea";
 
-const cityOptions = ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"];
+
 export default {
   name: "ThirdAccount",
   extends: BaseIframe,
@@ -217,7 +217,7 @@ export default {
         }
       ],
       fileList: [], //图片list
-      cities: cityOptions,
+      cities: ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"],
       dynamicTags: ["100元", "200元"], //标签选择
       inputVisible: false,
       inputValue: ""

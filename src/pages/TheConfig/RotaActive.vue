@@ -126,7 +126,7 @@ export default {
         credit:''
       },
       dialogTitle:'',
-      dialogVisible:'',
+      dialogVisible:false,
       labelWidth:'70px',
       prepaidChannels:[]
     };

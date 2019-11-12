@@ -194,14 +194,14 @@ export default {
 #DayTrend-main .analysis .content {
   border: 1px solid #e9e9e9;
   border-top: none;
-  height: 100px;
-  width: 100%;
 }
 
 #DayTrend-main .analysis .content ul {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   padding-top: 10px;
+  margin-left: 5px;
 }
 
 #DayTrend-main .analysis .content ul li {

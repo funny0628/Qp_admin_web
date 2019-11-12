@@ -128,7 +128,7 @@
       }
     },
     mounted() {
-      this.rankList()
+      // this.rankList()
     }
   };
 </script>

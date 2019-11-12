@@ -39,12 +39,12 @@
     </div>
     <div class="dialog">
       <!-- 新增、修改 -->
-      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" center>
         <el-form :model="formData">
-          <el-form-item label="标题：" :label-width="labelWidth">
+          <el-form-item label="标题：" :label-width="labelWidth" style="width:90%">
             <el-input autocomplete="off" v-model="formData.title" placeholder="请输入标题"></el-input>
           </el-form-item>
-          <el-form-item label="发送时间：" :label-width="labelWidth">
+          <el-form-item label="发送时间：" :label-width="labelWidth" style="width:90%">
             <el-date-picker
               v-model="formData.begin_time"
               type="date"
@@ -52,7 +52,7 @@
               placeholder="请选择开始时间"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="内容：" :label-width="labelWidth">
+          <el-form-item label="内容：" :label-width="labelWidth" style="width:90%">
             <el-input
               autocomplete="off"
               v-model="formData.content"
@@ -60,7 +60,7 @@
               placeholder="请输入内部邮件内容"
             ></el-input>
           </el-form-item>
-          <el-form-item label="接收人：" :label-width="labelWidth">
+          <el-form-item label="接收人：" :label-width="labelWidth" style="width:90%">
             <el-input autocomplete="off" v-model="formData.render" placeholder="请输入接受人"></el-input>
           </el-form-item>
           <el-form-item label="接收层级：" :label-width="labelWidth">
@@ -114,8 +114,7 @@
           }
         ],
         pageInfo: new PageInfo(0, [5, 10, 15], 0),
-        //弹窗数据
-        dialogTitleType: "",
+        dialogTitle: "",
         dialogVisible: false,
         labelWidth: "100px",
         formData: {
@@ -130,7 +129,7 @@
     },
     methods: {
       search() {
-        this.dialogTitleType = "新增大厅海报";
+        this.dialogTitle = "新增大厅海报";
         this.dialogVisible = true;
       },
       //表格操作

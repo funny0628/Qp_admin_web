@@ -2,7 +2,7 @@
 <template>
   <div id="BankAccount-main">
     <input-area>
-      <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium"></el-input>
+      <el-input v-model="format.channel_id" placeholder="请输入渠道ID" size="medium"></el-input>
       <el-input v-model="format.payee" placeholder="收款人" size="medium"></el-input>
       <permission-button :action="ActionType.READ" @click="handelReadClick()">
         <el-button type="primary" size="medium">查询</el-button>

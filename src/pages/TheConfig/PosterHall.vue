@@ -46,16 +46,17 @@
     </div>
     <div class="dialog">
       <!-- 新增、修改 -->
-      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="50%">
+      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="45%" center>
         <el-form
           :model="formData"
           ref="formData"
+          :label-position="labelPosition"
           style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
         >
-          <el-form-item label="标题" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="标题" :label-width="labelWidth" style="width: 45%;">
             <el-input autocomplete="off" v-model="formData.title"></el-input>
           </el-form-item>
-          <el-form-item label="海报类型" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="海报类型" :label-width="labelWidth" style="width: 45%;">
             <el-select v-model="formData.posters_type" placeholder="请选择海报类型" style="width: 100%;">
               <el-option
                 v-for="item in posters"
@@ -65,7 +66,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="上传海报:" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="上传海报:" :label-width="labelWidth" style="width: 45%;">
             <el-upload
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture-card"
@@ -77,13 +78,13 @@
               <img width="100%" :src="formData.image" alt="">
             </el-dialog>
           </el-form-item>
-          <el-form-item label="用户分层" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="用户分层" :label-width="labelWidth" style="width: 45%;">
             <el-checkbox-group v-model="formData.lay">
               <el-checkbox v-for="city in lays" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
 
-          <el-form-item label="动作类型:" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="动作类型:" :label-width="labelWidth" style="width: 45%;">
             <el-select v-model="formData.action_type" placeholder="请选择动作类型" style="width: 100%;">
               <el-option
                 v-for="item in actions"
@@ -93,10 +94,10 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="备注:" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="备注:" :label-width="labelWidth" style="width: 45%;">
             <el-input autocomplete="off" v-model="formData.note" type="textarea"></el-input>
           </el-form-item>
-          <el-form-item label="排序：" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="排序：" :label-width="labelWidth" style="width: 45%;">
             <el-input autocomplete="off" v-model="formData.poster_sorted" placeholder="请输入备注信息"></el-input>
           </el-form-item>
         </el-form>
@@ -136,6 +137,7 @@
         records: [],
         pageInfo: new PageInfo(0, [5, 10, 15], 0),
         //弹窗数据
+        labelPosition:'left',
         dialogTitleType: "",
         dialogVisible: false,
         labelWidth: "100px",
@@ -151,7 +153,7 @@
           image: ""
         },
         dialogImgVisible:false,
-        lays: ["vip1", "vip2", "vip3", "vip4"],
+        lays: ["vip1", "vip2", "vip3", "vip4",'VIP5','VIP6'],
         posters: [],
         actions: [],
       };
@@ -258,7 +260,7 @@
       //增加大厅海报
       handelAdd(data) {
         HallHandler.poster_add(data).promise.then(rs => {
-          // console.log(rs);
+          console.log(rs);
         })
       },
       //大厅海报类型查询列表

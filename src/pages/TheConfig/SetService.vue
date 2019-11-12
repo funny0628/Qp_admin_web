@@ -38,20 +38,20 @@
     </div>
     <div class="dialog">
       <!-- 新增、修改 -->
-      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="50%">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" center>
         <el-form
           :model="formDate"
           style="display: flex; justify-content: space-between;flex-wrap:wrap ;"
         >
-          <el-form-item label="标题" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="标题" :label-width="labelWidth" style="width: 45%;">
             <el-input autocomplete="off" v-model="formDate.title"></el-input>
           </el-form-item>
-          <el-form-item label="用户分层" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="用户分层" :label-width="labelWidth" style="width: 45%;">
             <el-checkbox-group v-model="checkedCities">
               <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="海报类型" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="海报类型" :label-width="labelWidth" style="width: 45%;">
             <el-select v-model="formDate.posters_type" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in posters"
@@ -61,7 +61,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="动作类型" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="动作类型" :label-width="labelWidth" style="width: 45%;">
             <el-select v-model="formDate.action_type" placeholder="请选择" style="width: 100%;">
               <el-option
                 v-for="item in actions"
@@ -71,32 +71,21 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="上传海报" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="上传海报" :label-width="labelWidth" style="width: 100%;">
             <el-upload
-              class="upload-demo"
               action="https://jsonplaceholder.typicode.com/posts/"
-              :on-preview="handlePreview"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
-              :before-remove="beforeRemove"
-              multiple
-              :limit="3"
-              :on-exceed="handleExceed"
-              :file-list="fileList"
             >
-              <el-button size="small" type="primary">点击上传</el-button>
-              <span
-                slot="tip"
-                class="el-upload__tip"
-                style="padding-left: 5px;"
-              >只能上传jpg/png文件，且不超过500kb</span>
+              <i class="el-icon-plus"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label :label-width="labelWidth" style="width: 50%;"></el-form-item>
-          <el-form-item label="备注" :label-width="labelWidth" style="width: 50%;">
+          <el-form-item label="备注" :label-width="labelWidth" style="width: 60%;">
             <el-input autocomplete="off" v-model="formDate.note" type="textarea"></el-input>
           </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
+        <span slot="footer" class="dialog-footer" center>
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
@@ -142,8 +131,7 @@ export default {
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      /*dialog*/
-      dialogTitleType: "",
+      dialogTitle: "",
       dialogVisible: false,
       labelWidth: "100px",
       formDate: {
@@ -175,39 +163,27 @@ export default {
           label: "动作类型2"
         }
       ],
-      /*uploads*/
-      fileList: []
     };
   },
   methods: {
     search() {
-      this.dialogTitleType = "新增客服";
+      this.dialogTitle = "新增客服";
       this.dialogVisible = true;
     },
-    /**edit */
+    /**修改 */
     handeClick(btn) {
       if (btn.type === "edit") {
-        this.dialogTitleType = "修改客服";
+        this.dialogTitle = "修改客服";
         this.dialogVisible = true;
       }
     },
-    /*checked*/
-    //  uploads
+    /**图片上传*/
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     }
   }
 };

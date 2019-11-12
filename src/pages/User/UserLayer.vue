@@ -129,8 +129,8 @@
       getVipList() {
         let data = {
           platform_id: 1000
-        };
-        UserHandler.vip_list(data).promise.then(res => {
+        },user_id = 1000;
+        UserHandler.vip_list(data,user_id).promise.then(res => {
           if (Number(res.code) === 200) {
             this.records = res.data;
           }
@@ -144,7 +144,7 @@
       editAddClick() {
         this.$refs.dataForm.validate(valid => {
           if (valid) {
-            console.log(this.dataForm.vip);
+            // console.log(this.dataForm.vip);
             if (!this.dataForm.vip) {
               //通过vip是否为真判断现在是新增还是修改
               let data = {
@@ -152,8 +152,8 @@
                 vip_name: this.dataForm.vip_name,
                 pay_count: this.dataForm.pay_count,
                 pay_sum: this.dataForm.pay_sum
-              };
-              this.handelAdd(data);
+              },user_id = 1000;
+              this.handelAdd(data,user_id);
               this.dialogVisible = false;
               this.getVipList();
               this.$refs["dataForm"].resetFields(); // 失效
@@ -164,8 +164,8 @@
                 vip_name: this.dataForm.vip_name,
                 pay_count: this.dataForm.pay_count,
                 pay_sum: this.dataForm.pay_sum
-              };
-              this.handelEdit(data);
+              },user_id = 1000;
+              this.handelEdit(data,user_id);
               this.dialogVisible = false;
               this.$refs["dataForm"].resetFields(); // 失效
               this.getVipList();
@@ -174,8 +174,8 @@
         });
       },
       /**新增方法*/
-      handelAdd(data) {
-        UserHandler.vip_add(data).promise.then(rs => {
+      handelAdd(data,user_id) {
+        UserHandler.vip_add(data,user_id).promise.then(rs => {
           if (Number(rs.code) === 200) {
             this.$message.success(rs.msg);
           }
@@ -184,8 +184,8 @@
           });
       },
       /**修改方法*/
-      handelEdit() {
-        UserHandler.vip_set(data).promise.then(rs => {
+      handelEdit(data,user_id) {
+        UserHandler.vip_set(data,user_id).promise.then(rs => {
           if (Number(rs.code) === 200) {
             this.$message.success(rs.msg);
           }

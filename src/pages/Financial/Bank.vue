@@ -7,42 +7,27 @@
       </permission-button>
     </input-area>
     <div class="bd">
-      <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
-      >
+      <info-table :search="search" :table-style="tableStyle" :records="records" :page-info="pageInfo">
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="['icon'].indexOf(scope.prop) >= 0">
               <img :src="scope.row[scope.prop]" alt style="max-width: 80px;max-height: 30px;" />
             </template>
-            <template
-              v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0"
-            >
+            <template v-if="['user_gold', 'alipay_account', 'account_person','registration_time'].indexOf(scope.prop) >= 0">
               <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handeClick(btn)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
+              <permission-button :action="btn.type" v-for="(btn,index) in scope.row[scope.prop]" :key="index" @click="handeClick(btn)" style="cursor: pointer; padding-left: 5px;">
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time','icon'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action', 'user_gold', 'alipay_account', 'account_person','registration_time','icon'].indexOf(scope.prop) < 0" >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <!-- 新增、修改 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%">
       <el-form :model="fromData">
         <el-form-item label="银行ID" :label-width="labelWidth">
           <el-input autocomplete="off" v-model="fromData.bank_id" disabled></el-input>
@@ -78,100 +63,98 @@
 </template>
 
 <script>
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InfoTable from "../../plugin/components/InfoTable";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-import ConfigHandler from "../../script/handlers/ConfigHandler";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from "../../plugin/components/InfoTable";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+  import ConfigHandler from "../../script/handlers/ConfigHandler";
 
-export default {
-  name: "Bank",
-  extends: BaseIframe,
-  components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
-  data() {
-    return {
-      //表格数据
-      tableStyle: [
-        { label: "银行ID", prop: "bank_id", width: "" },
-        { label: "银行缩写", prop: "bank_code", width: "" },
-        { label: "银行名称", prop: "bank_name", width: "" },
-        { label: "银行logo", prop: "icon", width: "" },
-        { label: "操作", prop: "action", width: "" }
-      ],
-      records: [
-        {
-          bank_id: "1",
-          bank_code: "CMB",
-          bank_name: "招商银行",
-          icon: "https://www.baidu.com/img/bd_logo1.png",
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
+  export default {
+    name: "Bank",
+    extends: BaseIframe,
+    components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
+    data() {
+      return {
+        tableStyle: [
+          { label: "银行ID", prop: "bank_id", width: "" },
+          { label: "银行缩写", prop: "bank_code", width: "" },
+          { label: "银行名称", prop: "bank_name", width: "" },
+          { label: "银行logo", prop: "icon", width: "" },
+          { label: "操作", prop: "action", width: "" }
+        ],
+        records: [
+          {
+            bank_id: "1",
+            bank_code: "CMB",
+            bank_name: "招商银行",
+            icon: "https://www.baidu.com/img/bd_logo1.png",
+            action: [
+              { label: "修改", type: "edit" },
+              { label: "删除", type: "delete" }
+            ]
+          }
+        ],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        dialogTitle: "",
+        dialogVisible: false,
+        labelWidth: "70px",
+        fromData: {
+          bank_id: "10002",
+          bank_abbr: "ICBC",
+          bank_name:'工商银行',
+          bank_logo: [],
+          delivery: false
         }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      //弹窗数据
-      dialogTitleType: "",
-      dialogVisible: false,
-      labelWidth: "70px",
-      fromData: {
-        bank_id: "10002",
-        bank_abbr: "ICBC",
-        bank_name:'工商银行',
-        bank_logo: [],
-        delivery: false
-      }
-    };
-  },
-  methods: {
-    search() {},
-    handelAddClick() {
-      this.dialogTitleType = "新增银行";
-      this.dialogVisible = true;
+      };
     },
-    /**edit */
-    handeClick(btn) {
-      if (btn.type === "edit") {
-        this.dialogTitleType = "修改银行";
+    methods: {
+      search() {},
+      handelAddClick() {
+        this.dialogTitle = "新增银行";
         this.dialogVisible = true;
+      },
+      /**编辑 */
+      handeClick(btn) {
+        if (btn.type === "edit") {
+          this.dialogTitle = "修改银行";
+          this.dialogVisible = true;
+        }
+      },
+      /** 处理图片**/
+      handleRemove(file, bank_logo) {
+        // console.log(file, bank_logo);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      //银行卡列表
+      getBankList() {
+        let data = {
+          platform_id: 1000,
+          user_id:'', //用户编号
+          bank_card:'', //银行卡号
+          bank_user:'' //姓名
+        },id = 1000;
+        ConfigHandler.bank_list(data,id).promise.then(res => {
+          if (Number(res.code) === 200) {
+            this.records = res.data;
+          }
+          //数据处理
+          this.records.map(item => {
+            item.action = [
+              { label: "修改", type: "edit" },
+              { label: "删除", type: "delete" }
+            ];
+          });
+        });
       }
     },
-    /** 处理图片**/
-    handleRemove(file, bank_logo) {
-      // console.log(file, bank_logo);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    //银行卡列表
-    getBankList() {
-      let data = {
-        platform_id: 1000,
-        user_id:'', //用户编号
-        bank_card:'', //银行卡号
-        bank_user:'' //姓名
-      },id = 1000;
-      ConfigHandler.bank_list(data,id).promise.then(res => {
-        if (Number(res.code) === 200) {
-          this.records = res.data;
-        }
-        //数据处理
-        this.records.map(item => {
-          item.action = [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ];
-        });
-      });
+    mounted() {
+      this.getBankList();
     }
-  },
-  mounted() {
-    this.getBankList();
-  }
-};
+  };
 </script>
 
 <style scoped>

@@ -1,3 +1,4 @@
+<!-- 游戏记录 -->
 <template>
   <div id="GameRec-main">
     <input-area>
@@ -56,82 +57,80 @@
 </template>
 
 <script>
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InfoTable from "../../plugin/components/InfoTable";
-import SelectTime from "../../plugin/components/SelectTime";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-import InputArea from "../../plugin/components/InputArea";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from "../../plugin/components/InfoTable";
+  import SelectTime from "../../plugin/components/SelectTime";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+  import InputArea from "../../plugin/components/InputArea";
 
-export default {
-  name: "GameRec",
-  extends: BaseIframe,
-  components: {
-    InputArea,
-    PermissionButton,
-    InfoTable,
-    SelectTime,
-    InfoTableItem
-  },
-  data() {
-    return {
-      //搜索条件数据
-      platforms: [
-        { value: "1", label: "平台1" },
-        { value: "2", label: "平台2" }
-      ],
-      games: [{ value: "1", label: "游戏1" }, { value: "2", label: "游戏2" }],
-      format: {
-        platform: "1",
-        user_id: "",
-        nickname: "",
-        platform_id: "",
-        room:''
-      },
-      date:[],
-      //表格数据
-      tableStyle: [
-        { label: "游戏开始时间", prop: "begin_time", width: "160" },
-        { label: "游戏结束时间", prop: "end_time", width: "" },
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "渠道ID", prop: "platform_id", width: "" },
-        { label: "玩家昵称", prop: "user_desc", width: "" },
-        { label: "游戏", prop: "game", width: "" },
-        { label: "房间号", prop: "room", width: "" },
-        { label: "开始金币", prop: "start_gold", width: "" },
-        { label: "下注金币", prop: "bet_gold", width: "" },
-        { label: "返还金币", prop: "return_gold", width: "" },
-        { label: "抽水金币", prop: "pump_gold", width: "" },
-        { label: "结束金币", prop: "end_gold", width: "" },
-        { label: "输赢值", prop: "value", width: "" }
-      ],
-      records: [
-        {
-          begin_time: "20190203120000",
-          end_time: "20190203120056",
-          user_id: "100045",
-          platform_id: "01",
-          user_desc: "展示夹雪",
-          game: "魔兽世界",
-          room: "12318397",
-          start_gold: '100.00',
-          bet_gold: "1.00",
-          return_gold: '0.00',
-          pump_gold: "0.00",
-          end_gold: "101.00",
-          value:'+1.00'
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0)
-    };
-  },
-  methods:{
-    search(){
-
+  export default {
+    name: "GameRec",
+    extends: BaseIframe,
+    components: {
+      InputArea,
+      PermissionButton,
+      InfoTable,
+      SelectTime,
+      InfoTableItem
+    },
+    data() {
+      return {
+        //搜索条件数据
+        platforms: [
+          { value: "1", label: "平台1" },
+          { value: "2", label: "平台2" }
+        ],
+        games: [{ value: "1", label: "游戏1" }, { value: "2", label: "游戏2" }],
+        format: {
+          platform: "1",
+          user_id: "",
+          nickname: "",
+          platform_id: "",
+          room: ""
+        },
+        date: [],
+        //表格数据
+        tableStyle: [
+          { label: "游戏开始时间", prop: "begin_time", width: "160" },
+          { label: "游戏结束时间", prop: "end_time", width: "" },
+          { label: "用户ID", prop: "user_id", width: "" },
+          { label: "渠道ID", prop: "platform_id", width: "" },
+          { label: "玩家昵称", prop: "user_desc", width: "" },
+          { label: "游戏", prop: "game", width: "" },
+          { label: "房间号", prop: "room", width: "" },
+          { label: "开始金币", prop: "start_gold", width: "" },
+          { label: "下注金币", prop: "bet_gold", width: "" },
+          { label: "返还金币", prop: "return_gold", width: "" },
+          { label: "抽水金币", prop: "pump_gold", width: "" },
+          { label: "结束金币", prop: "end_gold", width: "" },
+          { label: "输赢值", prop: "value", width: "" }
+        ],
+        records: [
+          {
+            begin_time: "20190203120000",
+            end_time: "20190203120056",
+            user_id: "100045",
+            platform_id: "01",
+            user_desc: "展示夹雪",
+            game: "魔兽世界",
+            room: "12318397",
+            start_gold: "100.00",
+            bet_gold: "1.00",
+            return_gold: "0.00",
+            pump_gold: "0.00",
+            end_gold: "101.00",
+            value: "+1.00"
+          }
+        ],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0)
+      };
+    },
+    methods: {
+      search() {}
     }
-  }
-};
+  };
 </script>
 
 <style scoped>

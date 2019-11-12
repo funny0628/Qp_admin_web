@@ -225,6 +225,11 @@ const models = {
         name:'gameRec',
         text:'游戏记录',
         vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
+      },
+      {
+        name:'gold_rec',
+        text:"金币记录",
+        vue: r => require.ensure([], () => r(require('../../pages/GameMan/GoldRec')),'goldRec')
       }
     ]
   },

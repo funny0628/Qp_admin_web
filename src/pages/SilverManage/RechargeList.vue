@@ -48,7 +48,7 @@ import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   extends: BaseIframe,
-  name:'RechargeList',
+  name: "RechargeList",
   components: {
     InputArea,
     SelectTime,
@@ -86,11 +86,11 @@ export default {
           user: "张三",
           payer: "李四",
           orderMoney: "10000",
-          moneyExchange:["充值前：10000", "充值后：2000"],
+          moneyExchange: ["充值前：10000", "充值后：2000"],
           orderStatus: "充值成功",
           submitTime: ["2018-09-01 12:00:00", "2019-08-01 12:00:00"],
           operation: "admin",
-          orderTip: "",
+          orderTip: ""
         }
       ],
       pageInfo: new PageInfo(0, [10, 15, 20], 0)
@@ -103,7 +103,7 @@ export default {
 </script>
 
 <style scoped>
-.bd{
+.bd {
   margin: 0 20px;
 }
 .el-input {
@@ -113,11 +113,11 @@ export default {
   margin: 0;
   font-size: 13px;
 }
-.select-time{
+.select-time {
   margin-right: 20px !important;
 }
-#rechargelist .el-button.el-button--primary.el-button--medium{
-margin-left: 0px!important;
+#rechargelist .el-button.el-button--primary.el-button--medium {
+  margin-left: 0px !important;
   margin-right: 20px !important;
 }
 </style>

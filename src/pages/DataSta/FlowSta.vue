@@ -41,48 +41,48 @@
 </template>
 
 <script>
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InfoTable from "../../plugin/components/InfoTable";
-import SelectTime from "../../plugin/components/SelectTime";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-import InputArea from "../../plugin/components/InputArea";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from "../../plugin/components/InfoTable";
+  import SelectTime from "../../plugin/components/SelectTime";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+  import InputArea from "../../plugin/components/InputArea";
 
-export default {
-  name: "FlowSta",
-  extends: BaseIframe,
-  components: {
-    InputArea,
-    PermissionButton,
-    InfoTable,
-    SelectTime,
-    InfoTableItem
-  },
-  data() {
-    return {
-      date: [],
-      tableStyle: [
-        { label: "用户层级", prop: "user_level", width: "" },
-        { label: "银行入款金额／笔数", prop: "deposit_amount", width: "" },
-        { label: "第三方入款金额／笔数", prop: "third_amount", width: "" },
-        { label: "人工入款金额／笔数", prop: "artificial_amount", width: "" }
-      ],
-      records: [
-        {
-          user_level: "第一级代理",
-          deposit_amount: "980821／100",
-          third_amount: "980821／100",
-          artificial_amount: "980821／100"
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0)
-    };
-  },
-  methods: {
-    search() {}
-  }
-};
+  export default {
+    name: "FlowSta",
+    extends: BaseIframe,
+    components: {
+      InputArea,
+      PermissionButton,
+      InfoTable,
+      SelectTime,
+      InfoTableItem
+    },
+    data() {
+      return {
+        date: [],
+        tableStyle: [
+          { label: "用户层级", prop: "user_level", width: "" },
+          { label: "银行入款金额／笔数", prop: "deposit_amount", width: "" },
+          { label: "第三方入款金额／笔数", prop: "third_amount", width: "" },
+          { label: "人工入款金额／笔数", prop: "artificial_amount", width: "" }
+        ],
+        records: [
+          {
+            user_level: "第一级代理",
+            deposit_amount: "980821／100",
+            third_amount: "980821／100",
+            artificial_amount: "980821／100"
+          }
+        ],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0)
+      };
+    },
+    methods: {
+      search() {}
+    }
+  };
 </script>
 
 <style scoped>
