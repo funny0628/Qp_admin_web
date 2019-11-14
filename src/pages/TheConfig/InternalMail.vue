@@ -40,19 +40,21 @@
     <div class="dialog">
       <!-- 新增、修改 -->
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" center>
-        <el-form :model="formData">
-          <el-form-item label="标题：" :label-width="labelWidth" style="width:90%">
+        <el-form :model="formData" ref="formData">
+          <el-form-item label="标题：" :label-width="labelWidth" style="width:90%" prop="title">
             <el-input autocomplete="off" v-model="formData.title" placeholder="请输入标题"></el-input>
           </el-form-item>
-          <el-form-item label="发送时间：" :label-width="labelWidth" style="width:90%">
+          <el-form-item label="发送时间：" :label-width="labelWidth" style="width:90%" prop="begin_time">
             <el-date-picker
               v-model="formData.begin_time"
               type="date"
               style="width: 100%"
               placeholder="请选择开始时间"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="内容：" :label-width="labelWidth" style="width:90%">
+          <el-form-item label="内容：" :label-width="labelWidth" style="width:90%" prop="content">
             <el-input
               autocomplete="off"
               v-model="formData.content"
@@ -60,10 +62,10 @@
               placeholder="请输入内部邮件内容"
             ></el-input>
           </el-form-item>
-          <el-form-item label="接收人：" :label-width="labelWidth" style="width:90%">
+          <el-form-item label="接收人：" :label-width="labelWidth" style="width:90%" prop="render">
             <el-input autocomplete="off" v-model="formData.render" placeholder="请输入接受人"></el-input>
           </el-form-item>
-          <el-form-item label="接收层级：" :label-width="labelWidth">
+          <el-form-item label="接收层级：" :label-width="labelWidth" prop="checkedCities">
             <el-checkbox-group v-model="formData.checkedCities" style="width: 60%">
               <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
@@ -147,8 +149,8 @@
           platform_id: 1000,
           page_index: "",
           page_size: ""
-        };
-        HallHandler.email_list(data).promise.then(res => {
+        },user_id= 1000;
+        HallHandler.email_list(data,user_id).promise.then(res => {
           console.log(res);
           if (Number(res.code) === 200) {
             this.records = [...this.records, ...res.data.list];
@@ -170,10 +172,11 @@
           recipients: this.formData.recipients,
           send_at: this.formData.begin_time,
           vip: this.formData.checkedCities
-        };
-        this.handelAdd(data);
+        },user_id = 1000;
+        this.handelAdd(data,user_id);
         this.getMailList();
         this.dialogVisible = false;
+        this.$refs["formData"].resetFields(); // 失效
       },
       /**删除方法*/
       handelDelete(data) {
@@ -182,8 +185,8 @@
         })
       },
       /**新增方法*/
-      handelAdd(data) {
-        HallHandler.email_add(data).promise.then(rs => {
+      handelAdd(data,user_id) {
+        HallHandler.email_add(data,user_id).promise.then(rs => {
           console.log(rs);
         })
       },

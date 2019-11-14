@@ -16,7 +16,7 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="['image'].indexOf(scope.prop) >= 0">
-              <img :src="scope.row[scope.prop]" alt style="max-width: 80px;max-height: 30px;"/>
+              <img :src="scope.row[scope.prop]" alt style="max-width: 80px;max-height: 30px;" />
             </template>
             <template v-if="[ 'time'].indexOf(scope.prop) >= 0">
               <p v-for="(label, ind) in scope.row[scope.prop]" :key="ind">{{label}}</p>
@@ -38,8 +38,7 @@
             </template>
             <template
               v-if="['action', 'time','image','status'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}
-            </template>
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -71,11 +70,12 @@
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove">
+              :on-remove="handleRemove"
+            >
               <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogImgVisible">
-              <img width="100%" :src="formData.image" alt="">
+              <img width="100%" :src="formData.image" alt />
             </el-dialog>
           </el-form-item>
           <el-form-item label="用户分层" :label-width="labelWidth" style="width: 45%;">
@@ -111,202 +111,205 @@
 </template>
 
 <script>
-  import PermissionButton from "../../plugin/components/PermissionButton";
-  import InfoTable from "../../plugin/components/InfoTable";
-  import BaseIframe from "../../plugin/script/common/BaseIframe";
-  import PageInfo from "../../plugin/script/common/PageInfo";
-  import InfoTableItem from "../../plugin/components/InfoTableItem";
-  import InputArea from "../../plugin/components/InputArea";
-  import HallHandler from "../../script/handlers/HallHandler";
+import PermissionButton from "../../plugin/components/PermissionButton";
+import InfoTable from "../../plugin/components/InfoTable";
+import BaseIframe from "../../plugin/script/common/BaseIframe";
+import PageInfo from "../../plugin/script/common/PageInfo";
+import InfoTableItem from "../../plugin/components/InfoTableItem";
+import InputArea from "../../plugin/components/InputArea";
+import HallHandler from "../../script/handlers/HallHandler";
 
-  export default {
-    name: "PosterHall",
-    extends: BaseIframe,
-    components: {InputArea, PermissionButton, InfoTable, InfoTableItem},
-    data() {
-      return {
-        tableStyle: [
-          {label: "ID", prop: "poster_id", width: ""},
-          {label: "标题", prop: "title", width: ""},
-          {label: "图片", prop: "image", width: ""},
-          {label: "排序", prop: "poster_sorted", width: ""},
-          {label: "状态", prop: "status", width: ""},
-          {label: "开始时间／结束时间", prop: "time", width: ""},
-          {label: "操作", prop: "action", width: ""}
-        ],
-        records: [],
-        pageInfo: new PageInfo(0, [5, 10, 15], 0),
-        //弹窗数据
-        labelPosition:'left',
-        dialogTitleType: "",
-        dialogVisible: false,
-        labelWidth: "100px",
-        formData: {
-          poster_id:"",
-          title: "",
-          content: "",
-          posters_type: "",
-          action_type: "",
-          note: "",
-          lay: ["vip1", "vip2"],
-          //上传图片
-          image: ""
-        },
-        dialogImgVisible:false,
-        lays: ["vip1", "vip2", "vip3", "vip4",'VIP5','VIP6'],
-        posters: [],
-        actions: [],
-      };
+export default {
+  name: "PosterHall",
+  extends: BaseIframe,
+  components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
+  data() {
+    return {
+      tableStyle: [
+        { label: "ID", prop: "poster_id", width: "" },
+        { label: "标题", prop: "title", width: "" },
+        { label: "图片", prop: "image", width: "" },
+        { label: "排序", prop: "poster_sorted", width: "" },
+        { label: "状态", prop: "status", width: "" },
+        { label: "开始时间／结束时间", prop: "time", width: "" },
+        { label: "操作", prop: "action", width: "" }
+      ],
+      records: [],
+      pageInfo: new PageInfo(0, [5, 10, 15], 0),
+      //弹窗数据
+      labelPosition: "left",
+      dialogTitleType: "",
+      dialogVisible: false,
+      labelWidth: "100px",
+      formData: {
+        poster_id: "",
+        title: "",
+        content: "",
+        posters_type: "",
+        action_type: "",
+        note: "",
+        lay: ["vip1", "vip2"],
+        //上传图片
+        image: ""
+      },
+      dialogImgVisible: false,
+      lays: ["vip1", "vip2", "vip3", "vip4", "VIP5", "VIP6"],
+      posters: [],
+      actions: []
+    };
+  },
+  methods: {
+    search() {
+      this.dialogTitleType = "新增大厅海报";
+      this.dialogVisible = true;
     },
-    methods: {
-      search() {
-        this.dialogTitleType = "新增大厅海报";
+    //表格操作
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogTitleType = "修改大厅海报";
         this.dialogVisible = true;
-      },
-      //表格操作
-      handelClick(btn, row) {
-        if (btn.type === "edit") {
-          this.dialogTitleType = "修改大厅海报";
-          this.dialogVisible = true;
-        } else {
-          //删除操作
-          let data = {
-            poster_id: row.poster_id,
-            platform_id: 1000,
-            pg_id: row.pg_id
-          };
-          this.handelDelete(data)
-        }
-      },
-      //上传图片
-      handleRemove(file, fileList) {
-        // console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.formData.image = file.url;
-        this.dialogImgVisible = true;
-      },
-      //获取大厅海报
-      getPosterList() {
+      } else {
+        //删除操作
         let data = {
-          platform_id:1000
+          poster_id: row.poster_id,
+          platform_id: 1000,
+          pg_id: row.pg_id
         };
-        HallHandler.poster_list(data).promise.then(res => {
-          console.log(res);
-          if (Number(res.code) === 200) {
-            this.records = [...this.records,...res.data]
-          }
-          //数据处理
-          this.records.map(item => {
-            let time = [item.created_at,item.enabled_at];
-            item.action = [
-              {label: "修改", type: "edit"},
-              {label: "删除", type: "delete"}
-            ];
-            item.time = time;
-          });
-        });
-      },
-      //弹窗操作
-      AddEditClick() {
-        this.$refs.formData.validate(vaild => {
-          if (vaild) {
-            if (this.formData.poster_id) {
-              let data = {
-                poster_id:this.formData.poster_id,
-                platform_id:1000,
-                poster_type:this.formData.poster_type,
-                title:this.formData.title,
-                status:this.formData.status,
-                enabled_at:this.formData.enabled_at,
-                image:this.fromData.image,
-                act:this.formData.act,
-                link:this.formData
-              };
-              this.handelEdit(data)
-            }else {
-              let data = {
-                platform_id:1000,
-                poster_type:"",
-                title:"",
-                image:"",
-                act:1,
-                link:"",
-                status:1,
-                enabled_at:"",
-                expired_at:"",
-                group_type:1,
-                val:"",
-                comment:"",
-                poster_sorted:""
-              };
-              this.handelAdd(data)
-            }
-          }
-        })
-      },
-      //修改大厅海报
-      handelEdit(data) {
-        HallHandler.poster_set(data).promise.then(rs => {
-          console.log(rs);
-        })
-      },
-      //删除大厅海报
-      handelDelete(data) {
-        HallHandler.poster_delete(data).promise.then(rs => {
-          console.log(rs);
-        })
-      },
-      //增加大厅海报
-      handelAdd(data) {
-        HallHandler.poster_add(data).promise.then(rs => {
-          console.log(rs);
-        })
-      },
-      //大厅海报类型查询列表
-      getPosterType(){
-        let data = {
-          platform_id : 1000
-        };
-        HallHandler.poster_type_list(data).promise.then(rs=>{
-          // console.log(rs);
-          if(Number(rs.code) === 200){
-            let data = rs.data;
-            data.map((item)=>{
-              /*this.posters.value = item.poster_type;
-              this.posters.label = item.type_name;*/
-              this.posters.push({value:item.poster_type,label:item.type_name})
-            });
-          }
-        })
-      },
-      //大厅海报点击动作查询列表
-      getPosterAct(){
-        let data = {
-          platform_id : 1000
-        };
-        HallHandler.poster_act_list(data).promise.then(rs=>{
-          // console.log(rs);
-          if(Number(rs.code) === 200){
-            let data = rs.data;
-            data.map((item)=>{
-              this.actions.push({value:item.act_id,label:item.act_name})
-            });
-          }
-        })
+        this.handelDelete(data);
       }
     },
-    mounted() {
-      this.getPosterType();
-      this.getPosterAct();
-      this.getPosterList();
+    //上传图片
+    handleRemove(file, fileList) {
+      // console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.formData.image = file.url;
+      this.dialogImgVisible = true;
+    },
+    //弹窗操作
+    AddEditClick() {
+      this.$refs.formData.validate(vaild => {
+        if (vaild) {
+          if (this.formData.poster_id) {
+            let data = {
+              poster_id: this.formData.poster_id,
+              platform_id: 1000,
+              poster_type: this.formData.poster_type,
+              title: this.formData.title,
+              status: this.formData.status,
+              enabled_at: this.formData.enabled_at,
+              image: this.fromData.image,
+              act: this.formData.act,
+              link: this.formData
+            };
+            this.handelEdit(data);
+          } else {
+            let data = {
+              platform_id: 1000,
+              poster_type: "",
+              title: "",
+              image: "",
+              act: 1,
+              link: "",
+              status: 1,
+              enabled_at: "",
+              expired_at: "",
+              group_type: 1,
+              val: "",
+              comment: "",
+              poster_sorted: ""
+            };
+            this.handelAdd(data);
+          }
+        }
+      });
+    },
+    //修改大厅海报
+    handelEdit(data) {
+      HallHandler.poster_set(data).promise.then(rs => {
+        console.log(rs);
+      });
+    },
+    //删除大厅海报
+    handelDelete(data) {
+      HallHandler.poster_delete(data).promise.then(rs => {
+        console.log(rs);
+      });
+    },
+    //增加大厅海报
+    handelAdd(data) {
+      HallHandler.poster_add(data).promise.then(rs => {
+        console.log(rs);
+      });
+    },
+    //获取大厅海报列表
+    getPosterLists() {
+      let data = {
+          platform_id: 1000
+        },
+        user_id = 1000;
+      HallHandler.poster_list(data, user_id).promise.then(res => {
+        if (Number(res.code) === 200) {
+          this.records = res.data;
+        }
+        //数据处理
+        this.records.map(item => {
+          let time = [item.created_at, item.enabled_at];
+          item.action = [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ];
+          item.time = time;
+        });
+      });
+    },
+    //大厅海报类型查询列表
+    getPosterType() {
+      let data = {
+        platform_id: 1000
+      };
+      HallHandler.poster_type_list(data).promise.then(rs => {
+        // console.log(rs);
+        if (Number(rs.code) === 200) {
+          let data = rs.data;
+          data.map(item => {
+            /*this.posters.value = item.poster_type;
+              this.posters.label = item.type_name;*/
+            this.posters.push({
+              value: item.poster_type,
+              label: item.type_name
+            });
+          });
+        }
+      });
+    },
+    //大厅海报点击动作查询列表
+    getPosterAct() {
+      let data = {
+        platform_id: 1000
+      };
+      HallHandler.poster_act_list(data).promise.then(rs => {
+        // console.log(rs);
+        if (Number(rs.code) === 200) {
+          let data = rs.data;
+          data.map(item => {
+            this.actions.push({ value: item.act_id, label: item.act_name });
+          });
+        }
+      });
     }
-  };
+  },
+  mounted() {
+    this.getPosterType();
+    this.getPosterAct();
+    this.getPosterLists();
+  }
+};
 </script>
 
 <style scoped>
-  #PosterHall-main .bd p {
-    margin: 0;
-  }
+#PosterHall-main .bd p {
+  margin: 0;
+}
 </style>
 

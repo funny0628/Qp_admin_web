@@ -42,10 +42,10 @@
       <el-dialog title="风控条件" :visible.sync="dialogVisible" width="30%" center>
         <el-form :model="formData">
           <el-form-item label="盈亏大于：" label-width="110px">
-            <el-input v-model="formData.greater" autocomplete="off" placeholder="单位（元) "></el-input>
+            <el-input v-model="formData.greater" autocomplete="off" placeholder="单位(元) "></el-input>
           </el-form-item>
           <el-form-item label="输赢局数大于：" label-width="110px">
-            <el-input v-model="formData.greater_num" autocomplete="off" placeholder="单位（局）"></el-input>
+            <el-input v-model="formData.greater_num" autocomplete="off" placeholder="单位(局)"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
