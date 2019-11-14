@@ -61,8 +61,13 @@
         </info-table-item>
       </info-table>
     </div>
-    <!-- 新增运营后台账号 -->
-    <el-dialog :visible.sync="addsub" width="50%" title="新增运营后台账号" @closed="closed()">
+    <!-- 新增/编辑运营后台账号 -->
+    <el-dialog
+      :visible.sync="addsub"
+      width="50%"
+      :title="flag?'新增运营后台账号':'编辑运营后台账号'"
+      @closed="closed()"
+    >
       <div class="checkbox">
         <el-form
           :model="ruleForm"
@@ -73,13 +78,21 @@
         >
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="运营后台名称" prop="substage" class="formleft">
-                <el-input v-model="ruleForm.substage" placeholder="请输入名称"></el-input>
+              <el-form-item label="运营后台名称" prop="display_name" class="formleft">
+                <el-input
+                  v-model="ruleForm.display_name"
+                  placeholder="请输入名称"
+                  :disabled="flag?false:true"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="运营后台账号" prop="subaccount">
-                <el-input v-model="ruleForm.subaccount" placeholder="请输入账号"></el-input>
+              <el-form-item label="运营后台账号" prop="user_name">
+                <el-input
+                  v-model="ruleForm.user_name"
+                  placeholder="请输入账号"
+                  :disabled="flag?false:true"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -90,12 +103,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="所属公司" prop="belongrole" class="reducewidth">
+              <el-form-item label="所属公司" prop="company_id" class="reducewidth">
                 <el-select
-                  v-model="ruleForm.belongrole"
+                  v-model="ruleForm.company_id"
                   placeholder="用户角色"
                   class="changewidth"
                   v-if="user_id==1000"
+                  :disabled="flag?false:true"
                 >
                   <el-option
                     :label="item.company_name"
@@ -106,7 +120,7 @@
                 </el-select>
                 <!-- 非root用户登录，获取该用户登录时后台给的所属公司，非root用户无法更改所属公司 -->
                 <!-- <el-input v-model="ruleForm.notrootlogin" disabled v-else></el-input> -->
-                <el-select v-model="ruleForm.belongrole" class="changewidth" disabled v-else>
+                <el-select v-model="ruleForm.company_id" class="changewidth" disabled v-else>
                   <el-option label="测试" value="2"></el-option>
                 </el-select>
               </el-form-item>
@@ -114,8 +128,8 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="子后台描述" prop="subdescribe" class="subtextarea">
-                <el-input type="textarea" v-model="ruleForm.subdescribe" placeholder="请输入描述"></el-input>
+              <el-form-item label="子后台描述" prop="remark" class="subtextarea">
+                <el-input type="textarea" v-model="ruleForm.remark" placeholder="请输入描述"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -123,7 +137,11 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addsub = false" class="cancel">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')" class="confirm">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="flag?submitForm('ruleForm'):editForm('ruleForm')"
+          class="confirm"
+        >确 定</el-button>
       </span>
     </el-dialog>
     <!-- 游戏管理设置 -->
@@ -191,28 +209,25 @@ export default {
       newestlevel: [{ name: "游戏平台", id: "" }],
       newestlevelid: "",
       ruleForm: {
-        substage: "",
-        subaccount: "",
+        display_name: "",
+        user_name: "",
         password: "",
-        belongrole: "",
+        company_id: "",
         position: "",
-        subdescribe: "",
-        notrootlogin: "" //非root用户登录所属公司id
+        remark: ""
       },
       rules: {
-        substage: [
+        display_name: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        subaccount: [
-          { required: true, message: "请输入昵称", trigger: "blur" }
-        ],
+        user_name: [{ required: true, message: "请输入昵称", trigger: "blur" }],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
+        ],
+        company_id: [
+          { required: true, message: "请选择角色", trigger: "change" }
         ]
-        // belongrole: [
-        //   { required: true, message: "请选择角色", trigger: "change" }
-        // ],
       },
       tableStyle: [
         { label: "运营后台ID", prop: "user_id", width: "" },
@@ -229,8 +244,10 @@ export default {
       pageInfo: new PageInfo(1, [10, 15, 20], 0),
       tableData: [],
       multipleSelection: [],
-      confirmgameid:'',
-      gameresult:''
+      confirmgameid: "",
+      gameresult: "",
+      flag: "",
+      editid:''
     };
   },
   methods: {
@@ -238,6 +255,7 @@ export default {
       this.multipleSelection = val;
     },
     search(val) {
+      console.log(val)
       val = val || this.pageInfo.page;
       let data = {
         base_superadmin_id: this.gameplateform,
@@ -287,7 +305,24 @@ export default {
     },
     runstop() {},
     edit(row) {
+      this.flag = false;
       this.addsub = true;
+      this.editid=row.user_id
+      let data = {
+        superadmin_id: row.user_id
+      };
+      AdminUserHandler.edit_superadmin_init(data, this.user_id).promise.then(
+        res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            Object.assign(this.ruleForm, data);
+            this.ruleForm.password = Number(data.password);
+          } else {
+            this.addsub = false;
+            this.$message.error(msg);
+          }
+        }
+      );
     },
     submitForm(ruleForm) {
       this.addsub = false;
@@ -298,15 +333,12 @@ export default {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           let data = {
-            company_id:
-              this.user_id == 1000
-                ? this.ruleForm.belongrole
-                : this.ruleForm.notrootlogin,
+            company_id: this.ruleForm.company_id,
             parent: this.newestlevelid,
-            platform_name: this.ruleForm.substage,
-            user_name: this.ruleForm.subaccount,
+            platform_name: this.ruleForm.display_name,
+            user_name: this.ruleForm.user_name,
             password: this.ruleForm.password,
-            remark: this.ruleForm.subdescribe
+            remark: this.ruleForm.remark
           };
           AdminUserHandler.sureeditcompany(data, this.user_id).promise.then(
             res => {
@@ -326,6 +358,7 @@ export default {
       });
     },
     getcompanylist() {
+      this.flag = true;
       this.addsub = true;
       if (this.user_id == 1000) {
         let data = {};
@@ -340,6 +373,7 @@ export default {
           }
         );
       } else {
+        //非root用户，登录时后台会给一个所属公司，在此处赋值给this.ruleForm.company_id;
         return;
       }
     },
@@ -349,7 +383,6 @@ export default {
       });
     },
     getgamelist(row) {
-      console.log(row)
       this.gamemanage = true;
       this.confirmgameid = row.user_id;
       let data = {
@@ -359,7 +392,7 @@ export default {
         const { data, msg, code } = res;
         if (Number(code) == 200) {
           this.tableData = data;
-            let arr = [];
+          let arr = [];
           for (let i = 0; i < this.tableData.length; i++) {
             if (this.tableData[i].status == 1) {
               arr.push(this.tableData[i]);
@@ -371,7 +404,7 @@ export default {
         }
       });
     },
-    toggleSelection(rows){
+    toggleSelection(rows) {
       this.$nextTick(() => {
         if (rows) {
           rows.forEach(row => {
@@ -382,9 +415,9 @@ export default {
         }
       });
     },
-    confirmgame(){
-    this.gamemanage = false;
-    var arr = [];
+    confirmgame() {
+      this.gamemanage = false;
+      var arr = [];
       for (var i = 0; i < this.multipleSelection.length; i++) {
         arr.push(this.multipleSelection[i].subgame);
       }
@@ -393,15 +426,44 @@ export default {
         superadmin_id: this.confirmgameid,
         subgames: this.gameresult
       };
-      AdminUserHandler.platform_games_set(data, this.user_id).promise.then(res => {
-        const { data, msg, code } = res;
-        if (Number(code) == 200) {
-          return this.$message.success(msg);
+      AdminUserHandler.platform_games_set(data, this.user_id).promise.then(
+        res => {
+          const { data, msg, code } = res;
+          if (Number(code) == 200) {
+            return this.$message.success(msg);
+          } else {
+            return this.$message.error(msg);
+          }
+        }
+      );
+    },
+    editForm(ruleForm){
+      this.addsub = false;
+      this.$refs[ruleForm].validate(valid => {
+        if (valid) {
+          let data = {
+            superadmin_id: Number(this.editid),
+            password: this.ruleForm.password,
+            remark: this.ruleForm.remark
+          };
+          AdminUserHandler.edit_superadmin(data, this.user_id).promise.then(
+            res => {
+              const { data, msg, code } = res;
+              if (Number(code) == 200) {
+                this.search();
+                this.$message.success(msg);
+              } else {
+                this.$message.error(msg);
+              }
+              this.closed();
+            }
+          );
         } else {
-          return this.$message.error(msg);
+          this.$message.error("提交失败");
+          this.closed();
+          return false;
         }
       });
-       
     }
   },
   mounted() {

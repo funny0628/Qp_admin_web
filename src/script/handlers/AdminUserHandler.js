@@ -79,5 +79,15 @@ class AdminUser extends BaseHandler {
   return this.set_v1('/set_user_power/' + user_id, data)
 }
 
+ // 运营后台管理账号列表编辑
+ edit_superadmin_init(data, user_id) {
+  return this.get_v1('/edit_superadmin_init/' + user_id, data)
+}
+
+ // 运营后台管理账号列表确认编辑按钮
+ edit_superadmin(data, user_id) {
+  return this.set_v1('/edit_superadmin/' + user_id, data)
+}
+
 }
 export default new AdminUser('/admin_user');
