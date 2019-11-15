@@ -63,11 +63,11 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="接收人：" :label-width="labelWidth" style="width:90%" prop="render">
-            <el-input autocomplete="off" v-model="formData.render" placeholder="请输入接受人"></el-input>
+            <el-input autocomplete="off" v-model="formData.render" placeholder="请输入用户ID，用逗号隔开"></el-input>
           </el-form-item>
           <el-form-item label="接收层级：" :label-width="labelWidth" prop="checkedCities">
             <el-checkbox-group v-model="formData.checkedCities" style="width: 60%">
-              <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+              <el-checkbox v-for="city in cities" :label="city.id" :key="city.id">{{city.label}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </el-form>
@@ -103,18 +103,7 @@
           {label: "发送时间", prop: "send_at", width: ""},
           {label: "操作", prop: "action", width: ""}
         ],
-        records: [
-          {
-            subject: "金币兑换通知",
-            content: "这边是内容",
-            recipients: "vip1",
-            sender: "admin",
-            send_at: "2019-01-01 12:00:00",
-            action: [
-              {label: "删除", type: "delete"}
-            ]
-          }
-        ],
+        records: [],
         pageInfo: new PageInfo(0, [5, 10, 15], 0),
         dialogTitle: "",
         dialogVisible: false,
@@ -124,9 +113,9 @@
           begin_time: "",
           content: "",
           render: "",
-          checkedCities: ["vip1", "vip2"]
+          checkedCities: [1,2]
         },
-        cities: ["vip1", "vip2", "vip3", "vip4", "vip5", "vip6"]
+        cities: [{id:1,label:'VIP1'},{id:2,label:'VIP2'},{id:3,label:'VIP3'}]
       };
     },
     methods: {
@@ -136,12 +125,26 @@
       },
       //表格操作
       handelClick(btn, row) {
-        let data = {
-          platform_id: 1000,
-          email_id: row.email_id
-        };
-        this.handelDelete(data);
-        this.getMailList();
+        console.log(row);
+        this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            let data = {
+              platform_id: 1000,
+              email_id: row.email_id
+            },user_id = 1000;
+            this.handelDelete(data,user_id);
+            this.getMailList();
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
       },
       //获取内部邮件列表
       getMailList() {
@@ -151,9 +154,8 @@
           page_size: ""
         },user_id= 1000;
         HallHandler.email_list(data,user_id).promise.then(res => {
-          console.log(res);
           if (Number(res.code) === 200) {
-            this.records = [...this.records, ...res.data.list];
+            this.records = res.data.list;
           }
           //数据处理
           this.records.map(item => {
@@ -163,15 +165,19 @@
           });
         });
       },
+      /**弹窗确定*/
       AddEditClick() {
+       /* let recipients = this.formData.render;
+        let newRecipients =  recipients.split(';') || recipients.split('；');
+        console.log(newRecipients);*/
+       let check = this.formData.checkedCities.join(',');
         let data = {
           platform_id: 1000,
-          subject: this.formData.subject,
+          subject: this.formData.title,
           content: this.formData.content,
-          sender: this.formData.sender,
-          recipients: this.formData.recipients,
+          recipients: this.formData.render, //收件人
           send_at: this.formData.begin_time,
-          vip: this.formData.checkedCities
+          vip_list: check
         },user_id = 1000;
         this.handelAdd(data,user_id);
         this.getMailList();
@@ -179,15 +185,27 @@
         this.$refs["formData"].resetFields(); // 失效
       },
       /**删除方法*/
-      handelDelete(data) {
-        HallHandler.email_delete(data).promise.then(rs => {
-          console.log(rs);
+      handelDelete(data,user_id) {
+        HallHandler.email_delete(data,user_id).promise.then(rs => {
+          if(Number(rs.code) === 200){
+            this.$message.success(rs.msg)
+          }else{
+            this.$message.error(rs.msg)
+          }
+        }).catch(err=>{
+          console.log(err);
         })
       },
       /**新增方法*/
       handelAdd(data,user_id) {
         HallHandler.email_add(data,user_id).promise.then(rs => {
-          console.log(rs);
+          if(Number(rs.code) === 200){
+            this.$message.success(rs.msg)
+          }else{
+            this.$message.error(rs.msg)
+          }
+        }).catch(err=>{
+          console.log(err)
         })
       },
     },

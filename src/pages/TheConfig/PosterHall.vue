@@ -267,8 +267,8 @@ export default {
     getPosterType() {
       let data = {
         platform_id: 1000
-      };
-      HallHandler.poster_type_list(data).promise.then(rs => {
+      },user_id=1000;
+      HallHandler.poster_type_list(data,user_id).promise.then(rs => {
         // console.log(rs);
         if (Number(rs.code) === 200) {
           let data = rs.data;
@@ -287,8 +287,8 @@ export default {
     getPosterAct() {
       let data = {
         platform_id: 1000
-      };
-      HallHandler.poster_act_list(data).promise.then(rs => {
+      },user_id=1000;
+      HallHandler.poster_act_list(data,user_id).promise.then(rs => {
         // console.log(rs);
         if (Number(rs.code) === 200) {
           let data = rs.data;

@@ -40,7 +40,7 @@
       </info-table>
     </div>
     <!-- 弹框 -->
-    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="25%">
+    <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" @close="restForm()" width="25%">
       <el-form :model="dataForm" ref="dataForm">
         <el-form-item label="层级名称" :label-width="labelWidth" prop="vip_name">
           <el-input autocomplete="off" v-model="dataForm.vip_name"></el-input>
@@ -156,7 +156,7 @@
               this.handelAdd(data,user_id);
               this.dialogVisible = false;
               this.getVipList();
-              this.$refs["dataForm"].resetFields(); // 失效
+              //this.$refs["dataForm"].resetFields(); // 失效
             } else {
               let data = {
                 platform_id: 1000,
@@ -167,7 +167,7 @@
               },user_id = 1000;
               this.handelEdit(data,user_id);
               this.dialogVisible = false;
-              this.$refs["dataForm"].resetFields(); // 失效
+              //this.$refs["dataForm"].resetFields(); // 失效
               this.getVipList();
             }
           }
@@ -182,6 +182,10 @@
         }).catch(e => {
             console.log(e);
           });
+      },
+      restForm(){
+        this.dataForm = this.$options.data().dataForm;
+        this.dialogVisible = false;
       },
       /**修改方法*/
       handelEdit(data,user_id) {

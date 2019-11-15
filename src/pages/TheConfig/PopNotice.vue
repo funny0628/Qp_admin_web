@@ -35,14 +35,15 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'money_change','status'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            >{{scope.row[scope.prop]}}
+            </template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <div class="dialog">
       <!-- 新增、修改 -->
-      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%" center>
+      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%" @closed="resetForm()" center>
         <el-form :model="formData" ref="formData">
           <el-form-item label="标题：" :label-width="labelWidth" prop="title">
             <el-input autocomplete="off" v-model="formData.title" placeholder="请输入标题"></el-input>
@@ -80,7 +81,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="reset()">取 消</el-button>
+          <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="confirm">确 定</el-button>
         </span>
       </el-dialog>
@@ -89,211 +90,208 @@
 </template>
 
 <script>
-import PermissionButton from "../../plugin/components/PermissionButton";
-import InfoTable from "../../plugin/components/InfoTable";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-import HallHandler from "../../script/handlers/HallHandler";
+  import PermissionButton from "../../plugin/components/PermissionButton";
+  import InfoTable from "../../plugin/components/InfoTable";
+  import BaseIframe from "../../plugin/script/common/BaseIframe";
+  import PageInfo from "../../plugin/script/common/PageInfo";
+  import InputArea from "../../plugin/components/InputArea";
+  import InfoTableItem from "../../plugin/components/InfoTableItem";
+  import HallHandler from "../../script/handlers/HallHandler";
 
-export default {
-  name: "PopNotice",
-  extends: BaseIframe,
-  components: { InfoTableItem, InputArea, PermissionButton, InfoTable },
-  data() {
-    return {
-      tableStyle: [
-        { label: "标题", prop: "title", width: "" },
-        { label: "内容", prop: "content", width: "" },
-        { label: "发送人", prop: "publisher", width: "" },
-        { label: "发送时间", prop: "enabled_at", width: "" },
-        { label: "状态", prop: "status", width: "" },
-        { label: "操作", prop: "action", width: "" }
-      ],
-      records: [],
-      pageInfo: new PageInfo(0, [5, 10, 15], 0),
-      dialogTitleType: "",
-      dialogVisible: false,
-      labelWidth: "90px",
-      formData: {
-        notice_id:'',
-        title: "",
-        content: "",
-        enabled_at: "",
-        expired_at: "",
-        notice_sorted: "",
-        status:''
-      }
-    };
-  },
-  methods: {
-    search() {
-      this.dialogTitleType = "新增弹窗公告";
-      this.dialogVisible = true;
+  export default {
+    name: "PopNotice",
+    extends: BaseIframe,
+    components: {InfoTableItem, InputArea, PermissionButton, InfoTable},
+    data() {
+      return {
+        tableStyle: [
+          {label: "标题", prop: "title", width: ""},
+          {label: "内容", prop: "content", width: ""},
+          {label: "发送人", prop: "publisher", width: ""},
+          {label: "发送时间", prop: "enabled_at", width: ""},
+          {label: "状态", prop: "status", width: ""},
+          {label: "操作", prop: "action", width: ""}
+        ],
+        records: [],
+        pageInfo: new PageInfo(0, [5, 10, 15], 0),
+        dialogTitleType: "",
+        dialogVisible: false,
+        labelWidth: "90px",
+        formData: {
+          notice_id: '',
+          title: "",
+          content: "",
+          enabled_at: "",
+          expired_at: "",
+          notice_sorted: "",
+          status: ''
+        }
+      };
     },
-    /**edit */
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogTitleType = "修改弹窗公告";
+    methods: {
+      search() {
+        this.dialogTitleType = "新增弹窗公告";
         this.dialogVisible = true;
-        this.formData.notice_id = row.notice_id;
-        this.formData.status = row.status;
-        this.formData.title = row.title;
-        this.formData.content = row.content;
-        this.formData.enabled_at = row.enabled_at;
-        this.formData.expired_at = row.expired_at;
-        this.formData.notice_sorted = row.notice_sorted;
-      } else if (btn.type === "delete") {
-        //删除
-        this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            let data = { notice_id: row.notice_id },
-              user_id = 1000;
-            this.handelDelete(data, user_id);
-            this.getNoticeList();
+      },
+      /**edit */
+      handelClick(btn, row) {
+        if (btn.type === "edit") {
+          this.dialogTitleType = "修改弹窗公告";
+          this.dialogVisible = true;
+          this.formData.notice_id = row.notice_id;
+          this.formData.status = row.status;
+          this.formData.title = row.title;
+          this.formData.content = row.content;
+          this.formData.enabled_at = row.enabled_at;
+          this.formData.expired_at = row.expired_at;
+          this.formData.notice_sorted = row.notice_sorted;
+        } else if (btn.type === "delete") {
+          //删除
+          this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
           })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "已取消删除"
+            .then(() => {
+              let data = {notice_id: row.notice_id},
+                user_id = 1000;
+              this.handelDelete(data, user_id);
+              this.getNoticeList();
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "已取消删除"
+              });
             });
-          });
-      } else {
-        //禁用
-        let data = {
-            notice_id: row.notice_id,
-            status: Number(row.status) === 1 ? "2" : "1"
-          },
-          user_id = 1000;
-        this.handelStatus(data, user_id);
-        this.getNoticeList();
-      }
-    },
-    //弹框确定按钮
-    confirm() {
-      this.$refs.formData.validate(valid => {
-        if (valid) {
-          //通过notice_id来判断是新增还是修改
-          if (!this.formData.notice_id) {
-            //！notice_id就是新增的弹窗
-            let data = {
-                platform_id: 1000,
-                notice_type: 2,
-                title: this.formData.title,
-                content: this.formData.content,
-                status: 1,
-                enabled_at: this.formData.enabled_at,
-                expired_at: this.formData.expired_at,
-                interval: 1,
-                notice_sorted: this.formData.notice_sorted
-              },
-              user_id = 1000;
-            this.handelAdd(data, user_id);
-            this.dialogVisible = false;
-            this.$refs["formData"].resetFields();
-            this.getNoticeList(); // 失效
-          } else {
-            //修改
-            let data = {
-                platform_id: 1000,
-                notice_id: this.formData.notice_id,
-                notice_type: 2,
-                title: this.formData.title,
-                content: this.formData.content,
-                status: this.formData.status,
-                enabled_at: this.formData.enabled_at,
-                expired_at: this.formData.expired_at,
-                notice_sorted: this.formData.notice_sorted
-              },
-              user_id = 1000;
-            this.handelUpdate(data, user_id);
-            this.dialogVisible = false;
-            this.$refs["formData"].resetFields(); // 失效
-            this.getNoticeList();
-          }
-        }
-      });
-    },
-    //删除方法
-    handelDelete(data, user_id) {
-      HallHandler.notice_delete(data, user_id).promise.then(rs => {
-        // console.log(rs);
-        if (Number(rs.data) === 200) {
-          this.$message({
-            type: "success",
-            message: rs.msg
-          });
         } else {
-          this.$message({
-            type: "error",
-            message: rs.msg
-          });
+          //禁用
+          let data = {
+              notice_id: row.notice_id,
+              status: Number(row.status) === 1 ? "2" : "1"
+            },
+            user_id = 1000;
+          this.handelStatus(data, user_id);
+          this.getNoticeList();
         }
-      });
-    },
-    //修改
-    handelUpdate(data, user_id) {
-      HallHandler.notice_set(data, user_id)
-        .promise.then(rs => {
+      },
+      //弹框确定按钮
+      confirm() {
+        this.$refs['formData'].validate(valid => {
+          if (valid) {
+            //通过notice_id来判断是新增还是修改
+            if (!this.formData.notice_id) {
+              //！notice_id就是新增的弹窗
+              let data = {
+                  platform_id: 1000,
+                  notice_type: 2,
+                  title: this.formData.title,
+                  content: this.formData.content,
+                  status: 1,
+                  enabled_at: this.formData.enabled_at,
+                  expired_at: this.formData.expired_at,
+                  interval: 1,
+                  notice_sorted: this.formData.notice_sorted
+                },
+                user_id = 1000;
+              this.handelAdd(data, user_id);
+              this.dialogVisible = false;
+              //this.$refs["formData"].resetFields();
+              this.getNoticeList(); // 失效
+            } else {
+              //修改
+              let data = {
+                  platform_id: 1000,
+                  notice_id: this.formData.notice_id,
+                  notice_type: 2,
+                  title: this.formData.title,
+                  content: this.formData.content,
+                  status: this.formData.status,
+                  enabled_at: this.formData.enabled_at,
+                  expired_at: this.formData.expired_at,
+                  notice_sorted: this.formData.notice_sorted
+                },
+                user_id = 1000;
+              this.handelUpdate(data, user_id);
+              this.dialogVisible = false;
+              //this.$refs["formData"].resetFields(); // 失效
+              this.getNoticeList();
+            }
+          }
+        });
+      },
+      //删除方法
+      handelDelete(data, user_id) {
+        HallHandler.notice_delete(data, user_id).promise.then(rs => {
+          if (Number(rs.data) === 200) {
+            this.$message({
+              type: "success",
+              message: rs.msg
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: rs.msg
+            });
+          }
+        });
+      },
+      //修改
+      handelUpdate(data, user_id) {
+        HallHandler.notice_set(data, user_id)
+          .promise.then(rs => {
           if (Number(rs.data) === 200) {
             this.$message.success(rs.msg);
           } else {
             this.$message.error(rs.msg);
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    //新增
-    handelAdd(data, user_id) {
-      HallHandler.notice_add(data, user_id)
-        .promise.then(rs => {
-          // console.log(rs);
+          .catch(err => {
+            console.log(err);
+          });
+      },
+      //新增
+      handelAdd(data, user_id) {
+        HallHandler.notice_add(data, user_id)
+          .promise.then(rs => {
           if (Number(rs.data) === 200) {
             this.$message(rs.msg);
           } else {
             this.$message.error(rs.msg);
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    //重置表单
-    reset() {
-      this.$nextTick(() => {
-        this.$refs['formData'].resetFields()
-      });
-      this.dialogVisible = false;
-    },
-    //启用或禁用公告
-    handelStatus(data, user_id) {
-      HallHandler.notice_status(data, user_id)
-        .promise.then(res => {
-          // console.log(res)
+          .catch(err => {
+            console.log(err);
+          });
+      },
+      //重置表单
+      resetForm() {
+        //TODO
+        console.log(this.$options.data());
+        this.formData = this.$options.data().formData;
+        this.dialogVisible = false;
+      },
+      //启用或禁用公告
+      handelStatus(data, user_id) {
+        HallHandler.notice_status(data, user_id)
+          .promise.then(res => {
           if (Number(res.code) === 200) {
             this.$message(res.msg);
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    //获取弹窗公告
-    getNoticeList() {
-      let data = {
-          notice_type: 2 /**notice_type为2是弹窗公告接口 */,
-          platform_id: 1000
-        },
-        user_id = 1000;
-      HallHandler.notice_list(data, user_id)
-        .promise.then(res => {
+          .catch(err => {
+            console.log(err);
+          });
+      },
+      //获取弹窗公告
+      getNoticeList() {
+        let data = {
+            notice_type: 2 /**notice_type为2是弹窗公告接口 */,
+            platform_id: 1000
+          },
+          user_id = 1000;
+        HallHandler.notice_list(data, user_id)
+          .promise.then(res => {
           if (Number(res.code) === 200) {
             this.records = res.data;
           }
@@ -302,22 +300,22 @@ export default {
           this.records.map(item => {
             timeArr = [item.enabled_at, item.expired_at];
             item.action = [
-              { label: "修改", type: "edit" },
-              { label: "禁用", type: "disable" },
-              { label: "删除", type: "delete" }
+              {label: "修改", type: "edit"},
+              {label: "禁用", type: "disable"},
+              {label: "删除", type: "delete"}
             ];
             item.time = timeArr;
           });
         })
-        .catch(err => {
-          console.log(err);
-        });
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    },
+    mounted() {
+      this.getNoticeList();
     }
-  },
-  mounted() {
-    this.getNoticeList();
-  }
-};
+  };
 </script>
 
 <style scoped>

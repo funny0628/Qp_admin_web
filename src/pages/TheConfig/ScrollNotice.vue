@@ -43,7 +43,7 @@
     </div>
     <div class="dialog">
       <!-- 新增、修改 -->
-      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%" center>
+      <el-dialog :title="dialogTitleType" :visible.sync="dialogVisible" width="30%" @close="reset" center>
         <el-form :model="formData" ref="formData">
           <el-form-item label="标题：" :label-width="labelWidth" prop="title">
             <el-input autocomplete="off" v-model="formData.title" placeholder="请输入标题"></el-input>
@@ -84,7 +84,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="reset">取 消</el-button>
+          <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="AddEditClick">确 定</el-button>
         </span>
       </el-dialog>
@@ -223,7 +223,7 @@ export default {
               user_id = 1000;
             this.handelAdd(data, user_id);
             this.dialogVisible = false;
-            this.$refs["formData"].resetFields();
+            //this.$refs["formData"].resetFields();
             this.getRollList(); // 失效
           } else {
             //修改
@@ -242,7 +242,7 @@ export default {
               user_id = 1000;
             this.handelUpdate(data, user_id);
             this.dialogVisible = false;
-            this.$refs["formData"].resetFields(); // 失效
+            //this.$refs["formData"].resetFields(); // 失效
             this.getRollList();
           }
         }
@@ -296,7 +296,7 @@ export default {
     },
     /**重置表单*/
     reset() {
-      this.$refs["formData"].resetFields();
+      this.formData = this.$options.data().formData;
       this.dialogVisible = false;
     },
     /**启用或禁用公告*/
