@@ -41,7 +41,7 @@ class AdminUser extends BaseHandler {
 
   // 运营后台管理公司管理编辑公司确认提交
   sureeditcompany(data, user_id) {
-    return this.set_v1('/create_superadmin/' + user_id, data)
+    return this.set_v1('/edit_company/' + user_id, data)
   }
 
   // 运营后台管理账号列表获取所有公司列表

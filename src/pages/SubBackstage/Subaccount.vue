@@ -30,6 +30,7 @@
     </div>
     <div class="bd">
       <info-table
+        ref="infoTable"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -270,17 +271,17 @@ export default {
           if (Number(data.total_count) > 0) {
             this.records = data.ls;
             this.pageInfo = new PageInfo(
-              1,
+              Number(data.page_index),
               [5, 10, 15],
               Number(data.total_count)
             );
           } else {
-            this.records = [];
-            return;
+            this.records = [];  
           }
         } else {
-          return this.$message.error(msg);
+          this.$message.error(msg);
         }
+        this.$refs.infoTable.refresh_page()
       });
     },
     // 实现面包屑，存入需要的数据
@@ -344,7 +345,7 @@ export default {
             res => {
               const { data, msg, code } = res;
               if (Number(code) == 200) {
-                this.search();
+                this.search(2);
                 return this.$message.success(msg);
               } else {
                 return this.$message.error(msg);

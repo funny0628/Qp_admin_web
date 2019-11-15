@@ -13,6 +13,7 @@
     </input-area>
     <div class="bd">
       <info-table
+        ref="infoTable"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -212,7 +213,7 @@ export default {
           if (Number(data.total_count)>0) {
             this.records = data.ls;
             this.pageInfo = new PageInfo(
-              1,
+              Number(data.page_index),
               [5, 10, 15],
               Number(data.total_count)
             );
@@ -223,6 +224,7 @@ export default {
         } else {
           return this.$message.error(msg);
         }
+        this.$refs.infoTable.refresh_page()
       });
     },
     submitForm(formName) {
