@@ -20,7 +20,7 @@ class HallHandler extends BaseHandler {
   notice_add(data, user_id) {
     return this.set_v1("/notice_add/" + user_id, data);
   }
-
+  //启用或禁用公告状态
   notice_status(data, user_id) {
     return this.set_v1(`/notice_status/${user_id}`, data)
   }
