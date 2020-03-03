@@ -370,6 +370,9 @@ export default {
 </script>
 
 <style scoped>
+#payConfig-main .bd {
+  padding-left: 20px;
+}
 #payConfig-main .bd p {
   margin: 0;
 }

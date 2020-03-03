@@ -242,6 +242,11 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/OfflinePay')), 'offlinePay')
       },
       {
+        name:'PayTabControl',
+        text:'支付页签控制',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayTabControl')), 'PayTabControl')
+      },
+      {
         name:'scrollNotice',
         text:'滚动公告',
         vue: r => require.ensure([], () => r(require('../../pages/TheConfig/ScrollNotice')), 'scrollNotice')
