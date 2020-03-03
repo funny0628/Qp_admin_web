@@ -48,7 +48,7 @@
       <info-table
         :search="search"
         :table-style="tableStyle"
-        :records="records"
+        :records="tableData"
         :page-info="pageInfo"
       >
         item.state = 'input/disabled'
@@ -68,13 +68,10 @@
             </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
+                @click="handelClick"
                 style="cursor: pointer; padding-left: 5px;"
               >
-                <span>{{btn.label}}</span>
+                <span>{{scope.prop}}</span>
               </permission-button>
             </template>
             <template
@@ -423,6 +420,28 @@
           {label: "备注", prop: "remark", width: "200"},
           {label: "操作", prop: "action", width: "200"}
         ],
+        tableData: [
+          {
+            platform_id: "1564646",
+            user_id: "1564646",
+            nickname: "1564646",
+            tier: "1564646",
+            vip: "1564646",
+            phone: "1564646",
+            user_gold: "1564646",
+            top_up_amount: "1564646",
+            change_amount: "1564646",
+            alipay_account: "1564646",
+            account_person: "1564646",
+            lower_count: "1564646",
+            created_at: "1564646",
+            reg_os: "1564646",
+            login_ip: "1564646",
+            status: "1564646",
+            remark: "1564646",
+            action: "操作"
+          }
+        ],
         records: [],
         pageInfo: new PageInfo(0, [5, 10, 15], 5),
         dialogAddVisible: false,
@@ -523,21 +542,8 @@
         });
       },
       /**修改会员信息*/
-      handelClick(btn, row) {
-        if (btn.type === "edit") {
+      handelClick() {
           this.dialogModifyVisible = true;
-          this.player_id = row.uid;
-          let data = {
-            player_id: this.player_id
-          }, user_id = 1000;
-          UserHandler.user_info(data, user_id).promise.then(res => {
-            if (Number(res.code) === 200) {
-              this.userData = res.data;
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-        }
       },
       /** 修改弹框信息*/
       handelEdit(user_id) {
@@ -668,6 +674,7 @@
       userList(data, user_id) {
         UserHandler.list(data, user_id).promise.then(res => {
           if (Number(res.code) === 200) {
+            console.log(res)
             this.records = res.data.list;
             /**数据处理*/
             let goldArr = [];

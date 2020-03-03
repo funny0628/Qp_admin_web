@@ -6,6 +6,33 @@ const models = {
     text: '首页',
     children: []
   },
+  subPlatform: {
+    name: 'subPlatform',
+    vue: null,
+    text: '子平台管理',
+    children: [
+      {
+        name: 'setSubPlatform',
+        text: '子平台设置',
+        vue: r => require.ensure([], () => r(require('../../pages/SubPlatformManage/SetSubPlatform')), 'setSubPlatform'),
+      },
+      {
+        name: 'subPackageManage',
+        text: '子包管理',
+        vue: r => require.ensure([], () => r(require('../../pages/SubPlatformManage/SubPackageManage')), 'subPackageManage'),
+      },
+      {
+        name: 'grayListConfig',
+        text: '灰度名单配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SubPlatformManage/GrayListConfig')), 'grayListConfig'),
+      },
+      {
+        name: 'subPackageConfig',
+        text: '子包更新配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SubPlatformManage/SubPackageConfig')), 'subPackageConfig'),
+      },
+    ]
+  },
   user: {
     name: 'user',
     vue: null,
@@ -15,6 +42,41 @@ const models = {
         name: 'userList',
         text: '用户列表',
         vue: r => require.ensure([], () => r(require('../../pages/User/UserList')), 'userList'),
+      },
+      {
+        name: 'gameRecord',
+        text: '进出游戏记录',
+        vue: r => require.ensure([], () => r(require('../../pages/User/GameRecord')), 'gameRecord'),
+      },
+      {
+        name: 'UserPlusOrSubGold',
+        text: '用户加减金币',
+        vue: r => require.ensure([], () => r(require('../../pages/User/UserPlusOrSubGold')), 'UserPlusOrSubGold'),
+      },
+      {
+        name: 'ModifySupAgent',
+        text: '修改上级代理',
+        vue: r => require.ensure([], () => r(require('../../pages/User/ModifySupAgent')), 'ModifySupAgent'),
+      },
+      {
+        name: 'userJournal',
+        text: '用户日志',
+        vue: r => require.ensure([], () => r(require('../../pages/User/UserJournal')), 'userJournal'),
+      },
+      {
+        name: 'flowRecordSearch',
+        text: '流水记录查询',
+        vue: r => require.ensure([], () => r(require('../../pages/User/FlowRecordSearch')), 'flowRecordSearch'),
+      },
+      {
+        name: 'PayOrderRecord',
+        text: '支付订单记录',
+        vue: r => require.ensure([], () => r(require('../../pages/User/PayOrderRecord')), 'PayOrderRecord'),
+      },
+      {
+        name: 'ExchangeOrderRecord',
+        text: '兑换订单记录',
+        vue: r => require.ensure([], () => r(require('../../pages/User/ExchangeOrderRecord')), 'ExchangeOrderRecord'),
       },
       {
         name: 'memCardList',
@@ -164,11 +226,21 @@ const models = {
       }
     ]
   },
-  theConfig:{
-    name:'theConfig',
-    text:'大厅配置',
+  HallFunConfig:{
+    name:'HallFunConfig',
+    text:'大厅功能配置',
     vue:null,
     children:[
+      {
+        name:'payConfig',
+        text:'支付配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig')
+      },
+      {
+        name:'offlinePay',
+        text:'线下支付',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/OfflinePay')), 'offlinePay')
+      },
       {
         name:'scrollNotice',
         text:'滚动公告',

@@ -1,5 +1,5 @@
 <template>
-  <div id="payConfig-main">
+  <div id="userList—main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -9,9 +9,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium" clearable></el-input>
-      <el-input v-model="format.channel_name" placeholder="通道名称" size="medium" clearable></el-input>
-      <el-select v-model="format.pay_type" placeholder="支付类型" clearable size="medium">
+      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -19,9 +17,27 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.user_state" filterable placeholder="用户状态" size="medium" clearable>
+      <el-input v-model="format.order_num" placeholder="订单编号" size="medium" clearable></el-input>
+      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
+      <el-select v-model="format.order_status" placeholder="订单状态" clearable size="medium">
         <el-option
-          v-for="item in options"
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <el-select v-model="format.pay_type" placeholder="付款方式" clearable size="medium">
+        <el-option
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <el-select v-model="format.belong_type" placeholder="所属类型" clearable size="medium">
+        <el-option
+          v-for="item in platforms"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -41,27 +57,19 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-      <permission-button :action="ActionType.ADD" @click="addUser()">
-        <el-button type="primary" size="medium">新增</el-button>
-      </permission-button>
     </input-area>
     <div class="bd">
       <info-table
         :search="search"
         :table-style="tableStyle"
-        :records="records"
+        :records="tableData"
         :page-info="pageInfo"
       >
-        item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="'status'.indexOf(scope.prop) >= 0">
-              <span v-if="scope.row[scope.prop]  == 1">启用</span>
-              <span v-else>冻结</span>
-            </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button style="cursor: pointer; padding-left: 5px;">
-                <span></span>
+              <permission-button @click="handelClick" style="cursor: pointer; padding-left: 5px;">
+                <span>{{scope.prop}}</span>
               </permission-button>
             </template>
             <template>{{scope.row[scope.prop]}}</template>
@@ -69,85 +77,46 @@
         </info-table-item>
       </info-table>
     </div>
+    <!--充值审核 -->
     <div>
-      <!-- 新增支付配置 -->
-      <el-dialog title="新增支付配置" :visible.sync="dialogAddVisible" width="40%" center>
+      <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="30%" center>
         <table
           border="1"
-          style="border-color: #c0c4cc;"
+          style="border-color: #c0c4cc;width: 80%;"
           cellspacing="0"
           cellpadding="10"
         >
           <tr>
-            <td style="width: 100px;text-align: center">绑定分层</td>
-            <td>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-            </td>
+            <td style="width: 100px;text-align: center">用户ID</td>
+            <td style="text-align: center">100000125</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">商户号</td>
-            <td style="text-align: center">90212515458</td>
+            <td style="width: 100px;text-align: center">渠道ID</td>
+            <td style="text-align: center">10001</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">商户密钥</td>
-            <td style="text-align: center">*******</td>
+            <td style="width: 100px;text-align: center">用户昵称</td>
+            <td style="text-align: center">时来运转</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">支付类型</td>
-            <td style="text-align: center">
-              <el-select placeholder="请选择支付类型" style="width: 100%;">
-                <el-option label="阿里支付" value="ali-pay"></el-option>
-                <el-option label="微信支付" value="weixin-pay"></el-option>
-              </el-select>
-            </td>
+            <td style="width: 100px;text-align: center">付款金额</td>
+            <td style="text-align: center">1000.00</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">通道名称</td>
-            <td style="text-align: center">---</td>
+            <td style="width: 100px;text-align: center">付款人</td>
+            <td style="text-align: center">阿牛</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">支付别名</td>
+            <td style="width: 100px;text-align: center">付款方式</td>
             <td style="text-align: center">阿里支付</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">单笔最小金额</td>
-            <td style="text-align: center">0.00</td>
+            <td style="width: 100px;text-align: center">所属类型</td>
+            <td style="text-align: center">第三方支付</td>
           </tr>
           <tr>
-            <td style="width: 100px;text-align: center">单笔最大金额</td>
-            <td style="text-align: center">10000.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">金额模式</td>
-            <td style="text-align: center">
-              <el-select placeholder="固定金额">
-                <el-option label="100" value="ali-pay"></el-option>
-                <el-option label="200" value="weixin-pay"></el-option>
-              </el-select>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">自定义金额</td>
-            <td>
-              <el-input
-                style="margin-bottom: 10px;"
-                autocomplete="off"
-                placeholder="请输入预设金额,最多支持8个定义金额"
-              ></el-input>
-              <el-tag style="margin-right: 10px;" v-for="n in 3" :key="n" closable>100元</el-tag>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">状态</td>
-            <td style="text-align: center">
-              <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-            </td>
+            <td style="width: 100px;text-align: center">申请时间</td>
+            <td style="text-align: center">2019-12-20</td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">备注</td>
@@ -157,8 +126,11 @@
           </tr>
         </table>
         <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
-          <el-button @click="dialogAddVisible = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button
+            style="background-color: #ff6624;color: #fff;"
+            @click="dialogAddVisible = false"
+          >订单不通过</el-button>
+          <el-button type="primary">审核通过</el-button>
         </div>
       </el-dialog>
     </div>
@@ -174,9 +146,8 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-
 export default {
-  name: "payConfig",
+  name: "PayOrderRecord",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -199,13 +170,8 @@ export default {
       }
     };
     return {
-      value: true,
-      player_id: "", // 玩家id
+      dialogModifyVisible: false,
       labelPosition: "left", //左对齐
-      options: [
-        { value: "1", label: "冻结" },
-        { value: "2", label: "启用" }
-      ],
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
@@ -213,9 +179,11 @@ export default {
       format: {
         platform: "",
         channel_id: "",
-        channel_name: "",
+        order_num: "",
+        user_id: "",
+        order_status: "",
         pay_type: "",
-        user_state: "",
+        belong_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -248,43 +216,79 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "ID编号", prop: "platform_id", width: "" },
-        { label: "通道名称", prop: "channel_name", width: "" },
-        { label: "支付别名", prop: "pay_alias", width: "" },
-        { label: "支付类型", prop: "pay_type", width: "" },
-        { label: "单笔最小额度", prop: "single_min_money", width: "" },
-        { label: "单笔最大额度", prop: "single_max_money", width: "" },
-        { label: "状态", prop: "status", width: "" },
-        { label: "备注说明", prop: "remark", width: "" },
-        { label: "添加时间", prop: "add_time", width: "" },
+        { label: "订单号", prop: "user_id", width: "" },
+        { label: "用户ID", prop: "nickname", width: "" },
+        { label: "玩家昵称", prop: "channel_id", width: "" },
+        { label: "渠道ID", prop: "change_num", width: "" },
+        { label: "付款方式", prop: "change_after_num", width: "" },
+        { label: "所属类型", prop: "change_type", width: "" },
+        { label: "订单金额", prop: "room_type", width: "" },
+        { label: "金额变动", prop: "operation_person", width: "" },
+        { label: "赠送金额", prop: "operation_time", width: "" },
+        { label: "订单状态", prop: "operation_time", width: "" },
+        { label: "提交时间/到账时间", prop: "operation_time", width: "" },
+        { label: "操作用户", prop: "operation_time", width: "" },
+        { label: "订单备注", prop: "operation_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      records: [
+      tableData: [
         {
-          platform_id: "1",
-          channel_name: "阿里支付",
-          pay_alias: "银联通道",
-          pay_type: "银联",
-          single_min_money: "100",
-          single_max_money: "100000",
-          status: "1",
-          remark: "",
-          add_time: "2019-01-01 12:00",
-          action: "修改 删除"
+          user_id: "1000100",
+          nickname: "测试线",
+          channel_id: "10001",
+          change_num: "-5.0",
+          change_after_num: "100.00",
+          change_type: "100.00",
+          room_type: "捕鱼-初级场",
+          operation_person: "--",
+          operation_time: "2020-01-01 12:00:00",
+          action: "查看"
         },
         {
-          platform_id: "1",
-          channel_name: "阿里支付",
-          pay_alias: "银联通道",
-          pay_type: "银联",
-          single_min_money: "100",
-          single_max_money: "100000",
-          status: "1",
-          remark: "",
-          add_time: "2019-01-01 12:00",
-          action: "修改 删除"
+          user_id: "1000100",
+          nickname: "测试线",
+          channel_id: "10001",
+          change_num: "-5.0",
+          change_after_num: "100.00",
+          change_type: "100.00",
+          room_type: "捕鱼-初级场",
+          operation_person: "--",
+          action: "审核"
         }
       ],
+      userTypes: [
+        {
+          value: "1",
+          label: "代理"
+        },
+        {
+          value: "2",
+          label: "普通用户"
+        },
+        {
+          value: "3",
+          label: "游客"
+        },
+        {
+          value: "4",
+          label: "试玩"
+        },
+        {
+          value: "5",
+          label: "测试号"
+        }
+      ],
+      vips: [
+        {
+          value: "0",
+          label: "VIP1"
+        },
+        {
+          value: "1",
+          label: "VIP2"
+        }
+      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
@@ -294,10 +298,7 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
-      },
-      //修改会员信
-      activeName: "first",
-      dialogModifyVisible: false, //模态框
+      }
     };
   },
   methods: {
@@ -307,9 +308,8 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
+    handelClick() {
+      this.dialogModifyVisible = true;
     },
     /**获取用户列表接口 */
     userList(data, user_id) {
@@ -364,13 +364,12 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#payConfig-main .bd p {
+#userList—main .bd p {
   margin: 0;
 }
 
@@ -379,13 +378,14 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
 .bankCard {
   width: 100%;
 }
-table {
-  border-collapse: collapse;
-}
+
 .itemClass {
   width: 45%;
 }
