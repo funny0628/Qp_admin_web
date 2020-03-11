@@ -1,5 +1,5 @@
 <template>
-  <div id="userList—main">
+  <div id="GameRecord-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -40,10 +40,14 @@
         :records="tableData"
         :page-info="pageInfo"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop=='user_id'">
+              <span @click="handelAgent(scope.row)" class="platformchoice">{{scope.row[scope.prop]}}</span>
+            </template>
+            <template
+              v-if="['action','status','user_id'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -236,7 +240,11 @@ export default {
 </script>
 
 <style scoped>
-#userList—main .bd p {
+#GameRecord-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#GameRecord-main .bd p {
   margin: 0;
 }
 

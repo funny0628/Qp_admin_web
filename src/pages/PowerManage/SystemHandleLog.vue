@@ -1,31 +1,8 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="SystemHandleLog-main">
     <input-area>
-      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
+      <el-input v-model="format.operation_module" placeholder="操作模块" size="medium" clearable></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -47,11 +24,22 @@
         :table-style="tableStyle"
         :records="tableData"
         :page-info="pageInfo"
+        :hide-page="true"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="dialogVisible = true"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
+              </permission-button>
+            </template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -69,7 +57,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "SystemHandleLog",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -94,15 +82,10 @@ export default {
     return {
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
-      platforms: [
-        { value: 1, label: "平台1" },
-        { value: 2, label: "平台2" }
-      ],
+      dialogFormVisible: false,
       format: {
-        platform: "",
-        channel_id: "",
         user_id: "",
-        change_type: "",
+        operation_module: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,38 +118,32 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
+        { label: "日志编号", prop: "journal_num", width: "" },
+        { label: "管理员ID", prop: "admin_id", width: "" },
+        { label: "管理员名称", prop: "admin_name", width: "" },
+        { label: "操作模块", prop: "operation_module", width: "" },
+        { label: "操作详情", prop: "operation_detail", width: "" },
+        { label: "操作IP", prop: "operation_ip", width: "" },
         { label: "操作时间", prop: "operation_time", width: "" }
       ],
       tableData: [
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          journal_num: "16515615615",
+          admin_id: "1",
+          admin_name: "admin",
+          operation_module: "权限管理-管理员新增",
+          operation_detail: "新增成功",
+          operation_ip: "192.168.0.0",
+          operation_time: "2019-10-10 13:00:00",
         },
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          journal_num: "16515615615",
+          admin_id: "1",
+          admin_name: "admin",
+          operation_module: "权限管理-管理员新增",
+          operation_detail: "新增成功",
+          operation_ip: "192.168.0.0",
+          operation_time: "2019-10-10 13:00:00",
         },
       ],
       records: [],
@@ -179,6 +156,9 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
+      },
+      form2: {
+          name: ""
       }
     };
   },
@@ -242,17 +222,12 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
-}
-#FlowRecordSearch-main .bd p {
+#SystemHandleLog-main .bd p {
   margin: 0;
 }
 
@@ -268,5 +243,8 @@ export default {
 
 .itemClass {
   width: 45%;
+}
+table,table tr th, table tr td {
+  border: 1px solid #e9e9e9;
 }
 </style>

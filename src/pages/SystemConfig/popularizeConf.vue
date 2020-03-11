@@ -1,5 +1,5 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="popularizeConf-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -9,23 +9,8 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
+      <el-input v-model="format.template_name" placeholder="请输入模板名称" size="medium" clearable></el-input>
+      <el-input v-model="format.popular_name" placeholder="请输入推广名称" size="medium" clearable></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -40,6 +25,7 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
+      <el-button type="primary" size="medium" @click="dialogFormVisible=true">新增推广配置</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -47,15 +33,61 @@
         :table-style="tableStyle"
         :records="tableData"
         :page-info="pageInfo"
+        :hide-page="true"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="dialogVisible = true"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
+              </permission-button>
+            </template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
+    <el-dialog title="新增推广配置" :visible.sync="dialogFormVisible" width="30%" center>
+      <el-form :model="form">
+        <el-form-item label-width="120px">
+          <table style="width: 80%;border-collapse: collapse;" cellspacing="0" cellpadding="10">
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">模板名称</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">添加推广域名</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">上传推广图片</td>
+              <td style="text-align: center">
+                
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">备注</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+          </table>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogFormVisible = false">保存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -69,7 +101,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "popularizeConf",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -94,15 +126,15 @@ export default {
     return {
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
+      dialogFormVisible: false,
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
       ],
       format: {
         platform: "",
-        channel_id: "",
-        user_id: "",
-        change_type: "",
+        template_name: "",
+        popular_name: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,39 +167,39 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "序号", prop: "serial_number", width: "" },
+        { label: "模板名称", prop: "template_name", width: "" },
+        { label: "推广模板", prop: "popular_template", width: "" },
+        { label: "推广链接", prop: "popular_link", width: "" },
+        { label: "创建时间", prop: "create_time", width: "" },
+        { label: "备注", prop: "remark", width: "" },
+        { label: "操作", prop: "action", width: "" }
       ],
       tableData: [
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          serial_number: "01",
+          template_name: "新游上线",
+          popular_template: "",
+          popular_link: "www.baidu.com",
+          create_time: "2019-10-10 13:00:00",
+          remark: "",
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
         },
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
-        },
+          serial_number: "01",
+          template_name: "新游上线",
+          popular_template: "",
+          popular_link: "ios",
+          create_time: "立即发送",
+          remark: "2019-10-10 13:00:00",
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -179,6 +211,9 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
+      },
+      form2: {
+        name: ""
       }
     };
   },
@@ -242,17 +277,12 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
-}
-#FlowRecordSearch-main .bd p {
+#popularizeConf-main .bd p {
   margin: 0;
 }
 
@@ -268,5 +298,10 @@ export default {
 
 .itemClass {
   width: 45%;
+}
+table,
+table tr th,
+table tr td {
+  border: 1px solid #e9e9e9;
 }
 </style>

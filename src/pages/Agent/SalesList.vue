@@ -2,10 +2,27 @@
 <template>
   <div id="SalesList">
     <input-area>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
-      <select-time :date="date" :select-time.sync="date"></select-time>
-      <permission-button :action="ActionType.ADD" @click="search()">
-        <el-button type="primary" size="medium">新增</el-button>
+      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
+        <el-option
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <el-date-picker
+        v-model="format.Registration_time"
+        value-format="yyyy-MM-dd"
+        align="right"
+        type="date"
+        size="medium"
+        clearable
+        placeholder="请输入注册时间"
+        :picker-options="pickerOptions"
+        style="width: 180px"
+      ></el-date-picker>
+      <permission-button :action="ActionType.ADD">
+        <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
     </input-area>
     <div class="bd">
@@ -70,17 +87,54 @@ export default {
   data() {
     return {
       format:{
-        user_id:'',
+        platform:'',
+      },
+      platforms: [
+        { label: "平台一", value: "1" },
+        { label: "平台二", value: "2" }
+      ],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            }
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            }
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            }
+          }
+        ]
       },
       date:[],
       tableStyle: [
         { label: "时间", prop: "time", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
         { label: "用户昵称", prop: "user_name", width: "" },
-        { label: "团队业绩", prop: "team_result", width: "" },
-        { label: "返佣比例", prop: "ratio", width: "" },
-        { label: "团队业绩总金额", prop: "team_ratio", width: "" },
-        { label: "获得返佣", prop: "obtain_ratio", width: "" }
+        { label: "所属渠道", prop: "team_result", width: "" },
+        { label: "团队人数", prop: "ratio", width: "" },
+        { label: "直属下级人数", prop: "team_ratio", width: "" },
+        { label: "直属下级流水", prop: "obtain_ratio", width: "" },
+        { label: "团队流水", prop: "obtain_ratio", width: "" },
+        { label: "直属佣金", prop: "obtain_ratio", width: "" },
+        { label: "代理佣金", prop: "obtain_ratio", width: "" },
+        { label: "操作", prop: "action", width: "" },
       ],
       //表数据
       records: [
@@ -91,7 +145,8 @@ export default {
           team_result: "1000000.00",
           ratio: "6",
           team_ratio: "600.00",
-          obtain_ratio: "100.00"
+          obtain_ratio: "100.00",
+          action: ""
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0)

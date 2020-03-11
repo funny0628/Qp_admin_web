@@ -1,5 +1,5 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="ActiveGetRecord-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -9,16 +9,9 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
+      <el-input v-model="format.user_nickname" placeholder="请输入用户昵称" size="medium" clearable></el-input>
+      <el-select v-model="format.active_type" placeholder="活动类型" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -43,18 +36,29 @@
     </input-area>
     <div class="bd">
       <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="tableData"
-        :page-info="pageInfo"
-      >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
-          </template>
-        </info-table-item>
-      </info-table>
+              :search="search"
+              :table-style="tableStyle"
+              :records="tableData"
+              :page-info="pageInfo"
+              :hide-page="true"
+            >
+              <info-table-item :table-style="tableStyle">
+                <template slot-scope="scope">
+                  <template v-if="scope.prop === 'action'">
+                    <permission-button
+                      :action="btn.type"
+                      v-for="(btn,index) in scope.row[scope.prop]"
+                      :key="index"
+                      @click="dialogVisible = true"
+                      style="cursor: pointer; padding-left: 5px;"
+                    >
+                      <span>{{btn.label}}</span>
+                    </permission-button>
+                  </template>
+                  <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+                </template>
+              </info-table-item>
+            </info-table>
     </div>
   </div>
 </template>
@@ -69,7 +73,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "ActiveGetRecord",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -100,9 +104,9 @@ export default {
       ],
       format: {
         platform: "",
-        channel_id: "",
         user_id: "",
-        change_type: "",
+        user_nickname: "",
+        active_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,38 +139,29 @@ export default {
         ]
       },
       tableStyle: [
+        { label: "时间", prop: "time", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "玩家昵称", prop: "play_nickname", width: "" },
+        { label: "活动类型", prop: "active_type", width: "" },
+        { label: "金额", prop: "money", width: "" },
+        { label: "状态", prop: "status", width: "" },
       ],
       tableData: [
         {
+          "time": "2019-10-10 13:00:00",
           "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          "play_nickname": "测试线",
+          "active_type": "100.00",
+          "money": "捕鱼-初级场",
+          "status": "已发放"
         },
         {
+          "time": "2019-10-10 13:00:00",
           "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          "play_nickname": "测试线",
+          "active_type": "100.00",
+          "money": "捕鱼-初级场",
+          "status": "已发放"
         },
       ],
       records: [],
@@ -248,11 +243,7 @@ export default {
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
-}
-#FlowRecordSearch-main .bd p {
+#ActiveGetRecord-main .bd p {
   margin: 0;
 }
 

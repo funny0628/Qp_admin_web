@@ -2,10 +2,33 @@
 <template>
   <div id="Universal">
     <input-area>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium"></el-input>
-      <select-time :date="date" :select-time.sync="date"></select-time>
-      <permission-button :action="ActionType.ADD" @click="search()">
-        <el-button type="primary" size="medium">新增</el-button>
+      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
+        <el-option
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <el-date-picker
+        v-model="format.Registration_time"
+        value-format="yyyy-MM-dd"
+        align="right"
+        type="date"
+        size="medium"
+        clearable
+        placeholder="请输入注册时间"
+        :picker-options="pickerOptions"
+        style="width: 180px"
+      ></el-date-picker>
+      <permission-button :action="ActionType.ADD">
+        <el-button type="primary" size="medium">查询</el-button>
+      </permission-button>
+      <permission-button :action="ActionType.ADD">
+        <el-button type="primary" size="medium" @click="dialogVisible=true">设置比例</el-button>
+      </permission-button>
+       <permission-button :action="ActionType.ADD">
+        <el-button type="primary" size="medium" @click="dialogModelVisible=true">比例</el-button>
       </permission-button>
     </input-area>
     <div class="bd">
@@ -66,6 +89,24 @@
         </span>
       </el-dialog>
     </div>
+    <el-dialog title="设置比例" :visible.sync="dialogModelVisible" width="30%" center>
+      <el-form :model="form" ref="form">
+        <el-form-item>
+          <table border="1" style="border-color: #c0c4cc;" cellspacing="0" cellpadding="10">
+            <tr>
+              <td style="width: 120px;text-align: center">税收返利比例</td>
+              <td style="text-align: center">
+                <el-input v-model="form.ratio"></el-input>
+              </td>
+            </tr>
+          </table>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogModelVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogModelVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -92,15 +133,51 @@ export default {
   data() {
     return {
       format: {
-        user_id: ""
+        platform: ""
+      },
+      platforms: [
+        { label: "平台一", value: "1" },
+        { label: "平台二", value: "2" }
+      ],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            }
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            }
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            }
+          }
+        ]
       },
       date: [],
       tableStyle: [
-        { label: "发放时间", prop: "time", width: "" },
+        { label: "日期", prop: "time", width: "" },
         { label: "用户ID", prop: "user_id", width: "" },
-        { label: "用户昵称", prop: "user_desc", width: "" },
-        { label: "下级产生税收", prop: "tax", width: "" },
-        { label: "获得返佣", prop: "getCom", width: "" }
+        { label: "所属渠道", prop: "user_desc", width: "" },
+        { label: "直属玩家税收", prop: "tax", width: "" },
+        { label: "直属玩家返利", prop: "getCom", width: "" },
+        { label: "其他玩家税收", prop: "getCom", width: "" },
+        { label: "其他玩家返利", prop: "getCom", width: "" },
+        { label: "总返利金额", prop: "getCom", width: "" }
       ],
       records: [
         {
@@ -113,16 +190,18 @@ export default {
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0),
       dialogVisible: false,
+      dialogModelVisible: false,
       formData: {
         mode: "税收",
         ratio: ""
+      },
+      form: {
+        ratio: "30%"
       }
     };
   },
   methods: {
-    search() {
-      this.dialogVisible = true;
-    },
+    search() {},
     /** 表格操作 **/
     handelClick(btn) {}
   }

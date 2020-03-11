@@ -1,5 +1,5 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="GameRecord-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -10,15 +10,6 @@
         ></el-option>
       </el-select>
       <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -69,7 +60,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "GameRecord",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -101,8 +92,6 @@ export default {
       format: {
         platform: "",
         channel_id: "",
-        user_id: "",
-        change_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,39 +124,38 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "收入", prop: "user_id", width: "" },
+        { label: "收入金额", prop: "nickname", width: "" },
+        { label: "支出", prop: "before_gold", width: "" },
+        { label: "支出金额", prop: "enter_room", width: "" },
+        { label: "人工扣除", prop: "enter_time", width: "" },
+        { label: "扣除金额", prop: "win_or_lose_gold", width: "" },
+        { label: "活动奖励", prop: "leave_time", width: "" },
+        { label: "奖励金额", prop: "after_gold", width: "" },
+        { label: "其他", prop: "after_gold", width: "" },
+        { label: "金额", prop: "after_gold", width: "" },
       ],
       tableData: [
         {
           "user_id": "1000100",
           "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          "before_gold": "100.00",
+          "enter_room": "捕鱼-初级场",
+          "enter_time": "2019-10-10 13:00:00",
+          "win_or_lose_gold": +50,
+          "leave_time": "2019-12-10 13:00:00",
+          "after_gold": "150.00"
         },
         {
           "user_id": "1000100",
           "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
-        },
+          "before_gold": "100.00",
+          "enter_room": "捕鱼-初级场",
+          "enter_time": "2019-10-10 13:00:00",
+          "win_or_lose_gold": +50,
+          "leave_time": "2019-12-10 13:00:00",
+          "after_gold": "150.00"
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -248,11 +236,7 @@ export default {
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
-}
-#FlowRecordSearch-main .bd p {
+#GameRecord-main .bd p {
   margin: 0;
 }
 

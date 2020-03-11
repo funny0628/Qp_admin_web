@@ -10,7 +10,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.platform_id" clearable placeholder="渠道ID" size="medium">
+      <el-select v-model="format.channel_id" clearable placeholder="渠道ID" size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -28,7 +28,17 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <select-time :date="date" :select-time.sync="date"></select-time>
+      <el-date-picker
+        v-model="format.Registration_time"
+        value-format="yyyy-MM-dd"
+        align="right"
+        type="date"
+        size="medium"
+        clearable
+        placeholder="请输入注册时间"
+        :picker-options="pickerOptions"
+        style="width: 180px"
+      ></el-date-picker>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
@@ -88,17 +98,47 @@
         games: [{ value: "1", label: "游戏1" }, { value: "2", label: "游戏2" }],
         format: {
           platform: "1",
-          platform_id: "",
+          channel_id: "",
           gambling_party: "",
           user_id: "",
-          room_type: ""
+          room_type: "",
+          Registration_time: ""
         },
         date: [],
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
+          shortcuts: [
+            {
+              text: "今天",
+              onClick(picker) {
+                picker.$emit("pick", new Date());
+              }
+            },
+            {
+              text: "昨天",
+              onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                picker.$emit("pick", date);
+              }
+            },
+            {
+              text: "一周前",
+              onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                picker.$emit("pick", date);
+              }
+            }
+          ]
+        },
         //表格数据
         tableStyle: [
           { label: "牌局号", prop: "gambling_party", width: "" },
           { label: "用户ID", prop: "user_id", width: "" },
-          { label: "玩家昵称", prop: "user_desc", width: "" },
+          { label: "玩家昵称", prop: "nickname", width: "" },
           { label: "房间类型", prop: "room_type", width: "" },
           { label: "游戏开始时间", prop: "begin_time", width: "160" },
           { label: "游戏结束时间", prop: "end_time", width: "" },

@@ -1,7 +1,16 @@
 <template>
-  <div id="GrayListConfig-main">
+  <div id="ChannelPackageStat-main">
     <input-area>
-      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium"></el-input>
+      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
+        <el-option
+          v-for="item in platforms"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        ></el-option>
+      </el-select>
+      <el-input v-model="format.package_id" placeholder="请输入包id" clearable size="medium"></el-input>
+      <el-input v-model="format.package_name" placeholder="包名" clearable size="medium"></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -13,26 +22,25 @@
         :picker-options="pickerOptions"
         style="width: 180px"
       ></el-date-picker>
-      <permission-button @click="search()">
+      <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
-      <permission-button @click="addUser()">
-        <el-button type="primary" size="medium">新增</el-button>
+      <permission-button :action="ActionType.READ" @click="search()">
+        <el-button type="primary" size="medium" @click="dialogAddVisible=true">新增</el-button>
       </permission-button>
     </input-area>
     <div class="bd">
       <info-table
         :search="search"
         :table-style="tableStyle"
-        :records="tabeData"
+        :records="tableData"
         :page-info="pageInfo"
       >
-        item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'status'.indexOf(scope.prop) >= 0">
-              <span class="start" v-if="scope.row[scope.prop]  == 1">启用</span>
-              <span class="freeze" v-else>冻结</span>
+              <span v-if="scope.row[scope.prop]  == 1">启用</span>
+              <span v-else>冻结</span>
             </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
@@ -47,53 +55,86 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            >{{scope.row[scope.prop]}}
+            </template>
           </template>
         </info-table-item>
       </info-table>
     </div>
-    <div>
-      <!-- 新增灰度名单 -->
-      <el-dialog title="新增灰度名单" :visible.sync="dialogAddVisible" width="30%" center>
-        <el-form :model="form" ref="form">
-          <el-form-item label="平台选择" label-width="200px" style="display: inline-block;">
-            <el-select v-model="form.platform" placeholder="请选择平台" style="width: 200px;">
-              <el-option
-                v-for="item in idents"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="用户ID" label-width="200px" style="display: inline-block;">
-            <el-input
-              v-model="form.user_id"
-              autocomplete="off"
-              style="width: 200px;"
-              placeholder="请输入用户ID"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="名单备注" label-width="200px" style="display: inline-block;">
-            <el-input v-model="form.list_remark" autocomplete="off" style="width: 200px;"></el-input>
-          </el-form-item>
-          <el-form-item label="灰度状态" label-width="200px" style="display: inline-block;">
-            <el-select v-model="form.gray_status" placeholder="请选择" style="width: 200px;">
-              <el-option
-                v-for="item in idents"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAddVisible = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <!-- 新增包 -->
+    <el-dialog title="新增包" :visible.sync="dialogAddVisible" width="30%" center>
+      <el-form :model="form">
+        <table cellspacing="0" cellpadding="10">
+          <tr>
+            <td style="width: 100px;text-align: center">渠道号</td>
+            <td style="text-align: center">
+                <el-input placeholder="请输入渠道号"></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">包名</td>
+            <td style="text-align: center">
+                <el-input placeholder="请输入包名"></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">唯一标识</td>
+            <td style="text-align: center">
+                <el-input placeholder=""></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">所属代理</td>
+            <td style="text-align: center">
+                <el-input placeholder="请输入代理ID"></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">下载地址</td>
+            <td style="text-align: center">
+                <el-input placeholder=""></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">设备类型</td>
+            <td style="text-align: center">
+              <el-select placeholder="请选择设备类型" style="width: 100%;">
+                <el-option label="设备一" value=""></el-option>
+                <el-option label="设备二" value=""></el-option>
+              </el-select>
+            </td>
+          </tr>
+           <tr>
+            <td style="width: 100px;text-align: center">游戏开放</td>
+            <td>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox>游戏一</el-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 100px;text-align: center">皮肤选择</td>
+            <td>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox>皮肤一</el-checkbox>
+            </td>
+          </tr>
+        </table>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
+        <el-button @click="dialogAddVisible = false">取 消</el-button>
+        <el-button type="primary">保 存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -106,9 +147,8 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
-
 export default {
-  name: "UserList",
+  name: "ChannelPackageStat",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -131,10 +171,15 @@ export default {
       }
     };
     return {
-      player_id: "", // 玩家id
       labelPosition: "left", //左对齐
+      platforms: [
+        { value: 1, label: "平台1" },
+        { value: 2, label: "平台2" }
+      ],
       format: {
-        sub_platform_name: "",
+        platform: "",
+        package_id: "",
+        package_name: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -167,76 +212,48 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "会员ID", prop: "vip_id", width: "" },
-        { label: "会员昵称", prop: "vip_nickname", width: "" },
-        { label: "所属平台", prop: "platform", width: "" },
-        { label: "名单备注", prop: "list_remark", width: "" },
-        { label: "状态", prop: "status", width: "" },
-        { label: "创建时间", prop: "created_time", width: "" },
+        { label: "渠道ID", prop: "user_id", width: "" },
+        { label: "包名", prop: "nickname", width: "" },
+        { label: "唯一标识", prop: "before_gold", width: "" },
+        { label: "包所属用户", prop: "enter_room", width: "" },
+        { label: "下载地址", prop: "enter_time", width: "" },
+        { label: "设备类型", prop: "win_or_lose_gold", width: "" },
+        { label: "游戏开放", prop: "leave_time", width: "" },
+        { label: "开关状态", prop: "leave_time", width: "" },
+        { label: "创建时间", prop: "leave_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      tabeData: [
+      tableData: [
         {
-          vip_id: "100021",
-          vip_nickname: "王大陆",
-          platform: "完美世界",
-          list_remark: "",
-          status: "1",
-          remark: "",
-          created_time: "2019-01-01 12:00:00",
+          user_id: "1000100",
+          nickname: "测试线",
+          before_gold: "100.00",
+          enter_room: "捕鱼-初级场",
+          enter_time: "2019-10-10 13:00:00",
+          win_or_lose_gold: +50,
+          leave_time: "2019-12-10 13:00:00",
           action: [
-            { label: "修改", type: "edit" },
-            { label: "禁用", type: "ban" }
+            { label: "编辑", type: "edit" },
+            { label: "禁用", type: "ban" },
           ]
         },
         {
-          vip_id: "100021",
-          vip_nickname: "王大陆",
-          platform: "完美世界",
-          list_remark: "",
-          status: "1",
-          remark: "",
-          created_time: "2019-01-01 12:00:00",
+          user_id: "1000100",
+          nickname: "测试线",
+          before_gold: "100.00",
+          enter_room: "捕鱼-初级场",
+          enter_time: "2019-10-10 13:00:00",
+          win_or_lose_gold: +50,
+          leave_time: "2019-12-10 13:00:00",
           action: [
-            { label: "修改", type: "edit" },
-            { label: "禁用", type: "ban" }
-          ]
-        },
-        {
-          vip_id: "100021",
-          vip_nickname: "王大陆",
-          platform: "完美世界",
-          list_remark: "",
-          status: "0",
-          remark: "",
-          created_time: "2019-01-01 12:00:00",
-          action: [
-            { label: "修改", type: "edit" },
-            { label: "禁用", type: "ban" }
+            { label: "编辑", type: "edit" },
+            { label: "禁用", type: "ban" },
           ]
         }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogAddVisible: false,
-      form: {
-        platform: "",
-        user_id: "",
-        password: "",
-        list_remark: "",
-        gray_status: ""
-      },
-      idents: [
-        { value: "1", label: "代理" },
-        { value: "2", label: "普通用户" },
-        { value: "3", label: "游客" },
-        { value: "4", label: "试玩" },
-        { value: "5", label: "测试号" }
-      ],
-      //修改会员信
-      activeName: "first",
-      dialogModifyVisible: false, //模态框
-      userData: {}
+      dialogAddVisible: false
     };
   },
   methods: {
@@ -246,13 +263,9 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
-    },
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogModifyVisible = true;
+    handelClick(btn,row) {
+      if(btn.type === 'edit') {
+        this.dialogFormVisible = true
       }
     },
     /**获取用户列表接口 */
@@ -308,41 +321,26 @@ export default {
       });
     }
   },
-  mounted() {
-    // this.getUserPlatform()
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#GrayListConfig-main .bd {
-  padding-left: 20px;
-}
-#GrayListConfig-main .bd p {
+#ChannelPackageStat-main .bd p {
   margin: 0;
 }
-
+table {
+  border-collapse: collapse;
+}
+table,table tr td {
+  border: 1px solid #c0c4cc;;
+}
 .platformchoice {
   cursor: pointer;
   color: #409eff;
   text-decoration: underline;
 }
-.start {
-  display: inline-block;
-  width: 50px;
-  height: 30px;
-  line-height: 30px;
-  background-color: #0077f9;
-  color: #ffffff;
-}
-.freeze {
-  display: inline-block;
-  width: 50px;
-  height: 30px;
-  line-height: 30px;
-  background-color: #ff001e;
-  color: #ffffff;
-}
+
 .bankCard {
   width: 100%;
 }

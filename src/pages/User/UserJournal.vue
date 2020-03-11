@@ -1,5 +1,5 @@
 <template>
-  <div id="modifySupAgent-main">
+  <div id="UserJournal-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -18,7 +18,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.operate_id" placeholder="操作IP" size="medium" clearable></el-input>
+      <el-input v-model="format.operate_ip" placeholder="操作IP" size="medium" clearable></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -50,63 +50,6 @@
       </info-table>
     </div>
     <div>
-      <!-- 添加会员 -->
-      <el-dialog title="修改上级" :visible.sync="dialogAddVisible" width="30%" center>
-        <el-form :model="form" ref="form">
-          <el-form-item
-            label="渠道号"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.channel_id"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="用户ID"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input v-model="form.user_id" autocomplete="off" style="width: 200px;"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="上级渠道"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.sup_channel"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="上级ID"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.sup_id"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="修改备注"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input type="textarea" row="2" v-model="form.remark" style="width: 200px;">
-            </el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAddVisible = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -122,7 +65,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "modifySupAgent",
+  name: "UserJournal",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -154,7 +97,7 @@ export default {
         platform: "",
         user_id: "",
         operation_module: "",
-        operate_id: "",
+        operate_ip: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -223,13 +166,6 @@ export default {
       records: [],
       pageInfo: new PageInfo(1, [5, 10, 15], 6),
       dialogAddVisible: false,
-      form: {
-        channel_id: "",
-        user_id: "",
-        sup_channel: "",
-        sup_id: "",
-        remark: ""
-      },
     };
   },
   methods: {
@@ -251,7 +187,11 @@ export default {
 </script>
 
 <style scoped>
-#modifySupAgent-main .bd p {
+#UserJournal-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#UserJournal-main .bd p {
   margin: 0;
 }
 

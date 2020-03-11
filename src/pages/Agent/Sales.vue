@@ -3,7 +3,7 @@
   <div id="Sales-main">
     <input-area>
       <permission-button :action="ActionType.ADD" @click="handelAddClick">
-        <el-button type="primary" size="medium">新增</el-button>
+        <el-button type="primary" size="medium">设置返佣设置</el-button>
       </permission-button>
     </input-area>
     <div class="bd">
@@ -35,6 +35,12 @@
     <div class="dialog">
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%">
         <el-form :model="dataForm" ref="dataForm">
+          <el-form-item label="代理级别" :label-width="labelWidth" prop="min_pre">
+            <el-select v-model="dataForm.agent_class">
+              <el-option label="级别一" value="shanghai"></el-option>
+              <el-option label="级别二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="最小业绩" :label-width="labelWidth" prop="min_pre">
             <el-input autocomplete="off" v-model="dataForm.min_pre"></el-input>
           </el-form-item>
@@ -72,8 +78,9 @@ export default {
     return {
       //表格数据
       tableStyle: [
-        { label: "业绩区间", prop: "min_result", width: "" },
-        { label: "业绩区间", prop: "max_result", width: "" },
+        { label: "代理级别", prop: "min_result", width: "" },
+        { label: "最小业绩", prop: "max_result", width: "" },
+        { label: "最大业绩", prop: "max_result", width: "" },
         { label: "业绩返佣比例", prop: "rate_result", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
@@ -82,7 +89,10 @@ export default {
           min_result: "1.00",
           max_result: "10000.00",
           rate_result: "1",
-          action: [{ label: "修改", type: "edit" }]
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "del" }
+          ]
         }
       ],
       pageInfo: new PageInfo(0, [5, 10, 15], 0), // page pageSizes total
@@ -91,6 +101,7 @@ export default {
       dialogVisible: false,
       labelWidth: "70px",
       dataForm: {
+        agent_class: "",
         min_pre: "0",
         max_pre: "10000.00",
         column: "1"
@@ -119,4 +130,8 @@ export default {
 </script>
 
 <style scoped>
+#Sales-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 </style>

@@ -1,31 +1,6 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="AgentAddProfit-main">
     <input-area>
-      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -48,7 +23,6 @@
         :records="tableData"
         :page-info="pageInfo"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template>{{scope.row[scope.prop]}}</template>
@@ -69,7 +43,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "AgentAddProfit",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -92,17 +66,12 @@ export default {
       }
     };
     return {
-      player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
       ],
       format: {
-        platform: "",
-        channel_id: "",
-        user_id: "",
-        change_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,51 +104,39 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "日期", prop: "user_id", width: "" },
+        { label: "用户ID", prop: "nickname", width: "" },
+        { label: "昵称", prop: "before_gold", width: "" },
+        { label: "渠道ID", prop: "enter_room", width: "" },
+        { label: "代理等级", prop: "enter_time", width: "" },
+        { label: "推广码", prop: "win_or_lose_gold", width: "" },
+        { label: "新增人数", prop: "leave_time", width: "" },
+        { label: "当日收益", prop: "leave_time", width: "" },
+        { label: "代理返水", prop: "leave_time", width: "" },
       ],
       tableData: [
         {
           "user_id": "1000100",
           "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          "before_gold": "100.00",
+          "enter_room": "捕鱼-初级场",
+          "enter_time": "2019-10-10 13:00:00",
+          "win_or_lose_gold": +50,
+          "leave_time": "2019-12-10 13:00:00",
         },
         {
           "user_id": "1000100",
           "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
-        },
+          "before_gold": "100.00",
+          "enter_room": "捕鱼-初级场",
+          "enter_time": "2019-10-10 13:00:00",
+          "win_or_lose_gold": +50,
+          "leave_time": "2019-12-10 13:00:00",
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
-      form: {
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
-      }
     };
   },
   methods: {
@@ -248,11 +205,11 @@ export default {
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
+#AgentAddProfit-main .bd {
+    padding-left: 20px;
+    padding-right: 20px;
 }
-#FlowRecordSearch-main .bd p {
+#AgentAddProfit-main .bd p {
   margin: 0;
 }
 

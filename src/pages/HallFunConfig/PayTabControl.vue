@@ -15,13 +15,18 @@
                 <template slot-scope="scope">
                   <template v-if="scope.prop === 'action'">
                     <permission-button
-                      @click="handelClick"
+                      :action="btn.type"
+                      v-for="(btn,index) in scope.row[scope.prop]"
+                      :key="index"
+                      @click="handelClick(btn,scope.row)"
                       style="cursor: pointer; padding-left: 5px;"
                     >
-                      <span>{{scope.prop}}</span>
+                      <span>{{btn.label}}</span>
                     </permission-button>
                   </template>
-                  <template>{{scope.row[scope.prop]}}</template>
+                  <template
+                    v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
+                  >{{scope.row[scope.prop]}}</template>
                 </template>
               </info-table-item>
             </info-table>
@@ -35,60 +40,59 @@
       </el-tabs>
     </div>
 
-    <!--充值审核 -->
+    <!--支付页签控制修改 -->
     <div>
-      <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="30%" center>
-        <table
-          border="1"
-          style="border-color: #c0c4cc;width: 80%;"
-          cellspacing="0"
-          cellpadding="10"
-        >
-          <tr>
-            <td style="width: 100px;text-align: center">用户ID</td>
-            <td style="text-align: center">100000125</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">渠道ID</td>
-            <td style="text-align: center">10001</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">用户昵称</td>
-            <td style="text-align: center">时来运转</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">付款金额</td>
-            <td style="text-align: center">1000.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">付款人</td>
-            <td style="text-align: center">阿牛</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">付款方式</td>
-            <td style="text-align: center">阿里支付</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">所属类型</td>
-            <td style="text-align: center">第三方支付</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">申请时间</td>
-            <td style="text-align: center">2019-12-20</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">备注</td>
-            <td style="text-align: center">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
-            </td>
-          </tr>
-        </table>
+      <el-dialog title="支付页签控制修改" :visible.sync="dialogModifyVisible" width="40%" center>
+        <el-form :model="form">
+          <el-form-item label-width="80px">
+            <table width="80%" cellspacing="0" cellpadding="10">
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">通道名称</td>
+                <td style="text-align: center"></td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">页签描述</td>
+                <td style="text-align: center">支付宝充值</td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">页面状态</td>
+                <td style="text-align: center">
+                  <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">页签标示</td>
+                <td style="text-align: center">启用</td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">上传页签</td>
+                <td style="text-align: center">
+                  <img src alt />
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">自动返利功能</td>
+                <td style="text-align: center">
+                  <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">自动返利比例</td>
+                <td style="text-align: center">2%</td>
+              </tr>
+              <tr>
+                <td style="width: 120px;text-align: center;background-color:#f2f2f2;">温馨提示</td>
+                <td style="text-align: center">-</td>
+              </tr>
+            </table>
+          </el-form-item>
+        </el-form>
         <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
           <el-button
-            style="background-color: #ff6624;color: #fff;"
-            @click="dialogAddVisible = false"
-          >订单不通过</el-button>
-          <el-button type="primary">审核通过</el-button>
+            style="background-color: #d7d7d7;color: #fff;"
+            @click="dialogModifyVisible = false"
+          >取消</el-button>
+          <el-button type="primary">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -128,6 +132,7 @@ export default {
       }
     };
     return {
+      value: true,
       dialogModifyVisible: false,
       labelPosition: "left", //左对齐
       activeName: "second",
@@ -191,7 +196,10 @@ export default {
           tab_mark: "禁用",
           auto_return_profit: "禁用",
           warm_prompt: "--",
-          action: "修改 删除"
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
         },
         {
           sort: "2",
@@ -200,7 +208,10 @@ export default {
           tab_mark: "禁用",
           auto_return_profit: "禁用",
           warm_prompt: "--",
-          action: "修改 删除"
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
         },
         {
           sort: "1",
@@ -209,8 +220,11 @@ export default {
           tab_mark: "禁用",
           auto_return_profit: "禁用",
           warm_prompt: "--",
-          action: "修改 删除"
-        },
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
+        }
       ],
       userTypes: [
         {
@@ -334,7 +348,13 @@ export default {
 #payTabControl-main .bd p {
   margin: 0;
 }
-
+table {
+  border-collapse: collapse;
+}
+table,
+table tr td {
+  border: 1px solid #e4e4e4;
+}
 .platformchoice {
   cursor: pointer;
   color: #409eff;

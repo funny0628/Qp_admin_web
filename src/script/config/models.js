@@ -105,10 +105,198 @@ const models = {
       }
     ]
   },
+  gameMan:{
+    name:'gameMan',
+    vue:null,
+    text:'游戏管理',
+    children:[
+      {
+        name:'gameRec',
+        text:'游戏记录',
+        vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
+      },
+      {
+        name:'gold_rec',
+        text:"金币记录",
+        vue: r => require.ensure([], () => r(require('../../pages/GameMan/GoldRec')),'goldRec')
+      }
+    ]
+  },
+  hallFunConfig:{
+    name:'HallFunConfig',
+    text:'大厅功能配置',
+    vue:null,
+    children:[
+      {
+        name:'payConfig',
+        text:'支付配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig')
+      },
+      {
+        name:'offlinePay',
+        text:'线下支付',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/OfflinePay')), 'offlinePay')
+      },
+      {
+        name:'PayTabControl',
+        text:'支付页签控制',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayTabControl')), 'PayTabControl')
+      },
+      {
+        name:'RankListManage',
+        text:'排行榜管理',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage')), 'RankListManage')
+      },
+      {
+        name:'VipSystem',
+        text:'vip系统',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/VipSystem')), 'VipSystem')
+      },
+      {
+        name:'SetBackgroundMusic',
+        text:'背景音乐设置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/SetBackgroundMusic')), 'SetBackgroundMusic')
+      },
+      {
+        name:'DefaultAvatarUpload',
+        text:'默认头像上传',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/DefaultAvatarUpload')), 'DefaultAvatarUpload')
+      },
+      {
+        name:'HallAdvertiseConf',
+        text:'大厅宣传页配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/HallAdvertiseConf')), 'HallAdvertiseConf')
+      },
+      {
+        name:'BottomMenu',
+        text:'底部菜单',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BottomMenu')), 'BottomMenu')
+      },
+      {
+        name:'FunSortConf',
+        text:'功能排序配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/FunSortConf')), 'FunSortConf')
+      },
+      {
+        name:'NoticeConf',
+        text:'公告配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/NoticeConf')), 'NoticeConf')
+      },
+      {
+        name:'MarqueeConf',
+        text:'跑马灯配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/MarqueeConf')), 'MarqueeConf')
+      },
+      {
+        name:'EmailSystem',
+        text:'邮件系统',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem')
+      },
+      {
+        name:'scrollNotice',
+        text:'滚动公告',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/ScrollNotice')), 'scrollNotice')
+      },
+      {
+        name:'internalMail',
+        text:'内部邮件',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/InternalMail')), 'internalMail')
+      },
+      {
+        name:'popNotice',
+        text:'弹窗公告',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PopNotice')), 'popNotice')
+      },
+      {
+        name:'posterHall',
+        text:'大厅海报',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PosterHall')), 'posterHall')
+      },
+      {
+        name:'topPref',
+        text:'充值优惠',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/TopPref')), 'topPref')
+      },
+      {
+        name:'dayCheck',
+        text:'每日签到',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/DayCheck')), 'dayCheck')
+      },
+      {
+        name:'rotaActive',
+        text:'转盘活动',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/RotaActive')), 'rotaActive')
+      },
+      {
+        name:'playTask',
+        text:'玩家任务',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PlayTask')), 'playTask')
+      },
+      {
+        name:'setService',
+        text:'客服设置',
+        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/SetService')), 'setService')
+      }
+    ]
+  },
+  operationReport: {
+    name: 'operationReport',
+    vue: null,
+    text: '运营报表',
+    children: [
+      {
+        name: 'UserTeamRep',
+        text: '用户团队报表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationReport/UserTeamRep')), 'UserTeamRep'),
+      },
+      {
+        name: 'GameRep',
+        text: '游戏报表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationReport/GameRep')), 'GameRep'),
+      },
+      {
+        name: 'PlatformRep',
+        text: '平台报表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationReport/PlatformRep')), 'PlatformRep'),
+      },
+      {
+        name: 'InoutcashRep',
+        text: '出入款报表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationReport/InoutcashRep')), 'InoutcashRep'),
+      },
+    ]
+  },
+  channelPackageMan: {
+    name: 'channelPackageMan',
+    vue: null,
+    text: '渠道包管理',
+    children: [
+      {
+        name: 'ChannelPackageStat',
+        text: '渠道包统计',
+        vue: r => require.ensure([], () => r(require('../../pages/ChannelPackageMan/ChannelPackageStat')), 'ChannelPackageStat'),
+      },
+      {
+        name: 'ChannelPackageMan',
+        text: '渠道包管理',
+        vue: r => require.ensure([], () => r(require('../../pages/ChannelPackageMan/ChannelPackageMan')), 'ChannelPackageMan'),
+      },
+      {
+        name: 'ChannelGainOrLoseData',
+        text: '渠道盈亏数据',
+        vue: r => require.ensure([], () => r(require('../../pages/ChannelPackageMan/ChannelGainOrLoseData')), 'ChannelGainOrLoseData'),
+      },
+      {
+        name: 'ChannelPayConf',
+        text: '渠道支付配置',
+        vue: r => require.ensure([], () => r(require('../../pages/ChannelPackageMan/ChannelPayConf')), 'ChannelPayConf'),
+      },
+    ]
+  },
   agent:{
     name:'agent',
     vue: null,
-    text:'代理管理',
+    text:'代理数据',
     children:[
       {
         name:'level',
@@ -122,7 +310,7 @@ const models = {
       },
       {
         name:'universal',
-        text:'全民返佣',
+        text:'全民代理列表',
         vue: r => require.ensure([], ()=> r(require('../../pages/Agent/Universal')),'universal')
       },
       {
@@ -137,6 +325,115 @@ const models = {
       }
     ]
   },
+  dataAnalyze:{
+    name:'dataAnalyze',
+    vue: null,
+    text:'数据分析',
+    children:[
+      {
+        name:'OnlinePlay',
+        text:'在线在玩',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalyze/OnlinePlay')), 'OnlinePlay')
+      },
+      {
+        name:'KeepAnalyze',
+        text:'留存分析',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalyze/KeepAnalyze')), 'KeepAnalyze')
+      },
+      {
+        name:'AgentAddProfit',
+        text:'代理日新增收益',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalyze/AgentAddProfit')), 'AgentAddProfit')
+      },
+    ]
+  },
+  ActiveOperation:{
+    name:'ActiveOperation',
+    vue: null,
+    text:'活动运营',
+    children:[
+      {
+        name:'RechargeDiscount',
+        text:'充值优惠',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/RechargeDiscount')), 'RechargeDiscount')
+      },
+      {
+        name:'EverydaySign',
+        text:'每日签到',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/EverydaySign')), 'EverydaySign')
+      },
+      {
+        name:'SetAward',
+        text:'抽奖设置',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/SetAward')), 'SetAward')
+      },
+      {
+        name:'RedPackageRain',
+        text:'红包雨活动',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/RedPackageRain')), 'RedPackageRain')
+      },
+      {
+        name:'HelpMoney',
+        text:'救援金活动',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/HelpMoney')), 'HelpMoney')
+      },
+      {
+        name:'BetBackWater',
+        text:'投注返水活动',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/BetBackWater')), 'BetBackWater')
+      },
+      {
+        name:'ActiveGetRecord',
+        text:'活动领取记录',
+        vue: r => require.ensure([], () => r(require('../../pages/ActiveOperation/ActiveGetRecord')), 'ActiveGetRecord')
+      },
+    ]
+  },
+  SystemConfig:{
+    name:'SystemConfig',
+    vue: null,
+    text:'系统配置',
+    children:[
+      {
+        name:'PushFunction',
+        text:'推送功能',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/PushFunction')), 'PushFunction')
+      },
+      {
+        name:'PropertyConf',
+        text:'属性配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/PropertyConf')), 'PropertyConf')
+      },
+      {
+        name:'popularizeConf',
+        text:'推广配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/popularizeConf')), 'popularizeConf')
+      },
+    ]
+  },
+  PowerManage:{
+    name:'PowerManage',
+    vue: null,
+    text:'权限管理',
+    children:[
+      {
+        name:'AdminRole',
+        text:'管理员角色',
+        vue: r => require.ensure([], () => r(require('../../pages/PowerManage/AdminRole')), 'AdminRole')
+      },
+      {
+        name:'AdminList',
+        text:'管理员列表',
+        vue: r => require.ensure([], () => r(require('../../pages/PowerManage/AdminList')), 'AdminList')
+      },
+      {
+        name:'SystemHandleLog',
+        text:'系统操作日志',
+        vue: r => require.ensure([], () => r(require('../../pages/PowerManage/SystemHandleLog')), 'SystemHandleLog')
+      },
+    ]
+  },
+  //---------------- 
   financial:{
     name:'financial',
     vue:null,
@@ -223,90 +520,6 @@ const models = {
         name:'dayTrend',
         text:'每日趋势',
         vue: r => require.ensure([], () => r(require('../../pages/DataSta/DayTrend')), 'dayTrend')
-      }
-    ]
-  },
-  HallFunConfig:{
-    name:'HallFunConfig',
-    text:'大厅功能配置',
-    vue:null,
-    children:[
-      {
-        name:'payConfig',
-        text:'支付配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig')
-      },
-      {
-        name:'offlinePay',
-        text:'线下支付',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/OfflinePay')), 'offlinePay')
-      },
-      {
-        name:'PayTabControl',
-        text:'支付页签控制',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayTabControl')), 'PayTabControl')
-      },
-      {
-        name:'scrollNotice',
-        text:'滚动公告',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/ScrollNotice')), 'scrollNotice')
-      },
-      {
-        name:'internalMail',
-        text:'内部邮件',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/InternalMail')), 'internalMail')
-      },
-      {
-        name:'popNotice',
-        text:'弹窗公告',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PopNotice')), 'popNotice')
-      },
-      {
-        name:'posterHall',
-        text:'大厅海报',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PosterHall')), 'posterHall')
-      },
-      {
-        name:'topPref',
-        text:'充值优惠',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/TopPref')), 'topPref')
-      },
-      {
-        name:'dayCheck',
-        text:'每日签到',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/DayCheck')), 'dayCheck')
-      },
-      {
-        name:'rotaActive',
-        text:'转盘活动',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/RotaActive')), 'rotaActive')
-      },
-      {
-        name:'playTask',
-        text:'玩家任务',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/PlayTask')), 'playTask')
-      },
-      {
-        name:'setService',
-        text:'客服设置',
-        vue: r => require.ensure([], () => r(require('../../pages/TheConfig/SetService')), 'setService')
-      }
-    ]
-  },
-  gameMan:{
-    name:'gameMan',
-    vue:null,
-    text:'游戏管理',
-    children:[
-      {
-        name:'gameRec',
-        text:'游戏记录',
-        vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
-      },
-      {
-        name:'gold_rec',
-        text:"金币记录",
-        vue: r => require.ensure([], () => r(require('../../pages/GameMan/GoldRec')),'goldRec')
       }
     ]
   },

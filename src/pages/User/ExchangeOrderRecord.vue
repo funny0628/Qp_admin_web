@@ -1,5 +1,5 @@
 <template>
-  <div id="userList—main">
+  <div id="ExchangeOrderRecord-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -59,64 +59,79 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop === 'order_status'">
+              <span style="color: #13d177;" v-if="scope.row[scope.prop]  == 1">兑换成功</span>
+              <span style="color: #ff6d2e;" v-if="scope.row[scope.prop]  == 0">待付款</span>
+            </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button @click="handelClick" style="cursor: pointer; padding-left: 5px;">
-                <span>{{scope.prop}}</span>
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template>{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','order_status'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <!--兑换审核 -->
     <div>
-      <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="30%" center>
-        <table
-          border="1"
-          style="border-color: #c0c4cc;width: 80%;margin: 0 auto;border-collapse: collapse;"
-          cellspacing="0"
-          cellpadding="10"
-        >
-          <tr>
-            <td style="width: 100px;text-align: center">用户ID</td>
-            <td style="text-align: center">100000125</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">渠道ID</td>
-            <td style="text-align: center">10001</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">用户昵称</td>
-            <td style="text-align: center">时来运转</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">兑换金额</td>
-            <td style="text-align: center">1000.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">手续费</td>
-            <td style="text-align: center">10.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">兑换渠道</td>
-            <td style="text-align: center">阿里支付</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">账号信息</td>
-            <td style="text-align: center">**********</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">申请时间</td>
-            <td style="text-align: center">2019-12-20</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">备注</td>
-            <td style="text-align: center">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
-            </td>
-          </tr>
-        </table>
+      <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="40%" center>
+        <el-form :model="form">
+          <el-form-item>
+            <table
+              width="80%"
+              cellspacing="0"
+              cellpadding="10"
+            >
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">用户ID</td>
+                <td style="text-align: center">100000125</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">渠道ID</td>
+                <td style="text-align: center">10001</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">用户昵称</td>
+                <td style="text-align: center">时来运转</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">兑换金额</td>
+                <td style="text-align: center">1000.00</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">手续费</td>
+                <td style="text-align: center">10.00</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">兑换渠道</td>
+                <td style="text-align: center">阿里支付</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">账号信息</td>
+                <td style="text-align: center">**********</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">申请时间</td>
+                <td style="text-align: center">2019-12-20</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">备注</td>
+                <td style="text-align: center">
+                  <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
+                </td>
+              </tr>
+            </table>
+          </el-form-item>
+        </el-form>
         <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
           <el-button
             style="background-color: #ff6624;color: #fff;"
@@ -220,7 +235,7 @@ export default {
         { label: "提交时间/审核时间", prop: "present_time", width: "180" },
         { label: "操作用户", prop: "operation_user", width: "" },
         { label: "订单备注", prop: "order_remark", width: "" },
-        { label: "操作", prop: "action", width: "" }
+        { label: "操作", prop: "action", width: "180" }
       ],
       tableData: [
         {
@@ -232,11 +247,15 @@ export default {
           exchange_gold: "100.00",
           money_change: "10000.00",
           account_msg: "15616156/cs",
-          order_status: "待审核",
+          order_status: "0",
           present_time: "2020-01-01 12:00:00",
           operation_user: "",
           order_remark: "",
-          action: "审核"
+          action: [
+            { label: "自动下发", type: "auto_issue" },
+            { label: "审核", type: "check" },
+            { label: "驳回", type: "reject" }
+          ]
         },
         {
           order_num: "156461163165",
@@ -247,12 +266,16 @@ export default {
           exchange_gold: "100.00",
           money_change: "10000.00",
           account_msg: "15616156/cs",
-          order_status: "待审核",
+          order_status: "1",
           present_time: "2020-01-01 12:00:00",
           operation_user: "",
           order_remark: "",
-          action: "审核"
-        },
+          action: [
+            { label: "自动下发", type: "auto_issue" },
+            { label: "审核", type: "check" },
+            { label: "驳回", type: "reject" }
+          ]
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -335,7 +358,11 @@ export default {
 </script>
 
 <style scoped>
-#userList—main .bd p {
+#ExchangeOrderRecord-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#ExchangeOrderRecord-main .bd p {
   margin: 0;
 }
 
@@ -344,7 +371,13 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+table,table tr td {
+  border: 1px solid #e4e4e4;
+}
 .bankCard {
   width: 100%;
 }

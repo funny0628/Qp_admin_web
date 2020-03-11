@@ -1,5 +1,5 @@
 <template>
-  <div id="payConfig-main">
+  <div id="offlinePay-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -11,7 +11,7 @@
       </el-select>
       <el-input v-model="format.channel_id" placeholder="请输入渠道id" size="medium" clearable></el-input>
       <el-input v-model="format.bank_name" placeholder="银行名称" size="medium" clearable></el-input>
-      <el-select v-model="format.user_state" filterable placeholder="用户状态" size="medium" clearable>
+      <el-select v-model="format.status" filterable placeholder="状态" size="medium" clearable>
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -48,119 +48,122 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'status'.indexOf(scope.prop) >= 0">
-              <span v-if="scope.row[scope.prop]  == 1">启用</span>
-              <span v-else>冻结</span>
+              <span style="color: #13d177;" v-if="scope.row[scope.prop]  == 1">启用</span>
+              <span style="color: #ff6d2e;" v-else>冻结</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button style="cursor: pointer; padding-left: 5px;">
-                <span></span>
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <div>
       <!-- 新增支付配置 -->
-      <el-dialog title="新增支付配置" :visible.sync="dialogAddVisible" width="40%" center>
-        <table
-          border="1"
-          style="border-color: #c0c4cc;text-aligin: center"
-          cellspacing="0"
-          cellpadding="10"
-        >
-          <tr>
-            <td style="width: 100px;text-align: center">绑定分层</td>
-            <td>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-              <el-checkbox>备选项</el-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">银行卡名称</td>
-            <td style="text-align: center">
-                <el-select placeholder="请选择银行卡">
-                <el-option label="招商银行" value="ali-pay"></el-option>
-                <el-option label="中国银行" value="weixin-pay"></el-option>
-              </el-select>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">银行卡账号</td>
-            <td style="text-align: center">
-                6672 1457 7895 7899 555
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">持卡人姓名</td>
-            <td style="text-align: center">张三</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">开户行支行</td>
-            <td style="text-align: center">北京支行</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">单笔最小金额</td>
-            <td style="text-align: center">10.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">单笔最大金额</td>
-            <td style="text-align: center">10000.00</td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">银行状态</td>
-            <td style="text-align: center">
-              <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">银行类型</td>
-            <td style="text-align: center">
-                <el-select placeholder="请选择银行类型">
-                <el-option label="招商银行" value="ali-pay"></el-option>
-                <el-option label="中国银行" value="weixin-pay"></el-option>
-              </el-select>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">二维码收款</td>
-            <td style="text-align: center">
-              <img src="../../assets/img/gou.png" alt="">
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">金额模式</td>
-            <td style="text-align: center">
-              <el-select placeholder="固定金额">
-                <el-option label="100" value="ali-pay"></el-option>
-                <el-option label="200" value="weixin-pay"></el-option>
-              </el-select>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">自定义金额</td>
-            <td>
-              <el-input
-                style="margin-bottom: 10px;"
-                autocomplete="off"
-                placeholder="请输入预设金额,最多支持8个定义金额"
-              ></el-input>
-              <el-tag style="margin-right: 10px;" v-for="n in 3" :key="n" closable>100元</el-tag>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 100px;text-align: center">备注</td>
-            <td style="text-align: center">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
-            </td>
-          </tr>
-        </table>
+      <el-dialog title="新增线下支付" :visible.sync="dialogAddVisible" width="40%" center>
+        <el-form :model="form">
+          <el-form-item label-width="80px">
+            <table style="text-aligin: center" cellspacing="0" cellpadding="10" width="80%">
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">绑定分层</td>
+                <td>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox>备选项</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">银行卡名称</td>
+                <td style="text-align: center">
+                  <el-select placeholder="请选择银行卡">
+                    <el-option label="招商银行" value="ali-pay"></el-option>
+                    <el-option label="中国银行" value="weixin-pay"></el-option>
+                  </el-select>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">银行卡账号</td>
+                <td style="text-align: center">6672 1457 7895 7899 555</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">持卡人姓名</td>
+                <td style="text-align: center">张三</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">开户行支行</td>
+                <td style="text-align: center">北京支行</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">单笔最小金额</td>
+                <td style="text-align: center">10.00</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">单笔最大金额</td>
+                <td style="text-align: center">10000.00</td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">银行状态</td>
+                <td style="text-align: center">
+                  <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">银行类型</td>
+                <td style="text-align: center">
+                  <el-select placeholder="请选择银行类型">
+                    <el-option label="招商银行" value="ali-pay"></el-option>
+                    <el-option label="中国银行" value="weixin-pay"></el-option>
+                  </el-select>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">二维码收款</td>
+                <td style="text-align: center">
+                  <img src="../../assets/img/gou.png" alt />
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">金额模式</td>
+                <td style="text-align: center">
+                  <el-select placeholder="固定金额">
+                    <el-option label="100" value="ali-pay"></el-option>
+                    <el-option label="200" value="weixin-pay"></el-option>
+                  </el-select>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">自定义金额</td>
+                <td>
+                  <el-input
+                    style="margin-bottom: 10px;"
+                    autocomplete="off"
+                    placeholder="请输入预设金额,最多支持8个定义金额"
+                  ></el-input>
+                  <el-tag style="margin-right: 10px;" v-for="n in 3" :key="n" closable>100元</el-tag>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">备注</td>
+                <td style="text-align: center">
+                  <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
+                </td>
+              </tr>
+            </table>
+          </el-form-item>
+        </el-form>
         <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
           <el-button @click="dialogAddVisible = false">取 消</el-button>
           <el-button type="primary">确 定</el-button>
@@ -181,7 +184,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "payConfig",
+  name: "offlinePay",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -219,7 +222,7 @@ export default {
         platform: "",
         channel_id: "",
         bank_name: "",
-        user_state: "",
+        status: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -274,7 +277,10 @@ export default {
           status: "1",
           remark: "",
           add_time: "2019-01-01 12:00",
-          action: "修改 删除"
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
         },
         {
           bank_name: "招商银行",
@@ -283,13 +289,16 @@ export default {
           open_bank: "深圳支行",
           single_min_money: "100",
           single_max_money: "100000",
-          status: "1",
+          status: "0",
           remark: "",
           add_time: "2019-01-01 12:00",
-          action: "修改 删除"
-        },
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "删除", type: "delete" }
+          ]
+        }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
+      pageInfo: new PageInfo(1, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
         agent: 100,
@@ -301,7 +310,7 @@ export default {
       },
       //修改会员信
       activeName: "first",
-      dialogModifyVisible: false, //模态框
+      dialogModifyVisible: false //模态框
     };
   },
   methods: {
@@ -315,6 +324,7 @@ export default {
     addUser() {
       this.dialogAddVisible = true;
     },
+    handelClick(btn, row) {},
     /**获取用户列表接口 */
     userList(data, user_id) {
       UserHandler.list(data, user_id).promise.then(res => {
@@ -368,16 +378,15 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#payConfig-main .bd {
+#offlinePay-main .bd {
   padding-left: 20px;
 }
-#payConfig-main .bd p {
+#offlinePay-main .bd p {
   margin: 0;
 }
 
@@ -392,6 +401,10 @@ export default {
 }
 table {
   border-collapse: collapse;
+}
+table,
+table tr td {
+  border: 1px solid #c0c4cc;
 }
 .itemClass {
   width: 45%;

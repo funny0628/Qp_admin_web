@@ -9,8 +9,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium">
-      </el-input>
+      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium"></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -44,8 +43,7 @@
               <span class="freeze" v-else>冻结</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button
-                style="cursor: pointer; padding-left: 5px;">
+              <permission-button style="cursor: pointer; padding-left: 5px;">
                 <span></span>
               </permission-button>
             </template>
@@ -64,13 +62,14 @@
             style="display: inline-block;"
             prop="sub_platform_name"
           >
-            <el-input
-              v-model="form.nickname"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
+            <el-input v-model="form.nickname" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item label="关联子平台" label-width="200px" style="display: inline-block;" prop="connect_sub_platform">
+          <el-form-item
+            label="关联子平台"
+            label-width="200px"
+            style="display: inline-block;"
+            prop="connect_sub_platform"
+          >
             <el-select v-model="form.identity" placeholder="请选择" style="width: 200px;">
               <el-option
                 v-for="item in idents"
@@ -80,84 +79,89 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="子包皮肤" label-width="200px" style="display: inline-block;" prop="remark">
+          <el-form-item
+            label="子包皮肤"
+            label-width="200px"
+            style="display: inline-block;"
+            prop="remark"
+          >
             <div class="skin-wrap">
-                <el-radio v-model="radio" label="1">皮肤一</el-radio>
-                <img class="skin" src="../../assets/img/gou.png" alt="">
+              <el-radio v-model="radio" label="1">皮肤一</el-radio>
+              <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
             <div class="skin-wrap">
-                <el-radio v-model="radio" label="1">皮肤二</el-radio>
-                <img class="skin" src="../../assets/img/gou.png" alt="">
+              <el-radio v-model="radio" label="1">皮肤二</el-radio>
+              <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
             <div class="skin-wrap">
-                <el-radio v-model="radio" label="1">皮肤三</el-radio>
-                <img class="skin" src="../../assets/img/gou.png" alt="">
+              <el-radio v-model="radio" label="1">皮肤三</el-radio>
+              <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
           </el-form-item>
           <el-form-item label="继承资源" label-width="200px" style="display: inline-block;" prop="type">
-              <table border="1" style="border-color: #c0c4cc;" cellspacing="0" cellpadding="10">
-                  <tr>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                  </tr>
-              </table>
+            <table style="border-collapse: collapse;" cellspacing="0" cellpadding="10">
+              <tr>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+              </tr>
+            </table>
           </el-form-item>
           <el-form-item label="游戏选择" label-width="200px" style="display: inline-block;" prop="type">
-              <table border="1" style="border-color: #c0c4cc;" cellspacing="0" cellpadding="10">
-                  <tr>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                      <td>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                          <el-checkbox v-model="checked">备选项</el-checkbox>
-                      </td>
-                  </tr>
-              </table>
+            <table style="border-collapse: collapse;" cellspacing="0" cellpadding="10">
+              <tr>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                </td>
+              </tr>
+            </table>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -216,7 +220,7 @@ export default {
       format: {
         platform: "",
         sub_platform_name: "",
-        Registration_time: "",
+        Registration_time: ""
       },
       pickerOptions: {
         disabledDate(time) {
@@ -291,7 +295,7 @@ export default {
           status: "0",
           created_time: "2019-01-01 12:00:00",
           action: ""
-        },
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -309,7 +313,7 @@ export default {
       ],
       //修改会员信
       activeName: "first",
-      dialogModifyVisible: false, //模态框
+      dialogModifyVisible: false //模态框
     };
   },
   methods: {
@@ -430,31 +434,32 @@ export default {
   text-decoration: underline;
 }
 .skin-wrap {
-    float: left;
-    width: 30%;
+  float: left;
+  width: 30%;
 }
 .skin {
-    width: 60px;
-    height: 60px;
+  width: 60px;
+  height: 60px;
 }
-table {
-    border-collapse:collapse;
+table,
+table tr td {
+  border: 1px solid #c0c4cc;
 }
 .start {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #0077f9;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #0077f9;
+  color: #ffffff;
 }
 .freeze {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #ff001e;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ff001e;
+  color: #ffffff;
 }
 .bankCard {
   width: 100%;

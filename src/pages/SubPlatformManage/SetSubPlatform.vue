@@ -1,8 +1,7 @@
 <template>
   <div id="setSubPlatform—main">
     <input-area>
-      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium">
-      </el-input>
+      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium"></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -36,11 +35,19 @@
               <span class="freeze" v-else>冻结</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button>
-                <span></span>
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template>{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','status','user_id'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -49,16 +56,8 @@
       <!-- 新增子平台 -->
       <el-dialog title="新增子平台" :visible.sync="dialogAddVisible" width="30%" center>
         <el-form :model="form" ref="form">
-          <el-form-item
-            label="子平台名称"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.sub_platform_name"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
+          <el-form-item label="子平台名称" label-width="200px" style="display: inline-block;">
+            <el-input v-model="form.sub_platform_name" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
           <el-form-item label="状态" label-width="200px" style="display: inline-block;" prop="status">
             <el-select v-model="form.status" placeholder="请选择" style="width: 200px;">
@@ -71,7 +70,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="备注" label-width="200px" style="display: inline-block;" prop="remark">
-            <el-input v-model="form.remark" type="textarea" :rows="4" placeholder="请输入内容" style="width: 200px;"></el-input>
+            <el-input
+              v-model="form.remark"
+              type="textarea"
+              :rows="4"
+              placeholder="请输入内容"
+              style="width: 200px;"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -121,7 +126,7 @@ export default {
       labelPosition: "left", //左对齐
       format: {
         sub_platform_name: "",
-        Registration_time: "",
+        Registration_time: ""
       },
       pickerOptions: {
         disabledDate(time) {
@@ -167,23 +172,10 @@ export default {
           status: "1",
           remark: "",
           created_time: "2019-01-01 12:00:00",
-          action: "修改  禁用"
-        },
-        {
-          platform_id: "02",
-          sub_platform_name: "一泓游戏",
-          status: "1",
-          remark: "",
-          created_time: "2019-01-01 12:00:00",
-          action: "修改  禁用"
-        },
-        {
-          platform_id: "03",
-          sub_platform_name: "雷云捕鱼",
-          status: "0",
-          remark: "",
-          created_time: "2019-01-01 12:00:00",
-          action: "修改  禁用"
+          action: [
+            { label: "修改", type: "edit" },
+            { label: "禁用", type: "ban" }
+          ]
         }
       ],
       records: [],
@@ -194,10 +186,13 @@ export default {
         status: "",
         remark: ""
       },
-      options: [{value: "1", label: "冻结"}, {value: "2", label: "启用"}],
+      options: [
+        { value: "1", label: "冻结" },
+        { value: "2", label: "启用" }
+      ],
       //修改会员信
       activeName: "first",
-      dialogModifyVisible: false, //模态框
+      dialogModifyVisible: false //模态框
     };
   },
   methods: {
@@ -210,6 +205,11 @@ export default {
     /** 添加会员 */
     addUser() {
       this.dialogAddVisible = true;
+    },
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogModifyVisible = true;
+      }
     },
     handelAdd() {
       let data = {
@@ -283,8 +283,7 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
@@ -302,20 +301,20 @@ export default {
   text-decoration: underline;
 }
 .start {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #0077f9;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #0077f9;
+  color: #ffffff;
 }
 .freeze {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #ff001e;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ff001e;
+  color: #ffffff;
 }
 .bankCard {
   width: 100%;

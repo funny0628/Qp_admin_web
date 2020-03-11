@@ -1,5 +1,5 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="OnlinePlay-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -17,30 +17,11 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-date-picker
-        v-model="format.Registration_time"
-        value-format="yyyy-MM-dd"
-        align="right"
-        type="date"
-        size="medium"
-        clearable
-        placeholder="请输入注册时间"
-        :picker-options="pickerOptions"
-        style="width: 180px"
-      ></el-date-picker>
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
     </input-area>
+    <div id="myChart" style="width: 90%;height: 400px;padding-left: 20px;padding-right: 20px;padding-bottom:20px;"></div>
     <div class="bd">
       <info-table
         :search="search"
@@ -48,7 +29,6 @@
         :records="tableData"
         :page-info="pageInfo"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template>{{scope.row[scope.prop]}}</template>
@@ -69,7 +49,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "OnlinePlay",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -92,7 +72,6 @@ export default {
       }
     };
     return {
-      player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       platforms: [
         { value: 1, label: "平台1" },
@@ -100,86 +79,42 @@ export default {
       ],
       format: {
         platform: "",
-        channel_id: "",
-        user_id: "",
-        change_type: "",
-        Registration_time: ""
-      },
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
-        shortcuts: [
-          {
-            text: "今天",
-            onClick(picker) {
-              picker.$emit("pick", new Date());
-            }
-          },
-          {
-            text: "昨天",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit("pick", date);
-            }
-          },
-          {
-            text: "一周前",
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", date);
-            }
-          }
-        ]
+        channel_id: ""
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "人数类别", prop: "user_id", width: "" },
+        { label: "andriod在线", prop: "nickname", width: "" },
+        { label: "ios在线", prop: "before_gold", width: "" },
+        { label: "总大厅人数", prop: "enter_room", width: "" },
+        { label: "当天注册在线", prop: "enter_time", width: "" },
+        { label: "正在游戏房间人数", prop: "win_or_lose_gold", width: "" },
+        { label: "当天人数峰值", prop: "leave_time", width: "" },
+        { label: "昨天人数峰值", prop: "leave_time", width: "" },
+        { label: "历史在线峰值", prop: "leave_time", width: "" }
       ],
       tableData: [
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          user_id: "1000100",
+          nickname: "测试线",
+          before_gold: "100.00",
+          enter_room: "捕鱼-初级场",
+          enter_time: "2019-10-10 13:00:00",
+          win_or_lose_gold: +50,
+          leave_time: "2019-12-10 13:00:00"
         },
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
-        },
+          user_id: "1000100",
+          nickname: "测试线",
+          before_gold: "100.00",
+          enter_room: "捕鱼-初级场",
+          enter_time: "2019-10-10 13:00:00",
+          win_or_lose_gold: +50,
+          leave_time: "2019-12-10 13:00:00"
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogAddVisible: false,
-      form: {
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
-      }
+      dialogAddVisible: false
     };
   },
   methods: {
@@ -188,6 +123,68 @@ export default {
       let data = this.format,
         user_id = 1000;
       this.userList(data, user_id);
+    },
+    drawLine() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$echarts.init(document.getElementById("myChart"));
+      // 绘制图表
+      myChart.setOption({
+        title: {
+          text: "折线图堆叠"
+        },
+        tooltip: {
+          trigger: "axis"
+        },
+        legend: {
+          data: ["邮件营销", "联盟广告"]
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: [
+            "0:00",
+            "2:00",
+            "4:00",
+            "6:00",
+            "8:00",
+            "10:00",
+            "12:00",
+            "14:00",
+            "16:00",
+            "18:00",
+            "20:00",
+            "22:00"
+          ]
+        },
+        yAxis: {
+          type: "value"
+        },
+        series: [
+          {
+            name: "邮件营销",
+            type: "line",
+            stack: "总量",
+            data: [100, 270, 130, 260, 90, 300, 150]
+          },
+          {
+            name: "联盟广告",
+            type: "line",
+            stack: "总量",
+            data: [80, 240, 120, 210, 110, 320, 130]
+          }
+        ]
+      });
     },
     /**获取用户列表接口 */
     userList(data, user_id) {
@@ -243,16 +240,18 @@ export default {
     }
   },
   mounted() {
+    this.drawLine();
   }
 };
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
+#OnlinePlay-main .bd {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 20px;
 }
-#FlowRecordSearch-main .bd p {
+#OnlinePlay-main .bd p {
   margin: 0;
 }
 

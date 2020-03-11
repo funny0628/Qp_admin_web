@@ -1,5 +1,5 @@
 <template>
-  <div id="userList—main">
+  <div id="ChannelPayConf-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -10,32 +10,6 @@
         ></el-option>
       </el-select>
       <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-input v-model="format.order_num" placeholder="订单编号" size="medium" clearable></el-input>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.order_status" placeholder="订单状态" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-select v-model="format.pay_type" placeholder="付款方式" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-select v-model="format.belong_type" placeholder="所属类型" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -67,82 +41,97 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'order_status'">
-              <span style="color: #13d177;" v-if="scope.row[scope.prop]  == 1">充值成功</span>
-              <span style="color: #ff6d2e;" v-if="scope.row[scope.prop]  == 0">待付款</span>
+            <template v-if="'status'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  == 1">启用</span>
+              <span v-else>冻结</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <permission-button @click="handelClick" style="cursor: pointer; padding-left: 5px;">
-                <span>{{scope.row[scope.prop]}}</span>
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
               </permission-button>
             </template>
             <template
-              v-if="['action','order_status'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}
+            </template>
           </template>
         </info-table-item>
       </info-table>
     </div>
-    <!--支付订单记录 -->
-    <div>
-      <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="40%" center>
-        <el-form :model="form">
-          <el-form-item>
-            <table
-              width="80%"
-              cellspacing="0"
-              cellpadding="10"
-            >
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">用户ID</td>
-                <td style="text-align: center">100000125</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">渠道ID</td>
-                <td style="text-align: center">10001</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">用户昵称</td>
-                <td style="text-align: center">时来运转</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">付款金额</td>
-                <td style="text-align: center">1000.00</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">付款人</td>
-                <td style="text-align: center">阿牛</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">付款方式</td>
-                <td style="text-align: center">阿里支付</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">所属类型</td>
-                <td style="text-align: center">第三方支付</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">申请时间</td>
-                <td style="text-align: center">2019-12-20</td>
-              </tr>
-              <tr>
-                <td style="width: 100px;text-align: center;background-color:#f2f2f2;">备注</td>
-                <td style="text-align: center">
-                  <el-input type="textarea" :rows="2" placeholder="请输入内容"></el-input>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
-          <el-button
-            style="background-color: #ff6624;color: #fff;"
-            @click="dialogAddVisible = false"
-          >订单不通过</el-button>
-          <el-button type="primary">审核通过</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <el-dialog title="渠道支付编辑" :visible.sync="dialogModifyVisible" width="30%" center>
+      <el-form :model="form">
+        <el-form-item>
+          <table
+            border="1"
+            style="border-color: #c0c4cc;width: 80%;"
+            cellspacing="0"
+            cellpadding="10"
+          >
+            <tr>
+              <td style="width: 100px;text-align: center">渠道ID</td>
+              <td style="text-align: center">
+                <el-input v-model="form.channel_id" autocomplete="off"></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">渠道名称</td>
+              <td style="text-align: center">
+                <el-input v-model="form.channel_name" autocomplete="off" placeholder="请输入渠道名称"></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">专享支付</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">支付宝</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">微信</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">云闪付</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">银行卡</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 100px;text-align: center">QQ</td>
+              <td style="text-align: center">
+                <el-checkbox>全部</el-checkbox>
+              </td>
+            </tr>
+          </table>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style="margin-top: 10px;">
+        <el-button
+          style="background-color: #d7d7d7;color: #fff;"
+          @click="dialogModifyVisible = false"
+        >取消</el-button>
+        <el-button type="primary">保存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -156,7 +145,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "PayOrderRecord",
+  name: "ChannelPayConf",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -179,8 +168,8 @@ export default {
       }
     };
     return {
-      dialogModifyVisible: false,
       labelPosition: "left", //左对齐
+      dialogModifyVisible: false,
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
@@ -188,11 +177,6 @@ export default {
       format: {
         platform: "",
         channel_id: "",
-        order_num: "",
-        user_id: "",
-        order_status: "",
-        pay_type: "",
-        belong_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -225,59 +209,37 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "订单号", prop: "user_id", width: "" },
-        { label: "用户ID", prop: "nickname", width: "" },
-        { label: "玩家昵称", prop: "channel_id", width: "" },
-        { label: "渠道ID", prop: "change_num", width: "" },
-        { label: "付款方式", prop: "change_after_num", width: "" },
-        { label: "所属类型", prop: "change_type", width: "" },
-        { label: "订单金额", prop: "room_type", width: "" },
-        { label: "金额变动", prop: "operation_person", width: "" },
-        { label: "赠送金额", prop: "operation_time", width: "" },
-        { label: "订单状态", prop: "order_status", width: "" },
-        { label: "提交时间/到账时间", prop: "operation_time", width: "" },
-        { label: "操作用户", prop: "operation_time", width: "" },
-        { label: "订单备注", prop: "operation_time", width: "" },
+        { label: "渠道ID", prop: "user_id", width: "" },
+        { label: "渠道名称", prop: "nickname", width: "" },
+        { label: "渠道支付配置", prop: "before_gold", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       tableData: [
         {
           user_id: "1000100",
           nickname: "测试线",
-          channel_id: "10001",
-          change_num: "-5.0",
-          change_after_num: "100.00",
-          change_type: "100.00",
-          room_type: "捕鱼-初级场",
-          operation_person: "--",
-          order_status: "1",
-          operation_time: "2020-01-01 12:00:00",
-          action: "查看"
+          before_gold: "100.00",
+          action: [
+            { label: "编辑", type: "edit" },
+            { label: "禁用", type: "ban" },
+          ]
         },
         {
           user_id: "1000100",
           nickname: "测试线",
-          channel_id: "10001",
-          change_num: "-5.0",
-          change_after_num: "100.00",
-          change_type: "100.00",
-          room_type: "捕鱼-初级场",
-          order_status: "0",
-          operation_person: "--",
-          action: "审核"
+          before_gold: "100.00",
+          action: [
+            { label: "编辑", type: "edit" },
+            { label: "禁用", type: "ban" },
+          ]
         }
       ],
       records: [],
-      pageInfo: new PageInfo(1, [5, 10, 15], 5),
-      dialogAddVisible: false,
+      pageInfo: new PageInfo(0, [5, 10, 15], 5),
       form: {
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
-      }
+          channel_id: "",
+          channel_name: ""
+      },
     };
   },
   methods: {
@@ -287,8 +249,10 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    handelClick() {
-      this.dialogModifyVisible = true;
+    handelClick(btn,row) {
+      if(btn.type === 'edit') {
+        this.dialogModifyVisible = true
+      }
     },
     /**获取用户列表接口 */
     userList(data, user_id) {
@@ -348,7 +312,11 @@ export default {
 </script>
 
 <style scoped>
-#userList—main .bd p {
+#ChannelPayConf-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#ChannelPayConf-main .bd p {
   margin: 0;
 }
 
@@ -359,7 +327,6 @@ export default {
 }
 table {
   border-collapse: collapse;
-  margin: 0 auto;
 }
 table,table tr td {
   border: 1px solid #e4e4e4;

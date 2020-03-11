@@ -40,13 +40,18 @@
         item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop=='user_id'">
+              <span @click="handelAgent(scope.row)" class="platformchoice">{{scope.row[scope.prop]}}</span>
+            </template>
+            <template
+              v-if="['action','status','user_id'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <div>
-      <!-- 添加会员 -->
+      <!-- 修改上级 -->
       <el-dialog title="修改上级" :visible.sync="dialogAddVisible" width="30%" center>
         <el-form :model="form" ref="form">
           <el-form-item
@@ -273,6 +278,9 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
+    handelAgent(row) {
+
+    },
     /** 添加会员 */
     addUser() {
       this.dialogAddVisible = true;
@@ -285,11 +293,19 @@ export default {
 </script>
 
 <style scoped>
+#modifySupAgent-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 #modifySupAgent-main .bd p {
   margin: 0;
 }
 
-
+.platformchoice {
+  cursor: pointer;
+  color: #409eff;
+  text-decoration: underline;
+}
 .bankCard {
   width: 100%;
 }

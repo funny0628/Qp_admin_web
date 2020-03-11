@@ -1,5 +1,5 @@
 <template>
-  <div id="FlowRecordSearch-main">
+  <div id="PushFunction-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -9,16 +9,9 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.channel_id" placeholder="渠道ID" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.change_type" placeholder="变化类型" clearable size="medium">
+      <el-input v-model="format.user_nickname" placeholder="请输入用户昵称" size="medium" clearable></el-input>
+      <el-select v-model="format.active_type" placeholder="活动类型" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -40,6 +33,7 @@
       <permission-button :action="ActionType.READ" @click="search()">
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
+      <el-button type="primary" size="medium" @click="dialogFormVisible=true">推送设置</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -47,15 +41,84 @@
         :table-style="tableStyle"
         :records="tableData"
         :page-info="pageInfo"
+        :hide-page="true"
       >
-        <div>{{pageInfo}}</div>item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="dialogVisible = true"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
+              </permission-button>
+            </template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
+    <el-dialog title="新增推送" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item>
+          <table
+            style="width: 80%;border-collapse: collapse;"
+            cellspacing="0"
+            cellpadding="10"
+          >
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">通知标题</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">通知内容</td>
+              <td style="text-align: center">
+                <el-input
+                  type="textarea"
+                  row="4"
+                  v-model="form2.name"
+                  autocomplete="off"
+                  placeholder
+                ></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">推送平台</td>
+              <td style="text-align: center">
+                <el-select v-model="form.region" placeholder="请选择推送平台">
+                  <el-option label="全部" value=""></el-option>
+                  <el-option label="个人" value=""></el-option>
+                </el-select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">发送方式</td>
+              <td style="text-align: center">
+                <el-select v-model="form.region" placeholder="请选择发送方式">
+                  <el-option label="定时发送" value=""></el-option>
+                  <el-option label="每隔一段时间发送一次" value=""></el-option>
+                </el-select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">发送时间</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+          </table>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -69,7 +132,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "FlowRecordSearch",
+  name: "PushFunction",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -94,15 +157,16 @@ export default {
     return {
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
+      dialogFormVisible: false,
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
       ],
       format: {
         platform: "",
-        channel_id: "",
         user_id: "",
-        change_type: "",
+        user_nickname: "",
+        active_type: "",
         Registration_time: ""
       },
       pickerOptions: {
@@ -135,39 +199,39 @@ export default {
         ]
       },
       tableStyle: [
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "渠道号", prop: "channel_id", width: "" },
-        { label: "变化数量", prop: "change_num", width: "" },
-        { label: "变化后数量", prop: "change_after_num", width: "" },
-        { label: "变化类型", prop: "change_type", width: "" },
-        { label: "房间类型", prop: "room_type", width: "" },
-        { label: "操作人", prop: "operation_person", width: "" },
-        { label: "操作时间", prop: "operation_time", width: "" }
+        { label: "通知ID", prop: "notice_id", width: "" },
+        { label: "标题", prop: "title", width: "" },
+        { label: "内容", prop: "content", width: "" },
+        { label: "推送平台", prop: "push_platform", width: "" },
+        { label: "发送方式", prop: "send_way", width: "" },
+        { label: "开始推送时间", prop: "start_push_time", width: "" },
+        { label: "推送状态", prop: "push_status", width: "" },
+        { label: "操作人", prop: "operator", width: "" },
+        { label: "操作", prop: "operation", width: "" }
       ],
       tableData: [
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
+          notice_id: "01",
+          title: "新游上线",
+          content: "",
+          push_platform: "ios",
+          send_way: "立即发送",
+          start_push_time: "2019-10-10 13:00:00",
+          push_status: "成功",
+          operator: "",
+          operation: ""
         },
         {
-          "user_id": "1000100",
-          "nickname": "测试线",
-          "channel_id": "10001",
-          "change_num": "-5.0",
-          "change_after_num": "100.00",
-          "change_type": "100.00",
-          "room_type": "捕鱼-初级场",
-          "operation_person": "--",
-          "operation_time": "2020-01-01 12:00:00"
-        },
+          notice_id: "01",
+          title: "新游上线",
+          content: "",
+          push_platform: "ios",
+          send_way: "立即发送",
+          start_push_time: "2019-10-10 13:00:00",
+          push_status: "成功",
+          operator: "",
+          operation: ""
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -179,6 +243,9 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
+      },
+      form2: {
+          name: ""
       }
     };
   },
@@ -242,17 +309,12 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
-#FlowRecordSearch-main .bd{
-  padding-left: 20px;
-  padding-right: 20px;
-}
-#FlowRecordSearch-main .bd p {
+#PushFunction-main .bd p {
   margin: 0;
 }
 
@@ -268,5 +330,8 @@ export default {
 
 .itemClass {
   width: 45%;
+}
+table,table tr th, table tr td {
+  border: 1px solid #e9e9e9;
 }
 </style>

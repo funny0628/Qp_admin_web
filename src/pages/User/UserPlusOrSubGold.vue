@@ -1,5 +1,5 @@
 <template>
-  <div id="userList—main">
+  <div id="UserPlusOrSubGold-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -58,13 +58,12 @@
       <!-- 手动上下分 -->
       <el-dialog title="手动上下分" :visible.sync="dialogAddVisible" width="40%" center>
         <el-form :model="form" :rules="rules" ref="form">
-          <el-form-item
-            label="用户ID"
-            label-width="200px"
-            style="display: inline-block;"
-          >
+          <el-form-item label="用户ID" label-width="200px" style="display: inline-block;">
             <el-input
               type="textarea"
+              :rows="4"
+              autosize
+              resize="none"
               v-model="form.user_id"
               autocomplete="off"
               style="width: 300px;"
@@ -75,20 +74,22 @@
             <el-input v-model="form.money" autocomplete="off" style="width: 300px;"></el-input>
           </el-form-item>
           <el-form-item label="类型" label-width="200px" style="display: inline-block;">
-            <el-select v-model="form.type" placeholder clearable size="medium" style="width: 300px;">
+            <el-select
+              v-model="form.type"
+              placeholder
+              clearable
+              size="medium"
+              style="width: 300px;"
+            >
               <el-option
-                v-for="item in platforms"
+                v-for="item in typeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label= "备注"
-            label-width="200px"
-            style="display: inline-block;"
-          >
+          <el-form-item label="备注" label-width="200px" style="display: inline-block;">
             <el-input
               v-model="form.remark"
               autocomplete="off"
@@ -117,7 +118,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "UserList",
+  name: "UserPlusOrSubGold",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -149,6 +150,14 @@ export default {
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
+      ],
+      typeOptions: [
+        { value: 1, label: "增加-人工入款" },
+        { value: 2, label: "增加-彩金赠送" },
+        { value: 3, label: "增加-增加金币" },
+        { value: 4, label: "扣除-人工出款" },
+        { value: 5, label: "扣除-彩金扣除" },
+        { value: 6, label: "扣除-异常扣除" }
       ],
       operas: [
         { value: 1, label: "运营1" },
@@ -230,7 +239,7 @@ export default {
           operate_state: "手动入款"
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
+      pageInfo: new PageInfo(1, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
         agent: 100,
@@ -250,50 +259,6 @@ export default {
       //修改会员信
       activeName: "first",
       dialogModifyVisible: false, //模态框
-      userData: {},
-      userTypes: [
-        {
-          value: "1",
-          label: "代理"
-        },
-        {
-          value: "2",
-          label: "普通用户"
-        },
-        {
-          value: "3",
-          label: "游客"
-        },
-        {
-          value: "4",
-          label: "试玩"
-        },
-        {
-          value: "5",
-          label: "测试号"
-        }
-      ],
-      vips: [
-        {
-          value: "0",
-          label: "VIP1"
-        },
-        {
-          value: "1",
-          label: "VIP2"
-        }
-      ],
-      collectionData: {},
-      passwordData: {
-        loginPassword: "",
-        loginSure: "",
-        moneyPassword: "",
-        moneySure: ""
-      },
-      gameData: { game1: "", game2: "", game3: "", game4: "" },
-      banks: [],
-      provinces: [],
-      citys: [],
       //校验
       rules: {
         name: [
@@ -568,7 +533,11 @@ export default {
 </script>
 
 <style scoped>
-#userList—main .bd p {
+#UserPlusOrSubGold-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#UserPlusOrSubGold-main .bd p {
   margin: 0;
 }
 
@@ -580,10 +549,6 @@ export default {
 
 .bankCard {
   width: 100%;
-}
-
-.el-textarea .el-textarea__inner {
-  resize: none;
 }
 .itemClass {
   width: 45%;
