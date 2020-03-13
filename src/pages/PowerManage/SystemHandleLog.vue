@@ -227,6 +227,9 @@ export default {
 </script>
 
 <style scoped>
+#SystemHandleLog-main .bd {
+  padding: 0 20px;
+}
 #SystemHandleLog-main .bd p {
   margin: 0;
 }

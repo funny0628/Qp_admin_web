@@ -1,5 +1,5 @@
 <template>
-  <div id="GameRecord-main">
+  <div id="InoutcashRep-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -60,7 +60,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "GameRecord",
+  name: "InoutcashRep",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -236,7 +236,10 @@ export default {
 </script>
 
 <style scoped>
-#GameRecord-main .bd p {
+#InoutcashRep-main .bd {
+  padding: 0 20px;
+}
+#InoutcashRep-main .bd p {
   margin: 0;
 }
 

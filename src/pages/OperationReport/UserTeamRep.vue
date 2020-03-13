@@ -231,6 +231,10 @@ export default {
 </script>
 
 <style scoped>
+#UserTeamRep-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 #UserTeamRep-main .bd p {
   margin: 0;
 }

@@ -226,6 +226,9 @@ export default {
 </script>
 
 <style scoped>
+#ChannelPackageStat-main .bd {
+  padding: 0 20px;
+}
 #ChannelPackageStat-main .bd p {
   margin: 0;
 }

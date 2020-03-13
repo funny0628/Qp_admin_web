@@ -3,7 +3,7 @@
   <div id="SetAward-main">
     <div class="title">抽奖设置</div>
     <div class="content">
-      <el-form ref="form" :model="format" style="padding: 30px 0 30px 30px;">
+      <el-form ref="form" :model="format" style="padding: 30px 0 30px 30px;" label-width="120px" label-position="left">
         <el-form-item label="活动开启/关闭">
           <el-switch v-model="format.active" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>

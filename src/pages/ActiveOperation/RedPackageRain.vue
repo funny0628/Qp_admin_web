@@ -3,7 +3,7 @@
   <div id="RedPackageRain-main">
     <div class="title">红包雨活动</div>
     <div class="content">
-      <el-form :model="form2" width="40%">
+      <el-form :model="form2" style="width:30%;">
         <el-form-item>
           <table
             style="width: 80%;border-collapse: collapse;border-color: #e9e9e9"
@@ -49,7 +49,7 @@
           </table>
         </el-form-item>
       </el-form>
-      <div class="footer" style="text-align:center;">
+      <div class="footer">
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary">保 存</el-button>
       </div>

@@ -249,6 +249,9 @@ export default {
 </script>
 
 <style scoped>
+#adminList-main .bd {
+  padding: 0 20px;
+}
 #adminList-main .bd p {
   margin: 0;
 }

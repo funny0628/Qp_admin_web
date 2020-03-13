@@ -47,49 +47,40 @@
     <div>
       <!-- 新增滚动公告 -->
       <el-dialog title="新增滚动公告" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="form">
+        <el-form :model="form" label-position="left" style="padding:0 50px;">
           <el-form-item label="标题" :label-width="formLabelWidth">
-            <el-input
-              v-model="form.name"
-              autocomplete="off"
-              placeholder="请输入标题"
-              style="width: 218px;"
-            ></el-input>
+            <el-input v-model="form.title" autocomplete="off" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="播放间隔" :label-width="formLabelWidth">
-            <el-input
-              v-model="form.name"
-              autocomplete="off"
-              placeholder="播放间隔(s)"
-              style="width: 218px;"
-            ></el-input>
+            <el-input v-model="form.play_gap" autocomplete="off" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="开始时间" :label-width="formLabelWidth">
-            <el-date-picker v-model="value1" type="datetime" placeholder="选择开始时间"></el-date-picker>
+            <el-date-picker
+              width="100%"
+              v-model="form.start_time"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间" :label-width="formLabelWidth">
-            <el-date-picker v-model="value2" type="datetime" placeholder="选择结束时间"></el-date-picker>
+            <el-date-picker
+              width="100%"
+              v-model="form.end_time"
+              type="datetime"
+              placeholder="选择日期时间"
+              align="right"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="内容" :label-width="formLabelWidth">
-            <el-input
-              type="textarea"
-              row="3"
-              v-model="form.name"
-              autocomplete="off"
-              placeholder="请输入滚动公告内容"
-              style="width: 218px;"
-            ></el-input>
+            <el-input v-model="form.content" autocomplete="off" style="width:220px;"></el-input>
           </el-form-item>
-          <el-form-item label="排序" :label-width="formLabelWidth" style="width: 218px;">
-            <el-input
-              v-model="form.name"
-              autocomplete="off"
-              placeholder="数值越小越优先"
-              style="width: 218px;"
-            ></el-input>
+          <el-form-item label="排序" :label-width="formLabelWidth">
+            <el-input v-model="form.sort" autocomplete="off" style="width:220px;"></el-input>
           </el-form-item>
         </el-form>
-
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -101,31 +92,31 @@
           <el-form-item :label-width="LabelWidth">
             <table style="width: 80%;" cellspacing="0" cellpadding="10">
               <tr>
-                <td style="width: 200px;text-align: center">跑马灯内容</td>
+                <td style="width: 200px;text-align: center;background-color:#f2f2f2;">跑马灯内容</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.marquee_content" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 200px;text-align: center">播放间隔</td>
+                <td style="width: 200px;text-align: center;background-color:#f2f2f2;">播放间隔</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.play_space" autocomplete="off" placeholder="播放间隔(s)"></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 200px;text-align: center">排序</td>
+                <td style="width: 200px;text-align: center;background-color:#f2f2f2;">排序</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.sort" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 200px;text-align: center">播放开始时间</td>
+                <td style="width: 200px;text-align: center;background-color:#f2f2f2;">播放开始时间</td>
                 <td style="text-align: center">
                   <el-date-picker v-model="value1" type="datetime" placeholder="选择开始时间"></el-date-picker>
                 </td>
               </tr>
               <tr>
-                <td style="width: 200px;text-align: center">播放结束时间</td>
+                <td style="width: 200px;text-align: center;background-color:#f2f2f2;">播放结束时间</td>
                 <td style="text-align: center">
                   <el-date-picker v-model="value1" type="datetime" placeholder="选择结束时间"></el-date-picker>
                 </td>
@@ -182,7 +173,7 @@ export default {
       labelPosition: "left", //左对齐
       dialogFormVisible: false,
       dialogVisible: false,
-      formLabelWidth: "160px",
+      formLabelWidth: "100px",
       LabelWidth: "80px",
       pickerOptions: {
         shortcuts: [
@@ -270,9 +261,12 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
-        notice_type: "",
-        notice_title: "",
-        notice_time: ""
+        title: "",
+        play_gap: "",
+        start_time: "",
+        end_time: "",
+        content: "",
+        sort: ""
       },
       form2: {
         marquee_content: "",
@@ -292,9 +286,9 @@ export default {
     addUser() {
       this.dialogAddVisible = true;
     },
-    handelClick(btn,row) {
-      if(btn.type === 'edit') {
-        this.dialogFormVisible = true
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogFormVisible = true;
       }
     },
     /**获取用户列表接口 */

@@ -243,6 +243,9 @@ export default {
 </script>
 
 <style scoped>
+#ActiveGetRecord-main .bd {
+  padding: 0 20px;
+}
 #ActiveGetRecord-main .bd p {
   margin: 0;
 }

@@ -1,70 +1,38 @@
 <template>
   <div id="rankListManage-main">
-    <div class="tabs" style="margin: 20px auto 0;padding-left: 20px;">
-      <el-tabs v-model="activeName" type="card" @tab-click="switchTabs">
-        <el-tab-pane label="今日盈利排行" name="first">
-          <div class="bd">
-            <info-table
-              :search="search"
-              :table-style="tableStyle"
-              :records="tableData"
-              :page-info="pageInfo"
-            >
-              <info-table-item :table-style="tableStyle">
-                <template slot-scope="scope">
-                  <template v-if="scope.prop === 'action'">
-                    <permission-button
-                      @click="handelClick"
-                      style="cursor: pointer; padding-left: 5px;"
-                    >
-                      <span>{{scope.prop}}</span>
-                    </permission-button>
-                  </template>
-                  <template>{{scope.row[scope.prop]}}</template>
-                </template>
-              </info-table-item>
-            </info-table>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="个人业绩排行" name="second">
-          <div class="bd">
-            <info-table
-              :search="search"
-              :table-style="tableStyle"
-              :records="tableData"
-              :page-info="pageInfo"
-            >
-              <info-table-item :table-style="tableStyle">
-                <template slot-scope="scope">
-                  <template v-if="scope.prop === 'action'">
-                    <permission-button
-                      @click="handelClick"
-                      style="cursor: pointer; padding-left: 5px;"
-                    >
-                      <span>{{scope.prop}}</span>
-                    </permission-button>
-                  </template>
-                  <template>{{scope.row[scope.prop]}}</template>
-                </template>
-              </info-table-item>
-            </info-table>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="微信" name="third">微信</el-tab-pane>
-        <el-tab-pane label="云闪付" name="fourth">云闪付</el-tab-pane>
-        <el-tab-pane label="银行卡" name="five">银行卡</el-tab-pane>
-        <el-tab-pane label="QQ" name="six">QQ</el-tab-pane>
-        <el-tab-pane label="其他" name="seven">其他</el-tab-pane>
-      </el-tabs>
+    <div class="tab-btns">
+      <div
+        class="btn"
+        :class="{active : index === num}"
+        @click="btnShow(index)"
+        v-for="(item,index) in btnList"
+        :key="index"
+        style="width: 140px; line-height:36px; height: 36px; display: inline-block; padding: 0;"
+      >{{item}}</div>
+    </div>
+    <div class="tb">
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="sort" label="排名" align="center" width></el-table-column>
+        <el-table-column prop="user_id" align="center" label="用户ID"></el-table-column>
+        <el-table-column prop="nickname" align="center" label="玩家昵称"></el-table-column>
+        <el-table-column prop="user_wallet" align="center" label="用户钱包"></el-table-column>
+        <el-table-column prop="today_profit" align="center" v-if="tabIndex === 0" label="今日盈利（元）"></el-table-column>
+        <el-table-column
+          prop="today_performance"
+          align="center"
+          v-if="tabIndex === 1"
+          label="今日业绩（元）"
+        ></el-table-column>
+      </el-table>
     </div>
     <el-button
       type="primary"
-      style="position: absolute;top: 116px;right: 20px;"
+      style="position: absolute;top: 136px;right: 20px;"
       @click="dialogFormVisible=true"
     >排行榜配置</el-button>
     <el-button
       type="primary"
-      style="position: absolute;top: 116px;right: 150px;"
+      style="position: absolute;top: 136px;right: 150px;"
       @click="dialogVisible=true"
     >排行榜配置2</el-button>
     <!--排行榜配置1 -->
@@ -72,12 +40,28 @@
       <el-dialog title="排行榜配置" :visible.sync="dialogFormVisible" center>
         <el-form :model="form">
           <el-form-item label="排行榜显示" :label-width="formLabelWidth">
-            <el-button type="success">今日盈利排行</el-button>
-            <el-button
-              icon="el-icon-check"
-              style="margin-left: -5px;font-weight: bold;color: #7fcf69;"
-            ></el-button>
-            <el-button type="info">个人业绩排行</el-button>
+            <div style="display: flex;  flex-wrap:nowrap;">
+              <div class="earn">
+                <el-button
+                  :type="tabIndex === 0 ? 'success' : ''"
+                  style="border-radius: 0;"
+                  @click="tabIndex = 0"
+                >
+                  今日盈利排行
+                  <i class="el-icon-arrow-right el-icon-check"></i>
+                </el-button>
+              </div>
+              <div class="result" style="padding-left: 10px;">
+                <el-button
+                  :type="tabIndex === 1 ? 'success' : ''"
+                  style="border-radius: 0;"
+                  @click="tabIndex = 1"
+                >
+                  个人业绩排行
+                  <i class="el-icon-arrow-right el-icon-check"></i>
+                </el-button>
+              </div>
+            </div>
           </el-form-item>
           <el-form-item label="金币上榜条件" :label-width="formLabelWidth" style="display: inline-block;">
             <el-input v-model="form.name" autocomplete="off" placeholder="上榜条件(元)"></el-input>
@@ -140,11 +124,7 @@
       <el-dialog title="排行榜配置" :visible.sync="dialogVisible" width="40%" center>
         <el-form :model="form2">
           <el-form-item>
-            <table
-              width="80%"
-              cellspacing="0"
-              cellpadding="10"
-            >
+            <table width="80%" cellspacing="0" cellpadding="10">
               <tr>
                 <td style="width: 150px;text-align: center">排行榜显示</td>
                 <td style="text-align: center">
@@ -204,11 +184,7 @@
             </table>
           </el-form-item>
           <el-form-item>
-            <table
-              style="width: 80%;"
-              cellspacing="0"
-              cellpadding="10"
-            >
+            <table style="width: 80%;" cellspacing="0" cellpadding="10">
               <tr>
                 <td style="width: 150px;text-align: center">业绩上榜条件</td>
                 <td style="text-align: center">
@@ -294,35 +270,33 @@ export default {
       dialogModifyVisible: false,
       dialogVisible: false,
       labelPosition: "left", //左对齐
-      activeName: "first",
-      tableStyle: [
-        { label: "排名", prop: "sort", width: "" },
-        { label: "用户ID", prop: "user_id", width: "" },
-        { label: "玩家昵称", prop: "nickname", width: "" },
-        { label: "用户钱包", prop: "user_wallet", width: "" },
-        { label: "今日盈利(元)", prop: "today_profit", width: "" }
-      ],
+      btnList: ["今日盈利排行", "个人业绩排行"],
+      num: 0,
+      tabIndex: 0, //切换tab
       tableData: [
         {
           sort: "1",
           user_id: "10002",
           nickname: "职业玩家",
           user_wallet: "1000000.00",
-          today_profit: "1000000.00"
+          today_profit: "1000000.00",
+          today_performance: "1238.00"
         },
         {
           sort: "2",
           user_id: "10002",
           nickname: "职业玩家",
           user_wallet: "1000000.00",
-          today_profit: "1000000.00"
+          today_profit: "1000000.00",
+          today_performance: "1238.00"
         },
         {
           sort: "3",
           user_id: "10002",
           nickname: "职业玩家",
           user_wallet: "1000000.00",
-          today_profit: "1000000.00"
+          today_profit: "1000000.00",
+          today_performance: "1238.00"
         }
       ],
       records: [],
@@ -338,6 +312,10 @@ export default {
     };
   },
   methods: {
+    btnShow(index) {
+      this.tabIndex = index;
+      this.num = index;
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -408,30 +386,55 @@ export default {
 </script>
 
 <style scoped>
-#rankListManage-main .bd {
-  padding-right: 20px;
-}
-#rankListManage-main .bd p {
-  margin: 0;
-}
-
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
 table {
   border-collapse: collapse;
   margin: 0 auto;
 }
-table,table tr td {
+table,
+table tr td {
   border: 1px solid #c0c4cc;
 }
-.bankCard {
-  width: 100%;
+
+#rankListManage-main .tab-btns {
+  padding: 30px 20px 10px 20px;
 }
 
-.itemClass {
-  width: 45%;
+#rankListManage-main .tab-btns .btn {
+  line-height: 1.5;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  white-space: nowrap;
+  padding: 0 15px;
+  font-size: 14px;
+  height: 50px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  -o-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  position: relative;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+}
+
+#rankListManage-main .tab-btns .active {
+  background-color: #0079f1;
+  color: #fff;
+}
+
+#rankListManage-main .tab-btns .tab-Right {
+  float: right;
+}
+
+#rankListManage-main .tb {
+  padding: 30px 20px 10px 20px;
 }
 </style>

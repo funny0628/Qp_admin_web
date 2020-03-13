@@ -219,6 +219,9 @@ export default {
 </script>
 
 <style scoped>
+#ChannelGainOrLoseData-main .bd {
+  padding: 0 20px;
+}
 #ChannelGainOrLoseData-main .bd p {
   margin: 0;
 }

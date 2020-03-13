@@ -1,6 +1,6 @@
 <template>
   <div id="payTabControl-main">
-    <div class="tabs" style="margin: 20px auto 0;padding-left: 20px;">
+    <!-- <div class="tabs" style="margin: 20px auto 0;padding-left: 20px;">
       <el-tabs v-model="activeName" type="card" @tab-click="switchTabs">
         <el-tab-pane label="专享支付" name="first">专享支付</el-tab-pane>
         <el-tab-pane label="支付宝" name="second">
@@ -38,8 +38,41 @@
         <el-tab-pane label="QQ" name="six">QQ</el-tab-pane>
         <el-tab-pane label="其他" name="seven">其他</el-tab-pane>
       </el-tabs>
+    </div>-->
+    <div class="nav">
+      <div
+        class="nav-btn"
+        :class="{active : index === num}"
+        @click="btnShow(index)"
+        v-for="(item,index) in btnList"
+        :key="index"
+      >{{item}}</div>
     </div>
-
+    <div class="bd">
+      <info-table
+        :search="search"
+        :table-style="tableStyle"
+        :records="tableData"
+        :page-info="pageInfo"
+      >
+        <info-table-item :table-style="tableStyle">
+          <template slot-scope="scope">
+            <template v-if="scope.prop === 'action'">
+              <permission-button
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
+              </permission-button>
+            </template>
+            <template v-if="['action','status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template>
+        </info-table-item>
+      </info-table>
+    </div>
     <!--支付页签控制修改 -->
     <div>
       <el-dialog title="支付页签控制修改" :visible.sync="dialogModifyVisible" width="40%" center>
@@ -67,7 +100,16 @@
               <tr>
                 <td style="width: 120px;text-align: center;background-color:#f2f2f2;">上传页签</td>
                 <td style="text-align: center">
-                  <img src alt />
+                  <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :file-list="fileList"
+                    list-type="picture"
+                  >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
                 </td>
               </tr>
               <tr>
@@ -109,7 +151,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "PayOrderRecord",
+  name: "payTabControl",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -132,10 +174,12 @@ export default {
       }
     };
     return {
+      btnList: ["支付专享", "支付宝", "微信", "云闪付", "银行卡", "QQ", "其他"],
+      num: 0,
+      tabIndex: 0, //切换tab
       value: true,
       dialogModifyVisible: false,
       labelPosition: "left", //左对齐
-      activeName: "second",
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
@@ -226,38 +270,6 @@ export default {
           ]
         }
       ],
-      userTypes: [
-        {
-          value: "1",
-          label: "代理"
-        },
-        {
-          value: "2",
-          label: "普通用户"
-        },
-        {
-          value: "3",
-          label: "游客"
-        },
-        {
-          value: "4",
-          label: "试玩"
-        },
-        {
-          value: "5",
-          label: "测试号"
-        }
-      ],
-      vips: [
-        {
-          value: "0",
-          label: "VIP1"
-        },
-        {
-          value: "1",
-          label: "VIP2"
-        }
-      ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
@@ -272,6 +284,10 @@ export default {
     };
   },
   methods: {
+    btnShow(index) {
+      this.tabIndex = index;
+      this.num = index;
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -342,11 +358,29 @@ export default {
 </script>
 
 <style scoped>
-#payConfig-main .bd {
-  padding-left: 20px;
+#payTabControl-main .bd {
+  padding: 20px 20px 0;
 }
-#payTabControl-main .bd p {
-  margin: 0;
+#payTabControl-main .nav {
+  width: 60%;
+  margin: 20px auto 0;
+}
+.nav-btn {
+  width: 140px;
+  height: 40px;
+  line-height: 40px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #d7d7d7;
+  border-right: none;
+  cursor: pointer;
+}
+#payTabControl-main .nav .active {
+  background-color: #0079f1;
+  color: #fff;
+}
+.nav-btn:last-child {
+  border-right: 1px solid #d7d7d7;
 }
 table {
   border-collapse: collapse;

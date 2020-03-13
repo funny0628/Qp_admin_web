@@ -45,7 +45,7 @@
     <!--新增内部邮件 -->
     <div>
       <el-dialog title="新增内部邮件" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="form">
+        <el-form :model="form" label-position="left" style="padding:0 50px;">
           <el-form-item label="标题" :label-width="formLabelWidth">
             <el-input v-model="form.email_title" autocomplete="off" placeholder="请输入标题"></el-input>
           </el-form-item>
@@ -84,58 +84,58 @@
               cellpadding="10"
             >
               <tr>
-                <td style="width: 150px;text-align: center">是否全服收邮件</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">是否全服收邮件</td>
                 <td style="text-align: center">
-                  <el-select v-model="form2.all_receive" placeholder="请选择">
+                  <el-select v-model="form2.all_receive" placeholder="请选择" style="width:100%;">
                     <el-option label="是" value></el-option>
                     <el-option label="否" value></el-option>
                   </el-select>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">邮件类型</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件类型</td>
                 <td style="text-align: center">
-                  <el-select v-model="form2.email_type" placeholder="请选择">
+                  <el-select v-model="form2.email_type" placeholder="请选择" style="width:100%;">
                     <el-option label="个人" value></el-option>
                     <el-option label="系统邮件" value></el-option>
                   </el-select>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">收件人ID</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">收件人ID</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.receive_id" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">发件人昵称</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">发件人昵称</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.sender_nickname" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">邮件标题</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件标题</td>
                 <td style="text-align: center">
                   <el-input v-model="form2.email_title" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">邮件内容</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件内容</td>
                 <td style="text-align: center">
                   <el-input type="textarea" row="4" v-model="form2.email_content" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">邮件道具</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件道具</td>
                 <td style="text-align: center">
-                  <el-select v-model="form2.email_prop" placeholder="请选择">
+                  <el-select v-model="form2.email_prop" placeholder="请选择" style="width:100%;">
                     <el-option label="金币" value></el-option>
                     <el-option label="人命币" value></el-option>
                   </el-select>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">奖励数量</td>
+                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">奖励数量</td>
                 <td style="text-align: center">
                   <el-input type="textarea" row="4" v-model="form2.award_num" autocomplete="off" placeholder></el-input>
                 </td>

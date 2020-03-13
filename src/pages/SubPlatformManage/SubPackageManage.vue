@@ -47,30 +47,30 @@
                 <span></span>
               </permission-button>
             </template>
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','status'].indexOf(scope.prop)<0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <div>
       <!-- 新增子包 -->
-      <el-dialog title="添加子包" :visible.sync="dialogAddVisible" width="40%" center>
-        <el-form :model="form" ref="form">
+      <el-dialog title="添加子包" :visible.sync="dialogAddVisible" width="60%" center>
+        <el-form :model="form" label-position="left" ref="form" style="padding:20px 50px;">
           <el-form-item
             label="子包名称"
-            label-width="200px"
-            style="display: inline-block;"
+            label-width="120px"
+            style="width:100%;"
             prop="sub_platform_name"
           >
-            <el-input v-model="form.nickname" autocomplete="off" style="width: 200px;"></el-input>
+            <el-input v-model="form.nickname" autocomplete="off" style="width: 40%;"></el-input>
           </el-form-item>
           <el-form-item
             label="关联子平台"
-            label-width="200px"
-            style="display: inline-block;"
+            label-width="120px"
+            style="width:100%;"
             prop="connect_sub_platform"
           >
-            <el-select v-model="form.identity" placeholder="请选择" style="width: 200px;">
+            <el-select v-model="form.identity" placeholder="请选择" style="width: 40%;">
               <el-option
                 v-for="item in idents"
                 :key="item.value"
@@ -81,84 +81,94 @@
           </el-form-item>
           <el-form-item
             label="子包皮肤"
-            label-width="200px"
-            style="display: inline-block;"
+            label-width="120px"
+            style="width:100%;"
             prop="remark"
           >
             <div class="skin-wrap">
-              <el-radio v-model="radio" label="1">皮肤一</el-radio>
+              <p><el-radio v-model="radio" label="1">皮肤一</el-radio></p>
               <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
             <div class="skin-wrap">
-              <el-radio v-model="radio" label="1">皮肤二</el-radio>
+              <p><el-radio v-model="radio" label="1">皮肤二</el-radio></p>
               <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
             <div class="skin-wrap">
-              <el-radio v-model="radio" label="1">皮肤三</el-radio>
+              <p><el-radio v-model="radio" label="1">皮肤三</el-radio></p>
               <img class="skin" src="../../assets/img/gou.png" alt />
             </div>
           </el-form-item>
-          <el-form-item label="继承资源" label-width="200px" style="display: inline-block;" prop="type">
+          <el-form-item label="继承资源" label-width="120px" style="width:100%;" prop="type">
             <table style="border-collapse: collapse;" cellspacing="0" cellpadding="10">
               <tr>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                <td style="width:130px;">
+                  <el-checkbox v-model="checked">大厅功能配置</el-checkbox>
                 </td>
                 <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                </td>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">支付配置</el-checkbox>
+                  <el-checkbox v-model="checked">线下配置</el-checkbox>
+                  <el-checkbox v-model="checked">页签控制</el-checkbox>
+                  <el-checkbox v-model="checked">排行榜设置</el-checkbox>
+                  <el-checkbox v-model="checked">vip系统</el-checkbox>
+                  <el-checkbox v-model="checked">背景音乐设置</el-checkbox>
+                  <el-checkbox v-model="checked">默认头像</el-checkbox>
+                  <el-checkbox v-model="checked">底部菜单</el-checkbox>
+                  <el-checkbox v-model="checked">功能排序</el-checkbox>
                 </td>
               </tr>
               <tr>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                <td style="width:130px;">
+                  <el-checkbox v-model="checked">代理数据</el-checkbox>
                 </td>
                 <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">代理层级配置</el-checkbox>
+                  <el-checkbox v-model="checked">全民代理</el-checkbox>
+                  <el-checkbox v-model="checked">代理返佣</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:130px;">
+                  <el-checkbox v-model="checked">运营活动</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">充值活动</el-checkbox>
+                  <el-checkbox v-model="checked">签到活动</el-checkbox>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:130px;"> 
+                  <el-checkbox v-model="checked">系统配置</el-checkbox>
+                </td>
+                <td>
+                  <el-checkbox v-model="checked">短信平台</el-checkbox>
+                  <el-checkbox v-model="checked">iOS包签名</el-checkbox>
+                  <el-checkbox v-model="checked">openinstall</el-checkbox>
+                  <el-checkbox v-model="checked">极光推送</el-checkbox>
+                  <el-checkbox v-model="checked">微信登陆</el-checkbox>
                 </td>
               </tr>
             </table>
           </el-form-item>
-          <el-form-item label="游戏选择" label-width="200px" style="display: inline-block;" prop="type">
+          <el-form-item label="游戏选择" label-width="120px" style="width:100%;" prop="type">
             <table style="border-collapse: collapse;" cellspacing="0" cellpadding="10">
               <tr>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                <td style="width:130px;">
+                  <el-checkbox v-model="checked">自营游戏</el-checkbox>
                 </td>
                 <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">捕鱼</el-checkbox>
+                  <el-checkbox v-model="checked">斗地主</el-checkbox>
+                  <el-checkbox v-model="checked">牛牛</el-checkbox>
                 </td>
               </tr>
               <tr>
-                <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                <td style="width:130px;">
+                  <el-checkbox v-model="checked">第三方游戏</el-checkbox>
                 </td>
                 <td>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <el-checkbox v-model="checked">游戏一</el-checkbox>
+                  <el-checkbox v-model="checked">游戏二</el-checkbox>
+                  <el-checkbox v-model="checked">游戏三</el-checkbox>
                 </td>
               </tr>
             </table>
@@ -427,7 +437,9 @@ export default {
 #SubPackageManage-main .bd p {
   margin: 0;
 }
-
+p {
+  margin: 0;
+}
 .platformchoice {
   cursor: pointer;
   color: #409eff;
@@ -435,11 +447,15 @@ export default {
 }
 .skin-wrap {
   float: left;
-  width: 30%;
+  width: 20%;
 }
 .skin {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
+}
+table {
+  width: 100%;
+  height: 100%;
 }
 table,
 table tr td {

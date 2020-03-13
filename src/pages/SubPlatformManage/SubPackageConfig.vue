@@ -9,8 +9,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium">
-      </el-input>
+      <el-input v-model="format.sub_platform_name" placeholder="子平台名称" clearable size="medium"></el-input>
       <el-date-picker
         v-model="format.Registration_time"
         value-format="yyyy-MM-dd"
@@ -45,11 +44,16 @@
             </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
-                style="cursor: pointer; padding-left: 5px;">
-                <span></span>
+                :action="btn.type"
+                v-for="(btn,index) in scope.row[scope.prop]"
+                :key="index"
+                @click="handelClick(btn,scope.row)"
+                style="cursor: pointer; padding-left: 5px;"
+              >
+                <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template>{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','game_update'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -58,7 +62,7 @@
       <!-- 新增子包 -->
       <el-dialog title="新增子包" :visible.sync="dialogAddVisible" width="30%" center>
         <el-form :model="form" :rules="rules" ref="form">
-            <el-form-item label="选择子包" label-width="200px" style="display: inline-block;">
+          <el-form-item label="选择子包" label-width="200px" style="display: inline-block;">
             <el-select v-model="form.select_sub_package" placeholder="请选择子包" style="width: 200px;">
               <el-option
                 v-for="item in idents"
@@ -68,27 +72,11 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="版本号"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.version"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
+          <el-form-item label="版本号" label-width="200px" style="display: inline-block;">
+            <el-input v-model="form.version" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
-          <el-form-item
-            label="更新类型"
-            label-width="200px"
-            style="display: inline-block;"
-          >
-            <el-input
-              v-model="form.update_type"
-              autocomplete="off"
-              style="width: 200px;"
-            ></el-input>
+          <el-form-item label="更新类型" label-width="200px" style="display: inline-block;">
+            <el-input v-model="form.update_type" autocomplete="off" style="width: 200px;"></el-input>
           </el-form-item>
           <el-form-item label="游戏名称" label-width="200px" style="display: inline-block;">
             <el-select v-model="form.game_name" style="width: 200px;">
@@ -228,7 +216,7 @@ export default {
           game_update: "0",
           remark: "",
           update_time: "2019-01-01 12:00:00"
-        },
+        }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -246,7 +234,10 @@ export default {
         { value: "4", label: "试玩" },
         { value: "5", label: "测试号" }
       ],
-      options: [{value: "1", label: "冻结"}, {value: "2", label: "启用"}],
+      options: [
+        { value: "1", label: "冻结" },
+        { value: "2", label: "启用" }
+      ],
       //修改会员信
       activeName: "first",
       dialogModifyVisible: false, //模态框
@@ -393,31 +384,31 @@ export default {
   text-decoration: underline;
 }
 .skin-wrap {
-    float: left;
-    width: 30%;
+  float: left;
+  width: 30%;
 }
 .skin {
-    width: 60px;
-    height: 60px;
+  width: 60px;
+  height: 60px;
 }
 table {
-    border-collapse:collapse;
+  border-collapse: collapse;
 }
 .start {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #0077f9;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #0077f9;
+  color: #ffffff;
 }
 .freeze {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    background-color: #ff001e;
-    color: #ffffff;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ff001e;
+  color: #ffffff;
 }
 
 .bankCard {

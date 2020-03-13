@@ -1,7 +1,13 @@
 <template>
   <div id="OnlinePlay-main">
     <input-area>
-      <el-select v-model="format.platform" placeholder="平台" clearable size="medium" style="float: left">
+      <el-select
+        v-model="format.platform"
+        placeholder="平台"
+        clearable
+        size="medium"
+        style="float: left"
+      >
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -10,7 +16,13 @@
         ></el-option>
       </el-select>
       <div class="nav" style="float: left;margin-left: 200px;">
-          <div class="nav-item" :class="{active: currentIndex === index}" v-for="(item,index) in navData" :key="index" @click="showTab(item,index)">{{item}}</div>
+        <div
+          class="nav-item"
+          :class="{active: currentIndex === index}"
+          v-for="(item,index) in navData"
+          :key="index"
+          @click="showTab(index)"
+        >{{item}}</div>
       </div>
     </input-area>
     <div class="bd">
@@ -71,9 +83,9 @@ export default {
         { value: 2, label: "平台2" }
       ],
       format: {
-        platform: "",
+        platform: ""
       },
-      navData: ["新增留存","活跃留存","付费留存","回流用户留存"],
+      navData: ["新增留存", "活跃留存", "付费留存", "回流用户留存"],
       tableStyle: [
         { label: "日期", prop: "user_id", width: "" },
         { label: "新增用户", prop: "nickname", width: "" },
@@ -86,7 +98,7 @@ export default {
         { label: "7天", prop: "leave_time", width: "" },
         { label: "15天", prop: "leave_time", width: "" },
         { label: "30天", prop: "leave_time", width: "" },
-        { label: "45天", prop: "leave_time", width: "" },
+        { label: "45天", prop: "leave_time", width: "" }
       ],
       tableData: [
         {
@@ -120,9 +132,8 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    showTab(item,index) {
-        this.currentIndex = index
-        this.currentItem = item
+    showTab(index) {
+      this.currentIndex = index;
     },
     /**获取用户列表接口 */
     userList(data, user_id) {
@@ -177,34 +188,37 @@ export default {
       });
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 
 <style scoped>
 #OnlinePlay-main .bd {
-    padding-left: 20px;
-    padding-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 #OnlinePlay-main .bd p {
   margin: 0;
 }
 .nav-item {
-    width: 130px;
-    height: 50px;
-    border: 1px solid #d7d7d7;
-    line-height: 30px;
-    font-weight: normal;
-    text-align: center;
-    padding: 10px;
-    box-sizing: border-box;
-    float: left;
-    cursor: pointer;
+  width: 130px;
+  height: 50px;
+  border: 1px solid #d7d7d7;
+  border-right: none;
+  line-height: 30px;
+  font-weight: normal;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+  float: left;
+  cursor: pointer;
+}
+.nav-item:last-child {
+  border: 1px solid #d7d7d7;
 }
 .active {
-    background-color: #6298fb;
-    color: #fff;
+  background-color: #6298fb;
+  color: #fff;
 }
 .platformchoice {
   cursor: pointer;

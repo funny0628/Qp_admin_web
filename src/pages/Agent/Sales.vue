@@ -33,10 +33,10 @@
       </info-table>
     </div>
     <div class="dialog">
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="25%" center>
         <el-form :model="dataForm" ref="dataForm">
           <el-form-item label="代理级别" :label-width="labelWidth" prop="min_pre">
-            <el-select v-model="dataForm.agent_class">
+            <el-select v-model="dataForm.agent_class" style="width:100%;">
               <el-option label="级别一" value="shanghai"></el-option>
               <el-option label="级别二" value="beijing"></el-option>
             </el-select>
@@ -133,5 +133,9 @@ export default {
 #Sales-main .bd {
   padding-left: 20px;
   padding-right: 20px;
+}
+#home .main-box .el-button--primary,
+#home .el-main .el-button--info {
+  margin-left: 0;
 }
 </style>

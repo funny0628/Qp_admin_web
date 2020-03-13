@@ -37,6 +37,9 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop === 'popular_template'">
+              <img :src="scope.row[scope.prop]" alt style="width: 50px;height: 50px" />
+            </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
                 :action="btn.type"
@@ -48,7 +51,9 @@
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','popular_template'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -58,25 +63,32 @@
         <el-form-item label-width="120px">
           <table style="width: 80%;border-collapse: collapse;" cellspacing="0" cellpadding="10">
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">模板名称</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">模板名称</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">添加推广域名</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">添加推广域名</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">上传推广图片</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">上传推广图片</td>
               <td style="text-align: center">
-                
+                <el-upload
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleRemove"
+                >
+                  <i class="el-icon-plus"></i>
+                </el-upload>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">备注</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">备注</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
@@ -100,6 +112,7 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+// import imgPath from '../../assets/img/gou.png'
 export default {
   name: "popularizeConf",
   extends: BaseIframe,
@@ -179,7 +192,8 @@ export default {
         {
           serial_number: "01",
           template_name: "新游上线",
-          popular_template: "",
+          popular_template:
+            "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3173584241,3533290860&fm=26&gp=0.jpg",
           popular_link: "www.baidu.com",
           create_time: "2019-10-10 13:00:00",
           remark: "",
@@ -191,7 +205,7 @@ export default {
         {
           serial_number: "01",
           template_name: "新游上线",
-          popular_template: "",
+          popular_template: require("../../assets/img/gou.png"),
           popular_link: "ios",
           create_time: "立即发送",
           remark: "2019-10-10 13:00:00",
@@ -282,6 +296,9 @@ export default {
 </script>
 
 <style scoped>
+#popularizeConf-main .bd {
+  padding: 0 20px;
+}
 #popularizeConf-main .bd p {
   margin: 0;
 }

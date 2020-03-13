@@ -129,4 +129,11 @@ export default {
 </script>
 
 <style scoped>
+#Commission-main .bd {
+  padding: 0 20px;
+}
+#home .main-box .el-button--primary,
+#home .el-main .el-button--info {
+  margin-left: 0;
+}
 </style>

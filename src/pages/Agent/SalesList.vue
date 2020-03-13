@@ -159,5 +159,8 @@ export default {
 </script>
 
 <style scoped>
+#SalesList .bd {
+  padding: 0 20px;
+}
 </style>
 <!--业绩返佣列表-->

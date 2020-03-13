@@ -1,5 +1,5 @@
 <template>
-  <div id="ChannelPackageStat-main">
+  <div id="ChannelPackageMan-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -54,9 +54,8 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}
-            </template>
+              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -68,64 +67,66 @@
           <tr>
             <td style="width: 100px;text-align: center">渠道号</td>
             <td style="text-align: center">
-                <el-input placeholder="请输入渠道号"></el-input>
+              <el-input placeholder="请输入渠道号"></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">包名</td>
             <td style="text-align: center">
-                <el-input placeholder="请输入包名"></el-input>
+              <el-input placeholder="请输入包名"></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">唯一标识</td>
             <td style="text-align: center">
-                <el-input placeholder=""></el-input>
+              <el-input placeholder></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">所属代理</td>
             <td style="text-align: center">
-                <el-input placeholder="请输入代理ID"></el-input>
+              <el-input placeholder="请输入代理ID"></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">下载地址</td>
             <td style="text-align: center">
-                <el-input placeholder=""></el-input>
+              <el-input placeholder></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">设备类型</td>
             <td style="text-align: center">
               <el-select placeholder="请选择设备类型" style="width: 100%;">
-                <el-option label="设备一" value=""></el-option>
-                <el-option label="设备二" value=""></el-option>
+                <el-option label="设备一" value></el-option>
+                <el-option label="设备二" value></el-option>
               </el-select>
             </td>
           </tr>
-           <tr>
+          <tr>
             <td style="width: 100px;text-align: center">游戏开放</td>
             <td>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
-              <el-checkbox>游戏一</el-checkbox>
+              <el-checkbox-group v-model="checkGameList">
+                <el-checkbox label="游戏1"></el-checkbox>
+                <el-checkbox label="游戏2"></el-checkbox>
+                <el-checkbox label="游戏3"></el-checkbox>
+                <el-checkbox label="游戏4"></el-checkbox>
+                <el-checkbox label="游戏5"></el-checkbox>
+                <el-checkbox label="游戏6"></el-checkbox>
+              </el-checkbox-group>
             </td>
           </tr>
           <tr>
             <td style="width: 100px;text-align: center">皮肤选择</td>
             <td>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
-              <el-checkbox>皮肤一</el-checkbox>
+              <el-checkbox-group v-model="checkSkinList">
+                <el-checkbox label="皮肤1"></el-checkbox>
+                <el-checkbox label="皮肤2"></el-checkbox>
+                <el-checkbox label="皮肤3"></el-checkbox>
+                <el-checkbox label="皮肤4"></el-checkbox>
+                <el-checkbox label="皮肤5"></el-checkbox>
+                <el-checkbox label="皮肤6"></el-checkbox>
+              </el-checkbox-group>
             </td>
           </tr>
         </table>
@@ -148,7 +149,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "ChannelPackageStat",
+  name: "ChannelPackageMan",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -172,6 +173,8 @@ export default {
     };
     return {
       labelPosition: "left", //左对齐
+      checkGameList: ["游戏1", "游戏2"],
+      checkSkinList: ["皮肤1", "皮肤2"],
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
@@ -234,7 +237,7 @@ export default {
           leave_time: "2019-12-10 13:00:00",
           action: [
             { label: "编辑", type: "edit" },
-            { label: "禁用", type: "ban" },
+            { label: "禁用", type: "ban" }
           ]
         },
         {
@@ -247,7 +250,7 @@ export default {
           leave_time: "2019-12-10 13:00:00",
           action: [
             { label: "编辑", type: "edit" },
-            { label: "禁用", type: "ban" },
+            { label: "禁用", type: "ban" }
           ]
         }
       ],
@@ -263,9 +266,9 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    handelClick(btn,row) {
-      if(btn.type === 'edit') {
-        this.dialogFormVisible = true
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogFormVisible = true;
       }
     },
     /**获取用户列表接口 */
@@ -326,14 +329,18 @@ export default {
 </script>
 
 <style scoped>
-#ChannelPackageStat-main .bd p {
+#ChannelPackageMan-main .bd {
+  padding: 0 20px;
+}
+#ChannelPackageMan-main .bd p {
   margin: 0;
 }
 table {
   border-collapse: collapse;
 }
-table,table tr td {
-  border: 1px solid #c0c4cc;;
+table,
+table tr td {
+  border: 1px solid #c0c4cc;
 }
 .platformchoice {
   cursor: pointer;

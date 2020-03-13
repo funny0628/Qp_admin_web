@@ -235,6 +235,10 @@ export default {
 </script>
 
 <style scoped>
+#GameRep-main .bd {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 #GameRep-main .bd p {
   margin: 0;
 }

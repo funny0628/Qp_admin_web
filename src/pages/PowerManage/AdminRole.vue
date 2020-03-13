@@ -17,6 +17,10 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="'status'.indexOf(scope.prop) >= 0">
+              <span class="start" v-if="scope.row[scope.prop]  == 1">启用</span>
+              <span class="freeze" v-else>禁用</span>
+            </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
                 :action="btn.type"
@@ -28,7 +32,7 @@
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -39,19 +43,19 @@
         <el-form-item label-width="120px">
           <table style="width: 80%;border-collapse: collapse;" cellspacing="0" cellpadding="10">
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">角色名称</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色名称</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">角色描述</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色描述</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">角色状态</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色状态</td>
               <td style="text-align: center">
                 <el-select v-model="form2.status">
                   <el-option
@@ -81,10 +85,19 @@
               <tr>
                 <td style="width: 150px;text-align: center;">子平台设置</td>
                 <td style="text-align: center">
-                  <el-checkbox>全部</el-checkbox>
+                  <el-checkbox
+                    style="float:left;margin-right:20px;margin-left:110px;"
+                    :indeterminate="isIndeterminate"
+                    v-model="checkAll"
+                    @change="handleCheckAllChange"
+                  >全选</el-checkbox>
+                  <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange" style="float:left;">
+                    <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+                  </el-checkbox-group>
+                  <!-- <el-checkbox>全部</el-checkbox>
                   <el-checkbox>添加</el-checkbox>
                   <el-checkbox>编辑</el-checkbox>
-                  <el-checkbox>删除</el-checkbox>
+                  <el-checkbox>删除</el-checkbox>-->
                 </td>
               </tr>
               <tr>
@@ -375,13 +388,17 @@ import InputArea from "../../plugin/components/InputArea";
 import tierHandler from "./../../script/handlers/tierHandler";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import storage from "./../../script/storage/storage";
-
+const cityOptions = ["添加", "编辑", "删除"];
 export default {
   name: "Admin",
   extends: BaseIframe,
   components: { InputArea, PermissionButton, InfoTable, InfoTableItem },
   data() {
     return {
+      checkAll: false,
+      checkedCities: ["添加"],
+      cities: cityOptions,
+      isIndeterminate: true,
       //表格数据
       tableStyle: [
         { label: "序号", prop: "serial_number", width: "" },
@@ -399,7 +416,20 @@ export default {
           role_state: "无法删除",
           create_time: "2020-02-02 12:00:00",
           update_time: "2020-03-01 10:00:00",
-          status: "启用",
+          status: "0",
+          action: [
+            { label: "编辑", type: "edit" },
+            { label: "权限", type: "admin" },
+            { label: "删除", type: "delete" }
+          ]
+        },
+        {
+          serial_number: "1",
+          role_name: "超级管理员",
+          role_state: "无法删除",
+          create_time: "2020-02-02 12:00:00",
+          update_time: "2020-03-01 10:00:00",
+          status: "1",
           action: [
             { label: "编辑", type: "edit" },
             { label: "权限", type: "admin" },
@@ -427,29 +457,15 @@ export default {
         "跑马灯配置",
         "邮件系统"
       ],
-      operationRepItem: [
-        "用户团队报表",
-        "游戏报表",
-        "平台报表",
-        "出入款报表"
-      ],
+      operationRepItem: ["用户团队报表", "游戏报表", "平台报表", "出入款报表"],
       channelPackageManItem: [
         "渠道统计",
         "渠道管理",
         "渠道盈亏数据",
         "渠道支付设置"
       ],
-      agentDataItem: [
-        "代理层级",
-        "全民代理列表",
-        "业绩返佣",
-        "业绩返佣列表"
-      ],
-      dataAnaylzeItem: [
-        "在线在玩",
-        "留存分析",
-        "代理日新增收益"
-      ],
+      agentDataItem: ["代理层级", "全民代理列表", "业绩返佣", "业绩返佣列表"],
+      dataAnaylzeItem: ["在线在玩", "留存分析", "代理日新增收益"],
       activeOperationItem: [
         "充值优惠",
         "每日签到",
@@ -459,16 +475,8 @@ export default {
         "投注返水活动",
         "活动领取记录"
       ],
-      systemConfItem: [
-        "推送功能",
-        "属性配置",
-        "推广配置"
-      ],
-      powerManItem: [
-        "管理员角色",
-        "管理员列表",
-        "系统操作日志"
-      ],
+      systemConfItem: ["推送功能", "属性配置", "推广配置"],
+      powerManItem: ["管理员角色", "管理员列表", "系统操作日志"],
       pageInfo: new PageInfo(4, [5, 10, 15], 4),
       //新增、编辑数据
       dialogTitleType: "",
@@ -487,6 +495,16 @@ export default {
     };
   },
   methods: {
+    handleCheckAllChange(val) {
+      this.checkedCities = val ? cityOptions : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedCitiesChange(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.cities.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.cities.length;
+    },
     search() {},
     //新增代理层
     handelAddClick() {
@@ -576,6 +594,9 @@ export default {
 </script>
 
 <style scoped>
+#Admin-main .bd {
+  padding: 0 20px;
+}
 .title {
   height: 35px;
   line-height: 35px;
@@ -587,5 +608,29 @@ export default {
   padding: 20px;
   border: 1px solid #e4e4e4;
   border-top: none;
+}
+#home .main-box .el-button--primary,
+#home .el-main .el-button--info {
+  margin-left: 0;
+}
+table {
+  border-collapse: collapse;
+}
+table,
+table tr th,
+table tr td {
+  border: 1px solid #e9e9e9;
+}
+.start,
+.freeze {
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #0077f9;
+  color: #ffffff;
+}
+.freeze {
+  background-color: #ff001e;
 }
 </style>

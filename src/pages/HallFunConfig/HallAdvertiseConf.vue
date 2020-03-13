@@ -40,75 +40,142 @@
     <!--新增大厅海报 -->
     <div>
       <el-dialog title="新增大厅海报" :visible.sync="dialogFormVisible" center>
-        <el-form :model="form">
-          <table>
-            <tr>
-              <td style="width: 50%;">
-                <el-form-item label="标题" :label-width="formLabelWidth">
-                  <el-input v-model="form.name" autocomplete="off" placeholder="请输入标题"></el-input>
-                </el-form-item>
-              </td>
-              <td style="width: 50%;">
-                <el-form-item label="海报类型" :label-width="formLabelWidth">
-                  <el-select v-model="form.region" placeholder="请选择海报类型">
-                    <el-option label="轮播海报" value="lunPoster"></el-option>
-                    <el-option label="活动海报" value="activePoster"></el-option>
-                    <el-option label="绑定手机海报" value="bangdingPoster"></el-option>
-                  </el-select>
-                </el-form-item>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <el-form-item label="上传海报" :label-width="formLabelWidth">
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </el-form-item>
-              </td>
-              <td>
-                <el-form-item label="动作类型" :label-width="formLabelWidth">
-                  <el-select v-model="form.region" placeholder="请选择动作类型">
-                    <el-option label="跳转" value="lunPoster"></el-option>
-                    <el-option label="复制" value="activePoster"></el-option>
-                    <el-option label="加入游戏" value="bangdingPoster"></el-option>
-                  </el-select>
-                </el-form-item>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <el-form-item label="用户分层" :label-width="formLabelWidth">
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                  <el-checkbox v-model="checked">vip1</el-checkbox>
-                </el-form-item>
-              </td>
-              <td>
-                <el-form-item label="备注" :label-width="formLabelWidth">
-                  <el-input v-model="form.name" autocomplete="off" placeholder="请输入备注信息"></el-input>
-                </el-form-item>
-              </td>
-            </tr>
-            <tr>
-              <td style="width: 50%;">
-                <el-form-item label="排序" :label-width="formLabelWidth">
-                  <el-input v-model="form.name" autocomplete="off" placeholder="请输入"></el-input>
-                </el-form-item>
-              </td>
-              <td></td>
-            </tr>
-          </table>
+        <el-form :model="form" label-position="left">
+          <!-- <table id="addPoster">
+              <tr>
+                <td style="width: 50%;">
+                  <el-form-item label="标题" :label-width="formLabelWidth">
+                    <el-input
+                      v-model="form.name"
+                      autocomplete="off"
+                      placeholder="请输入标题"
+                      style="width: 80%;"
+                    ></el-input>
+                  </el-form-item>
+                </td>
+                <td style="width: 50%;">
+                  <el-form-item label="海报类型" :label-width="formLabelWidth">
+                    <el-select v-model="form.region" placeholder="请选择海报类型">
+                      <el-option label="轮播海报" value="lunPoster"></el-option>
+                      <el-option label="活动海报" value="activePoster"></el-option>
+                      <el-option label="绑定手机海报" value="bangdingPoster"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <el-form-item label="上传海报" :label-width="formLabelWidth" width="100%">
+                    <el-upload
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      list-type="picture-card"
+                      :on-preview="handlePictureCardPreview"
+                      :on-remove="handleRemove"
+                    >
+                      <i class="el-icon-plus"></i>
+                    </el-upload>
+                  </el-form-item>
+                </td>
+                <td>
+                  <el-form-item label="动作类型" :label-width="formLabelWidth">
+                    <el-select v-model="form.region" placeholder="请选择动作类型">
+                      <el-option label="跳转" value="lunPoster"></el-option>
+                      <el-option label="复制" value="activePoster"></el-option>
+                      <el-option label="加入游戏" value="bangdingPoster"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <el-form-item label="用户分层" :label-width="formLabelWidth">
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                    <el-checkbox v-model="checked">vip1</el-checkbox>
+                  </el-form-item>
+                </td>
+                <td>
+                  <el-form-item label="备注" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off" placeholder="请输入备注信息"></el-input>
+                  </el-form-item>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 50%;">
+                  <el-form-item label="排序" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off" placeholder="请输入"></el-input>
+                  </el-form-item>
+                </td>
+                <td></td>
+              </tr>
+          </table>-->
+          <el-row :gutter="40">
+            <el-col :span="12">
+              <el-form-item label="标题" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off" placeholder="请输入标题" style="width: 200px;"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="海报类型" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="请选择海报类型">
+                  <el-option label="轮播海报" value="lunPoster"></el-option>
+                  <el-option label="活动海报" value="activePoster"></el-option>
+                  <el-option label="绑定手机海报" value="bangdingPoster"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="40">
+            <el-col :span="12">
+              <el-form-item label="上传海报" :label-width="formLabelWidth">
+                <el-upload
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleRemove"
+                >
+                  <i class="el-icon-plus"></i>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="动作类型" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="请选择动作类型">
+                  <el-option label="跳转" value="lunPoster"></el-option>
+                  <el-option label="复制" value="activePoster"></el-option>
+                  <el-option label="加入游戏" value="bangdingPoster"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="40">
+            <el-col :span="12">
+              <el-form-item label="用户分层" :label-width="formLabelWidth">
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+                <el-checkbox v-model="checked">vip1</el-checkbox>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="备注" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off" placeholder="请输入备注信息" style="width: 200px;"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="40">
+            <el-col :span="12">
+              <el-form-item label="排序" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off" placeholder="请输入" style="width: 200px;"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12"></el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -121,7 +188,7 @@
       <el-dialog title="添加宣传页" :visible.sync="dialogVisible" width="40%" center>
         <el-form :model="form2">
           <el-form-item>
-            <table style="width: 80%;" cellspacing="0" cellpadding="10">
+            <table style="width: 80%;" cellspacing="0" cellpadding="10" border="1">
               <tr>
                 <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择渠道</td>
                 <td style="text-align: center">
@@ -407,7 +474,10 @@ export default {
 #HallAdvertiseConf-main .bd p {
   margin: 0;
 }
-
+#addPoster,
+#addPoster tr td {
+  border: none;
+}
 .platformchoice {
   cursor: pointer;
   color: #409eff;
@@ -427,28 +497,5 @@ table tr td {
 
 .itemClass {
   width: 45%;
-}
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>

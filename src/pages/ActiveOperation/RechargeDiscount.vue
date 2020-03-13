@@ -3,7 +3,7 @@
   <div id="RechargeDiscount-main">
     <div class="title" style="background-color: #f2f2f2;">充值活动配置</div>
     <div class="content">
-      <el-form :model="form2" width="40%">
+      <el-form :model="form2" style="width:30%;">
         <el-form-item>
           <div>注册送</div>
           <table
@@ -78,7 +78,7 @@
           </table>
         </el-form-item>
       </el-form>
-      <div class="footer" style="text-align:center;">
+      <div class="footer">
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary">保 存</el-button>
       </div>

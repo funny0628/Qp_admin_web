@@ -136,7 +136,9 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler.add(data).promise.then(res => {
+            tierHandler
+              .add(data)
+              .promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
                 }
@@ -155,7 +157,9 @@ export default {
               tier_name: this.dataForm.hierarchy_name,
               tier_alias: this.dataForm.alias
             };
-            tierHandler.set(data).promise.then(res => {
+            tierHandler
+              .set(data)
+              .promise.then(res => {
                 if (Number(res.code) === 200) {
                   this.$message.success(res.msg);
                 }
@@ -179,4 +183,14 @@ export default {
 </script>
 
 <style scoped>
+#Level-main .bd {
+  padding: 0 20px;
+}
+#Level-main .bd p {
+  margin: 0;
+}
+#home .main-box .el-button--primary,
+#home .el-main .el-button--info {
+  margin-left: 0;
+}
 </style>

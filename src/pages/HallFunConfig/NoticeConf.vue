@@ -41,20 +41,20 @@
     </div>
     <div>
       <!-- 新增公告 -->
-      <el-dialog title="新增公告" :visible.sync="dialogFormVisible" center>
+      <el-dialog title="新增公告" :visible.sync="dialogFormVisible" center width="40%">
         <el-form :model="form">
-          <el-form-item>
+          <el-form-item label-width="120px">
             <table style="width: 80%;" cellspacing="0" cellpadding="10">
               <tr>
-                <td style="width: 150px;text-align: center">公告标题</td>
-                <td style="text-align: center">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">公告标题</td>
+                <td style="text-align: center;">
                   <el-input v-model="form.notice_title" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">公告类型</td>
-                <td style="text-align: center">
-                  <el-select v-model="form.notice_type" placeholder="请选择公告类型">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">公告类型</td>
+                <td style="text-align: center;">
+                  <el-select v-model="form.notice_type" placeholder="请选择公告类型" style="width:100%;">
                     <el-option label="文字公告" value></el-option>
                     <el-option label="图片公告" value></el-option>
                     <el-option label="游戏公告" value></el-option>
@@ -62,14 +62,14 @@
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">公告时间</td>
-                <td style="text-align: center">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">公告时间</td>
+                <td style="text-align: center;">
                   <el-input v-model="form.notice_time" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">公告内容</td>
-                <td style="text-align: center">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">公告内容</td>
+                <td>
                   <quill-editor
                     v-model="content"
                     ref="myQuillEditor"
@@ -77,18 +77,19 @@
                     @blur="onEditorBlur($event)"
                     @focus="onEditorFocus($event)"
                     @ready="onEditorReady($event)"
+                    style="width:100%;height:100%;"
                   ></quill-editor>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">排序</td>
-                <td style="text-align: center">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">排序</td>
+                <td style="text-align: center;">
                   <el-input v-model="form.notice_time" autocomplete="off" placeholder></el-input>
                 </td>
               </tr>
               <tr>
-                <td style="width: 150px;text-align: center">状态</td>
-                <td style="text-align: center">
+                <td style="width: 150px;text-align: center;background-color: #f2f2f2;">状态</td>
+                <td style="text-align: center;">
                   <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
                 </td>
               </tr>
@@ -204,6 +205,12 @@ export default {
         notice_type: "",
         notice_title: "",
         notice_time: ""
+      },
+      content: null,
+      editorOption: {
+        modules: {
+          toolbar: [["image"]]
+        }
       }
     };
   },
@@ -218,9 +225,9 @@ export default {
     addUser() {
       this.dialogAddVisible = true;
     },
-    handelClick(btn,row) {
-      if(btn.type === 'edit') {
-        this.dialogFormVisible = true
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogFormVisible = true;
       }
     },
     /**获取用户列表接口 */

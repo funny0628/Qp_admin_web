@@ -44,9 +44,9 @@
         <el-form :model="form">
           <el-form-item>
             <el-table :data="tableData" border style="width: 100%">
-              <el-table-column prop="channel_id" label="渠道ID"></el-table-column>
-              <el-table-column prop="channel_name" label="渠道名称"></el-table-column>
-              <el-table-column prop="fun_1" label="功能1">
+              <el-table-column align="center" prop="channel_id" label="渠道ID"></el-table-column>
+              <el-table-column align="center" prop="channel_name" label="渠道名称"></el-table-column>
+              <el-table-column align="center" prop="fun_1" label="功能1">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -58,7 +58,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_2" label="功能2">
+              <el-table-column align="center" prop="fun_2" label="功能2">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -70,7 +70,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_3" label="功能3">
+              <el-table-column align="center" prop="fun_3" label="功能3">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -82,7 +82,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_4" label="功能4">
+              <el-table-column align="center" prop="fun_4" label="功能4">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -94,7 +94,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_5" label="功能5">
+              <el-table-column align="center" prop="fun_5" label="功能5">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -106,7 +106,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_6" label="功能6">
+              <el-table-column align="center" prop="fun_6" label="功能6">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option
@@ -118,7 +118,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column prop="fun_7" label="功能7">
+              <el-table-column align="center" prop="fun_7" label="功能7">
                 <template slot-scope="scope">
                   <el-select size="medium" v-model="scope.row.fun_1">
                     <el-option

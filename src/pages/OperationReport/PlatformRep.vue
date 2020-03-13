@@ -1,5 +1,5 @@
 <template>
-  <div id="GameRep-main">
+  <div id="PlatformRep-main">
     <input-area>
       <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
         <el-option
@@ -59,7 +59,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "GameRep",
+  name: "PlatformRep",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -225,7 +225,10 @@ export default {
 </script>
 
 <style scoped>
-#GameRep-main .bd p {
+#PlatformRep-main .bd {
+  padding: 0 20px;
+}
+#PlatformRep-main .bd p {
   margin: 0;
 }
 

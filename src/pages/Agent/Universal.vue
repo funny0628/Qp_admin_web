@@ -1,4 +1,4 @@
-<!--全民返佣-->
+<!--全民代理列表-->
 <template>
   <div id="Universal">
     <input-area>
@@ -92,7 +92,7 @@
     <el-dialog title="设置比例" :visible.sync="dialogModelVisible" width="30%" center>
       <el-form :model="form" ref="form">
         <el-form-item>
-          <table border="1" style="border-color: #c0c4cc;" cellspacing="0" cellpadding="10">
+          <table cellspacing="0" cellpadding="10">
             <tr>
               <td style="width: 120px;text-align: center">税收返利比例</td>
               <td style="text-align: center">
@@ -209,5 +209,14 @@ export default {
 </script>
 
 <style scoped>
+#Universal .bd {
+  padding: 0 20px;
+}
+table {
+  border-collapse: collapse;
+}
+table,table tr td {
+  border: 1px solid #c0c4cc;
+}
 </style>
 <!--全民返佣-->

@@ -45,6 +45,11 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="'push_status'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  == 1" style="color: #0077f9;">成功</span>
+              <span v-if="scope.row[scope.prop]  == 2" style="color: #ff9a2c;">待推送</span>
+              <span v-if="scope.row[scope.prop]  == 0" style="color: #ff001e;">失败</span>
+            </template>
             <template v-if="scope.prop === 'action'">
               <permission-button
                 :action="btn.type"
@@ -56,27 +61,27 @@
                 <span>{{btn.label}}</span>
               </permission-button>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','push_status'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
-    <el-dialog title="新增推送" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增推送" :visible.sync="dialogFormVisible" width="30%" center>
       <el-form :model="form">
-        <el-form-item>
+        <el-form-item label-width="100px">
           <table
             style="width: 80%;border-collapse: collapse;"
             cellspacing="0"
             cellpadding="10"
           >
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">通知标题</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">通知标题</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">通知内容</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">通知内容</td>
               <td style="text-align: center">
                 <el-input
                   type="textarea"
@@ -88,25 +93,25 @@
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">推送平台</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">推送平台</td>
               <td style="text-align: center">
-                <el-select v-model="form.region" placeholder="请选择推送平台">
+                <el-select v-model="form.region" placeholder="请选择推送平台" style="width:100%;">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="个人" value=""></el-option>
                 </el-select>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">发送方式</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">发送方式</td>
               <td style="text-align: center">
-                <el-select v-model="form.region" placeholder="请选择发送方式">
+                <el-select v-model="form.region" placeholder="请选择发送方式" style="width:100%;">
                   <el-option label="定时发送" value=""></el-option>
                   <el-option label="每隔一段时间发送一次" value=""></el-option>
                 </el-select>
               </td>
             </tr>
             <tr>
-              <td style="width: 150px;text-align: center;background-color: #f2f2f2;">发送时间</td>
+              <td style="width: 120px;text-align: center;background-color: #f2f2f2;">发送时间</td>
               <td style="text-align: center">
                 <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
               </td>
@@ -217,7 +222,7 @@ export default {
           push_platform: "ios",
           send_way: "立即发送",
           start_push_time: "2019-10-10 13:00:00",
-          push_status: "成功",
+          push_status: "0",
           operator: "",
           operation: ""
         },
@@ -228,7 +233,18 @@ export default {
           push_platform: "ios",
           send_way: "立即发送",
           start_push_time: "2019-10-10 13:00:00",
-          push_status: "成功",
+          push_status: "1",
+          operator: "",
+          operation: ""
+        },
+        {
+          notice_id: "01",
+          title: "新游上线",
+          content: "",
+          push_platform: "ios",
+          send_way: "立即发送",
+          start_push_time: "2019-10-10 13:00:00",
+          push_status: "2",
           operator: "",
           operation: ""
         }
@@ -314,6 +330,9 @@ export default {
 </script>
 
 <style scoped>
+#PushFunction-main .bd {
+  padding: 0 20px;
+}
 #PushFunction-main .bd p {
   margin: 0;
 }

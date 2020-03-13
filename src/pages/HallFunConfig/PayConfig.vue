@@ -85,13 +85,14 @@
               <tr>
                 <td style="width: 100px;text-align: center;background-color:#f2f2f2;">绑定分层</td>
                 <td>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
-                  <el-checkbox>备选项</el-checkbox>
+                  <el-checkbox-group v-model="checkList">
+                    <el-checkbox label="vip1"></el-checkbox>
+                    <el-checkbox label="vip2"></el-checkbox>
+                    <el-checkbox label="vip3"></el-checkbox>
+                    <el-checkbox label="vip4"></el-checkbox>
+                    <el-checkbox label="vip5"></el-checkbox>
+                    <el-checkbox label="vip6"></el-checkbox>
+                  </el-checkbox-group>
                 </td>
               </tr>
               <tr>
@@ -208,6 +209,7 @@ export default {
       value: true,
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
+      checkList: ['vip1','vip2'],
       options: [
         { value: "1", label: "冻结" },
         { value: "2", label: "启用" }
