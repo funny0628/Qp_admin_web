@@ -88,11 +88,7 @@
       <el-dialog title="订单-xxxxxxxx" :visible.sync="dialogModifyVisible" width="40%" center>
         <el-form :model="form">
           <el-form-item>
-            <table
-              width="80%"
-              cellspacing="0"
-              cellpadding="10"
-            >
+            <table width="80%" cellspacing="0" cellpadding="10">
               <tr>
                 <td style="width: 100px;text-align: center;background-color:#f2f2f2;">用户ID</td>
                 <td style="text-align: center">100000125</td>
@@ -361,7 +357,8 @@ table {
   border-collapse: collapse;
   margin: 0 auto;
 }
-table,table tr td {
+table,
+table tr td {
   border: 1px solid #e4e4e4;
 }
 .bankCard {
@@ -370,5 +367,8 @@ table,table tr td {
 
 .itemClass {
   width: 45%;
+}
+#home .main-box .el-button--primary {
+  margin-left: 0;
 }
 </style>

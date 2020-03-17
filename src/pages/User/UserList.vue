@@ -22,7 +22,13 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-select v-model="format.client_type" filterable placeholder="请选择客户端类型" size="medium" clearable>
+      <el-select
+        v-model="format.client_type"
+        filterable
+        placeholder="请选择客户端类型"
+        size="medium"
+        clearable
+      >
         <el-option
           v-for="item in clientOptions"
           :key="item.value"
@@ -45,7 +51,7 @@
         <el-button type="primary" size="medium">查询</el-button>
       </permission-button>
       <permission-button :action="ActionType.ADD" @click="addUser()">
-        <el-button type="primary" size="medium" @click="dialogFormVisible=true">新增</el-button>
+        <el-button type="primary" size="medium" @click="handleAddUser">新增</el-button>
       </permission-button>
     </input-area>
     <el-breadcrumb separator="/" style="padding-left:20px;padding-bottom:10px;">
@@ -109,7 +115,7 @@
             <el-input v-model.number="ruleForm.user_name" autocomplete="off" maxlength="11"></el-input>
           </el-form-item>
           <el-form-item label="玩家昵称" :label-width="formLabelWidth">
-            <el-input v-model="ruleForm.nickname" autocomplete="off" maxlength=7></el-input>
+            <el-input v-model="ruleForm.nickname" autocomplete="off" maxlength="7"></el-input>
           </el-form-item>
           <el-form-item prop="psd" label="登录密码" :label-width="formLabelWidth">
             <el-input type="password" v-model="ruleForm.psd" maxlength="14" autocomplete="off"></el-input>
@@ -248,7 +254,7 @@
                   <span
                     v-if="show"
                     style="float: right; width: 50px;color: #1381f9;cursor: pointer;"
-                    @click="editSupAgent"
+                    @click="show=false"
                   >修改</span>
                   <span
                     v-else
@@ -286,6 +292,22 @@
             >
               <tr>
                 <td style="width: 120px;text-align: center;background-color: #f2f2f2;">银行卡号</td>
+                <!-- <td style="text-align: center;display: flex;">
+                  <div style="float: left;flex: 1;">
+                    <span v-if="show">{{form2.bank_card || "--"}}</span>
+                    <el-input v-else v-model="form2.bank_card" autocomplete="off" placeholder></el-input>
+                  </div>
+                  <span
+                    v-if="show"
+                    style="float: right; width: 50px;color: #1381f9;cursor: pointer;"
+                    @click="show=false"
+                  >修改</span>
+                  <span
+                    v-else
+                    style="float: right; width: 50px;color: #1381f9;cursor: pointer;"
+                    @click="confirmEdit"
+                  >确认</span>
+                </td> -->
                 <td style="text-align: center">
                   <el-input v-model="form2.bank_card" autocomplete="off" placeholder></el-input>
                 </td>
@@ -425,7 +447,6 @@ export default {
     return {
       pageNum: 1,
       pageSize: 5,
-      player_id: "", // 玩家id
       show: true,
       dialogVisible: false,
       dialogFormVisible: false,
@@ -730,27 +751,42 @@ export default {
       rules: {
         user_name: [{ required: true, validator: checkPhone, trigger: "blur" }],
         psd: [
-          { required: true, message: "请输入密码,默认密码为123456", trigger: "blur" },
-          { min: 6, max: 14, message: "长度在 6 到 14个字符" },
+          {
+            required: true,
+            message: "请输入密码,默认密码为123456",
+            trigger: "blur"
+          },
+          { min: 6, max: 14, message: "长度在 6 到 14个字符" }
         ],
-        capital_psd: [{ required: true, message: "请输入资金密码", trigger: "blur" }],
+        capital_psd: [
+          { required: true, message: "请输入资金密码", trigger: "blur" }
+        ]
       }
     };
   },
   methods: {
     pageNumFn(val) {
-      console.log(val,this.pageSize,this.pageNum)
+      console.log(val, this.pageSize, this.pageNum);
       this.pageNum = val;
-      this.getPaginationData()
+      this.getPaginationData();
     },
     pageSizeFn(val) {
-      console.log(val)
+      console.log(val);
       this.pageSize = val;
-      this.getPaginationData()
+      this.getPaginationData();
     },
     getPaginationData() {
-      this.paginationData = this.tableData.slice((this.pageNum-1)*this.pageSize,(this.pageNum-1)*this.pageSize + this.pageSize)
-      console.log("我被调用了",this.paginationData)
+      this.paginationData = this.tableData.slice(
+        (this.pageNum - 1) * this.pageSize,
+        (this.pageNum - 1) * this.pageSize + this.pageSize
+      );
+      console.log("我被调用了", this.paginationData);
+    },
+    handleAddUser() {
+      this.dialogFormVisible = true;
+      if (this.$refs.ruleForm) {
+        this.$refs.ruleForm.resetFields();
+      }
     },
     /**搜索*/
     search() {
@@ -758,9 +794,9 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    editSupAgent() {
-      this.show = false;
-    },
+    // editSupAgent() {
+    //   this.show = false;
+    // },
     confirmEdit() {
       this.$confirm("此操作将修改该值, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -882,7 +918,7 @@ export default {
   },
   mounted() {
     this.getUserList();
-    this.getPaginationData()
+    this.getPaginationData();
     // this.getUserPlatform()
   },
   updated() {

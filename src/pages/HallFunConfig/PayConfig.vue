@@ -106,9 +106,9 @@
               <tr>
                 <td style="width: 100px;text-align: center;background-color:#f2f2f2;">支付类型</td>
                 <td style="text-align: center">
-                  <el-select placeholder="请选择支付类型" style="width: 100%;">
-                    <el-option label="阿里支付" value="ali-pay"></el-option>
-                    <el-option label="微信支付" value="weixin-pay"></el-option>
+                  <el-select placeholder="请选择支付类型" v-model="form.pay_type" style="width: 100%;">
+                    <el-option label="阿里支付" value="1"></el-option>
+                    <el-option label="微信支付" value="2"></el-option>
                   </el-select>
                 </td>
               </tr>
@@ -131,7 +131,7 @@
               <tr>
                 <td style="width: 100px;text-align: center;background-color:#f2f2f2;">金额模式</td>
                 <td style="text-align: center">
-                  <el-select placeholder="固定金额">
+                  <el-select placeholder="固定金额" v-model="form.money_type">
                     <el-option label="100" value="ali-pay"></el-option>
                     <el-option label="200" value="weixin-pay"></el-option>
                   </el-select>
@@ -209,7 +209,7 @@ export default {
       value: true,
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
-      checkList: ['vip1','vip2'],
+      checkList: ["vip1", "vip2"],
       options: [
         { value: "1", label: "冻结" },
         { value: "2", label: "启用" }
@@ -301,12 +301,8 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
+        pay_type: "",
+        money_type: ""
       },
       //修改会员信
       activeName: "first",
@@ -411,5 +407,9 @@ table tr td {
 }
 .itemClass {
   width: 45%;
+}
+
+.el-input__inner::-webkit-input-placeholder {
+  text-align: center;
 }
 </style>

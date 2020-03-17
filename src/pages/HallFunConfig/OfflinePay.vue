@@ -92,9 +92,9 @@
               <tr>
                 <td style="width: 120px;text-align: center;background-color:#f2f2f2;">银行卡名称</td>
                 <td style="text-align: center">
-                  <el-select placeholder="请选择银行卡">
-                    <el-option label="招商银行" value="ali-pay"></el-option>
-                    <el-option label="中国银行" value="weixin-pay"></el-option>
+                  <el-select placeholder="请选择银行卡" v-model="form.bank_name">
+                    <el-option label="招商银行" value="1"></el-option>
+                    <el-option label="中国银行" value="2"></el-option>
                   </el-select>
                 </td>
               </tr>
@@ -127,9 +127,9 @@
               <tr>
                 <td style="width: 120px;text-align: center;background-color:#f2f2f2;">银行类型</td>
                 <td style="text-align: center">
-                  <el-select placeholder="请选择银行类型">
-                    <el-option label="招商银行" value="ali-pay"></el-option>
-                    <el-option label="中国银行" value="weixin-pay"></el-option>
+                  <el-select placeholder="请选择银行类型" v-model="form.bank_type">
+                    <el-option label="招商银行" value="1"></el-option>
+                    <el-option label="中国银行" value="2"></el-option>
                   </el-select>
                 </td>
               </tr>
@@ -175,13 +175,13 @@
       </el-dialog>
       <!-- 新增银行收款账号 -->
       <el-dialog title="新增银行收款尾号" :visible.sync="dialogVisible" width="60%" center>
-        <el-form :model="form" label-position="left">
+        <el-form :model="form2" label-position="left">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="银行名称" :label-width="formLabelWidth">
-                <el-select placeholder="请选择银行卡" style="width:100%;">
-                  <el-option label="招商银行" value="ali-pay"></el-option>
-                  <el-option label="中国银行" value="weixin-pay"></el-option>
+                <el-select placeholder="请选择银行卡" v-model="form2.bank_name" style="width:100%;">
+                  <el-option label="招商银行" value="1"></el-option>
+                  <el-option label="中国银行" value="2"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -194,7 +194,7 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="收款尾号" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-input v-model="form2.receive_num" autocomplete="off"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -215,21 +215,21 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="收款姓名" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-input v-model="form2.receive_name" autocomplete="off"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="开户行" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-input v-model="form2.open_bank" autocomplete="off"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="单笔最小额度" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-input v-model="form2.min_money" autocomplete="off"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -246,7 +246,7 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="单笔最大额度" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
+                <el-input v-model="form2.max_money" autocomplete="off"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -383,7 +383,7 @@ export default {
       player_id: "", // 玩家id
       formLabelWidth: "120px",
       labelPosition: "left", //左对齐
-      checkList: ['vip1','vip2'],
+      checkList: ["vip1", "vip2"],
       options: [
         { value: "1", label: "冻结" },
         { value: "2", label: "启用" }
@@ -476,12 +476,16 @@ export default {
       dialogAddVisible: false,
       dialogVisible: false,
       form: {
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
+        bank_name: "",
+        bank_type: ""
+      },
+      form2: {
+        bank_name: "",
+        receive_name: "",
+        receive_num: "",
+        open_bank: "",
+        min_money: "",
+        max_money: ""
       },
       //修改会员信
       activeName: "first",

@@ -36,8 +36,7 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}
-            </template>
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -53,18 +52,26 @@
             <el-input v-model="form.send_time" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="内容" :label-width="formLabelWidth">
-            <el-input type="textarea" row="4" v-model="form.email_content" autocomplete="off" placeholder="请输入内部邮件内容"></el-input>
+            <el-input
+              type="textarea"
+              row="4"
+              v-model="form.email_content"
+              autocomplete="off"
+              placeholder="请输入内部邮件内容"
+            ></el-input>
           </el-form-item>
           <el-form-item label="接收人" :label-width="formLabelWidth">
             <el-input v-model="form.receive" autocomplete="off" placeholder="请输入接收人"></el-input>
           </el-form-item>
           <el-form-item label="接收层级" :label-width="formLabelWidth">
-            <el-checkbox>vip1</el-checkbox>
-            <el-checkbox>vip1</el-checkbox>
-            <el-checkbox>vip1</el-checkbox>
-            <el-checkbox>vip1</el-checkbox>
-            <el-checkbox>vip1</el-checkbox>
-            <el-checkbox>vip1</el-checkbox>
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox label="vip1"></el-checkbox>
+              <el-checkbox label="vip2"></el-checkbox>
+              <el-checkbox label="vip3"></el-checkbox>
+              <el-checkbox label="vip4"></el-checkbox>
+              <el-checkbox label="vip5"></el-checkbox>
+              <el-checkbox label="vip6"></el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -73,82 +80,88 @@
         </div>
       </el-dialog>
     </div>
-    <div>
-      <!-- 新增邮件 -->
-      <el-dialog title="新增邮件" :visible.sync="dialogVisible" width="40%">
-        <el-form :model="form2">
-          <el-form-item>
-            <table
-              style="width: 80%;"
-              cellspacing="0"
-              cellpadding="10"
-            >
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">是否全服收邮件</td>
-                <td style="text-align: center">
-                  <el-select v-model="form2.all_receive" placeholder="请选择" style="width:100%;">
-                    <el-option label="是" value></el-option>
-                    <el-option label="否" value></el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件类型</td>
-                <td style="text-align: center">
-                  <el-select v-model="form2.email_type" placeholder="请选择" style="width:100%;">
-                    <el-option label="个人" value></el-option>
-                    <el-option label="系统邮件" value></el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">收件人ID</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.receive_id" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">发件人昵称</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.sender_nickname" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件标题</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.email_title" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件内容</td>
-                <td style="text-align: center">
-                  <el-input type="textarea" row="4" v-model="form2.email_content" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件道具</td>
-                <td style="text-align: center">
-                  <el-select v-model="form2.email_prop" placeholder="请选择" style="width:100%;">
-                    <el-option label="金币" value></el-option>
-                    <el-option label="人命币" value></el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">奖励数量</td>
-                <td style="text-align: center">
-                  <el-input type="textarea" row="4" v-model="form2.award_num" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <!-- 新增邮件 -->
+    <el-dialog title="新增邮件" :visible.sync="dialogVisible" width="40%">
+      <el-form :model="form2">
+        <el-form-item>
+          <table style="width: 80%;" cellspacing="0" cellpadding="10">
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">是否全服收邮件</td>
+              <td style="text-align: center">
+                <el-select v-model="form2.all_receive" placeholder="请选择" style="width:100%;">
+                  <el-option label="是" value></el-option>
+                  <el-option label="否" value></el-option>
+                </el-select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件类型</td>
+              <td style="text-align: center">
+                <el-select v-model="form2.email_type" placeholder="请选择" style="width:100%;">
+                  <el-option label="个人" value="个人"></el-option>
+                  <el-option label="系统邮件" value="系统邮件"></el-option>
+                </el-select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">收件人ID</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.receive_id" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">发件人昵称</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.sender_nickname" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件标题</td>
+              <td style="text-align: center">
+                <el-input v-model="form2.email_title" autocomplete="off" placeholder></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件内容</td>
+              <td style="text-align: center">
+                <el-input
+                  type="textarea"
+                  row="4"
+                  v-model="form2.email_content"
+                  autocomplete="off"
+                  placeholder
+                ></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">邮件道具</td>
+              <td style="text-align: center">
+                <el-select v-model="form2.email_prop" placeholder="请选择" style="width:100%;">
+                  <el-option label="金币" value></el-option>
+                  <el-option label="人命币" value></el-option>
+                </el-select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 150px;text-align: center;background-color:#f2f2f2;">奖励数量</td>
+              <td style="text-align: center">
+                <el-input
+                  type="textarea"
+                  row="4"
+                  v-model="form2.award_num"
+                  autocomplete="off"
+                  placeholder
+                ></el-input>
+              </td>
+            </tr>
+          </table>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -190,6 +203,7 @@ export default {
       dialogVisible: false,
       labelPosition: "left", //左对齐
       activeName: "first",
+      checkList: ['vip1','vip2','vip3'],
       tableStyle: [
         { label: "编号", prop: "serial_num", width: "" },
         { label: "邮件标题", prop: "email_title", width: "" },
@@ -217,7 +231,7 @@ export default {
           email_status: "",
           sender: "admin",
           sender_time: "2020-01-01 12:00:00",
-          action: [{label: "删除",type: "delete"}]
+          action: [{ label: "删除", type: "delete" }]
         },
         {
           serial_num: "",
@@ -231,7 +245,7 @@ export default {
           email_status: "",
           sender: "admin",
           sender_time: "2020-01-01 12:00:00",
-          action: [{label: "删除",type: "delete"}]
+          action: [{ label: "删除", type: "delete" }]
         }
       ],
       records: [],
@@ -241,11 +255,11 @@ export default {
         email_title: "",
         send_time: "",
         email_content: "",
-        receive: "",
+        receive: ""
       },
       form2: {
         all_receive: "",
-        email_type: "",
+        email_type: "个人",
         receive_id: "",
         sender_nickname: "",
         email_title: "",
@@ -344,8 +358,9 @@ table {
   border-collapse: collapse;
   margin: 0 auto;
 }
-table,table tr td {
-  border: 1px solid #c0c4cc;;
+table,
+table tr td {
+  border: 1px solid #c0c4cc;
 }
 .bankCard {
   width: 100%;

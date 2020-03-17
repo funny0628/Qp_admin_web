@@ -41,7 +41,7 @@
     </div>
     <div>
       <!-- 修改配置 -->
-      <el-dialog title="修改配置" :visible.sync="dialogFormVisible" center>
+      <el-dialog title="修改配置" :visible.sync="dialogFormVisible" center width="60%">
         <el-form :model="form">
           <el-form-item>
             <el-table :data="tableData" border align="center">
@@ -61,7 +61,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_2" label="功能2">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_2">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
@@ -73,7 +73,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_3" label="功能3">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_3">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
@@ -85,7 +85,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_4" label="功能4">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_4">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
@@ -97,7 +97,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_5" label="功能5">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_5">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
@@ -109,7 +109,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_6" label="功能6">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_6">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
@@ -121,7 +121,7 @@
               </el-table-column>
               <el-table-column align="center" prop="fun_7" label="功能7">
                 <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
+                  <el-select size="medium" v-model="scope.row.fun_7">
                     <el-option
                       v-for="item in fun_1_list"
                       :key="item.key"
