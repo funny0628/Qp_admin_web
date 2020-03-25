@@ -11,8 +11,8 @@
           <div class="el-form-item is-required"><!---->
             <div class="el-form-item__content">
               <div class="el-input el-input-group el-input-group--prepend">
-                <div class="el-input-group__prepend"><i class="anticon el-icon-mobile-phone"></i></div>
-                <input type="tel" autocomplete="off" placeholder="手机号码" class="el-input__inner"><!----><!----><!---->
+                <div class="el-input-group__prepend"><i class="anticon el-icon-user-solid"></i></div>
+                <input type="tel" autocomplete="off" placeholder="用户名" class="el-input__inner"><!----><!----><!---->
 <!--                <effect-input  type="hoshi" placeholder="手机号码" class="el-input__inner"></effect-input>-->
               </div><!----></div>
           </div>
