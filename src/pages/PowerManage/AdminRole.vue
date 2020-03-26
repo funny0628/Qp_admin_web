@@ -2,8 +2,8 @@
 <template>
   <div id="Admin-main">
     <input-area>
-      <permission-button :action="ActionType.ADD" @click="handelAddClick()">
-        <el-button type="primary" size="medium" @click="dialogFormVisible=true">新增</el-button>
+      <permission-button :action="ActionType.ADD">
+        <el-button type="primary" size="medium" @click="handelAddClick">新增</el-button>
         <el-button type="primary" size="medium" @click="dialogVisible=true">权限设置</el-button>
       </permission-button>
     </input-area>
@@ -45,19 +45,19 @@
             <tr>
               <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色名称</td>
               <td style="text-align: center">
-                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+                <el-input v-model="form.role_name" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
               <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色描述</td>
               <td style="text-align: center">
-                <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
+                <el-input v-model="form.role_state" autocomplete="off" placeholder></el-input>
               </td>
             </tr>
             <tr>
               <td style="width: 120px;text-align: center;background-color: #f2f2f2;">角色状态</td>
               <td style="text-align: center">
-                <el-select v-model="form2.status">
+                <el-select v-model="form.role_status">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -91,8 +91,12 @@
                     v-model="checkAll"
                     @change="handleCheckAllChange"
                   >全选</el-checkbox>
-                  <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange" style="float:left;">
-                    <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+                  <el-checkbox-group
+                    v-model="form2.subPackageSet"
+                    @change="handleCheckedCitiesChange"
+                    style="float:left;"
+                  >
+                    <el-checkbox v-for="item in operation" :label="item" :key="item">{{item}}</el-checkbox>
                   </el-checkbox-group>
                   <!-- <el-checkbox>全部</el-checkbox>
                   <el-checkbox>添加</el-checkbox>
@@ -103,10 +107,19 @@
               <tr>
                 <td style="width: 150px;text-align: center;">子包设置</td>
                 <td style="text-align: center">
-                  <el-checkbox>全部</el-checkbox>
-                  <el-checkbox>添加</el-checkbox>
-                  <el-checkbox>编辑</el-checkbox>
-                  <el-checkbox>删除</el-checkbox>
+                  <el-checkbox
+                    style="float:left;margin-right:20px;margin-left:110px;"
+                    :indeterminate="isIndeterminate"
+                    v-model="checkAll"
+                    @change="handleCheckAllChange"
+                  >全选</el-checkbox>
+                  <el-checkbox-group
+                    v-model="form2.subPackageSet"
+                    @change="handleCheckedCitiesChange"
+                    style="float:left;"
+                  >
+                    <el-checkbox v-for="item in operation" :label="item" :key="item">{{item}}</el-checkbox>
+                  </el-checkbox-group>
                 </td>
               </tr>
               <tr>
@@ -388,7 +401,7 @@ import InputArea from "../../plugin/components/InputArea";
 import tierHandler from "./../../script/handlers/tierHandler";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import storage from "./../../script/storage/storage";
-const cityOptions = ["添加", "编辑", "删除"];
+const select = ["添加", "编辑", "删除"];
 export default {
   name: "Admin",
   extends: BaseIframe,
@@ -396,8 +409,7 @@ export default {
   data() {
     return {
       checkAll: false,
-      checkedCities: ["添加"],
-      cities: cityOptions,
+      operation: select,
       isIndeterminate: true,
       //表格数据
       tableStyle: [
@@ -488,7 +500,13 @@ export default {
         hierarchy_name: "", //层级名称
         alias: "" //别名
       },
+      form: {
+        role_name: "",
+        role_state: "",
+        role_status: ""
+      },
       form2: {
+        subPackageSet: ["添加"],
         name: "",
         status: "1"
       }
@@ -496,14 +514,14 @@ export default {
   },
   methods: {
     handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
+      this.form2.subPackageSet = val ? select : [];
       this.isIndeterminate = false;
     },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
+      this.checkAll = checkedCount === this.operation.length;
       this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
+        checkedCount > 0 && checkedCount < this.operation.length;
     },
     search() {},
     //新增代理层
@@ -512,7 +530,7 @@ export default {
       this.dataForm.hierarchy_name = "";
       this.dataForm.alias = "";
       this.dialogTitleType = "新增代理分层";
-      this.dialogVisible = true;
+      this.dialogFormVisible = true;
     },
     //修改代理层
     handleClick(btn, row) {

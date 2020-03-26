@@ -15,12 +15,13 @@ module.exports = {
         let ls = ['/v1'];
       let obj = {};
       // let baseUrl = ' http://192.168.0.187:7300/mock/5d634af3ca80d11633b49b5b/platform';
-      let baseUrl = 'http://192.168.0.186:9999';
+      // let baseUrl = 'http://192.168.0.186:9999';
+      let baseUrl = 'http://192.168.1.24:5000';
       ls.map(item=>{
         obj[item] = {target: baseUrl, changeOrigin: true, pathRewrite: {'^/v1': '/v1'},
           onProxyReq: function (proxyReq, req, res) {
             //实在不知道代理后的路径，可以在这里打印出出来看看
-            // console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+            console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
           }}
       });
       return obj;

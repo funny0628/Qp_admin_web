@@ -12,4 +12,8 @@ export default {
 </script>
 
 <style>
+.el-pagination .el-select .el-input .el-input__inner {
+  height: 28px !important;
+  line-height: 28px !important;
+}
 </style>

@@ -1,11 +1,15 @@
 <template>
-  <div id="HallAdvertiseConf-main">
-    <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;margin-left:20px;">删除</el-button>
+  <div id="GameList-main">
     <el-button
       type="primary"
       @click="dialogFormVisible=true"
       style="margin-top: 10px;margin-bottom: 10px;"
     >添加</el-button>
+    <el-button
+      type="primary"
+      @click="dialogVisible=true"
+      style="margin-top: 10px;margin-bottom: 10px;"
+    >返回</el-button>
     <div class="bd">
       <info-table
         :search="search"
@@ -33,93 +37,21 @@
         </info-table-item>
       </info-table>
     </div>
-    <!--添加新渠道 -->
-    <el-dialog title="添加新渠道" :visible.sync="dialogFormVisible">
+    <!--添加 -->
+    <el-dialog title="记录" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="渠道名" :label-width="formLabelWidth">
-          <el-input v-model="form.channel_name" autocomplete="off"></el-input>
+        <el-form-item label="上级游戏" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="KEY" :label-width="formLabelWidth">
-          <el-input v-model="form.channel_key" autocomplete="off"></el-input>
+        <el-form-item label="游戏名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="文字一" :label-width="formLabelWidth">
-          <el-input
-            type="textarea"
-            maxlength="30"
-            placeholder="请输入内容;最多只能写30个字;最多三行!"
-            v-model="form.word1"
-          ></el-input>
+        <el-form-item label="游戏id" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="文字一类型" :label-width="formLabelWidth">
-              <el-select v-model="form.word1_type" placeholder="请选择文字一类型">
-                <el-option label="普通" value="general"></el-option>
-                <el-option label="复制" value="copy"></el-option>
-                <el-option label="跳转网页" value="jump_webpage"></el-option>
-                <el-option label="跳转" value="jump"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.word1_type!=='jump'" label="URL" :label-width="formLabelWidth">
-              <el-input v-model="form.word1_url" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
-              <el-select v-model="form.jump_position" placeholder="请选择">
-                <el-option
-                  v-for="(item,index) in jumpposOpts"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="文字二" :label-width="formLabelWidth">
-          <el-input
-            type="textarea"
-            v-model="form.name"
-            :autosize="{minRows:1,maxRows:3}"
-            resize="none"
-            maxlength="30"
-            placeholder="请输入内容;最多只能写30个字;最多三行!"
-          ></el-input>
+        <el-form-item label="机器人类型" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="文字二类型" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择活动区域">
-                <el-option label="普通" value="shanghai"></el-option>
-                <el-option label="一般" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="URL" :label-width="formLabelWidth">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="文字三" :label-width="formLabelWidth">
-          <el-input type="textarea" maxlength="30" placeholder="请输入内容;最多只能写30个字;最多三行!"></el-input>
-        </el-form-item>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="文字三类型" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择活动区域">
-                <el-option label="普通" value="shanghai"></el-option>
-                <el-option label="一般" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="URL" :label-width="formLabelWidth">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -254,7 +186,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "HallAdvertiseConf",
+  name: "GameList",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -287,12 +219,9 @@ export default {
       labelPosition: "left", //左对齐
       activeName: "first",
       tableStyle: [
-        { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "KEY", prop: "channel_name", width: "" },
-        { label: "文字一", prop: "content", width: "" },
-        { label: "文字二", prop: "content", width: "" },
-        { label: "文字三", prop: "content", width: "" },
-        { label: "操作时间", prop: "create_time", width: "" },
+        { label: "游戏名称", prop: "channel_name", width: "" },
+        { label: "游戏类型", prop: "channel_name", width: "" },
+        { label: "创建时间", prop: "create_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       tableData: [
@@ -303,30 +232,8 @@ export default {
           status: "启用",
           create_time: "2020-01-01 12:00:00",
           action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        },
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        },
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
+            { label: "子游戏", type: "delete" },
+            { label: "编辑", type: "edit" }
           ]
         }
       ],
@@ -369,8 +276,9 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    handelClick() {
-      this.dialogModifyVisible = true;
+    handelClick(btn, row) {
+      if (btn.type === "子游戏") {
+      }
     },
     pageNumFn(val) {
       console.log(val, this.pageSize, this.pageNum);
@@ -390,7 +298,7 @@ export default {
   watch: {
     "form.word1_type": function(newVal, oldVal) {
       console.log(newVal);
-      if (newVal === "copy" || "jump_webpage" && newVal !== "general") {
+      if (newVal === "copy" || ("jump_webpage" && newVal !== "general")) {
         this.$nextTick(() => {
           this.form.word1_url = this.form.word1;
         });
@@ -406,11 +314,11 @@ export default {
 </script>
 
 <style scoped>
-#HallAdvertiseConf-main .bd {
+#GameList-main .bd {
   padding-right: 20px;
   padding-left: 20px;
 }
-#HallAdvertiseConf-main .bd p {
+#GameList-main .bd p {
   margin: 0;
 }
 #addPoster,
