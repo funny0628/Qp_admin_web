@@ -73,7 +73,29 @@ const models = {
       {
         name:'VipSystem',
         text:'vip系统',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/VipSystem')), 'VipSystem')
+        vue: null,
+        children: [
+          {
+            name:'vipClassConf',
+            text:'VIP等级配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipClassConf')), 'vipClassConf')
+          },
+          {
+            name:'vipRobotConf',
+            text:'VIP机器人配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipRobotConf')), 'vipRobotConf')
+          },
+        ]
+      },
+      {
+        name:'gameList',
+        text:'游戏列表',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameList')), 'gameList')
+      },
+      {
+        name:'GameSortConf',
+        text:'游戏排序配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameSortConf')), 'GameSortConf')
       },
       {
         name:'SetBackgroundMusic',

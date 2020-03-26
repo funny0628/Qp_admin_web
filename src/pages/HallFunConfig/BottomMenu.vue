@@ -1,14 +1,8 @@
 <template>
   <div id="BottomMenu-main">
     <input-area>
-      <el-select v-model="format.platform" placeholder="平台" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
+      <el-button type="danger">删除</el-button>
+      <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -17,7 +11,6 @@
         :records="records"
         :page-info="pageInfo"
       >
-        item.state = 'input/disabled'
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
@@ -33,108 +26,108 @@
             </template>
             <template
               v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}
-            </template>
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <div>
-      <!-- 修改配置 -->
-      <el-dialog title="修改配置" :visible.sync="dialogFormVisible" center width="60%">
-        <el-form :model="form">
-          <el-form-item>
-            <el-table :data="tableData" border align="center">
-              <el-table-column align="center" prop="channel_id" label="渠道ID"></el-table-column>
-              <el-table-column align="center" prop="channel_name" label="渠道名称"></el-table-column>
-              <el-table-column align="center" prop="fun_1" label="功能1">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_1">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_2" label="功能2">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_2">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_3" label="功能3">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_3">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_4" label="功能4">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_4">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_5" label="功能5">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_5">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_6" label="功能6">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_6">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" prop="fun_7" label="功能7">
-                <template slot-scope="scope">
-                  <el-select size="medium" v-model="scope.row.fun_7">
-                    <el-option
-                      v-for="item in fun_1_list"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-            </el-table>
+      <!-- 添加活动入口配置 -->
+      <el-dialog title="添加活动入口配置" :visible.sync="dialogFormVisible">
+        <el-form :model="form" label-position="top">
+          <el-form-item label="渠道(可多选)">
+            <el-checkbox-group v-model="form.checkList">
+              <el-checkbox label="0902代理01"></el-checkbox>
+              <el-checkbox label="0902代理02"></el-checkbox>
+              <el-checkbox label="0902代理03"></el-checkbox>
+              <el-checkbox label="0902代理04"></el-checkbox>
+              <el-checkbox label="0902代理05"></el-checkbox>
+              <el-checkbox label="0902代理06"></el-checkbox>
+              <el-checkbox label="0902代理07"></el-checkbox>
+              <el-checkbox label="0902代理08"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="功能1">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能2">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能3">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能4">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能5">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能6">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能7">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="功能8">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">功能名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.function" placeholder="请选择活动区域">
+                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
           </el-form-item>
         </el-form>
-
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -190,12 +183,15 @@ export default {
       format: {
         platform: ""
       },
-      fun_1_list: [
-        { value: 1, label: "关闭" },
-        { value: 2, label: "备份" },
-        { value: 3, label: "排行榜" },
-        { value: 4, label: "邮箱" },
-        { value: 5, label: "客服" }
+      funOpts: [
+        { value: "1", label: "留空" },
+        { value: "2", label: "活动" },
+        { value: "3", label: "邮件" },
+        { value: "4", label: "排行榜" },
+        { value: "5", label: "设置" },
+        { value: "6", label: "保险箱" },
+        { value: "7", label: "广播" },
+        { value: "8", label: "财神" }
       ],
       tableData: [
         {
@@ -212,8 +208,9 @@ export default {
         }
       ],
       tableStyle: [
-        { label: "渠道ID", prop: "channel_id", width: "" },
+        { label: "ID", prop: "channel_id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
+        { label: "渠道KEY", prop: "channel_name", width: "" },
         { label: "功能1", prop: "fun_1", width: "" },
         { label: "功能2", prop: "fun_2", width: "" },
         { label: "功能3", prop: "fun_3", width: "" },
@@ -221,7 +218,10 @@ export default {
         { label: "功能5", prop: "fun_5", width: "" },
         { label: "功能6", prop: "fun_6", width: "" },
         { label: "功能7", prop: "fun_7", width: "" },
-        { label: "操作", prop: "action", width: "" }
+        { label: "功能8", prop: "fun_8", width: "" },
+        { label: "操作者", prop: "operator", width: "" },
+        { label: "创建时间", prop: "create_time", width: "160" },
+        { label: "操作", prop: "action", width: "120" }
       ],
       records: [
         {
@@ -234,23 +234,11 @@ export default {
           fun_5: "未设定",
           fun_6: "未设定",
           fun_7: "未设定",
+          fun_8: "设定",
+          operator: "json",
+          create_time: "2020-02-10 12:00:00",
           action: [
-            { label: "修改", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        },
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          action: [
-            { label: "修改", type: "edit" },
+            { label: "编辑", type: "edit" },
             { label: "删除", type: "delete" }
           ]
         }
@@ -258,6 +246,8 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
+        checkList: ["0902代理01", "0902代理02"],
+        function: '1',
         agent: 100,
         nickname: "",
         password: "",
@@ -278,9 +268,9 @@ export default {
     addUser() {
       this.dialogAddVisible = true;
     },
-    handelClick(btn,row) {
-      if(btn.type === 'edit') {
-        this.dialogFormVisible = true
+    handelClick(btn, row) {
+      if (btn.type === "edit") {
+        this.dialogFormVisible = true;
       }
     },
     /**获取用户列表接口 */
