@@ -21,19 +21,10 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
+              <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -71,39 +62,28 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">角标</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.corner_remark">
+                  <el-option label="无" value="none"></el-option>
+                  <el-option label="推荐" value="recommend"></el-option>
+                  <el-option label="热门" value="hot"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">状态</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.status">
+                  <el-option label="正常" value="normal"></el-option>
+                  <el-option label="敬请期待" value="expect"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">是否强引导</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.leader">
+                  <el-option label="是" value="yes"></el-option>
+                  <el-option label="否" value="no"></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -580,7 +560,7 @@ export default {
         { label: "游戏8", prop: "fun_8", width: "" },
         { label: "操作者", prop: "operator", width: "" },
         { label: "创建时间", prop: "create_time", width: "160" },
-        { label: "操作", prop: "action", width: "120" }
+        { label: "操作", prop: "action", width: "150" }
       ],
       records: [
         {
@@ -607,6 +587,9 @@ export default {
       form: {
         checkList: ["0902代理01", "0902代理02"],
         function: "1",
+        status: "normal",
+        corner_remark: "recommend",
+        leader: "no",
         agent: 100,
         nickname: "",
         password: "",
@@ -626,11 +609,6 @@ export default {
     /** 添加会员 */
     addUser() {
       this.dialogAddVisible = true;
-    },
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
     },
     open() {
       this.$confirm("确认发送吗?", "提示", {

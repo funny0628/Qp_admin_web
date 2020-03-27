@@ -142,6 +142,16 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameSortConf')), 'GameSortConf')
       },
       {
+        name:'BroadcastConf',
+        text:'对局广播配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BroadcastConf')), 'BroadcastConf')
+      },
+      {
+        name:'ExchangeConf',
+        text:'兑换配置',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'ExchangeConf')
+      },
+      {
         name:'SetBackgroundMusic',
         text:'背景音乐设置',
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/SetBackgroundMusic')), 'SetBackgroundMusic')

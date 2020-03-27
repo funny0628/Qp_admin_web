@@ -1,15 +1,14 @@
 <template>
-  <div id="vipSystem-main">
+  <div id="VipClassConf-main">
     <input-area>
       <el-button
         type="danger"
         style="margin-top: 10px;margin-bottom: 10px;"
-        @click="dialogFormVisible=true"
       >删除</el-button>
       <el-button
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"
-        @click="dialogFormVisible=true"
+        @click="add"
       >添加</el-button>
       <el-button type="primary" @click="open">发送到服务端配置</el-button>
     </input-area>
@@ -23,15 +22,15 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="id" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="username" label="VIP等级" align="center"></el-table-column>
         <el-table-column prop="phone" label="VIP特权" align="center"></el-table-column>
         <el-table-column prop="channel" label="头像框" align="center"></el-table-column>
-        <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
-          <template>
-            <el-button size="mini" type="primary" @click="open">下线</el-button>
-            <el-button size="mini" type="primary">编辑</el-button>
-            <el-button size="mini" type="danger">删除</el-button>
+        <el-table-column label="操作" fixed="right" align="center" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleOffline">下线</el-button>
+            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,7 +44,7 @@
         :total="total"
       ></el-pagination>
     </div>
-    <el-dialog title="添加信息" :visible.sync="dialogFormVisible">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" label-position="left">
         <el-form-item label="VIP等级" :label-width="formLabelWidth">
           <el-input v-model="form.vip_class" autocomplete="off"></el-input>
@@ -95,7 +94,11 @@
             <el-option label="实时" value="now"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form.avatar_deadline === 'now'" label="使用期限" :label-width="formLabelWidth">
+        <el-form-item
+          v-if="form.avatar_deadline === 'now'"
+          label="使用期限"
+          :label-width="formLabelWidth"
+        >
           <el-input v-model="form.use_deadline" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="解锁条件" :label-width="formLabelWidth">
@@ -110,7 +113,10 @@
             :file-list="fileList"
             list-type="picture"
           >
-            <el-button size="small" type="primary">上传图片</el-button>
+            <el-button type="success" size="small">
+              图片上传
+              <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label="专属炮台图片" :label-width="formLabelWidth">
@@ -122,7 +128,10 @@
             :file-list="fileList"
             list-type="picture"
           >
-            <el-button size="small" type="primary">上传图片</el-button>
+            <el-button type="success" size="small">
+              图片上传
+              <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label="视频缩略图上传" :label-width="formLabelWidth">
@@ -134,10 +143,13 @@
             :file-list="fileList"
             list-type="picture"
           >
-            <el-button size="small" type="primary">上传图片</el-button>
+            <el-button type="success" size="small">
+              视频缩略图上传
+              <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="视频上传" :label-width="formLabelWidth">
+        <el-form-item label="炮台演示视频" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -146,7 +158,10 @@
             :file-list="fileList"
             list-type="picture"
           >
-            <el-button size="small" type="primary">视频上传</el-button>
+            <el-button type="success" size="small">
+              视频上传
+              <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -175,7 +190,21 @@ export default {
       pagesize: 5,
       currentPage: 1,
       total: 0,
-      tableData: [],
+      dialogTitle: "",
+      tableData: [
+        {
+          id: '1',
+          username: "yoo",
+          phone: '234',
+          channel: 'e3r',
+        },
+        {
+          id: '2',
+          username: "yoou",
+          phone: '234',
+          channel: 'e3r',
+        }
+      ],
       dialogFormVisible: false,
       formLabelWidth: "160px",
       form: {
@@ -207,6 +236,54 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(this.multipleSelection);
+    },
+    add() {
+      this.dialogTitle = "添加信息"
+    },
+    handleOffline() {
+      this.$confirm("确认更新状态吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "更新成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消更新"
+          });
+        });
+    },
+    handleEdit(index, row) {
+      console.log(index, row);
+      this.dialogFormVisible =true
+      this.dialogTitle = '更新信息'
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+      this.$confirm("确认删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     open() {
       this.$confirm("确认发送吗?", "提示", {
@@ -239,14 +316,14 @@ export default {
 </script>
 
 <style scoped>
-#vipSystem-main .bd {
+#VipClassConf-main .bd {
   padding-right: 20px;
   padding-left: 20px;
 }
-#vipSystem-main .bd p {
+#VipClassConf-main .bd p {
   margin: 0;
 }
-#vipSystem-main .bd >>> .el-button {
+#VipClassConf-main .bd >>> .el-button {
   margin-left: 0px;
   min-width: 30px;
 }
