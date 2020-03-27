@@ -53,7 +53,24 @@ const models = {
       {
         name:'payConfig',
         text:'支付配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
+        children: [
+          {
+            name: 'VIPpayConfig',
+            text: 'VIP充值配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/VIPpayConfig')), 'VIPpayConfig')
+          },
+          {
+            name: 'payList',
+            text: '支付列表',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/payList')), 'payList')
+          },
+          {
+            name: 'reportWayConfig',
+            text: '举报方式配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/reportWayConfig')), 'reportWayConfig')
+          },
+        ]
       },
       {
         name:'offlinePay',
