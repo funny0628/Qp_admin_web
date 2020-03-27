@@ -4,7 +4,7 @@
       <div class="botton">
         <span @click="add">添加</span>
       </div>
-      标题 <el-input style="width:200px" v-model="input"></el-input>
+      标题 <el-input style="margin-top:10px;width:200px" v-model="input"></el-input>
       <span @click="search">查找</span>
     </div>
     <!-- 表格 -->
@@ -166,7 +166,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form)">确 定</el-button>
+          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -297,6 +297,16 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    onSubmit(formName){
+       this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
     }
   }
 };
@@ -306,7 +316,7 @@ export default {
 #gameAnnouncement {
   background-color: #f2f2f2;
   .title {
-    padding: 20px 10px;
+    padding: 20px 10px 0px;
     box-sizing: border-box;
     span {
       display: inline-block;

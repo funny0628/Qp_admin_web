@@ -190,8 +190,20 @@ const models = {
       },
       {
         name:'EmailSystem',
-        text:'邮件系统',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem')
+        text:'邮件管理',
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
+        children: [
+          {
+            name:'platformEmail',
+            text:'平台邮件',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/platformEmail')), 'platformEmail')
+          },
+          {
+            name:'allServersEmail',
+            text:'全服邮件',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/allServersEmail')), 'allServersEmail')
+          },
+        ]
       },
       // {
       //   name:'scrollNotice',
