@@ -1,11 +1,7 @@
 <template>
   <div id="VipClassConf-main">
     <input-area>
-      <el-button
-        type="danger"
-        style="margin-top: 10px;margin-bottom: 10px;"
-        @click="dialogFormVisible=true"
-      >删除</el-button>
+      <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button>
       <el-button
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"
@@ -14,8 +10,9 @@
       <el-button type="primary" @click="open">发送到服务端配置</el-button>
       <el-button
         type="danger"
+        size="medium"
         style="margin-top: 10px;margin-bottom: 10px;"
-        @click="dialogFormVisible=true"
+        @click="dialogVisible=true"
       >排行榜机器人随机概率</el-button>
     </input-area>
     <div class="bd">
@@ -95,6 +92,40 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 排行榜机器人随机概率 -->
+    <el-dialog title="排行榜机器人随机概率" :visible.sync="dialogVisible">
+      <el-form :model="form">
+        <div style="margin-bottom:20px;font-size:16px;">
+          <span>排行榜机器人随机概率</span>
+          <el-button type="primary" @click="open">发送到服务端配置</el-button>
+        </div>
+        <el-form-item label="VIP_0" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_1" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_2" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_3" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_4" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_5" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="VIP_6" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -117,6 +148,7 @@ export default {
       total: 0,
       tableData: [],
       dialogFormVisible: false,
+      dialogVisible: false,
       formLabelWidth: "120px",
       form: {
         name: ""

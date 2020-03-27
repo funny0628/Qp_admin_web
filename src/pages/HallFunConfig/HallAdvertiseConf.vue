@@ -45,7 +45,11 @@
         <el-form-item label="文字一" :label-width="formLabelWidth">
           <el-input
             type="textarea"
+            show-word-limit
+            clearable
             maxlength="30"
+            :autosize="{minRows:1,maxRows:3}"
+            resize="none"
             placeholder="请输入内容;最多只能写30个字;最多三行!"
             v-model="form.word1"
           ></el-input>
