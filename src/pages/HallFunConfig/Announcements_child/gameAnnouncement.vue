@@ -113,10 +113,10 @@
           <el-form-item label="公告标题" prop="sort">
             <el-input placeholder="邮件标题" v-model="form.sort"></el-input>
           </el-form-item>
-          <el-form-item label="公告类型" :label-width="formLabelWidth">
+          <el-form-item label="公告类型" >
             <el-select v-model="form.aa">
-              <el-option label="文字" value="wenzi"></el-option>
-              <el-option label="图片" value="tupian"></el-option>
+              <el-option label="文字" value="文字"></el-option>
+              <el-option label="图片" value="图片"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-if="form.aa === '文字'" label="公告简介" prop="name">
@@ -180,6 +180,8 @@ export default {
       input: "",
       currentPage4: 1,
       visiblity: false,
+      uploadShow:false,
+      fileList:[],
       tableData: [
         {
           topuptype: "充值类型",
@@ -234,7 +236,15 @@ export default {
       }
     };
   },
+  watch: {
+    "form.aa"(x,y){
+      console.log(x,y);
+      
+    }
+  },
   methods: {
+    handlePreview(){},
+    handleRemove(){},
     add() {
       this.visiblity = true;
     },
@@ -247,12 +257,13 @@ export default {
     },
 
     handleEdit(x) {
+       this.visiblity = true;
       // console.log(x);
-      this.$store.commit("EDIT_ITEM", x);
-      this.$store.commit("SHOW_FORM", {
-        show: true,
-        type: 1
-      });
+      // this.$store.commit("EDIT_ITEM", x);
+      // this.$store.commit("SHOW_FORM", {
+      //   show: true,
+      //   type: 1
+      // });
     },
     Change() {
       this.$store.commit("SHOW_FORM", {
