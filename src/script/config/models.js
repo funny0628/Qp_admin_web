@@ -73,6 +73,33 @@ const models = {
         ]
       },
       {
+        name: 'Announcements ',
+        text: '活动和公告',
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
+        children: [
+          {
+            name: 'gameAnnouncement',
+            text: '游戏公告',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/gameAnnouncement')), 'gameAnnouncement')
+          },
+          {
+            name: 'systemBroadcast',
+            text: '系统广播',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/systemBroadcast')), 'systemBroadcast')
+          },
+          {
+            name: 'activityList',
+            text: '活动列表',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/activityList')), 'activityList')
+          },
+          {
+            name: 'stopNotice',
+            text: '停服公告',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/stopNotice')), 'stopNotice')
+          },
+        ]
+      },
+      {
         name:'offlinePay',
         text:'线下支付',
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/OfflinePay')), 'offlinePay')
