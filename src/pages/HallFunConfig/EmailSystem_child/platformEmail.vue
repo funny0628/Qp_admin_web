@@ -93,7 +93,7 @@
           label="操作"
           align="center"
           show-overflow-tooltip
-          width="200px"
+          width="300px"
         >
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)"
@@ -243,7 +243,7 @@ export default {
             message: "修改成功",
             type: "success"
           });
-          
+
         } else {
           console.log("error submit!!");
           return false;

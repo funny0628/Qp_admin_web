@@ -206,6 +206,23 @@ const models = {
         ]
       },
       // {
+      //   name:'godSystem',
+      //   text:'财神驾到系统',
+      //   vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
+      //   children: [
+      //     {
+      //       name:'godCofig',
+      //       text:'财神驾到玩法配置',
+      //       vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/godSystem_child/godCofig')), 'godCofig')
+      //     },
+      //     {
+      //       name:'godMessage',
+      //       text:'财神驾到数据查询',
+      //       vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/godSystem_child/godMessage')), 'godMessage')
+      //     },
+      //   ]
+      // },
+      // {
       //   name:'scrollNotice',
       //   text:'滚动公告',
       //   vue: r => require.ensure([], () => r(require('../../pages/TheConfig/ScrollNotice')), 'scrollNotice')
