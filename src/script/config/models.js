@@ -53,7 +53,7 @@ const models = {
       {
         name:'payConfig',
         text:'支付配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
         children: [
           {
             name: 'VIPpayConfig',
@@ -75,7 +75,7 @@ const models = {
       {
         name: 'Announcements ',
         text: '活动和公告',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
         children: [
           {
             name: 'gameAnnouncement',
@@ -112,7 +112,19 @@ const models = {
       {
         name:'RankListManage',
         text:'排行榜管理',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage')), 'RankListManage')
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage')), 'RankListManage'),
+        children: [
+          {
+            name:'RankListManageConf',
+            text:'排行榜配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage_child/RankListManageConf')), 'RankListManageConf')
+          },
+          {
+            name:'RankListManageHistory',
+            text:'排行榜历史数据',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage_child/RankListManageHistory')), 'RankListManageHistory')
+          },
+        ]
       },
       {
         name:'VipSystem',
