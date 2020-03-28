@@ -53,7 +53,7 @@ const models = {
       {
         name:'payConfig',
         text:'支付配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
         children: [
           {
             name: 'VIPpayConfig',
@@ -75,7 +75,7 @@ const models = {
       {
         name: 'Announcements ',
         text: '活动和公告',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
         children: [
           {
             name: 'gameAnnouncement',
@@ -112,7 +112,19 @@ const models = {
       {
         name:'RankListManage',
         text:'排行榜管理',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage')), 'RankListManage')
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage')), 'RankListManage'),
+        children: [
+          {
+            name:'RankListManageConf',
+            text:'排行榜配置',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage_child/RankListManageConf')), 'RankListManageConf')
+          },
+          {
+            name:'RankListManageHistory',
+            text:'排行榜历史数据',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/RankListManage_child/RankListManageHistory')), 'RankListManageHistory')
+          },
+        ]
       },
       {
         name:'VipSystem',
@@ -188,9 +200,38 @@ const models = {
       },
       {
         name:'EmailSystem',
-        text:'邮件系统',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem')
+        text:'邮件管理',
+        // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
+        children: [
+          {
+            name:'platformEmail',
+            text:'平台邮件',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/platformEmail')), 'platformEmail')
+          },
+          {
+            name:'allServersEmail',
+            text:'全服邮件',
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/allServersEmail')), 'allServersEmail')
+          },
+        ]
       },
+      // {
+      //   name:'godSystem',
+      //   text:'财神驾到系统',
+      //   vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
+      //   children: [
+      //     {
+      //       name:'godCofig',
+      //       text:'财神驾到玩法配置',
+      //       vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/godSystem_child/godCofig')), 'godCofig')
+      //     },
+      //     {
+      //       name:'godMessage',
+      //       text:'财神驾到数据查询',
+      //       vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/godSystem_child/godMessage')), 'godMessage')
+      //     },
+      //   ]
+      // },
       // {
       //   name:'scrollNotice',
       //   text:'滚动公告',

@@ -1,5 +1,6 @@
 <template>
   <div id="payList">
+    <!-- 头部 -->
     <div class="title">
       <div class="botton">
         <span @click="del" class="del">删除</span>
@@ -13,72 +14,331 @@
         class="el_input"
       ></el-input>
     </div>
+    <!-- table -->
     <div class="table">
-      <Table />
-      <Pagination />
+      <el-table
+        border
+        highlight-current-row
+        :default-sort="{ prop: 'ID', order: orderlist[0] }"
+        ref="multipleTable"
+        :data="tableData"
+        tooltip-effect="dark"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" align="center"> </el-table-column>
+        <el-table-column sortable prop="ID" label="ID" align="center">
+        </el-table-column>
+        <el-table-column prop="sort" label="排序" align="center">
+        </el-table-column>
+        <el-table-column
+          prop="payname"
+          label="支付名称"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="channel"
+          label="支付渠道"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="paytype"
+          label="支付方式"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="amount"
+          label="固定金额"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="topuptype"
+          label="充值类型"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="maxamount"
+          label="自定义最大金额"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="minamount"
+          label="可自定义最小金额"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="paynode"
+          label="支付备注"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="effect"
+          label="是否生效"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="recommend"
+          label="是否推荐"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="operation"
+          label="操作者"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="operationtime"
+          label="操作时间"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="change"
+          label="XX"
+          align="center"
+          show-overflow-tooltip
+          width="200px"
+        >
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+      >
+      </el-pagination>
     </div>
-    <Form  @change="Change" />
+    <!-- form -->
+    <div class="form">
+      <el-dialog :title="title" :visible.sync="visible">
+        <el-form ref="form" :rules="rules" :model="form" label-width="120px">
+          <el-form-item label="显示排序" prop="sort">
+            <el-input placeholder="显示排序" v-model="form.sort"></el-input>
+          </el-form-item>
+          <el-form-item label="支付名称" prop="name">
+            <el-input placeholder="支付名称" v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="支付渠道(小类)" prop="channel">
+            <el-input
+              placeholder="支付渠道名称"
+              v-model="form.channel"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="支付方式(大类)">
+            <el-select v-model="form.type">
+              <el-option label="支付宝" value="zhifubao"></el-option>
+              <el-option label="微信" value="weixin"></el-option>
+              <el-option label="银联" value="yinlian"></el-option>
+              <el-option label="银行卡转账" value="yinhangka"></el-option>
+              <el-option label="VIP充值" value="chongzhi"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="自定义金额">
+            <el-radio-group v-model="form.custom">
+              <el-radio label="固定金额"></el-radio>
+              <el-radio label="自定义金额"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item
+            v-if="form.custom === '自定义金额'"
+            label="最大自定义金额"
+          >
+            <el-input v-model="form.maxcustom"></el-input>
+          </el-form-item>
+          <el-form-item
+            v-if="form.custom === '自定义金额'"
+            label="最小自定义金额"
+          >
+            <el-input v-model="form.mincustom"></el-input>
+          </el-form-item>
+          <el-form-item label="常用充值金额" prop="common">
+            <el-input
+              placeholder="请输入充值金额"
+              v-model="form.common"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="form.remark"></el-input>
+          </el-form-item>
+          <el-form-item label="是否推荐">
+            <el-radio-group v-model="form.recommend">
+              <el-radio label="不推荐"></el-radio>
+              <el-radio label="推荐"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="是否生效">
+            <el-radio-group v-model="form.operant">
+              <el-radio label="不生效"></el-radio>
+              <el-radio label="生效中"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
+          <el-button @click="dialogFormVisible">返 回</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-// 点击新增的按钮,显示新增的弹框,
-// import Table from "./table.vue";
-import Form from '../../../components/form.vue'
-import Table from '../../../components/table.vue'
-import Pagination from "../../../components/pagination.vue";
-import store from "vuex";
 export default {
   name: "payList",
-  components: {
-    Table,
-    Form,
-    Pagination
-  },
+
   data() {
     return {
+      orderlist: ["ascending", "descending"],
+      tableData: [
+        {
+          ID: "1",
+          sort: "排序",
+          payname: "支付名称",
+          channel: "是否生效",
+          paytype: "支付方式",
+          amount: "固定金额",
+          topuptype: "充值类型",
+          maxamount: "自定义最大金额",
+          minamount: "可自定义最小金额",
+          paynode: "支付备注",
+          effect: "是否生效",
+          recommend: "是否推荐",
+          operation: "操作者",
+          operationtime: "操作时间"
+        }
+      ],
+      currentPage4: 1,
+      visible: false,
+      title: "添加",
       input: "",
-      delData: []
+      selectList: [],
+      form: {
+        sort: "",
+        name: "",
+        channel: "",
+        type: "支付宝",
+        custom: "固定金额",
+        common: "",
+        remark: "0",
+        maxcustom: "0",
+        mincustom: "0",
+        recommend: "不推荐",
+        operant: "不生效"
+      },
+      rules: {
+        sort: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        name: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        channel: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
+      }
     };
   },
-  computed: {
-    selected() {
-      return this.$store.state.selectedDel;
-    }
-  },
-  watch: {
-    selected(v) {
-      this.delData = v;
-    }
-  },
+
   methods: {
-    add() {
-      this.$store.commit("SHOW_FORM", {
-        show: true,
-        type: 0
+    handleSelectionChange(sel) {
+      this.selectList = sel;
+    },
+    handleEdit(x) {
+      this.editForm("更新", true, x);
+    },
+    handleDelete() {
+      this.$confirm('确认删除吗？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    handleSizeChange() {},
+    handleCurrentChange() {},
+    onSubmit(formName) {
+      this.$refs[formName].validate((valid,x) => {
+        if (valid) {
+          //1.将form数据传递到paylist,新增到table中先显示一个dom
+          // console.log(this.form);
+  
+          //2.发送请求追加数据到后台-------------------------------------------------------------
+
+          // console.log("发送请求");
+
+          //3.关闭新增的弹框
+         this.editForm("添加", false,{});
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
+    },
+    dialogFormVisible() {
+       this.editForm("添加", false,{});
+    },
+
+    add() {
+      this.editForm("添加", true,{});
     },
     del() {
       //勾选需要删除的项目批量删除
-      if (this.delData.length != 0) {
+      if (this.selectList.length != 0) {
         //###1.删除dom的数据
         //2.删除后台的数据
-        console.log('已经有数据了');
-        
-      }else{
-         this.$message("请选择需要删除的数据");
+        console.log("已经有数据了");
+      } else {
+        this.$message("请选择需要删除的数据");
       }
-     
     },
     search() {
       //获取表格中的支付名称,点击搜索
     },
-    //修改新增弹框的显示
-    Change(v) {
-        this.$store.commit("SHOW_FORM", {
-        show: false,
-        type: 0
-      });
+
+    editForm(title, visible,form) {
+      this.title = title;
+      this.visible = visible;
+      this.form = form;
     }
   }
 };

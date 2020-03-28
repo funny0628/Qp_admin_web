@@ -4,7 +4,7 @@
       <div class="botton">
         <span @click="add">添加</span>
       </div>
-      标题 <el-input style="width:200px" v-model="input"></el-input>
+      标题 <el-input style="margin-top:10px;width:200px" v-model="input"></el-input>
       <span @click="search">查找</span>
     </div>
     <!-- 表格 -->
@@ -113,10 +113,10 @@
           <el-form-item label="公告标题" prop="sort">
             <el-input placeholder="邮件标题" v-model="form.sort"></el-input>
           </el-form-item>
-          <el-form-item label="公告类型" :label-width="formLabelWidth">
+          <el-form-item label="公告类型" >
             <el-select v-model="form.aa">
-              <el-option label="文字" value="wenzi"></el-option>
-              <el-option label="图片" value="tupian"></el-option>
+              <el-option label="文字" value="文字"></el-option>
+              <el-option label="图片" value="图片"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item v-if="form.aa === '文字'" label="公告简介" prop="name">
@@ -166,7 +166,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form)">确 定</el-button>
+          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -180,6 +180,8 @@ export default {
       input: "",
       currentPage4: 1,
       visiblity: false,
+      uploadShow:false,
+      fileList:[],
       tableData: [
         {
           topuptype: "充值类型",
@@ -234,7 +236,15 @@ export default {
       }
     };
   },
+  watch: {
+    "form.aa"(x,y){
+      console.log(x,y);
+      
+    }
+  },
   methods: {
+    handlePreview(){},
+    handleRemove(){},
     add() {
       this.visiblity = true;
     },
@@ -247,12 +257,13 @@ export default {
     },
 
     handleEdit(x) {
+       this.visiblity = true;
       // console.log(x);
-      this.$store.commit("EDIT_ITEM", x);
-      this.$store.commit("SHOW_FORM", {
-        show: true,
-        type: 1
-      });
+      // this.$store.commit("EDIT_ITEM", x);
+      // this.$store.commit("SHOW_FORM", {
+      //   show: true,
+      //   type: 1
+      // });
     },
     Change() {
       this.$store.commit("SHOW_FORM", {
@@ -286,6 +297,16 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    onSubmit(formName){
+       this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
     }
   }
 };
@@ -295,7 +316,7 @@ export default {
 #gameAnnouncement {
   background-color: #f2f2f2;
   .title {
-    padding: 20px 10px;
+    padding: 20px 10px 0px;
     box-sizing: border-box;
     span {
       display: inline-block;
