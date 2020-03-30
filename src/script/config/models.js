@@ -92,6 +92,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'RobNiuNiu',
+        text:'抢庄牛牛',
+        vue: null,
+        children: [
+          {
+            name: 'RoomCofig',
+            text: '抢庄牛-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RobNiuNiu/RoomCofig')), 'RoomCofig')
+          },
+          {
+            name: 'RobotControl',
+            text: '抢庄牛-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RobNiuNiu/RobotControl')), 'RobotControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
