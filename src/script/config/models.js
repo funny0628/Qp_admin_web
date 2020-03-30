@@ -131,6 +131,28 @@ const models = {
           },
         ]
       },
+      {
+        name:'Landlords',
+        text:'斗地主',
+        vue: null,
+        children: [
+          {
+            name: 'L_RoomCofig',
+            text: '斗地主-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_RoomCofig')), 'L_RoomCofig')
+          },
+          {
+            name: 'L_RobotControl',
+            text: '斗地主-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_RobotControl')), 'L_RobotControl')
+          },
+          {
+            name: 'L_PreventConfig',
+            text: '斗地主-防刷配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_PreventConfig')), 'L_PreventConfig')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
