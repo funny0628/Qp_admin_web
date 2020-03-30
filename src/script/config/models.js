@@ -29,14 +29,31 @@ const models = {
     ]
   },
   gameMan:{
-    name:'gameMan',
+    name:'SubGameConfig',
     vue:null,
-    text:'游戏管理',
+    text:'子游戏配置',
     children:[
       {
-        name:'gameRec',
-        text:'游戏记录',
-        vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
+        name:'happyFishing',
+        text:'欢乐捕鱼',
+        vue: null,
+        children: [
+          {
+            name: 'fishRoomCofig',
+            text: '捕鱼-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishRoomCofig')), 'fishRoomCofig')
+          },
+          {
+            name: 'fishControl',
+            text: '捕鱼-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishControl')), 'fishControl')
+          },
+          {
+            name: 'batteryConfig',
+            text: '炮台配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/batteryConfig')), 'batteryConfig')
+          },
+        ]
       },
       // {
       //   name:'gold_rec',
