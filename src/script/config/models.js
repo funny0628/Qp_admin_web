@@ -55,6 +55,43 @@ const models = {
           },
         ]
       },
+      {
+        name:'hundredNiuNiu',
+        text:'百人牛牛',
+        vue: null,
+        children: [
+          {
+            name: 'trineRoomCofig',
+            text: '三倍场房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineRoomCofig')), 'trineRoomCofig')
+          },
+          {
+            name: 'decupleRoomCofig',
+            text: '十倍场房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleRoomCofig')), 'decupleRoomCofig')
+          },
+          {
+            name: 'trineRobotControl',
+            text: '三倍场机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineRobotControl')), 'trineRobotControl')
+          },
+          {
+            name: 'decupleRobotControl',
+            text: '十倍场机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleRobotControl')), 'decupleRobotControl')
+          },
+          {
+            name: 'trineBankerControl',
+            text: '三倍场上庄机器人控制 ',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineBankerControl')), 'trineBankerControl')
+          },
+          {
+            name: 'decupleBankerControl',
+            text: '十倍场上庄机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleBankerControl')), 'decupleBankerControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
