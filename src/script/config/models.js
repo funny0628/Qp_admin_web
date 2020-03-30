@@ -109,6 +109,28 @@ const models = {
           },
         ]
       },
+      {
+        name:'GoldenFlower',
+        text:'炸金花',
+        vue: null,
+        children: [
+          {
+            name: 'F_RoomCofig',
+            text: '金花-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_RoomCofig')), 'F_RoomCofig')
+          },
+          {
+            name: 'F_RobotControl',
+            text: '金花-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_RobotControl')), 'F_RobotControl')
+          },
+          {
+            name: 'F_ProbConfig',
+            text: '金花-牌型概率配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_ProbConfig')), 'F_ProbConfig')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
