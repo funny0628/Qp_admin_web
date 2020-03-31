@@ -21,11 +21,11 @@
         :model="ruleForm"
         :rules="rules"
         ref="ruleForm"
-        label-width="360px"
+        label-width="200px"
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.room" placeholder="房间名称"></el-input>房间ID:200004
+          <el-input style="width:200px" v-model="ruleForm.room" placeholder="房间名称"></el-input>房间ID:200600
         </el-form-item>
 
         <el-form-item label="场次开关" prop="delivery">
@@ -34,11 +34,7 @@
         <el-form-item label="是否开放机器人" prop="delivery">
           <el-switch v-model="ruleForm.delivery"></el-switch>
         </el-form-item>
-      
-        <el-form-item label="台费" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>(百分比)
-        </el-form-item>
-      
+    
          </el-form-item>
         <el-form-item label="携带上限" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
@@ -60,42 +56,40 @@
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>格式如1,10000
      </el-form-item>
 
-        <el-form-item label="个人区域限红（小奔驰、宝马、大众、保时捷）5倍区域" prop="name">
+        <el-form-item label="个人区域限红（闲)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="个人区域限红（大大众）10倍区域" prop="name">
+        <el-form-item label="个人区域限红 (庄)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="个人区域限红 （大宝马）20倍区域" prop="name">
+        <el-form-item label="个人区域限红 (和)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="个人区域限红（大奔驰）30倍区域" prop="name">
+        <el-form-item label="个人区域限红 (闲对)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="个人区域限红（大保时捷）40倍区域" prop="name">
+        <el-form-item label="个人区域限红 (庄对)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="区域总限红（小奔驰、宝马、大众、保时捷）5倍区域" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
-     </el-form-item>
-     
-        <el-form-item label="区域总限红（大大众）10倍区域" prop="name">
+        <el-form-item label="区域限红 (庄、闲差)" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="区域总限红 （大宝马）20倍区域" prop="name">
+        <el-form-item label="和总值" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="区域总限红（大奔驰）30倍区域" prop="name">
+        <el-form-item label="庄对总值" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="区域总限红（大保时捷）40倍区域" prop="name">
+        <el-form-item label="闲对总值" prop="name">
           <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
      </el-form-item>
+     
+      
      
        
      
