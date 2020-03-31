@@ -221,6 +221,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'FamiliesHappy',
+        text:'百家乐',
+        vue: null,
+        children: [
+          {
+            name: 'H_RoomCofig',
+            text: '百家乐-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FamiliesHappy/H_RoomCofig')), 'H_RoomCofig')
+          },
+          {
+            name: 'H_RobotControl',
+            text: '百家乐-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FamiliesHappy/H_RobotControl')), 'H_RobotControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
