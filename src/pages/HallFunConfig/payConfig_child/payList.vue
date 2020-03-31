@@ -173,21 +173,23 @@
               <el-option label="VIP充值" value="chongzhi"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="自定义金额">
+          <el-form-item label="自定义金额" prop="custom">
             <el-radio-group v-model="form.custom">
-              <el-radio label="固定金额"></el-radio>
-              <el-radio label="自定义金额"></el-radio>
+              <el-radio :label="1">固定金额</el-radio>
+              <el-radio :label="2">自定义金额</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
-            v-if="form.custom === '自定义金额'"
+            v-if="form.custom === 2"
             label="最大自定义金额"
+            prop="common"
           >
             <el-input v-model="form.maxcustom"></el-input>
           </el-form-item>
           <el-form-item
-            v-if="form.custom === '自定义金额'"
+            v-if="form.custom === 2"
             label="最小自定义金额"
+            prop="common"
           >
             <el-input v-model="form.mincustom"></el-input>
           </el-form-item>
@@ -229,25 +231,32 @@ export default {
   data() {
     return {
       orderlist: ["ascending", "descending"],
+      pay_way: [
+        { 1: "支付宝" },
+        { 2: "微信" },
+        { 3: "银联" },
+        { 4: "银行卡转账" },
+        { 5: "VIP充值" }
+      ],
       tableData: [
-        {
-          id: 4,
-          pay_name: "pay_name",
-          pay_channel: "pay_channel",
-          pay_way: 1,
-          is_diy: 1,
-          money_num: 123,
-          diy_max: 20,
-          diy_min: 2,
-          sort_num: 1,
-          pay_desc: "desc",
-          o_status: 1,
-          o_activity: 12,
-          op_name: "op_name",
-          status: 1,
-          create_time: "2020-03-30 16:05:00",
-          update_time: "2020-03-30 16:05:00"
-        }
+        // {
+        //   id: 4,
+        //   pay_name: "pay_name",
+        //   pay_channel: "pay_channel",
+        //   pay_way: 1,
+        //   is_diy: 1,
+        //   money_num: 123,
+        //   diy_max: 20,
+        //   diy_min: 2,
+        //   sort_num: 1,
+        //   pay_desc: "desc",
+        //   o_status: 1,
+        //   o_activity: 12,
+        //   op_name: "op_name",
+        //   status: 1,
+        //   create_time: "2020-03-30 16:05:00",
+        //   update_time: "2020-03-30 16:05:00"
+        // }
       ],
       currentPage4: 1,
       visible: false,
@@ -259,7 +268,7 @@ export default {
         name: "",
         channel: "",
         type: "支付宝",
-        custom: "固定金额",
+        custom: 1,
         common: "",
         remark: "0",
         maxcustom: "0",
@@ -280,6 +289,21 @@ export default {
         common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
       }
     };
+  },
+  async created() {
+    let { data } = await this.$http.GetPaylist({ page: 1, limit: 1 });
+    console.log(data);
+    let localdata = data.data;
+    localdata.forEach(item => {
+      item.is_diy = "固定 " ? item.is_diy === 1 : "可自定义";
+      item.o_status = "不生效 " ? item.o_status === 1 : "生效";
+      item.o_activity = "不推荐 " ? item.o_activity === 1 : "推荐";
+      let aa = this.pay_way.includes(item.pay_way);
+      item.pay_way = this.pay_way[item.pay_way] ? aa : "";
+    });
+    console.log(localdata);
+
+    this.tableData = localdata;
   },
 
   methods: {

@@ -3,7 +3,7 @@ import axios from 'axios'
 const httpHelper = {};
 // 配置Vue插件
 httpHelper.install = function fn(Vue) {
-  axios.defaults.baseURL = 'http://192.168.1.24:8000/backend/';
+  axios.defaults.baseURL = 'http://192.168.1.64:8000/v1/backend/';
   // axios 拦截器
   // 当不是登录的时候添加Authorization
   axios.interceptors.request.use(function (config) {
@@ -16,6 +16,17 @@ httpHelper.install = function fn(Vue) {
     // Do something with request error
     return Promise.reject(error);
   });
+
+  axios.GetPaylist = (params)=>{
+    return axios.get('/lobby/pay_list',{
+      params
+    })
+  }
+  axios.GameNotice = (params)=>{
+    return axios.get('/lobby/game_notice',{
+      params
+    })
+  }
 
   Vue.prototype.$http = axios;
 };

@@ -4,7 +4,8 @@
       <div class="botton">
         <span @click="add">添加</span>
       </div>
-      标题 <el-input style="margin-top:10px;width:200px" v-model="input"></el-input>
+      标题
+      <el-input style="margin-top:10px;width:200px" v-model="input"></el-input>
       <span @click="search">查找</span>
     </div>
     <!-- 表格 -->
@@ -18,42 +19,42 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="topuptype"
+          prop="id"
           label="id"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="maxamount"
+          prop="title"
           label="公告标题"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="minamount"
+          prop="tag"
           label="标签"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="paynode"
+          prop="start_time"
           label="公告开始时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="effect"
+          prop="end_time"
           label="公告结束时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="sort"
           label="触发类型"
           align="center"
           show-overflow-tooltip
@@ -67,7 +68,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="operationtime"
+          prop="show_status"
           label="状态"
           align="center"
           show-overflow-tooltip
@@ -113,7 +114,7 @@
           <el-form-item label="公告标题" prop="sort">
             <el-input placeholder="邮件标题" v-model="form.sort"></el-input>
           </el-form-item>
-          <el-form-item label="公告类型" >
+          <el-form-item label="公告类型">
             <el-select v-model="form.aa">
               <el-option label="文字" value="文字"></el-option>
               <el-option label="图片" value="图片"></el-option>
@@ -194,14 +195,19 @@ export default {
           operationtime: "操作时间"
         },
         {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
+          id: 3,
+          title: "title",
+          type_id: 1,
+          description: "description",
+          image_url: "image_url",
+          tag: 1,
+          start_time: "2020-03-20 13:42:02",
+          end_time: "2020-03-20 13:42:03",
+          sort: 1,
+          show_status: 1,
+          status: 1,
+          create_time: "2020-03-25 15:31:40",
+          update_time: "2020-03-25 15:31:40",
         }
       ],
       form: {
@@ -236,10 +242,15 @@ export default {
       }
     };
   },
+  async created() {
+    let {data} = await this.$http.GameNotice({page:1,limit:1})
+    console.log(data);
+
+  },
   watch: {
     "form.aa"(x,y){
       console.log(x,y);
-      
+
     }
   },
   methods: {
