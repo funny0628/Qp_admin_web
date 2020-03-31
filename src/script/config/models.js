@@ -204,6 +204,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'BMW',
+        text:'奔驰宝马',
+        vue: null,
+        children: [
+          {
+            name: 'B_RoomCofig',
+            text: '奔驰-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/BMW/B_RoomCofig')), 'B_RoomCofig')
+          },
+          {
+            name: 'B_RobotControl',
+            text: '奔驰-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/BMW/B_RobotControl')), 'B_RobotControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
