@@ -170,6 +170,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'RedBlackWar',
+        text:'红黑大战',
+        vue: null,
+        children: [
+          {
+            name: 'W_RoomCofig',
+            text: '红黑-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RedBlackWar/W_RoomCofig')), 'W_RoomCofig')
+          },
+          {
+            name: 'W_RobotControl',
+            text: '红黑-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RedBlackWar/W_RobotControl')), 'W_RobotControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
