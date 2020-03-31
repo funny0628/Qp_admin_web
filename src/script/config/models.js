@@ -238,6 +238,11 @@ const models = {
           },
         ]
       },
+      {
+        name:'LinConfiguration',
+        text:'百人场下注额度配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/LinConfiguration')), 'LinConfiguration')
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
