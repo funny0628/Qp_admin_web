@@ -29,14 +29,129 @@ const models = {
     ]
   },
   gameMan:{
-    name:'gameMan',
+    name:'SubGameConfig',
     vue:null,
-    text:'游戏管理',
+    text:'子游戏配置',
     children:[
       {
-        name:'gameRec',
-        text:'游戏记录',
-        vue: r => require.ensure([],()=> r(require('../../pages/GameMan/GameRec')),'gameRec')
+        name:'happyFishing',
+        text:'欢乐捕鱼',
+        vue: null,
+        children: [
+          {
+            name: 'fishRoomCofig',
+            text: '捕鱼-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishRoomCofig')), 'fishRoomCofig')
+          },
+          {
+            name: 'fishControl',
+            text: '捕鱼-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishControl')), 'fishControl')
+          },
+          {
+            name: 'batteryConfig',
+            text: '炮台配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/batteryConfig')), 'batteryConfig')
+          },
+        ]
+      },
+      {
+        name:'hundredNiuNiu',
+        text:'百人牛牛',
+        vue: null,
+        children: [
+          {
+            name: 'trineRoomCofig',
+            text: '三倍场房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineRoomCofig')), 'trineRoomCofig')
+          },
+          {
+            name: 'decupleRoomCofig',
+            text: '十倍场房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleRoomCofig')), 'decupleRoomCofig')
+          },
+          {
+            name: 'trineRobotControl',
+            text: '三倍场机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineRobotControl')), 'trineRobotControl')
+          },
+          {
+            name: 'decupleRobotControl',
+            text: '十倍场机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleRobotControl')), 'decupleRobotControl')
+          },
+          {
+            name: 'trineBankerControl',
+            text: '三倍场上庄机器人控制 ',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineBankerControl')), 'trineBankerControl')
+          },
+          {
+            name: 'decupleBankerControl',
+            text: '十倍场上庄机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleBankerControl')), 'decupleBankerControl')
+          },
+        ]
+      },
+      {
+        name:'RobNiuNiu',
+        text:'抢庄牛牛',
+        vue: null,
+        children: [
+          {
+            name: 'RoomCofig',
+            text: '抢庄牛-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RobNiuNiu/RoomCofig')), 'RoomCofig')
+          },
+          {
+            name: 'RobotControl',
+            text: '抢庄牛-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RobNiuNiu/RobotControl')), 'RobotControl')
+          },
+        ]
+      },
+      {
+        name:'GoldenFlower',
+        text:'炸金花',
+        vue: null,
+        children: [
+          {
+            name: 'F_RoomCofig',
+            text: '金花-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_RoomCofig')), 'F_RoomCofig')
+          },
+          {
+            name: 'F_RobotControl',
+            text: '金花-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_RobotControl')), 'F_RobotControl')
+          },
+          {
+            name: 'F_ProbConfig',
+            text: '金花-牌型概率配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/GoldenFlower/F_ProbConfig')), 'F_ProbConfig')
+          },
+        ]
+      },
+      {
+        name:'Landlords',
+        text:'斗地主',
+        vue: null,
+        children: [
+          {
+            name: 'L_RoomCofig',
+            text: '斗地主-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_RoomCofig')), 'L_RoomCofig')
+          },
+          {
+            name: 'L_RobotControl',
+            text: '斗地主-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_RobotControl')), 'L_RobotControl')
+          },
+          {
+            name: 'L_PreventConfig',
+            text: '斗地主-防刷配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/Landlords/L_PreventConfig')), 'L_PreventConfig')
+          },
+        ]
       },
       // {
       //   name:'gold_rec',
