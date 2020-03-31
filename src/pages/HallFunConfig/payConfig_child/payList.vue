@@ -281,40 +281,6 @@ export default {
       }
     };
   },
-  created() {
-    this.tableData.forEach((item)=>{
-      switch (item.pay_way) {
-        case 1:
-          item.pay_way = '支付宝'
-          break;
-        case 2:
-          item.pay_way = '微信'
-          break;
-        case 3:
-          item.pay_way = '银联'
-          break;
-        case 4:
-          item.pay_way = '银行卡转账'
-          break;
-        case 5:
-          item.pay_way = 'VIP充值'
-          break;
-      
-        default:
-          
-          break;
-      }
-      if(item.is_diy === 1 || item.o_status === 1 || item.o_activity === 1){
-        item.is_diy = "固定"
-        item.o_status = "不生效"
-        item.o_activity = "不推荐"
-      }else{
-        item.is_diy = "不固定"
-        item.o_status = "生效"
-        item.o_activity = "推荐"
-      }
-    })
-  },
 
   methods: {
     handleSelectionChange(sel) {
