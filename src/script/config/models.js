@@ -153,6 +153,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'FruitMachine',
+        text:'水果机',
+        vue: null,
+        children: [
+          {
+            name: 'S_RoomCofig',
+            text: '水果机-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FruitMachine/S_RoomCofig')), 'S_RoomCofig')
+          },
+          {
+            name: 'S_BasicDeploy',
+            text: '水果机-基础配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FruitMachine/S_BasicDeploy')), 'S_BasicDeploy')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",

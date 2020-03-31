@@ -1,0 +1,13 @@
+ finished
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Mar 31 14:06:58 2020 +0800
+#
+# On branch fenni_dev
+# Changes to be committed:
+#	new file:   src/pages/SubGameConfig/FruitMachine/S_BasicDeploy.vue
+#	new file:   src/pages/SubGameConfig/FruitMachine/S_RoomCofig.vue
+#	modified:   src/script/config/models.js
+#
