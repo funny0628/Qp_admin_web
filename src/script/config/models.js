@@ -187,6 +187,23 @@ const models = {
           },
         ]
       },
+      {
+        name:'ChineseBoxer',
+        text:'龙虎斗',
+        vue: null,
+        children: [
+          {
+            name: 'C_RoomCofig',
+            text: '龙虎-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/ChineseBoxer/C_RoomCofig')), 'C_RoomCofig')
+          },
+          {
+            name: 'C_RobotControl',
+            text: '龙虎-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/ChineseBoxer/C_RobotControl')), 'C_RobotControl')
+          },
+        ]
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
