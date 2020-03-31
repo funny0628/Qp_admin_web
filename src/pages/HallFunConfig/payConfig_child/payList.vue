@@ -27,89 +27,89 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" align="center"> </el-table-column>
-        <el-table-column sortable prop="ID" label="ID" align="center">
+        <el-table-column sortable prop="id" label="ID" align="center">
         </el-table-column>
-        <el-table-column prop="sort" label="排序" align="center">
+        <el-table-column prop="sort_num" label="排序" align="center">
         </el-table-column>
         <el-table-column
-          prop="payname"
+          prop="pay_name"
           label="支付名称"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="channel"
+          prop="pay_channel"
           label="支付渠道"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="paytype"
+          prop="pay_way"
           label="支付方式"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="amount"
+          prop="money_num"
           label="固定金额"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="topuptype"
+          prop="is_diy"
           label="充值类型"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="maxamount"
+          prop="diy_max"
           label="自定义最大金额"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="minamount"
+          prop="diy_min"
           label="可自定义最小金额"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="paynode"
+          prop="pay_desc"
           label="支付备注"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="effect"
+          prop="o_status"
           label="是否生效"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="o_activity"
           label="是否推荐"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="operation"
+          prop="op_name"
           label="操作者"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="operationtime"
+          prop="update_time"
           label="操作时间"
           align="center"
           show-overflow-tooltip
@@ -231,20 +231,22 @@ export default {
       orderlist: ["ascending", "descending"],
       tableData: [
         {
-          ID: "1",
-          sort: "排序",
-          payname: "支付名称",
-          channel: "是否生效",
-          paytype: "支付方式",
-          amount: "固定金额",
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
+          id: 4,
+          pay_name: "pay_name",
+          pay_channel: "pay_channel",
+          pay_way: 1,
+          is_diy: 1,
+          money_num: 123,
+          diy_max: 20,
+          diy_min: 2,
+          sort_num: 1,
+          pay_desc: "desc",
+          o_status: 1,
+          o_activity: 12,
+          op_name: "op_name",
+          status: 1,
+          create_time: "2020-03-30 16:05:00",
+          update_time: "2020-03-30 16:05:00"
         }
       ],
       currentPage4: 1,
@@ -279,6 +281,40 @@ export default {
       }
     };
   },
+  created() {
+    this.tableData.forEach((item)=>{
+      switch (item.pay_way) {
+        case 1:
+          item.pay_way = '支付宝'
+          break;
+        case 2:
+          item.pay_way = '微信'
+          break;
+        case 3:
+          item.pay_way = '银联'
+          break;
+        case 4:
+          item.pay_way = '银行卡转账'
+          break;
+        case 5:
+          item.pay_way = 'VIP充值'
+          break;
+      
+        default:
+          
+          break;
+      }
+      if(item.is_diy === 1 || item.o_status === 1 || item.o_activity === 1){
+        item.is_diy = "固定"
+        item.o_status = "不生效"
+        item.o_activity = "不推荐"
+      }else{
+        item.is_diy = "不固定"
+        item.o_status = "生效"
+        item.o_activity = "推荐"
+      }
+    })
+  },
 
   methods: {
     handleSelectionChange(sel) {
@@ -288,26 +324,26 @@ export default {
       this.editForm("更新", true, x);
     },
     handleDelete() {
-      this.$confirm('确认删除吗？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
+      this.$confirm("确认删除吗？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     },
     handleSizeChange() {},
     handleCurrentChange() {},
     onSubmit(formName) {
-      this.$refs[formName].validate((valid,x) => {
+      this.$refs[formName].validate((valid, x) => {
         if (valid) {
           //1.将form数据传递到paylist,新增到table中先显示一个dom
           // console.log(this.form);
-  
+
           //2.发送请求追加数据到后台-------------------------------------------------------------
 
           // console.log("发送请求");
 
           //3.关闭新增的弹框
-         this.editForm("添加", false,{});
+          this.editForm("添加", false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -315,11 +351,11 @@ export default {
       });
     },
     dialogFormVisible() {
-       this.editForm("添加", false,{});
+      this.editForm("添加", false, {});
     },
 
     add() {
-      this.editForm("添加", true,{});
+      this.editForm("添加", true, {});
     },
     del() {
       //勾选需要删除的项目批量删除
@@ -335,7 +371,7 @@ export default {
       //获取表格中的支付名称,点击搜索
     },
 
-    editForm(title, visible,form) {
+    editForm(title, visible, form) {
       this.title = title;
       this.visible = visible;
       this.form = form;
