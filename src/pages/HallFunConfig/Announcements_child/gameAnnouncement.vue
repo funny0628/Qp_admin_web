@@ -1,7 +1,7 @@
 <template>
   <div id="gameAnnouncement">
     <div class="title">
-      <p><el-button type="primary" @click="add">添加</el-button></p>
+      <p><el-button type="primary" @click="add('form')">添加</el-button></p>
       标题
       <el-input
         style="margin-top:10px;width:200px"
@@ -83,7 +83,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="mini" @click="handleEdit(scope.row,'form')"
               >编辑</el-button
             >
             <el-button
@@ -97,6 +97,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
+       v-if="total > 10"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -109,7 +110,7 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visiblity">
+      <el-dialog :title="title" :visible.sync="visible">
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
             <el-input placeholder="邮件标题" v-model="form.title"></el-input>
@@ -175,7 +176,7 @@
             <el-upload
               v-model="form.image_url"
               class="upload-demo"
-              action="http://192.168.1.64:8000/v1/backend/lobby/game_notice"
+              action="http://192.168.1.64:8000/v1/backend/upload"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :file-list="fileList"
@@ -200,8 +201,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import Qs from "qs";
 
 export default {
   data() {
@@ -211,7 +210,7 @@ export default {
       currentPage: 1,
       limit: 10,
       total: 0,
-      visiblity: false,
+      visible: false,
       fileList: [],
       tableData: [],
       form: {
@@ -256,56 +255,64 @@ export default {
     };
   },
   created() {
-    this.initdata({ page: this.currentPage, limit: this.limit });
+    this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
   },
 
   methods: {
-    handlePreview() {},
-    handleRemove() {},
-    add() {
-      this.form = {
-        id: -1,
-        title: "",
-        type_id: "",
-        description: "",
-        image_url: "",
-        tag: "",
-        start_time: "",
-        end_time: "",
-        sort: "",
-        show_status: ""
-      };
-      this.visiblity = true;
-      this.title = "记录";
+
+    //点击已经上传的图片
+    handlePreview(file) {
+      console.log(file);
+      
     },
+
+    //移除上传文件时
+    handleRemove() {},
+
+    //添加
+    add(formName) {
+      this.editForm('记录', true,{})
+      // this.visiblity = true;
+      // this.title = "记录";
+       this.$refs[formName].resetFields();
+    },
+
+    //搜索
     search() {
-      // 拿到searchinput 的值,模糊匹配table中的数据
-      //声明一个newarr,遍历所有的数据如果与searchinput匹配到的就push到newarr
-      //最后在把newarr赋值个表格的tabledata
       if (this.searchinput === "") {
         this.$message({
           type: "warning",
           message: "请输入你要搜索的标题!"
         });
       }
-      this.initdata({ title: this.searchinput });
+      this.currentPage = 1;
+      this.limit = 10;
+      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
     },
+
+    //页容量发生变化
     handleSizeChange(num) {
       // console.log(num);
       this.limit = num;
       this.currentPage = 1;
-      this.initdata({ page: this.currentPage, limit: this.limit });
+      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
     },
+
+    //页码发生变化
     handleCurrentChange(pagenum) {
       // console.log(pagenum);
       this.currentPage = pagenum;
-      this.initdata({ page: this.currentPage, limit: this.limit });
-    },
-    dialogFormVisible() {
-      this.visiblity = false;
+      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
     },
 
-    handleEdit(row) {
+    //表单关闭
+    dialogFormVisible() {
+      // this.visiblity = false;
+       this.editForm("添加", false, {});
+    },
+
+    //表格编辑
+    handleEdit(row,formName) {
       // console.log(row);
       this.form = { ...row };
       function data(time) {
@@ -317,10 +324,13 @@ export default {
       this.form.start_time = data(row.start_time);
       this.form.end_time = data(row.end_time);
       // console.log(this.form);
-      this.visiblity = true;
-      this.title = "编辑";
+      // this.visiblity = true;
+      // this.title = "编辑";
+      this.editForm('编辑', true, this.form)
+      this.$refs[formName].resetFields();
     },
 
+    //表格删除
     handleDelete(y, row) {
       console.log(y, row.id);
       this.$confirm("确认删除吗？", "信息", {
@@ -334,7 +344,9 @@ export default {
             id: row.id
           });
           console.log(data);
-          this.initdata({ page: this.currentPage, limit: this.limit });
+          if(data.code === 1 && data.msg === 'ok'){
+               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            }
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -348,17 +360,17 @@ export default {
         });
     },
 
+    //表单提交
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (type === "记录") {
-           
             let { data } = await this.$http.HallFunConfig.PostGameNotice(
               this.form
             );
-            let fres = this.formateData(data.data);
-            this.tableData = this.tableData.concat(fres);
-            // this.visiblity = false;
+             if(data.code === 1 && data.msg === 'ok'){
+               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            }
           } else if (type === "编辑") {
             // console.log(this.form);
 
@@ -371,22 +383,23 @@ export default {
             let { data } = await this.$http.HallFunConfig.PutGameNotice(
               resdata
             );
-            let fres = this.formateData(data.data);
-            let newtable = [];
-            this.tableData.forEach(item => {
-              if (item.id === fres[0].id) {
-                item = { ...fres[0] };
-              }
-              newtable.push(item);
-            });
-            this.tableData = newtable;
+              if(data.code === 1 && data.msg === 'ok'){
+               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            }
           }
-          this.visiblity = false;
+          // this.visiblity = false;
+           this.editForm("添加", false, {});
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+
+    editForm(title, visible, form) {
+      this.title = title;
+      this.visible = visible;
+      this.form = form;
     },
 
     formateData(res) {

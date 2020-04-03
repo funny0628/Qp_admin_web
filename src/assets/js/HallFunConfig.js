@@ -14,13 +14,13 @@ let GetPaylist = (params) => {
   })
 }
 let PostPaylist = (params) => {
-  return axios.post('/pay_list', params)
+  return axios.post('/lobby/pay_list', params)
 }
 let PutPaylist = (params) => {
-  return axios.put('/pay_list', params)
+  return axios.put('/lobby/pay_list', params)
 }
 let DeletePaylist = (params) => {
-  return axios.delete('/pay_list', {params})
+  return axios.delete('/lobby/pay_list', {params})
 }
 
 //3.支付配置-举报方式配置

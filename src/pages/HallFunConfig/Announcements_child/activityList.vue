@@ -1,15 +1,18 @@
-
- <template>
+<template>
   <div id="activityList">
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-         <el-button type="danger" @click="del">删除</el-button>
+        <el-button type="danger" @click="del">删除</el-button>
         <el-button type="primary" @click="add">添加</el-button>
         <el-button type="primary" @click="send">发送到服务器配置</el-button>
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
-      <el-input style="margin-top:10px;width:200px;" v-model="input" placeholder="请输入活动名称"></el-input>
+      <el-input
+        style="margin-top:10px;width:200px;"
+        v-model="searchinput"
+        placeholder="请输入活动名称"
+      ></el-input>
     </div>
     <!-- 表格 -->
     <div>
@@ -88,11 +91,11 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+         :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
@@ -154,7 +157,7 @@
 export default {
   data() {
     return {
-      input:"",
+      searchinput:"",
       orderlist: ["ascending", "descending"],
       tableData: [
         {
@@ -187,14 +190,20 @@ export default {
         recommend: "不推荐",
         operant: "不生效"
       },
-
-      currentPage4: 1,
+      total:0,
+      currentPage: 1,
+      limit:10,
       visiblity: false,
       title: "添加系统公告",
       selList:[],
     };
   },
+  created() {
+    this.initdata({page:this.currentPage, limit:this.limit, title:this.searchinput})
+  },
   methods: {
+
+    //多选删除
     del() {
       //勾选需要删除的项目批量删除
       if (this.selList.length != 0) {
@@ -205,11 +214,15 @@ export default {
         this.$message("请选择需要删除的数据");
       }
     },
+
+    //添加
     add() {
-      this.visiblity = true;
-      this.title = "添加系统公告";
+      // this.visiblity = true;
+      // this.title = "添加系统公告";
+      this.editForm("添加系统公告", true, {})
     },
 
+    //发送到服务器配置
     send() {
       this.$confirm("确认发送吗?", "信息", {
         confirmButtonText: "确定",
@@ -221,17 +234,31 @@ export default {
         });
       });
     },
+
+    //搜索
     search(){},
+
+
+    //表格多选
     handleSelectionChange(sel) {
         this.selList = sel
       console.log(sel);
     },
+
+    //页容量发生变化
     handleSizeChange() {},
+
+    //页码变化
     handleCurrentChange() {},
-    handleEdit() {
-      this.visiblity = true;
-      this.title = "更新系统公告";
+
+    //表格编辑
+    handleEdit(row,) {
+      // this.visiblity = true;
+      // this.title = "更新系统公告";
+      this.editForm("更新系统公告", true, {})
     },
+
+    //表格删除
     handleDelete() {
       this.$confirm("确认删除吗?", "信息", {
         confirmButtonText: "确定",
@@ -243,6 +270,8 @@ export default {
         });
       });
     },
+
+    //表单提交
     onSubmit() {
        //表单验证
       this.$refs.form.validate(valid => {
@@ -262,13 +291,27 @@ export default {
       });
 
     },
+
+    //表单返回
     back() {
        this.forminit();
     },
-    forminit(){
-       this.visiblity = false;
-       //重置form表单的数据
 
+    editForm(title, visible, form) {
+      this.title = title;
+      this.visible = visible;
+      this.form = form;
+    },
+
+
+    async initdata(params) {
+      let { data } = await this.$http.HallFunConfig.GetActivityList(params);
+      console.log(data);
+      // let localdata = this.formateData(DeepData(data.data));
+      // this.tableData = localdata;
+      // this.total = data.total;
+      // console.log(localdata);
+      // console.log(data);
     }
   }
 };
@@ -287,4 +330,3 @@ export default {
   }
 }
 </style>
-

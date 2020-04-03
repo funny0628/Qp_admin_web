@@ -4,12 +4,12 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add">添加</el-button>
+        <el-button type="primary" @click="add('form')">添加</el-button>
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
       <el-input
         style="width:200px"
-        v-model="input"
+        v-model="searchinput"
         placeholder="请输入支付名称"
         class="el_input"
       ></el-input>
@@ -118,13 +118,13 @@
 
         <el-table-column
           prop="change"
-          label="XX"
+          label=""
           align="center"
           show-overflow-tooltip
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="mini" @click="handleEdit(scope.row,'form')"
               >编辑</el-button
             >
             <el-button
@@ -138,6 +138,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
+        v-if="total > 10"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -154,6 +155,7 @@
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="显示排序" prop="sort_num">
             <el-input placeholder="显示排序" v-model="form.sort_num"></el-input>
+            <span>排序只可以为数字</span>
           </el-form-item>
           <el-form-item label="支付名称" prop="pay_name">
             <el-input placeholder="支付名称" v-model="form.pay_name"></el-input>
@@ -188,6 +190,7 @@
             prop="diy_max"
           >
             <el-input v-model="form.diy_max"></el-input>
+            <span>金额只可以为数字</span>
           </el-form-item>
           <el-form-item
            
@@ -195,6 +198,7 @@
             prop="diy_min"
           >
             <el-input v-model="form.diy_min"></el-input>
+             <span>金额只可以为数字</span>
           </el-form-item>
           </p>
      
@@ -203,20 +207,21 @@
               placeholder="请输入充值金额"
               v-model="form.money_num"
             ></el-input>
+             <span>金额只可以为数字</span>
           </el-form-item>
           <el-form-item label="备注" prop="pay_desc">
             <el-input v-model="form.pay_desc"></el-input>
           </el-form-item>
           <el-form-item label="是否推荐" prop="o_activity">
             <el-radio-group v-model="form.o_activity">
-              <el-radio label="不推荐" :value='1'></el-radio>
-              <el-radio label="推荐" :value='2'></el-radio>
+              <el-radio :label="1">不推荐</el-radio>
+              <el-radio :label="2" >推荐</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="是否生效" prop="o_status">
             <el-radio-group v-model="form.o_status">
-              <el-radio label="不生效" :value='1'></el-radio>
-              <el-radio label="生效中" :value='2'></el-radio>
+              <el-radio :label="1" >不生效</el-radio>
+              <el-radio :label="2" >生效中</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -232,36 +237,20 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name: "payList",
 
   data() {
     return {
       orderlist: ["ascending", "descending"],
-      tableData: [
-         {
-        id: '',
-        pay_name: "名称",
-        pay_channel: "渠道",
-        pay_way: '支付宝',
-        is_diy: 1 ,
-        money_num: '金额',
-        diy_max: '最大',
-        diy_min: '最小',
-        sort_num: '排序',
-        pay_desc: "备注",
-        o_status: '不生效',
-        o_activity: '推荐',
-        op_name: "xx",
-
-      },
-      ],
+      tableData: [],
       total: 0,
       currentPage: 1,
       limit: 10,
       visible: false,
       title: "添加",
-      input: "",
+      searchinput: "",
       selectList: [],
       form: {
         id: '',
@@ -276,88 +265,131 @@ export default {
         pay_desc: "",
         o_status: '',
         o_activity: '',
-        op_name: "",
+        op_name: "op_name",
 
       },
       rules: {
-        sort: [
+        sort_num: [
+          { required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }
+        ],
+        pay_name: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        name: [
+        pay_channel: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        channel: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
+        pay_way: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        is_diy: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        diy_max: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
+        diy_min: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
+        money_num: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
+        pay_desc: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        o_activity: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        o_status: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+     
       }
     };
   },
   created() {
-    this.initdata({ page: this.currentPage, limit: this.limit });
+    this.initdata({ page: this.currentPage, limit: this.limit,title:this.searchinput });
   },
 
   methods: {
+
+    //表格选中项
     handleSelectionChange(sel) {
-      this.selectList = sel;
+      // console.log(sel);
+      let idList = sel.map(item => item.id)
+      // console.log(idList);
+      
+      this.selectList = idList;
+      
     },
-    handleEdit(x) {
-      console.log(x);
-      this.editForm("更新", true, {...x});
+
+    // 表格编辑
+    handleEdit(row,formName) {
+      // console.log(row);
+      // row = this.formateNum(DeepData(row))
+      // console.log(row);
+      
+      this.editForm("更新", true,this.formateNum(DeepData(row)));
+      this.$refs[formName].resetFields();
     },
-    handleDelete() {
-      this.$confirm("确认删除吗？")
-        .then(_ => {
-          done();
+
+    //表格删除
+    handleDelete(x,row) {
+      console.log(x,row.id);
+      
+     this.$confirm("确认删除吗？", "信息", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          //2.发送请求在后台删除数据
+          let { data } = await this.$http.HallFunConfig.DeletePaylist({
+            id: row.id
+          });
+          // console.log(data);
+          this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
         })
-        .catch(_ => {});
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
+
+    //页容量发生变化
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
+    },
+
+    //页码改变
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
+    },
+
+    //表单提交
     onSubmit(formName, type) {
       this.$refs[formName].validate(async (valid, x) => {
         if (valid) {
           if (type === "添加") {
-
+            // console.log(this.form);
+            this.form.op_name = "op_name"
+            // console.log(this.form);
              let { data } = await this.$http.HallFunConfig.PostPaylist(
               this.form
             );
-            console.log(data);
+            // console.log(data);
+              if(data.code === 1 && data.msg === 'ok'){
+               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            }
             
             //  let fres = this.formateData(data.data);
             // this.tableData = this.tableData.concat(fres);
 
           } else if (type === "更新") {
-            console.log(this.form);
-             let resdata = this.formateNum(this.form);
-             console.log(resdata);
-             
+            // console.log(this.form);
+
              //发送请求到后台-------------------------------------------------------
               let { data } = await this.$http.HallFunConfig.PutPaylist(
-              resdata
+              this.form
             );
-            console.log(data);
-            
-            // let fres = this.formateData(data.data);
+            // console.log(data);
 
-             //把this.form数据追加到table中,视觉欺骗添加到dom
-            // let newtable = [];
-            // this.tableData.forEach(item => {
-            //   if (item.id === fres[0].id) {
-            //     item = { ...fres[0] };
-            //   }
-            //   newtable.push(item);
-            // });
-            // this.tableData = newtable;
-            
-
+              if(data.code === 1 && data.msg === 'ok'){
+               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            }
           }
-          //1.将form数据传递到paylist,新增到table中先显示一个dom
-          // console.log(this.form);
-
-          //2.发送请求追加数据到后台-------------------------------------------------------------
-
-          // console.log("发送请求");
 
           //3.关闭新增的弹框
           this.editForm("添加", false, {});
@@ -367,26 +399,49 @@ export default {
         }
       });
     },
+
+    //表单关闭
     dialogFormVisible() {
       this.editForm("添加", false, {});
     },
 
-    add() {
-      this.initForm();
+    //添加
+    add(formName) {
+      
       this.editForm("添加", true, {});
+      this.$refs[formName].resetFields();
     },
-    del() {
+
+    //表格批量删除
+    async del() {
       //勾选需要删除的项目批量删除
       if (this.selectList.length != 0) {
         //###1.删除dom的数据
-        //2.删除后台的数据
-        console.log("已经有数据了");
+        let str = this.selectList.join();
+        // console.log(str);
+        let { data } = await this.$http.HallFunConfig.DeletePaylist({id_list:`(${str})`});
+        // console.log(data);
+        if(data.code === 1 && data.msg === 'ok'){
+          this.initdata({ page: this.currentPage, limit: this.limit , title:this.searchinput});
+        }
+
       } else {
         this.$message("请选择需要删除的数据");
       }
     },
+
+    //搜索
     search() {
       //获取表格中的支付名称,点击搜索
+       if (this.searchinput === "") {
+        this.$message({
+          type: "warning",
+          message: "请输入你要搜索的支付名称!"
+        });
+      }
+        this.currentPage = 1;
+        this.limit = 10;
+       this.initdata({ page: this.currentPage, limit: this.limit , title:this.searchinput});
     },
 
     editForm(title, visible, form) {
@@ -395,8 +450,17 @@ export default {
       this.form = form;
     },
     formateData(res) {
-      res.forEach(item => {
-        item.is_diy = item.is_diy === 1 ? "固定" : "可自定义";
+      if(Array.isArray(res)){
+        res.forEach(item => {
+          this.formate(item)
+        });
+      }else{
+        this.formate(res)
+      }
+      return res;
+    },
+    formate(item){
+        item.is_diy = item.is_diy === 1 ? "固定金额" : "自定义金额";
         item.o_status = item.o_status === 1 ? "不生效" : "生效";
         item.o_activity = item.o_activity === 1 ? "不推荐" : "推荐";
         switch (item.pay_way) {
@@ -418,8 +482,6 @@ export default {
           default:
             break;
         }
-      });
-      return res;
     },
     formateNum(item) {
       if (
@@ -430,7 +492,7 @@ export default {
       )
         return;
 
-      item.is_diy = item.is_diy === "固定" ? 1 : 2;
+      item.is_diy = item.is_diy === "固定金额" ? 1 : 2;
       item.o_status = item.o_status === "不生效" ? 1 : 2;
       item.o_activity = item.o_activity === "不推荐" ? 1 : 2;
       switch (item.pay_way) {
@@ -452,30 +514,18 @@ export default {
         default:
           break;
       }
+      return item;
     },
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetPaylist(params);
-      let localdata = this.formateData(data.data);
+      // let deepData = DeepData(data.data)
+      let localdata = this.formateData(DeepData(data.data));
       this.tableData = localdata;
       this.total = data.total;
       // console.log(localdata);
-      console.log(data);
+      // console.log(data);
     },
-    initForm() {
-      this.form = {
-        sort: "",
-        name: "",
-        channel: "",
-        type: "",
-        custom: 1,
-        common: "",
-        remark: "",
-        maxcustom: "",
-        mincustom: "",
-        recommend: "",
-        operant: ""
-      };
-    }
+  
   }
 };
 </script>
