@@ -143,8 +143,8 @@ export default {
       const res = await this.$http.get("auth/operation-logs");
       console.log(res);
       if (res.data.code === 200) {
-        this.tabelData = res.data.data.records;
-        this.total = res.data.data.pagination.total;
+        this.tabelData = res.data.data;
+        this.total = res.data.data.total;
       }
       console.log(res);
     },

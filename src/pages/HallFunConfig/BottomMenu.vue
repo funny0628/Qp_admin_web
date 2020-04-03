@@ -5,7 +5,7 @@
       <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
     </input-area>
     <div class="bd">
-      <info-table
+      <!-- <info-table
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -25,11 +25,38 @@
               </permission-button>
             </template>
             <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
+              v-if="['action'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
-      </info-table>
+      </info-table>-->
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
+        <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
+        <el-table-column
+          v-for="(item,index) in scope.row[scope.prop]"
+          :key="index"
+          :label="'功能'+(index+1)"
+          align="center"
+        >
+        <template slot-scope="scope">
+          <span>{{scope.row.func_list[index]}}</span>
+        </template>
+        </el-table-column>
+        <el-table-column prop="auth" label="操作者" align="center"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
+        <el-table-column label="请求时间" align="center"></el-table-column>
+      </el-table>
+      <!-- <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>-->
     </div>
     <div>
       <!-- 添加活动入口配置 -->
@@ -52,7 +79,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -62,7 +94,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -72,7 +109,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -82,7 +124,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -92,7 +139,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -102,7 +154,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -112,7 +169,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -122,7 +184,12 @@
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
-                  <el-option v-for="(item,index) in funOpts" :key="index" :label="item.label" :value="item.value"></el-option>
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -193,20 +260,8 @@ export default {
         { value: "7", label: "广播" },
         { value: "8", label: "财神" }
       ],
-      tableData: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          action: "修改 删除"
-        }
-      ],
+      tableData: [],
+      FunListOpts: [],
       tableStyle: [
         { label: "ID", prop: "channel_id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
@@ -223,31 +278,12 @@ export default {
         { label: "创建时间", prop: "create_time", width: "160" },
         { label: "操作", prop: "action", width: "120" }
       ],
-      records: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
         checkList: ["0902代理01", "0902代理02"],
-        function: '1',
+        function: "1",
         agent: 100,
         nickname: "",
         password: "",
@@ -258,6 +294,29 @@ export default {
     };
   },
   methods: {
+    getBottomMenuList() {
+      this.$http
+        .get("lobby/bottom", {
+          params: {
+            page: 1,
+            limit: 10,
+            type: 1
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.tableData = res.data.data;
+          }
+        });
+    },
+    getFunListOpts() {
+      this.tableData.forEach((item,index) => {
+        if(item.func_list) {
+          this.FunListOpts = item.func_list
+        }
+      })
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -272,61 +331,11 @@ export default {
       if (btn.type === "edit") {
         this.dialogFormVisible = true;
       }
-    },
-    /**获取用户列表接口 */
-    userList(data, user_id) {
-      UserHandler.list(data, user_id).promise.then(res => {
-        if (Number(res.code) === 200) {
-          this.records = res.data.list;
-          /**数据处理*/
-          let goldArr = [];
-          let top_up_amount = "";
-          let change_amount = "";
-          let alipay_account = [];
-          let personArr = [];
-          this.records.map(item => {
-            goldArr.push("总金额：" + item.money);
-            goldArr.push("理财：" + item.fanancial);
-            top_up_amount = item.pay_sum + "/" + item.pay_count;
-            change_amount = item.draw_sum + "/" + item.draw_count;
-            if (item.bank_info.length > 0) {
-              item.bank_info.map(bank => {
-                if (Number(bank.bank_id) !== 1) {
-                  /** 支付宝 **/
-                  personArr.push("开户人：" + bank.bank_user);
-                  personArr.push("卡号：" + bank.bank_card);
-                  personArr.push("开户行：" + bank.subbranch);
-                } else {
-                  alipay_account.push("账号：" + bank.bank_card);
-                  alipay_account.push("名称：" + bank.bank_name);
-                }
-              });
-            }
-            item.action = [
-              {
-                label: "修改",
-                type: "edit"
-              },
-              {
-                label: "冻结",
-                type: "freeze"
-              },
-              {
-                label: "强制下线",
-                type: "light"
-              }
-            ];
-            item.user_gold = goldArr;
-            item.top_up_amount = top_up_amount;
-            item.change_amount = change_amount;
-            item.alipay_account = alipay_account;
-            item.account_person = personArr;
-          });
-        }
-      });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getBottomMenuList();
+  }
 };
 </script>
 

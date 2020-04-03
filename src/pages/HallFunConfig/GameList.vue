@@ -1,178 +1,64 @@
 <template>
   <div id="GameList-main">
+    <el-button v-if="!showReturn" type="primary" @click="openAdd" style="margin-top: 10px;margin-bottom: 10px;">添加</el-button>
     <el-button
+      v-if="showReturn"
       type="primary"
-      @click="dialogFormVisible=true"
-      style="margin-top: 10px;margin-bottom: 10px;"
-    >添加</el-button>
-    <el-button
-      type="primary"
-      @click="dialogVisible=true"
+      @click="returnSupClass"
       style="margin-top: 10px;margin-bottom: 10px;"
     >返回</el-button>
     <div class="bd">
       <info-table
         :search="search"
         :table-style="tableStyle"
-        :records="tableData"
+        :records="records"
         :page-info="pageInfo"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
+              <el-button
+                v-if="!showReturn"
+                size="mini"
+                type="primary"
+                @click="checkSubGame(scope.row)"
+              >子游戏</el-button>
+              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <!--添加 -->
-    <el-dialog title="记录" :visible.sync="dialogFormVisible">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="上级游戏" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-select v-model="form.sup_game" ref="supGame">
+            <el-option
+              v-for="(item,index) in records"
+              :key="index"
+              :value="item.game_name"
+            >{{item.game_name}}</el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="游戏名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.game_name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="游戏id" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.game_id" disabled autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="机器人类型" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.robot_type" disabled autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
+      <div>{{form}}</div>
+      <div>{{records}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addGame">确 定</el-button>
       </div>
     </el-dialog>
-    <div>
-      <!-- 添加宣传页 -->
-      <el-dialog title="添加宣传页" :visible.sync="dialogVisible" width="40%" center>
-        <el-form :model="form2">
-          <el-form-item>
-            <table style="width: 80%;" cellspacing="0" cellpadding="10" border="1">
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择渠道</td>
-                <td style="text-align: center">
-                  <el-select v-model="form.region" placeholder="请选择渠道">
-                    <el-option label="渠道一" value></el-option>
-                    <el-option label="渠道二" value></el-option>
-                  </el-select>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-          <el-form-item>
-            <table
-              border="1"
-              style="border-color: #c0c4cc;width: 80%;"
-              cellspacing="0"
-              cellpadding="10"
-            >
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">上传内容1</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">海报类型</td>
-                <td style="text-align: center">轮播海报</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择动作类型</td>
-                <td style="text-align: center">跳转</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">跳转地址</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-          <el-form-item>
-            <table
-              border="1"
-              style="border-color: #c0c4cc;width: 80%;"
-              cellspacing="0"
-              cellpadding="10"
-            >
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">上传内容2</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">海报类型</td>
-                <td style="text-align: center">轮播海报</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择动作类型</td>
-                <td style="text-align: center">复制</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">复制内容</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-          <el-form-item>
-            <table
-              border="1"
-              style="border-color: #c0c4cc;width: 80%;"
-              cellspacing="0"
-              cellpadding="10"
-            >
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">上传内容3</td>
-                <td style="text-align: center">
-                  <el-input v-model="form2.name" autocomplete="off" placeholder></el-input>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">海报类型</td>
-                <td style="text-align: center">轮播海报</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择动作类型</td>
-                <td style="text-align: center">加入游戏</td>
-              </tr>
-              <tr>
-                <td style="width: 150px;text-align: center;background-color:#f2f2f2;">选择游戏</td>
-                <td style="text-align: center">
-                  <el-select v-model="form.region" placeholder="请选择游戏类型">
-                    <el-option label="游戏一" value></el-option>
-                    <el-option label="游戏二" value></el-option>
-                    <el-option label="游戏三" value></el-option>
-                  </el-select>
-                </td>
-              </tr>
-            </table>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
   </div>
 </template>
 
@@ -213,63 +99,188 @@ export default {
       pageSize: 5,
       total: 0,
       formLabelWidth: "120px",
+      showReturn: false,
       value: true,
-      dialogModifyVisible: false,
-      dialogVisible: false,
       labelPosition: "left", //左对齐
-      activeName: "first",
       tableStyle: [
-        { label: "游戏名称", prop: "channel_name", width: "" },
-        { label: "游戏类型", prop: "channel_name", width: "" },
+        { label: "游戏名称", prop: "game_name", width: "" },
+        { label: "游戏类型", prop: "game_id", width: "" },
         { label: "创建时间", prop: "create_time", width: "" },
         { label: "操作", prop: "action", width: "" }
-      ],
-      tableData: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "子游戏", type: "delete" },
-            { label: "编辑", type: "edit" }
-          ]
-        }
       ],
       records: [],
       pageInfo: new PageInfo(1, [5, 10, 15, 20], 6),
       dialogFormVisible: false,
-      jumpposOpts: [
-        { label: "vip", value: "vip" },
-        { label: "全民代理", value: "agent" },
-        { label: "客服", value: "server" },
-        { label: "兑换", value: "exchange" },
-        { label: "充值", value: "recharge" },
-        { label: "活动", value: "active" },
-        { label: "绑定手机", value: "bind_phone" },
-        { label: "返水", value: "return" },
-        { label: "vip福利", value: "vip_reward" },
-        { label: "签到", value: "attendance" }
-      ],
+      dialogTitle: "",
       form: {
-        channel_name: "",
-        channel_key: "",
-        word1: "",
-        word1_type: "general",
-        word1_url: "",
-        jump_position: "",
-        name: "",
-        region: ""
+        classOneAddOrEditRemark: 1, //1为新增 2 为编辑
+        classTwoEditRemark: 1, //1为新增 2 为编辑
+        parent_id: 0,
+        sup_game: "大厅",
+        game_name: "",
+        game_id: "",
+        robot_type: ""
       },
-      form2: {
-        name: ""
-      },
-      formLabelWidth: "100px",
+      game_name: "", //点击子游戏按钮时保存游戏名
       fileList: []
     };
   },
   methods: {
+    getGameList() {
+      this.$http
+        .get("lobby/game_list", {
+          params: {
+            page: 1,
+            limit: 10,
+            parent_id: this.form.parent_id
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.records = res.data.data;
+            // this.gameOpts = res.data.data
+          }
+        });
+    },
+    resetForm() {
+      this.form = {
+        classOneAddOrEditRemark: 1,
+        classTwoEditRemark: 1,
+        id: -1,
+        parent_id: 0,
+        sup_game: "",
+        game_name: "",
+        game_id: "",
+        robot_type: ""
+      };
+    },
+    openAdd() {
+      this.dialogTitle = "记录";
+      this.dialogFormVisible = true;
+      this.resetForm();
+      console.log(this.form.parent_id);
+    },
+    addGame() {
+      if (
+        this.form.parent_id === 0 &&
+        this.form.classOneAddOrEditRemark === 1
+      ) {
+        //新增一级游戏
+        let data = {
+          parent_id: 0,
+          game_name: this.form.game_name,
+          robot_type: this.form.robot_type,
+          game_id: Number(this.form.game_id)
+        };
+        this.$http.post("lobby/game_list", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getGameList();
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+        });
+      }
+      //编辑一级游戏
+      if (
+        this.form.parent_id === 0 &&
+        this.form.classOneAddOrEditRemark === 2
+      ) {
+        console.log("我进来了？");
+        let data = {
+          id: this.form.id,
+          game_name: this.form.game_name
+        };
+        this.$http.patch("lobby/game_list", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getGameList();
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+        });
+      }
+      //编辑二级游戏
+      if (this.form.parent_id !== 0 && this.form.classTwoEditRemark === 2) {
+        let data = {
+          id: this.form.id,
+          game_name: this.form.game_name
+        };
+        this.$http.patch("lobby/game_list", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getGameList();
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+        });
+      }
+    },
+    handleEdit(row) {
+      console.log(row);
+      this.dialogTitle = "编辑";
+      this.dialogFormVisible = true;
+      if (row.parent_id === 0) {
+        this.form.classOneAddOrEditRemark = 2;
+        this.form.id = row.id;
+        this.form.parent_id = row.parent_id;
+        this.form.sup_game = "大厅";
+        this.form.game_name = row.game_name;
+        this.form.game_id = row.game_id;
+        this.form.robot_type = row.robot_type;
+        this.$nextTick(() => {
+          this.$refs.supGame.disabled = true;
+        });
+      } else {
+        this.form.classTwoEditRemark = 2;
+        this.form.id = row.id;
+        this.form.parent_id = row.parent_id;
+        this.form.sup_game = this.game_name; //保存的上级游戏名
+        this.form.game_name = row.game_name;
+        this.form.game_id = row.game_id;
+        this.form.robot_type = row.robot_type;
+        this.$nextTick(() => {
+          this.$refs.supGame.disabled = true;
+        });
+        console.log(this.form);
+      }
+    },
+    checkSubGame(row) {
+      console.log(row);
+      this.showReturn = true;
+      this.game_name = row.game_name;
+      let pid = row.game_id;
+      this.$http
+        .get("lobby/game_list", {
+          params: {
+            page: 1,
+            limit: 10,
+            parent_id: pid
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.records = res.data.data;
+            // this.gameOpts = res.data.data
+          }
+        });
+    },
+    returnSupClass() {
+      this.showReturn = false;
+      this.resetForm()
+      this.getGameList();
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -287,29 +298,23 @@ export default {
     pageSizeFn(val) {
       console.log(val);
       this.pageSize = val;
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
     }
   },
   watch: {
-    "form.word1_type": function(newVal, oldVal) {
-      console.log(newVal);
-      if (newVal === "copy" || ("jump_webpage" && newVal !== "general")) {
-        this.$nextTick(() => {
-          this.form.word1_url = this.form.word1;
-        });
-      } else {
-        this.$nextTick(() => {
-          this.form.word1_url = "";
-        });
-      }
+    "form.sup_game": function(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      this.records.forEach((item, index) => {
+        if (item.game_name === newVal) {
+          this.form.game_id = item.next_id;
+          this.form.robot_type = item.robot_type;
+          this.form.parent_id = item.game_id;
+        }
+      });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getGameList();
+  }
 };
 </script>
 
@@ -321,28 +326,8 @@ export default {
 #GameList-main .bd p {
   margin: 0;
 }
-#addPoster,
-#addPoster tr td {
-  border: none;
-}
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
-table {
-  border-collapse: collapse;
-  margin: 0 auto;
-}
-table,
-table tr td {
-  border: 1px solid #c0c4cc;
-}
-.bankCard {
-  width: 100%;
-}
-
-.itemClass {
-  width: 45%;
+#GameList-main .bd >>> .el-button {
+  margin-left: 0px;
+  min-width: 30px;
 }
 </style>

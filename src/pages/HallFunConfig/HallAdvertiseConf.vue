@@ -367,6 +367,16 @@ export default {
     };
   },
   methods: {
+    getAdvertiseConfList() {
+      this.$http.get('lobby/flyer',{
+        params: {
+          page: 1,
+          limit: 10
+        }
+      }).then(res => {
+        console.log(res)
+      })
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -405,7 +415,9 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+    this.getAdvertiseConfList()
+  }
 };
 </script>
 
