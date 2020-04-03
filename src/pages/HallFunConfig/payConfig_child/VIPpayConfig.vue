@@ -65,14 +65,15 @@ export default {
   },
   methods: {
     add(){
-      console.log('add新增一行,使列表数组加1');
+      // console.log('add新增一行,使列表数组加1');
       this.list += 1
     },
     saveData(){
-      console.log('拿到数据,saveData');
+      // console.log('拿到数据,saveData');
       
     },
-    getdata(){console.log('获取数据');
+    getdata(){
+      // console.log('获取数据');
     }
   },
 };

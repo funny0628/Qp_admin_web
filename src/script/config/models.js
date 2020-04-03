@@ -153,6 +153,96 @@ const models = {
           },
         ]
       },
+      {
+        name:'FruitMachine',
+        text:'水果机',
+        vue: null,
+        children: [
+          {
+            name: 'S_RoomCofig',
+            text: '水果机-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FruitMachine/S_RoomCofig')), 'S_RoomCofig')
+          },
+          {
+            name: 'S_BasicDeploy',
+            text: '水果机-基础配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FruitMachine/S_BasicDeploy')), 'S_BasicDeploy')
+          },
+        ]
+      },
+      {
+        name:'RedBlackWar',
+        text:'红黑大战',
+        vue: null,
+        children: [
+          {
+            name: 'W_RoomCofig',
+            text: '红黑-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RedBlackWar/W_RoomCofig')), 'W_RoomCofig')
+          },
+          {
+            name: 'W_RobotControl',
+            text: '红黑-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/RedBlackWar/W_RobotControl')), 'W_RobotControl')
+          },
+        ]
+      },
+      {
+        name:'ChineseBoxer',
+        text:'龙虎斗',
+        vue: null,
+        children: [
+          {
+            name: 'C_RoomCofig',
+            text: '龙虎-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/ChineseBoxer/C_RoomCofig')), 'C_RoomCofig')
+          },
+          {
+            name: 'C_RobotControl',
+            text: '龙虎-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/ChineseBoxer/C_RobotControl')), 'C_RobotControl')
+          },
+        ]
+      },
+      {
+        name:'BMW',
+        text:'奔驰宝马',
+        vue: null,
+        children: [
+          {
+            name: 'B_RoomCofig',
+            text: '奔驰-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/BMW/B_RoomCofig')), 'B_RoomCofig')
+          },
+          {
+            name: 'B_RobotControl',
+            text: '奔驰-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/BMW/B_RobotControl')), 'B_RobotControl')
+          },
+        ]
+      },
+      {
+        name:'FamiliesHappy',
+        text:'百家乐',
+        vue: null,
+        children: [
+          {
+            name: 'H_RoomCofig',
+            text: '百家乐-房间配置',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FamiliesHappy/H_RoomCofig')), 'H_RoomCofig')
+          },
+          {
+            name: 'H_RobotControl',
+            text: '百家乐-机器人控制',
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/FamiliesHappy/H_RobotControl')), 'H_RobotControl')
+          },
+        ]
+      },
+      {
+        name:'LinConfiguration',
+        text:'百人场下注额度配置',
+        vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/LinConfiguration')), 'LinConfiguration')
+      },
       // {
       //   name:'gold_rec',
       //   text:"金币记录",
