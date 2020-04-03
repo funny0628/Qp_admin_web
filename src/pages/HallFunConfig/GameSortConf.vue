@@ -549,7 +549,7 @@ export default {
       tableStyle: [
         { label: "ID", prop: "channel_id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "渠道KEY", prop: "channel_name", width: "" },
+        { label: "渠道KEY", prop: "channel_code", width: "" },
         { label: "游戏1", prop: "fun_1", width: "" },
         { label: "游戏2", prop: "fun_2", width: "" },
         { label: "游戏3", prop: "fun_3", width: "" },
@@ -600,6 +600,22 @@ export default {
     };
   },
   methods: {
+    getGameSortList() {
+      this.$http
+        .get("lobby/game_sort", {
+          params: {
+            page: 1,
+            limit: 10,
+            code: "code"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.records = res.data.data;
+          }
+        });
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -630,7 +646,9 @@ export default {
         });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getGameSortList()
+  }
 };
 </script>
 

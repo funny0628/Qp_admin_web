@@ -12,9 +12,9 @@ const models = {
     text: '权限管理',
     children: [
       {
-        name: 'userList',
+        name: 'userMan',
         text: '用户管理',
-        vue: r => require.ensure([], () => r(require('../../pages/User/UserList')), 'userList'),
+        vue: r => require.ensure([], () => r(require('../../pages/User/UserMan')), 'userMan'),
       },
       {
         name: 'roleMan',
@@ -392,6 +392,144 @@ const models = {
       //   text:'客服设置',
       //   vue: r => require.ensure([], () => r(require('../../pages/TheConfig/SetService')), 'setService')
       // }
+    ]
+  },
+  operationMan: {
+    name: 'operationMan',
+    vue: null,
+    text: '运营管理',
+    children: [
+      {
+        name: 'BankOrder',
+        text: '银行卡订单',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/BankOrder')), 'BankOrder'),
+      },
+      {
+        name: 'OrderMan',
+        text: '订单管理',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/OrderMan')), 'OrderMan'),
+      },
+      {
+        name: 'userList',
+        text: '用户列表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/UserList')), 'UserList'),
+      },
+      {
+        name: 'channelList',
+        text: '渠道列表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ChannelList')), 'channelList'),
+      },
+      {
+        name: 'gamblingRecord',
+        text: '牌局记录',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'gamblingRecord'),
+      },
+      {
+        name: 'freshmanReward',
+        text: '新人奖励',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FreshmanReward')), 'freshmanReward'),
+      },
+      {
+        name: 'flowSearch',
+        text: '流水查询',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FlowSearch')), 'flowSearch'),
+      },
+      {
+        name: 'fishStatistic',
+        text: '捕鱼统计',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FishStatistic')), 'fishStatistic'),
+      },
+      {
+        name: 'WithdrawRec',
+        text: '提现记录',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/WithdrawRec')), 'WithdrawRec'),
+      },
+      {
+        name: 'modPlayGold',
+        text: '修改玩家金币',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ModPlayGold')), 'modPlayGold'),
+      },
+    ]
+  },
+  repertoryMan: {
+    name: 'RepertoryMan',
+    vue: null,
+    text: '库存管理',
+    children: [
+      {
+        name: 'GMconfig',
+        text: 'GM配置',
+        children: [
+          {
+            name: 'GMrepControl',
+            text: 'GM库存控制',
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMrepControl')), 'GMrepControl')
+          },
+          {
+            name: 'GMconf',
+            text: 'GM配置',
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMconf')), 'GMconf')
+          },
+          {
+            name: 'GMdata',
+            text: 'GM库存数据',
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMdata')), 'GMdata')
+          },
+          {
+            name: 'GMcontrol',
+            text: 'GM控制',
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMcontrol')), 'GMcontrol')
+          },
+          {
+            name: 'GMrepFlow',
+            text: 'GM库存流水',
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMrepFlow')), 'GMrepFlow')
+          },
+        ]
+      },
+      {
+        name: "Landlords",
+        text: "斗地主",
+        children: [
+          {
+            name: "DrawWaterDate",
+            text: "斗地主-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/DrawWaterDate')), 'DrawWaterDate')
+          }
+        ]
+      },
+      {
+        name: "BombFlower",
+        text: "炸金花",
+        children: [
+          {
+            name: "RepeControl",
+            text: "炸金花-库存控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/RepeControl')), 'RepeControl')
+          },
+          {
+            name: "DrawWaterDate",
+            text: "炸金花-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/DrawWaterDate')), 'DrawWaterDate')
+          }
+        ]
+      },
+      {
+        name: "HogCow",
+        text: "抢庄牛牛",
+        children: [
+          {
+            name: "CowControl",
+            text: "牛牛-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/CowControl')), 'CowControl')
+          },
+          {
+            name: "DrawWaterDate",
+            text: "牛牛-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
+          }
+        ]
+      }
     ]
   },
   operationReport: {

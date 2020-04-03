@@ -1,15 +1,8 @@
 <template>
   <div id="VipClassConf-main">
     <input-area>
-      <el-button
-        type="danger"
-        style="margin-top: 10px;margin-bottom: 10px;"
-      >删除</el-button>
-      <el-button
-        type="primary"
-        style="margin-top: 10px;margin-bottom: 10px;"
-        @click="add"
-      >添加</el-button>
+      <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button>
+      <el-button type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="add">添加</el-button>
       <el-button type="primary" @click="open">发送到服务端配置</el-button>
     </input-area>
     <div class="bd">
@@ -23,9 +16,9 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" sortable align="center"></el-table-column>
-        <el-table-column prop="username" label="VIP等级" align="center"></el-table-column>
-        <el-table-column prop="phone" label="VIP特权" align="center"></el-table-column>
-        <el-table-column prop="channel" label="头像框" align="center"></el-table-column>
+        <el-table-column prop="level" label="VIP等级" align="center"></el-table-column>
+        <el-table-column prop="privilege" label="VIP特权" align="center"></el-table-column>
+        <el-table-column prop="icon_border_url" label="头像框" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleOffline">下线</el-button>
@@ -166,7 +159,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">确认</el-button>
+        <el-button @click="addNewConf">确认</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">返回</el-button>
       </div>
     </el-dialog>
@@ -191,24 +184,25 @@ export default {
       currentPage: 1,
       total: 0,
       dialogTitle: "",
-      tableData: [
-        {
-          id: '1',
-          username: "yoo",
-          phone: '234',
-          channel: 'e3r',
-        },
-        {
-          id: '2',
-          username: "yoou",
-          phone: '234',
-          channel: 'e3r',
-        }
-      ],
+      // tableData: [
+      //   {
+      //     id: "1",
+      //     username: "yoo",
+      //     phone: "234",
+      //     channel: "e3r"
+      //   },
+      //   {
+      //     id: "2",
+      //     username: "yoou",
+      //     phone: "234",
+      //     channel: "e3r"
+      //   }
+      // ],
+      tableData: [],
       dialogFormVisible: false,
       formLabelWidth: "160px",
       form: {
-        vip_class: "",
+        vip_class: 0,
         checkList: ["vip头像框", "vip专属炮台"],
         gold_flow: "",
         class_award: "",
@@ -226,6 +220,18 @@ export default {
     };
   },
   methods: {
+    async getVipList() {
+      const res = await this.$http.get("lobby/grade", {
+        params: {
+          page: 1,
+          limit: 10
+        }
+      });
+      console.log(res);
+      if (res.data.code === 1) {
+        this.tableData = res.data.data;
+      }
+    },
     handleSizeChange(val) {
       this.pagesize = val;
       this.getUserList();
@@ -238,8 +244,34 @@ export default {
       this.multipleSelection = val;
       console.log(this.multipleSelection);
     },
-    add() {
-      this.dialogTitle = "添加信息"
+    async add() {
+      this.dialogTitle = "添加信息";
+      this.dialogFormVisible = true;
+    },
+    async addNewConf() {
+      let params = {
+        level: 6,
+        privilege: "vip",
+        charge_coins: 100,
+        enter_word: '我进来了',
+        caishen_base_rate: 0.8,
+        speedup_weight: 0.9,
+        icon_url: '头像框',
+        avator_id: 1,
+        name: 'CIA神',
+        icon_type: 1,
+        number_day: 30,
+        no_condition: 'ide',
+        battery_url: 'jeiowfioepjwi',
+        img_url: 'www.baidu.com',
+        video_url: 'www.baidu.com'
+      }
+      const res = await this.$http.post('lobby/grade',params)
+      console.log(res)
+      if(res.data.code === 1) {
+        this.dialogFormVisible = false
+        this.getVipList()
+      }
     },
     handleOffline() {
       this.$confirm("确认更新状态吗?", "提示", {
@@ -262,8 +294,17 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
-      this.dialogFormVisible =true
-      this.dialogTitle = '更新信息'
+      this.dialogFormVisible = true;
+      this.dialogTitle = "更新信息";
+      this.form.vip_class = row.level
+      this.form.gold_flow = row.charge_coins
+      this.form.class_award = row.award
+      this.form.vip_tip_text = row.enter_word
+      this.form.probability = row.caishen_base_rate
+      this.form.withdraw = row.speedup_weight
+      this.form.avatar_id = row.avator_id
+      this.form.avatar_name = row.avator_name
+      this.form.unlock = row.no_condition
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -311,7 +352,9 @@ export default {
       console.log(file);
     }
   },
-  mounted() {}
+  mounted() {
+    this.getVipList()
+  }
 };
 </script>
 

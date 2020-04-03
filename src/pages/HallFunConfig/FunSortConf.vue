@@ -13,11 +13,19 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop === 'func_list'">
+              <!-- <div v-for="(func, index) in JSON.parse(scope.row[scope.prop])" :key="index">
+                <span>{{func}}</span>
+              </div>-->
+              <span>{{JSON.parse(scope.row[scope.prop])[0]}}</span>
+            </template>
             <template v-if="scope.prop === 'action'">
               <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','func_list'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -221,34 +229,20 @@ export default {
         { value: "4", label: "服务中心" }
       ],
       tableStyle: [
-        { label: "ID", prop: "channel_id", width: "" },
+        { label: "ID", prop: "id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "渠道KEY", prop: "channel_name", width: "" },
-        { label: "活动1", prop: "fun_1", width: "" },
-        { label: "活动2", prop: "fun_2", width: "" },
-        { label: "活动3", prop: "fun_3", width: "" },
-        { label: "活动4", prop: "fun_4", width: "" },
-        { label: "活动5", prop: "fun_5", width: "" },
-        { label: "活动6", prop: "fun_6", width: "" },
-        { label: "操作者", prop: "operator", width: "" },
+        { label: "渠道KEY", prop: "channel_code", width: "" },
+        { label: "功能1", prop: "func_list", width: "" },
+        { label: "功能2", prop: "func_list", width: "" },
+        { label: "功能3", prop: "func_list", width: "" },
+        { label: "功能4", prop: "func_list", width: "" },
+        { label: "功能5", prop: "func_list", width: "" },
+        { label: "功能6", prop: "func_list", width: "" },
+        { label: "操作者", prop: "auth", width: "" },
         { label: "创建时间", prop: "create_time", width: "160" },
         { label: "操作", prop: "action", width: "150" }
       ],
-      records: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
@@ -264,14 +258,29 @@ export default {
     };
   },
   methods: {
+    getFunSortList() {
+      this.$http
+        .get("lobby/bottom", {
+          params: {
+            page: 1,
+            limit: 10,
+            type: 2
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.records = res.data.data;
+          }
+        });
+    },
     /**搜索*/
     search() {
       let data = this.format,
         user_id = 1000;
       this.userList(data, user_id);
     },
-    handleEdit(row) {
-    },
+    handleEdit(row) {},
     handleDelete(row) {
       this.$confirm("确认删除吗？", "信息", {
         confirmButtonText: "确定",
@@ -299,7 +308,9 @@ export default {
         });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getFunSortList();
+  }
 };
 </script>
 

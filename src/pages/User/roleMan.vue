@@ -16,7 +16,7 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
-        <el-table-column prop="role_state" label="角色描述" align="center"></el-table-column>
+        <el-table-column prop="display_name" label="显示名称" align="center"></el-table-column>
         <el-table-column prop="create_time" label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.create_time*1000 | dateFormat}}</template>
         </el-table-column>
@@ -124,8 +124,8 @@ export default {
       });
       console.log(res);
       if (res.data.code === 200) {
-        this.tableData = res.data.data.records;
-        this.total = res.data.data.pagination.total;
+        this.tableData = res.data.data;
+        this.total = res.data.data.total;
         this.$message({
           type: "success",
           message: res.data.msg
@@ -167,6 +167,7 @@ export default {
           display_name: this.form.display_name,
           role_id: this.form.role_id
         });
+        console.log(res)
         if (res.data.code === 200) {
           this.dialogAddRole = false;
           this.getRoleList();

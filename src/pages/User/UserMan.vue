@@ -1,5 +1,5 @@
 <template>
-  <div id="userList—main">
+  <div id="userMan—main">
     <input-area>
       <el-button type="danger">删除</el-button>
       <el-button type="primary" @click="addUser">添加</el-button>
@@ -39,7 +39,7 @@
         :current-page="currentPage"
         :page-sizes="[5, 10, 15, 20]"
         :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total,sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </div>
@@ -222,8 +222,8 @@ export default {
       });
       console.log(res);
       if (res.data.code === 200) {
-        this.tableData = res.data.data.records;
-        this.total = res.data.data.pagination.total
+        this.tableData = res.data.data;
+        this.total = res.data.total;
       }
     },
     async addUserFn() {
@@ -254,15 +254,15 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection)
+      console.log(this.multipleSelection);
     },
     handleSizeChange(val) {
-      this.pagesize = val
-      this.getUserList()
+      this.pagesize = val;
+      this.getUserList();
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getUserList()
+      this.currentPage = val;
+      this.getUserList();
     },
     addUser() {
       this.dialogAddUser = true;
@@ -301,14 +301,15 @@ export default {
     },
     async assignRole() {
       console.log(this.form.uid, this.form2.role);
-      const res = await this.$http.post(
-        `auth/role-assignment/` + this.form.uid,
-        {
-          params: {
-            role_id: this.form2.role
-          }
-        }
-      );
+      let data = {
+        role_id: this.form2.role,
+        user_id: this.form.uid
+      };
+      const res = await this.$http.post(`auth/role-assignment`, data);
+      console.log(res)
+      if(res.data.code === 200) {
+        this.dialogRoleAssign = false
+      }
     },
     handleDelete(index, row) {
       console.log(row);
@@ -325,6 +326,7 @@ export default {
               uids: ids
             }
           });
+          console.log(res);
           if (res.data.code === 200) {
             this.dialogAddUser = false;
             this.getUserList();
@@ -366,23 +368,23 @@ export default {
 </script>
 
 <style scoped>
-#userList—main .bd {
+#userMan—main .bd {
   padding-left: 20px;
   padding-right: 20px;
 }
-#userList—main .bd p {
+#userMan—main .bd p {
   margin: 0;
 }
 .el-pagination {
   margin-top: 20px;
 }
-#userList—main >>> .el-dialog .el-dialog__header {
+#userMan—main >>> .el-dialog .el-dialog__header {
   text-align: left;
 }
-#userList—main >>> .el-tree-node__label {
+#userMan—main >>> .el-tree-node__label {
   margin-left: 10px;
 }
-#userList—main .bd >>> .el-button {
+#userMan—main .bd >>> .el-button {
   margin-left: 0px;
   min-width: 30px;
 }

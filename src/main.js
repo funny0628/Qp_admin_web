@@ -50,6 +50,7 @@ Vue.use(install, {
   checkPermission(name) {
   },
   headerVue: r => require.ensure([], () => r(require('./components/HeaderMenu.vue')), 'headerVue'),
+  loginVue: r => require.ensure([], () => r(require('./pages/login/Login.vue')), 'loginVue'),
   startApp: App
 });
 
