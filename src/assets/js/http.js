@@ -1,5 +1,6 @@
 import axios from 'axios'
-
+import Qs from 'qs'
+import HallFunConfig from './HallFunConfig.js'
 const httpHelper = {};
 // 配置Vue插件
 httpHelper.install = function fn(Vue) {
@@ -17,16 +18,28 @@ httpHelper.install = function fn(Vue) {
     return Promise.reject(error);
   });
 
-  axios.GetPaylist = (params)=>{
-    return axios.get('/lobby/pay_list',{
-      params
-    })
-  }
-  axios.GameNotice = (params)=>{
-    return axios.get('/lobby/game_notice',{
-      params
-    })
-  }
+  //大厅功能配置
+  axios.HallFunConfig = HallFunConfig;
+
+  // axios.POST = (url, params) => {
+  //   return new Promise((resolve, reject) => {
+  //     axios({
+  //       method: 'post', 
+  //       url,
+  //       headers: {
+  //         "Content-type": "application/x-www-form-urlencoded"
+  //       },
+  //       data: Qs.stringify(params),
+  //     })
+  //       .then(res => {
+  //         resolve(res.data);
+  //       })
+  //       .catch(err => {
+  //         reject(err.data)
+  //       })
+  //   });
+  // }
+
 
   Vue.prototype.$http = axios;
 };

@@ -3,9 +3,9 @@
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-        <span class="del" @click="del">删除</span>
-        <span @click="add">添加</span>
-        <span class="send" @click="send">发送到服务器配置</span>
+         <el-button type="danger" @click="del">删除</el-button>
+        <el-button type="primary" @click="add">添加</el-button>
+        <el-button type="primary" @click="send">发送到服务器配置</el-button>
       </div>
     </div>
     <!-- 表格 -->
@@ -274,31 +274,9 @@ export default {
 #systemBroadcast {
   background-color: #f2f2f2;
   .title {
-    padding: 20px 10px;
+    padding: 10px;
     box-sizing: border-box;
     border: 1px solid #eee;
-    span {
-      display: inline-block;
-      color: #fff;
-      width: 50px;
-      height: 30px;
-      margin-right: 5px;
-      line-height: 30px;
-      text-align: center;
-      background-color: #009688;
-      &:hover {
-        background-color: #30a89d;
-      }
-      &.del {
-        background-color: #ff5722;
-        &:hover {
-          background-color: #ff794e;
-        }
-      }
-      &.send {
-        width: 140px;
-      }
-    }
   }
   .table {
     margin-top: 10px;

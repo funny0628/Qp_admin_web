@@ -1,12 +1,13 @@
 <template>
   <div id="gameAnnouncement">
     <div class="title">
-      <div class="botton">
-        <span @click="add">添加</span>
-      </div>
+      <p><el-button type="primary" @click="add">添加</el-button></p>
       标题
-      <el-input style="margin-top:10px;width:200px" v-model="input"></el-input>
-      <span @click="search">查找</span>
+      <el-input
+        style="margin-top:10px;width:200px"
+        v-model="searchinput"
+      ></el-input>
+      <el-button type="primary" @click="search">查找</el-button>
     </div>
     <!-- 表格 -->
     <div class="table">
@@ -20,7 +21,7 @@
       >
         <el-table-column
           prop="id"
-          label="id"
+          label="ID"
           align="center"
           show-overflow-tooltip
         >
@@ -54,15 +55,15 @@
         >
         </el-table-column>
         <el-table-column
-          prop="sort"
-          label="触发类型"
+          prop="type_id"
+          label="公告类型"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="operation"
-          label="触发内容"
+          prop="sort"
+          label="排序"
           align="center"
           show-overflow-tooltip
         >
@@ -76,7 +77,6 @@
         </el-table-column>
 
         <el-table-column
-          prop="change"
           label="操作"
           align="center"
           show-overflow-tooltip
@@ -99,64 +99,87 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog title="记录" :visible.sync="visiblity">
+      <el-dialog :title="title" :visible.sync="visiblity">
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
-          <el-form-item label="公告标题" prop="sort">
-            <el-input placeholder="邮件标题" v-model="form.sort"></el-input>
+          <el-form-item label="公告标题" prop="title">
+            <el-input placeholder="邮件标题" v-model="form.title"></el-input>
           </el-form-item>
-          <el-form-item label="公告类型">
-            <el-select v-model="form.aa">
-              <el-option label="文字" value="文字"></el-option>
-              <el-option label="图片" value="图片"></el-option>
+          <el-form-item label="公告类型" prop="type_id">
+            <el-select v-model="form.type_id">
+              <el-option label="文字" :value="1"></el-option>
+              <el-option label="图片" :value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="form.aa === '文字'" label="公告简介" prop="name">
+          <el-form-item
+            v-if="form.type_id === 1"
+            label="公告简介"
+            prop="description"
+          >
             <el-input
               type="textarea"
               placeholder="请输入内容"
-              v-model="form.jianjie"
+              v-model="form.description"
             ></el-input>
           </el-form-item>
-          <el-form-item label="标签" prop="channel">
-            <el-select v-model="form.bb">
-              <el-option label="没有标签" value="meiyoubaioqian"></el-option>
-              <el-option label="新" value="xin"></el-option>
-              <el-option label="热门" value="remen"></el-option>
+          <el-form-item label="标签" prop="tag">
+            <el-select v-model="form.tag">
+              <el-option label="没有标签" :value="1"></el-option>
+              <el-option label="新" :value="2"></el-option>
+              <el-option label="热门" :value="3"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="开始时间" prop="common">
-            <el-input v-model="form.common"></el-input>
+          <el-form-item label="开始时间" prop="start_time">
+            <el-date-picker
+              v-model="form.start_time"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间">
-            <el-input v-model="form.remark"></el-input>
+
+          <el-form-item label="结束时间" prop="end_time">
+            <el-date-picker
+              v-model="form.end_time"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
-          <el-form-item label="排序">
-            <el-input v-model="form.paixun"></el-input>
+
+          <el-form-item label="排序" prop="sort">
+            <el-input v-model="form.sort"></el-input>
+            <span>排序只可以为数字</span>
           </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="form.zhuangtai">
-              <el-option label="展示" value="zhangshi"></el-option>
-              <el-option label="隐藏" value="yincang"></el-option>
+          <el-form-item label="状态" prop="show_status">
+            <el-select v-model="form.show_status">
+              <el-option label="展示" :value="1"></el-option>
+              <el-option label="隐藏" :value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="form.aa === '图片'" label="公告图片">
+          <el-form-item v-if="form.type_id === 2" label="公告图片">
             <el-upload
+              v-model="form.image_url"
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://192.168.1.64:8000/v1/backend/lobby/game_notice"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :file-list="fileList"
+              :limit="1"
               list-type="picture"
             >
               <el-button size="small" type="primary">点击上传</el-button>
@@ -167,7 +190,9 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
+          <el-button type="primary" @click="onSubmit('form', title)"
+            >确 定</el-button
+          >
         </div>
       </el-dialog>
     </div>
@@ -175,149 +200,236 @@
 </template>
 
 <script>
+import axios from "axios";
+import Qs from "qs";
+
 export default {
   data() {
     return {
-      input: "",
-      currentPage4: 1,
+      title: "记录",
+      searchinput: "",
+      currentPage: 1,
+      limit: 10,
+      total: 0,
       visiblity: false,
-      uploadShow:false,
-      fileList:[],
-      tableData: [
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        },
-        {
-          id: 3,
-          title: "title",
-          type_id: 1,
-          description: "description",
-          image_url: "image_url",
-          tag: 1,
-          start_time: "2020-03-20 13:42:02",
-          end_time: "2020-03-20 13:42:03",
-          sort: 1,
-          show_status: 1,
-          status: 1,
-          create_time: "2020-03-25 15:31:40",
-          update_time: "2020-03-25 15:31:40",
-        }
-      ],
+      fileList: [],
+      tableData: [],
       form: {
+        id: -1,
+        title: "",
+        type_id: "",
+        description: "",
+        image_url: "",
+        tag: "",
+        start_time: "",
+        end_time: "",
         sort: "",
-        jianjie:"",
-        aa: "文字",
-        bb: "没有标签",
-        paixun: "",
-        zhuangtai: "展示",
-        name: "",
-        channel: "",
-        type: "支付宝",
-        custom: "固定金额",
-        common: "",
-        remark: "0",
-        maxcustom: "0",
-        mincustom: "0",
-        recommend: "不推荐",
-        operant: "不生效"
+        show_status: ""
       },
       rules: {
+        title: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        type_id: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        description: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        start_time: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
+        ],
+        end_time: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
+        ],
         sort: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          {
+            required: true,
+            message: "必填项不能为空,只能输入数字",
+            trigger: "blur"
+          }
         ],
-        name: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        channel: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
+        show_status: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
+        ]
       }
     };
   },
-  async created() {
-    let {data} = await this.$http.GameNotice({page:1,limit:1})
-    console.log(data);
-
+  created() {
+    this.initdata({ page: this.currentPage, limit: this.limit });
   },
-  watch: {
-    "form.aa"(x,y){
-      console.log(x,y);
 
-    }
-  },
   methods: {
-    handlePreview(){},
-    handleRemove(){},
+    handlePreview() {},
+    handleRemove() {},
     add() {
+      this.form = {
+        id: -1,
+        title: "",
+        type_id: "",
+        description: "",
+        image_url: "",
+        tag: "",
+        start_time: "",
+        end_time: "",
+        sort: "",
+        show_status: ""
+      };
       this.visiblity = true;
+      this.title = "记录";
     },
-    search() {},
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    onSubmitO() {},
+    search() {
+      // 拿到searchinput 的值,模糊匹配table中的数据
+      //声明一个newarr,遍历所有的数据如果与searchinput匹配到的就push到newarr
+      //最后在把newarr赋值个表格的tabledata
+      if (this.searchinput === "") {
+        this.$message({
+          type: "warning",
+          message: "请输入你要搜索的标题!"
+        });
+      }
+      this.initdata({ title: this.searchinput });
+    },
+    handleSizeChange(num) {
+      // console.log(num);
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({ page: this.currentPage, limit: this.limit });
+    },
+    handleCurrentChange(pagenum) {
+      // console.log(pagenum);
+      this.currentPage = pagenum;
+      this.initdata({ page: this.currentPage, limit: this.limit });
+    },
     dialogFormVisible() {
       this.visiblity = false;
     },
 
-    handleEdit(x) {
-       this.visiblity = true;
-      // console.log(x);
-      // this.$store.commit("EDIT_ITEM", x);
-      // this.$store.commit("SHOW_FORM", {
-      //   show: true,
-      //   type: 1
-      // });
+    handleEdit(row) {
+      // console.log(row);
+      this.form = { ...row };
+      function data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      }
+      // this.form = this.formateNum(row)
+      this.form.start_time = data(row.start_time);
+      this.form.end_time = data(row.end_time);
+      // console.log(this.form);
+      this.visiblity = true;
+      this.title = "编辑";
     },
-    Change() {
-      this.$store.commit("SHOW_FORM", {
-        show: false,
-        type: 0
-      });
-    },
-    handleDelete(y) {
-      // console.log(y);
+
+    handleDelete(y, row) {
+      console.log(y, row.id);
       this.$confirm("确认删除吗？", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
-          //###--------------------------------------------------------------------
-          //1.只作为把页面的数据删除
-          this.tableData.splice(y, 1);
+        .then(async () => {
           //2.发送请求在后台删除数据
-
+          let { data } = await this.$http.HallFunConfig.DeleteGameNotice({
+            id: row.id
+          });
+          console.log(data);
+          this.initdata({ page: this.currentPage, limit: this.limit });
           this.$message({
             type: "success",
             message: "删除成功!"
           });
         })
         .catch(() => {
-          // console.log('点击了取消');
-
           this.$message({
             type: "info",
             message: "已取消删除"
           });
         });
     },
-    onSubmit(formName){
-       this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
+
+    onSubmit(formName, type) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          if (type === "记录") {
+           
+            let { data } = await this.$http.HallFunConfig.PostGameNotice(
+              this.form
+            );
+            let fres = this.formateData(data.data);
+            this.tableData = this.tableData.concat(fres);
+            // this.visiblity = false;
+          } else if (type === "编辑") {
+            // console.log(this.form);
+
+            let resdata = this.formateNum(this.form);
+            // console.log(resdata);
+            if (resdata.type_id === 2) {
+              resdata.image_url = "image_url";
+            }
+            // console.log(resdata);
+            let { data } = await this.$http.HallFunConfig.PutGameNotice(
+              resdata
+            );
+            let fres = this.formateData(data.data);
+            let newtable = [];
+            this.tableData.forEach(item => {
+              if (item.id === fres[0].id) {
+                item = { ...fres[0] };
+              }
+              newtable.push(item);
+            });
+            this.tableData = newtable;
           }
-        });
+          this.visiblity = false;
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+
+    formateData(res) {
+      res.forEach(item => {
+        item.type_id = item.type_id === 1 ? "文字" : "图片";
+        item.show_status = item.show_status === 1 ? "展示" : "隐藏";
+        if (item.tag === 1) {
+          item.tag = "没有标签";
+        } else if (item.tag === 2) {
+          item.tag = "新";
+        } else {
+          item.tag = "热门";
+        }
+      });
+      return res;
+    },
+
+    formateNum(item) {
+      if (
+        typeof item.type_id === "number" &&
+        typeof item.tag === "number" &&
+        typeof item.show_status === "number"
+      )
+        return;
+
+      item.type_id = item.type_id === "文字" ? 1 : 2;
+      item.show_status = item.show_status === "展示" ? 1 : 2;
+      if (item.tag === "没有标签") {
+        item.tag = 1;
+      } else if (item.tag === "新") {
+        item.tag = 2;
+      } else {
+        item.tag = 3;
+      }
+
+      return item;
+    },
+    async initdata(params) {
+      let { data } = await this.$http.HallFunConfig.GetGameNotice(params);
+      let fres = this.formateData(data.data);
+      this.tableData = fres;
+      this.total = data.total;
+      console.log(data);
     }
   }
 };
@@ -327,19 +439,11 @@ export default {
 #gameAnnouncement {
   background-color: #f2f2f2;
   .title {
-    padding: 20px 10px 0px;
+    padding: 10px;
     box-sizing: border-box;
-    span {
-      display: inline-block;
-      color: #fff;
-      width: 50px;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      background-color: #009688;
-      &:hover {
-        background-color: #30a89d;
-      }
+    p {
+      margin: 0;
+      padding: 0;
     }
   }
   .table {
