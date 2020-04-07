@@ -3,30 +3,28 @@
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-        <span @click="writeEmail">写邮件</span>
+        <el-button type="primary" @click="writeEmail">写邮件</el-button>
       </div>
       ID
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
+      <el-input style="margin-top:10px;width:200px;" v-model="uid"></el-input>
       收件人
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
+      <el-input style="margin-top:10px;width:200px;" v-model="ids"></el-input>
       标题
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
+      <el-input style="margin-top:10px;width:200px;" v-model="Title"></el-input>
       状态
       <el-select
         style="margin-top:10px;width:200px;"
-        v-model="value"
+        v-model="type_id"
         placeholder="请选择"
       >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
+        <el-option label="已读" :value="1"></el-option>
+        <el-option label="未读" :value="2"></el-option>
+        <el-option label="已经领取" :value="3"></el-option>
+        <el-option label="未领取" :value="4"></el-option>
+        <el-option label="待发送" :value="5"></el-option>
       </el-select>
 
-      <span class="search" @click="search">查找</span>
+      <el-button type="primary" @click="search">查找</el-button>
     </div>
     <!-- table -->
     <div class="table">
@@ -39,49 +37,49 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="topuptype"
+          prop="id"
           label="日记序号"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="maxamount"
-          label="时间"
+          prop="create_time"
+          label="创建时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="minamount"
-          label="操作人"
+          prop="send_name"
+          label="发件人"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="paynode"
+          prop="uid"
           label="收件人"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="effect"
+          prop="title"
           label="邮件标题"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="coins"
           label="邮件道具(金币)"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="operation"
+          prop="read_status"
           label="邮件状态"
           align="center"
           show-overflow-tooltip
@@ -99,16 +97,10 @@
             <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="detail(scope.$index, scope.row)"
+            <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="send(scope.$index, scope.row)"
+            <el-button size="mini" type="danger" @click="send(scope.row)"
               >发送邮件</el-button
             >
           </template>
@@ -118,17 +110,17 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visiblity">
+      <el-dialog :title="title" :visible.sync="visible">
         <el-form
           :disabled="disabled"
           ref="form"
@@ -136,31 +128,36 @@
           :model="form"
           label-width="120px"
         >
-          <el-form-item label="收件人ID" prop="common">
+          <el-form-item label="收件人ID" prop="uid">
             <el-input
               placeholder="多个以逗号分隔 如: 1,2,3,4"
-              v-model="form.common"
+              v-model="form.uid"
             ></el-input>
           </el-form-item>
-          <el-form-item label="发件人昵称" prop="common">
-            <el-input placeholder="发件人昵称" v-model="form.common"></el-input>
+          <el-form-item label="发件人昵称" prop="send_name">
+            <el-input
+              placeholder="发件人昵称"
+              v-model="form.send_name"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="邮件标题" prop="common">
-            <el-input placeholder="邮件标题" v-model="form.common"></el-input>
+          <el-form-item label="邮件标题" prop="title">
+            <el-input placeholder="邮件标题" v-model="form.title"></el-input>
           </el-form-item>
-          <el-form-item label="邮件内容" prop="name">
+          <el-form-item label="邮件内容" prop="content">
             <el-input
               type="textarea"
               placeholder="请输入内容"
-              v-model="form.jianjie"
+              v-model="form.content"
             ></el-input>
           </el-form-item>
-          <el-form-item label="金币" prop="common">
-            <el-input placeholder="金币" v-model="form.common"></el-input>
+          <el-form-item label="金币" prop="coins">
+            <el-input placeholder="金币" v-model="form.coins"></el-input>
           </el-form-item>
         </el-form>
         <div v-if="title != '邮件详情'" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
+          <el-button type="primary" @click="onSubmit('form', title)"
+            >确 定</el-button
+          >
         </div>
       </el-dialog>
     </div>
@@ -168,87 +165,190 @@
 </template>
 
 <script>
+import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
-      input: "",
-      options: [
-        {
-          value: "选项1",
-          label: "已读"
-        },
-        {
-          value: "选项2",
-          label: "未读"
-        },
-        {
-          value: "选项3",
-          label: "已经领取"
-        },
-        {
-          value: "选项4",
-          label: "未领取"
-        },
-        {
-          value: "选项5",
-          label: "待发送"
-        }
-      ],
-      tableData: [
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        }
-      ],
+      uid: 0,
+      ids: 0,
+      type_id: 0,
+      Title: "",
+      tableData: [],
       value: "",
-      currentPage4: 1,
-      visiblity: false,
+      currentPage: 1,
+      limit: 10,
+      total: 0,
+      visible: false,
+      disabled: false,
       rules: {
-        common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
+        send_name: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
+        ],
+        title: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        content: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
+        ],
+        coins: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        uid: [{ required: true, message: "必填项不能为空", trigger: "blur" }]
       },
-      form: {},
-      title: "记录",
-      disabled: false
+      form: {
+        send_name: "",
+        title: "",
+        content: "",
+        coins: "",
+        uid: []
+      },
+      title: "记录"
     };
   },
+  created() {
+    this.initdata({
+      page: this.currentPage,
+      limit: this.limit,
+      mail_type: 1,
+      title: this.Title,
+      uid: this.uid,
+      ids: this.ids,
+      type_id: this.type_id
+    });
+  },
   methods: {
+    //写邮件
     writeEmail() {
-      this.init("记录", false);
+      this.editForm("记录", true, false, {});
     },
-    search() {},
-    handleEdit() {
-      this.init("编辑", false);
-    },
-    detail() {
-      (this.rules = {}), this.init("邮件详情", true);
-    },
-    send() {},
-    init(title, disabled) {
-      this.visiblity = true;
-      this.disabled = disabled;
-      this.title = title;
-    },
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$message({
-            message: "修改成功",
-            type: "success"
-          });
 
+    //按条件搜索
+    search() {
+
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1,
+        title: this.Title,
+        uid: this.uid,
+        ids: this.ids,
+        type_id: this.type_id
+      });
+    },
+
+    //表格编辑
+    handleEdit(row) {
+      console.log(row);
+
+      this.editForm("编辑", true, false, DeepData(row));
+    },
+
+    //表格详情
+    detail(row) {
+      console.log(row);
+      this.editForm("邮件详情", true, true, DeepData(row));
+    },
+    send(row) {
+      console.log(row);
+    },
+
+    //页容量改变
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1,
+        title: this.Title,
+        uid: this.uid,
+        ids: this.ids,
+        type_id: this.type_id
+      });
+    },
+
+    //页码改变
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1,
+        title: this.Title,
+        uid: this.uid,
+        ids: this.ids,
+        type_id: this.type_id
+      });
+    },
+    onSubmit(formName, type) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          if (type === "记录") {
+            console.log(this.form);
+            let resData = DeepData(this.form);
+            resData.uid = `[${resData.uid}]`;
+            let { data } = await this.$http.HallFunConfig.PostEmail(resData);
+            console.log(data);
+
+            // if (data.code === 1 && data.msg === "ok") {
+            //  this.initdata({
+            //   page: this.currentPage,
+            //   limit: this.limit,
+            //   mail_type: 1,
+            //   title: this.Title,
+            //   uid: this.uid,
+            //   ids: this.ids,
+            //   type_id: this.type_id
+            // });
+            // }
+          } else if (type === "编辑") {
+            console.log(this.form);
+
+            let res = {};
+            res.send_name = this.form.send_name;
+            res.title = this.form.title;
+            res.content = this.form.content;
+            res.coins = this.form.coins;
+            res.uid = `[${this.form.uid}]`;
+            let { data } = await this.$http.HallFunConfig.PutEmail(res);
+            console.log(data);
+
+            // if (data.code === 1 && data.msg === "ok") {
+            //  this.initdata({
+            //   page: this.currentPage,
+            //   limit: this.limit,
+            //   mail_type: 1,
+            //   title: this.Title,
+            //   uid: this.uid,
+            //   ids: this.ids,
+            //   type_id: this.type_id
+            // });
+            // }
+          } else if (type === "邮件详情") {
+          }
+          this.editForm("记录", false, false, {});
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+
+    editForm(title, visible, disabled, form) {
+      this.title = title;
+      this.visible = visible;
+      this.disabled = disabled;
+      this.form = { ...form };
+    },
+    formateData(res) {
+      res.forEach(item => {
+        item.read_status = item.read_status === 1 ? "未读" : "已读";
+      });
+      return res;
+    },
+
+    async initdata(params) {
+      let { data } = await this.$http.HallFunConfig.GetEmail(params);
+      let fres = this.formateData(data.data);
+      this.tableData = fres;
+      this.total = data.total;
+      // console.log(data);
     }
   }
 };

@@ -3,10 +3,8 @@
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-
-         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add">添加</el-button>
-      
+        <el-button type="danger" @click="del">删除</el-button>
+        <el-button type="primary" @click="add('form')">添加</el-button>
       </div>
     </div>
     <!-- 表格 -->
@@ -22,41 +20,55 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" align="center"> </el-table-column>
-        <el-table-column sortable prop="ID" label="ID" align="center">
+        <el-table-column sortable prop="id" label="ID" align="center">
         </el-table-column>
 
         <el-table-column
-          prop="payname"
-          label="支付名称"
+          prop="title"
+          label="公告标题"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="channel"
-          label="支付渠道"
+          prop="info"
+          label="公告内容"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="paytype"
-          label="支付方式"
+          prop="inscribe"
+          label="	公告落款"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="amount"
-          label="固定金额"
+          prop="notice_time"
+          label="通知时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
 
         <el-table-column
-          prop="amount"
-          label="固定金额"
+          prop="start_time"
+          label="公示开始时间"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="end_time"
+          label="公示结束时间"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="redactor"
+          label="操作者"
           align="center"
           show-overflow-tooltip
         >
@@ -64,13 +76,13 @@
 
         <el-table-column
           prop="change"
-          label="XX"
+          label=""
           align="center"
           show-overflow-tooltip
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
               >编辑</el-button
             >
             <el-button
@@ -86,73 +98,75 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visiblity">
+      <el-dialog :title="title" :visible.sync="visible">
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
-          <el-form-item label="公告标题">
+          <el-form-item label="公告标题" prop="title">
             <el-input
-              v-model="form.paixun"
+              v-model="form.title"
               placeholder="请输入停服公告标题"
             ></el-input>
           </el-form-item>
-          <el-form-item label="公告内容" prop="sort">
+          <el-form-item label="公告内容" prop="info">
             <el-input
               type="textarea"
               placeholder="请输入公告内容"
-              v-model="form.sort"
+              v-model="form.info"
             ></el-input>
           </el-form-item>
-           <el-form-item label="公告落款">
+          <el-form-item label="公告落款" prop="inscribe">
             <el-input
-              v-model="form.paixun"
+              v-model="form.inscribe"
               placeholder="请输入公告落款"
             ></el-input>
           </el-form-item>
-           <el-form-item label="通知时间">
-            <el-input
-              v-model="form.paixun"
+          <el-form-item label="通知时间" prop="notice_time">
+            <el-date-picker
+              v-model="form.notice_time"
+              type="date"
               placeholder="请输入通知时间"
-            ></el-input>
-            <span>格式：2018年10月20日</span>
-          </el-form-item>
-          <el-form-item label="时间间隔(秒)">
-            <el-input
-              v-model="form.paixun"
-              placeholder="请输入间隔时间xx秒"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="循环" prop="name">
-            <el-select v-model="form.name">
-              <el-option label="按时间" value="按时间"></el-option>
-              <el-option label="按日期时间" value="按日期时间"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="开始时间" prop="channel">
-            <el-input
-              v-model="form.channel"
-              placeholder="请输入播放开始时间"
-            ></el-input>
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="结束时间" prop="channel">
-            <el-input
-              v-model="form.channel"
-              placeholder="请输入播放结束时间"
-            ></el-input>
+          <el-form-item label="开始时间" prop="start_time">
+            <el-date-picker
+              v-model="form.start_time"
+              type="date"
+              placeholder="请输入结束时间"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="结束时间" prop="end_time">
+            <el-date-picker
+              v-model="form.end_time"
+              type="date"
+              placeholder="请输入结束时间"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form)">确 定</el-button>
-          <el-button type="primary" @click="back(form)">返 回</el-button>
+          <el-button type="primary" @click="onSubmit('form', title)"
+            >确 定</el-button
+          >
+          <el-button type="primary" @click="back()">返 回</el-button>
         </div>
       </el-dialog>
     </div>
@@ -160,110 +174,229 @@
 </template>
 
 <script>
+import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
       orderlist: ["ascending", "descending"],
-      tableData: [
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        }
-      ],
-      rules: {},
+      tableData: [],
+      total: 0,
+      rules: {
+        title: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        info: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        inscribe: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        notice_time: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        start_time: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        end_time: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ]
+      },
       form: {
-        sort: "",
-        jianjie: "",
-        aa: "文字",
-        bb: "没有标签",
-        paixun: "",
-        zhuangtai: "展示",
-        name: "按时间",
-        channel: "",
-        type: "支付宝",
-        custom: "固定金额",
-        common: "",
-        remark: "0",
-        maxcustom: "0",
-        mincustom: "0",
-        recommend: "不推荐",
-        operant: "不生效"
+        title: "",
+        info: "",
+        inscribe: "",
+        notice_time: "",
+        start_time: "",
+        end_time: "3",
+        redactor: ""
       },
 
-      currentPage4: 1,
-      visiblity: false,
+      currentPage: 1,
+      limit: 10,
+      visible: false,
       title: "添加停服公告",
-      selList:[],
+      selectList: []
     };
   },
+  created() {
+    this.initdata({ page: this.currentPage, limit: this.limit });
+  },
   methods: {
+    // 批量删除
     del() {
       //勾选需要删除的项目批量删除
-      if (this.selList.length != 0) {
+      if (this.selectList.length != 0) {
         //###1.删除dom的数据
         //2.删除后台的数据
         console.log("已经有数据了");
+        this.$confirm("确认删除吗?", "信息", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消"
+        })
+          .then(async () => {
+            let str = this.selectList.join();
+            // console.log(str);
+            let { data } = await this.$http.HallFunConfig.DeleteStopNotice({
+              id_list: `(${str})`
+            });
+            console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                title: this.searchinput
+              });
+            }
+
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
       } else {
         this.$message("请选择需要删除的数据");
       }
     },
-    add() {
-      this.visiblity = true;
-      this.title = "添加停服公告";
+
+    //添加
+    add(formName) {
+      this.editForm("添加停服公告", true, {});
+      this.$refs[formName].resetFields();
     },
 
+    //表格选中
     handleSelectionChange(sel) {
-      this.selList = sel
-      console.log(sel);
-      
+      let idList = sel.map(item => item.id);
+      // console.log(idList);
+
+      this.selectList = idList;
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    handleEdit() {
-      this.visiblity = true;
-      this.title = "更新停服公告";
+
+    //页容量改变
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({ page: this.currentPage, limit: this.limit });
     },
-    handleDelete() {
+
+    //页码改变
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initdata({ page: this.currentPage, limit: this.limit });
+    },
+
+    //表格编辑
+    handleEdit(row, formName) {
+      // console.log(row);
+      let formData = DeepData(row);
+
+      function data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      }
+      // this.form = this.formateNum(row)
+      formData.start_time = data(row.start_time);
+      formData.end_time = data(row.end_time);
+      formData.notice_time = data(row.notice_time);
+
+      this.editForm("更新停服公告", true, formData);
+
+      this.$refs[formName].resetFields();
+    },
+
+    //表格删除
+    handleDelete(x, row) {
+      // console.log(x,row.id);
+
       this.$confirm("确认删除吗?", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
-      }).then(() => {
-        this.$message({
-          type: "success",
-          message: "删除成功!"
+      })
+        .then(async () => {
+          // console.log(str);
+          let { data } = await this.$http.HallFunConfig.DeleteStopNotice({
+            id: row.id
+          });
+          // console.log(data);
+          if (data.code === 1 && data.msg === "ok") {
+            this.initdata({
+              page: this.currentPage,
+              limit: this.limit
+            });
+          }
+
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      });
     },
-    onSubmit() {
+
+    //表单提交
+    onSubmit(formName, type) {
       //表单验证
-      this.$refs.form.validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          //1.将form数据传递到paylist,新增到table中先显示一个dom
-          this.$store.commit("ADD_PAYITEM", this.form);
-          //2.发送请求追加数据到后台-------------------------------------------------------------
+          if (type === "添加停服公告") {
+            // console.log(this.form);
+            this.form.redactor = "redactor";
+            let { data } = await this.$http.HallFunConfig.PostStopNotice(
+              this.form
+            );
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({ page: this.currentPage, limit: this.limit });
+            }
+          } else if (type === "更新停服公告") {
+            console.log(this.form);
 
-          // console.log("发送请求");
+            let { data } = await this.$http.HallFunConfig.PutStopNotice(
+              this.form
+            );
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({ page: this.currentPage, limit: this.limit });
+            }
+          }
 
-          //3.关闭新增的弹框
-          this.forminit();
+          this.editForm("添加停服公告", false, {});
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
+
+    //表单返回
     back() {
-      this.forminit();
+      this.editForm("添加停服公告", false, {});
     },
-    forminit() {
-      this.visiblity = false;
-      //重置form表单的数据
+
+    editForm(title, visible, form) {
+      this.title = title;
+      this.visible = visible;
+      this.form = form;
+    },
+
+    async initdata(params) {
+      let { data } = await this.$http.HallFunConfig.GetStopNotice(params);
+      this.tableData = data.data;
+      this.total = data.total;
+      // console.log(localdata);
+      // console.log(data);
     }
   }
 };
@@ -276,7 +409,6 @@ export default {
     padding: 20px 10px;
     box-sizing: border-box;
     border: 1px solid #eee;
-
   }
   .table {
     margin-top: 10px;

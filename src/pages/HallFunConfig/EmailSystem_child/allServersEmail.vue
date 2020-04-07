@@ -122,6 +122,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+      >
+      </el-pagination>
     </div>
     <!-- form表单 -->
     <div class="dialog">
@@ -149,10 +159,10 @@
           <el-form-item label="金币" prop="common">
             <el-input placeholder="金币" v-model="form.common"></el-input>
           </el-form-item>
-            <el-form-item label="生效时间" prop="common">
+          <el-form-item label="生效时间" prop="common">
             <el-input placeholder="生效时间" v-model="form.common"></el-input>
           </el-form-item>
-            <el-form-item label="过期时间" prop="common">
+          <el-form-item label="过期时间" prop="common">
             <el-input placeholder="过期时间" v-model="form.common"></el-input>
           </el-form-item>
         </el-form>
@@ -231,7 +241,7 @@ export default {
           recommend: "是否推荐",
           operation: "操作者",
           operationtime: "操作时间"
-        },
+        }
       ],
       value: "",
       currentPage4: 1,
