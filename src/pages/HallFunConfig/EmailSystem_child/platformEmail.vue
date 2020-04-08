@@ -5,10 +5,10 @@
       <div class="botton">
         <el-button type="primary" @click="writeEmail">写邮件</el-button>
       </div>
-      ID
-      <el-input style="margin-top:10px;width:200px;" v-model="uid"></el-input>
-      收件人
+      邮件ID
       <el-input style="margin-top:10px;width:200px;" v-model="ids"></el-input>
+      收件人
+      <el-input style="margin-top:10px;width:200px;" v-model="uid"></el-input>
       标题
       <el-input style="margin-top:10px;width:200px;" v-model="Title"></el-input>
       状态
@@ -38,7 +38,7 @@
       >
         <el-table-column
           prop="id"
-          label="日记序号"
+          label="ID"
           align="center"
           show-overflow-tooltip
         >
@@ -108,6 +108,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -169,9 +170,9 @@ import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
-      uid: 0,
-      ids: 0,
-      type_id: 0,
+      uid: "",
+      ids: "",
+      type_id: "",
       Title: "",
       tableData: [],
       value: "",
@@ -205,11 +206,7 @@ export default {
     this.initdata({
       page: this.currentPage,
       limit: this.limit,
-      mail_type: 1,
-      title: this.Title,
-      uid: this.uid,
-      ids: this.ids,
-      type_id: this.type_id
+      mail_type: 2
     });
   },
   methods: {
@@ -220,22 +217,35 @@ export default {
 
     //按条件搜索
     search() {
+      console.log("chazhao", +this.type_id, +this.ids, +this.uid);
 
+      if (this.ids === "") {
+        this.ids = 0;
+      } else if (this.type_id === "") {
+        this.type_id = 0;
+      } else if (this.uid === "") {
+        this.uid = 0;
+      }
+      console.log("chazhao", +this.type_id, +this.ids, +this.uid);
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
-        mail_type: 1,
+        mail_type: 2,
         title: this.Title,
-        uid: this.uid,
-        ids: this.ids,
-        type_id: this.type_id
+        uid: +this.uid,
+        ids: +this.ids,
+        type_id: +this.type_id
       });
+      this.ids = "";
+      this.type_id = "";
+      this.uid = "";
+      this.Title = "";
     },
 
     //表格编辑
     handleEdit(row) {
       console.log(row);
-
+      row.mail_id = row.id;
       this.editForm("编辑", true, false, DeepData(row));
     },
 
@@ -255,11 +265,7 @@ export default {
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
-        mail_type: 1,
-        title: this.Title,
-        uid: this.uid,
-        ids: this.ids,
-        type_id: this.type_id
+        mail_type: 2
       });
     },
 
@@ -269,11 +275,7 @@ export default {
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
-        mail_type: 1,
-        title: this.Title,
-        uid: this.uid,
-        ids: this.ids,
-        type_id: this.type_id
+        mail_type: 2
       });
     },
     onSubmit(formName, type) {
@@ -282,44 +284,40 @@ export default {
           if (type === "记录") {
             console.log(this.form);
             let resData = DeepData(this.form);
-            resData.uid = `[${resData.uid}]`;
+            resData.mail_type = 2;
             let { data } = await this.$http.HallFunConfig.PostEmail(resData);
             console.log(data);
 
-            // if (data.code === 1 && data.msg === "ok") {
-            //  this.initdata({
-            //   page: this.currentPage,
-            //   limit: this.limit,
-            //   mail_type: 1,
-            //   title: this.Title,
-            //   uid: this.uid,
-            //   ids: this.ids,
-            //   type_id: this.type_id
-            // });
-            // }
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                mail_type: 2
+              });
+            }
           } else if (type === "编辑") {
             console.log(this.form);
+            // this.form.mail_type = 2;
 
-            let res = {};
-            res.send_name = this.form.send_name;
-            res.title = this.form.title;
-            res.content = this.form.content;
-            res.coins = this.form.coins;
-            res.uid = `[${this.form.uid}]`;
+            let res = {
+              send_name: this.form.send_name,
+              title: this.form.title,
+              content: this.form.content,
+              coins: this.form.coins,
+              uid: this.form.uid,
+              mail_type: 2,
+              mail_id: this.form.mail_id
+            };
             let { data } = await this.$http.HallFunConfig.PutEmail(res);
             console.log(data);
 
-            // if (data.code === 1 && data.msg === "ok") {
-            //  this.initdata({
-            //   page: this.currentPage,
-            //   limit: this.limit,
-            //   mail_type: 1,
-            //   title: this.Title,
-            //   uid: this.uid,
-            //   ids: this.ids,
-            //   type_id: this.type_id
-            // });
-            // }
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                mail_type: 2
+              });
+            }
           } else if (type === "邮件详情") {
           }
           this.editForm("记录", false, false, {});
@@ -334,7 +332,7 @@ export default {
       this.title = title;
       this.visible = visible;
       this.disabled = disabled;
-      this.form = { ...form };
+      this.form = form;
     },
     formateData(res) {
       res.forEach(item => {
@@ -348,7 +346,13 @@ export default {
       let fres = this.formateData(data.data);
       this.tableData = fres;
       this.total = data.total;
-      // console.log(data);
+      if (this.total === 0) {
+        this.$message({
+          type: "warning",
+          message: "没有找到合适的数据!"
+        });
+      }
+      console.log(data);
     }
   }
 };

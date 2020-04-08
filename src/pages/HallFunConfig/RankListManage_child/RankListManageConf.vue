@@ -8,49 +8,58 @@
     <!-- form -->
     <div class="form">
       <el-form
+        v-loading="loading"
+        element-loading-text="正在发送中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(255, 255, 255, 0.6)"
         :model="ruleForm"
-        :rules="rules"
         ref="ruleForm"
         label-width="150px"
         class="demo-ruleForm"
       >
-        <el-form-item label="排行榜显示配置" prop="type">
-          <el-checkbox-group v-model="ruleForm.type">
-            <el-checkbox label="今日赚钱排行" name="type"></el-checkbox>
-            <el-checkbox label="今日提现排行" name="type"></el-checkbox>
-            <el-checkbox label="在线时长排行" name="type"></el-checkbox>
+        <el-form-item label="排行榜显示配置">
+          <el-checkbox-group v-model="showList">
+            <el-checkbox :label="1">今日赚钱排行</el-checkbox>
+            <el-checkbox :label="2">今日提现排行</el-checkbox>
+            <el-checkbox :label="3">在线时长排行</el-checkbox>
           </el-checkbox-group>
           <span> 排行榜显示设置</span>
         </el-form-item>
 
-        <el-form-item label="金币上榜条件" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+        <el-form-item label="金币上榜条件" prop="coins">
+          <el-input v-model="ruleForm.coins"></el-input>
           <span>金币上榜条件（元）</span>
         </el-form-item>
 
-        <el-form-item label="提现上榜条件" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+        <el-form-item label="提现上榜条件" prop="fech">
+          <el-input v-model="ruleForm.fech"></el-input>
           <span>提现上榜条件（元）</span>
         </el-form-item>
 
-        
-        <el-form-item label="在线时长" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+        <el-form-item label="在线时长" prop="time">
+          <el-input v-model="ruleForm.time"></el-input>
           <span>在线时长 上榜条件(秒)</span>
         </el-form-item>
-        
-        <el-form-item label="刷新时间" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+
+        <el-form-item label="刷新时间" prop="refresh_time">
+          <el-input v-model="ruleForm.refresh_time"></el-input>
           <span>刷新时间(分)</span>
         </el-form-item>
-        
-        <el-form-item label="机器人数值改变概率" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+
+        <el-form-item label="机器人数值改变概率" prop="robot_change_rate">
+          <el-input v-model="ruleForm.robot_change_rate"></el-input>
           <span>机器人数值改变概率(0 - 100数字)</span>
         </el-form-item>
-        <el-form-item label="机器人数值改变范围倍数（小）" prop="region">
-         <el-input-number size="medium" v-model="ruleForm.num2"></el-input-number>&nbsp;&nbsp; - &nbsp;&nbsp;
-          <el-input-number size="medium" v-model="ruleForm.num2"></el-input-number>
+        <el-form-item label="机器人数值改变范围倍数（小）">
+          <el-input-number
+            size="medium"
+            v-model="ruleForm.robot_change_min"
+          ></el-input-number
+          >&nbsp;&nbsp; - &nbsp;&nbsp;
+          <el-input-number
+            size="medium"
+            v-model="ruleForm.robot_change_max"
+          ></el-input-number>
           <p>机器人数值改变范围倍数{0,10000}</p>
         </el-form-item>
 
@@ -68,72 +77,120 @@
 export default {
   data() {
     return {
+      showList: [],
+      id: 0,
+      keys: "",
+      loading: false,
       ruleForm: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
-        num2:0
+        show: {},
+        coins: "",
+        fech: "",
+        time: "",
+        refresh_time: "",
+        robot_change_rate: "",
+        robot_change_min: "",
+        robot_change_max: ""
       },
       rules: {
-        name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+        coins: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        region: [
-          { required: true, message: "请选择活动区域", trigger: "change" }
+        fech: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
+        time: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
+        refresh_time: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change"
-          }
+        robot_change_rate: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        resource: [
-          { required: true, message: "请选择活动资源", trigger: "change" }
+        robot_change_min: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
+        robot_change_max: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ]
       }
     };
   },
+  async created() {
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "rank_control.lua"
+    });
+    // console.log(data.data);
+    let res = JSON.parse(data.data[0].sys_val);
+    console.log(res);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    this.ruleForm = res;
+
+    Object.keys(res.show).forEach(key => {
+      console.log(key, res.show[key]);
+      if (res.show[key] === "on") {
+        this.showList.push(+key);
+      }
+    });
+    // console.log(this.showList);
+  },
   methods: {
-    send() {
-      console.log("发送到服务器配置");
+    //发送到服务器配置
+    async send() {
+      // console.log("发送到服务器配置");
+      // console.log(this.showList);
+      this.loading = true;
+      let showresl = {};
+      this.showList.forEach(item => {
+        showresl[item] = "on";
+      });
+      this.ruleForm.show = showresl;
+      // console.log(this.ruleForm);
+
+      let { data } = await this.$http.HallFunConfig.PostServerConfig({
+        keys: this.keys,
+        id: this.id,
+        values: JSON.stringify(this.ruleForm)
+      });
+      // console.log(data);
+
+      if (data.code === 1 && data.msg === "ok") {
+        this.loading = false;
+        this.$message({
+          type: "success",
+          message: "配置到服务器成功!"
+        });
+      }
     },
+
+    //保存数据
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          alert("submit!");
+          // console.log(this.showList);
+          let showres = {};
+          this.showList.forEach(item => {
+            showres[item] = "on";
+          });
+          this.ruleForm.show = showres;
+          let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            keys: this.keys,
+            id: this.id,
+            values: JSON.stringify(this.ruleForm)
+          });
+          // console.log(data);
+          if (data.code === 1 && data.msg === "ok") {
+            this.$message({
+              type: "success",
+              message: "保存成功!"
+            });
+          }
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
     }
   }
 };

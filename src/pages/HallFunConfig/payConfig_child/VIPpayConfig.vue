@@ -8,28 +8,25 @@
         <span class="add" @click="add">添加</span>
         <span class="save" @click="saveData">保存</span>
       </div>
-      <div class="table" v-for="(it, idx) in list" :key="idx">
+      <div class="table" v-for="(item, index) in list" :key="index">
         <el-row :gutter="10">
           <el-col :span="4">
-            <el-select style="width:100%" v-model="value">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option> </el-select
+            <el-select style="width:100%" v-model="item.undefined">
+              <el-option label="QQ" value="QQ"></el-option>
+              <el-option label="微信" value="微信"></el-option> </el-select
           ></el-col>
           <el-col :span="5">
-            <el-input v-model="name" placeholder="名称"></el-input
+            <el-input v-model="item.name" placeholder="名称"></el-input
           ></el-col>
           <el-col :span="5">
-            <el-input v-model="contact" placeholder="微信/QQ"></el-input
+            <el-input v-model="item.wx" placeholder="微信/QQ"></el-input
           ></el-col>
           <el-col :span="8">
-            <el-input v-model="remark" placeholder="备注"></el-input
+            <el-input v-model="item.desc" placeholder="备注"></el-input
           ></el-col>
-          <el-col :span="2"><span class="dele">删除</span></el-col>
+          <el-col :span="2"
+            ><span class="dele" @click="del(index)">删除</span></el-col
+          >
         </el-row>
       </div>
     </div>
@@ -41,41 +38,76 @@ export default {
   name: "VIPpayConfig",
   data() {
     return {
-      value: "QQ",
-      name:"",
-      contact:"",
-      remark:"",
-      list:1,
-      options: [
-        {
-          value: "选项1",
-          label: "QQ"
-        },
-        {
-          value: "选项2",
-          label: "微信"
-        }
-      ]
+      id: 0,
+      keys: "",
+      type: "QQ",
+      name: "",
+      wx: "",
+      desc: "",
+      list: []
     };
   },
-  created() {
+  async created() {
     //获取数据
-    this.getdata()
-
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "recharge_config"
+    });
+    // console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    // console.log(res);
+    this.list = res;
   },
   methods: {
-    add(){
-      // console.log('add新增一行,使列表数组加1');
-      this.list += 1
+    //添加
+    add() {
+      this.list.push({});
     },
-    saveData(){
+
+    // 保存
+    async saveData() {
       // console.log('拿到数据,saveData');
-      
+      console.log(this.list);
+      this.list.forEach(item => {
+        if (item.undefined === "QQ") {
+          item.type = "qq";
+        } else if (item.undefined === "微信") {
+          item.type = "wechat";
+        }
+      });
+      // console.log(this.list);
+
+      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+        keys: this.keys,
+        id: this.id,
+        values: JSON.stringify(this.list)
+      });
+      // console.log(data);
     },
-    getdata(){
-      // console.log('获取数据');
+
+    //删除
+    del(index) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.list.splice(index, 1);
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
-  },
+  }
 };
 </script>
 
@@ -125,7 +157,7 @@ export default {
         height: 100%;
         border-radius: 3px;
         background-color: #009688;
-         &:hover {
+        &:hover {
           background-color: #30a89d;
         }
       }

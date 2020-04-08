@@ -3,30 +3,28 @@
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-        <span @click="writeEmail">写邮件</span>
+        <!-- <span @click="writeEmail">写邮件</span> -->
+        <el-button type="primary" @click="writeEmail">写邮件</el-button>
       </div>
-      ID
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
-      收件人
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
+      邮件ID
+      <el-input style="margin-top:10px;width:200px;" v-model="ids"></el-input>
+
       标题
-      <el-input style="margin-top:10px;width:200px;" v-model="input"></el-input>
+      <el-input style="margin-top:10px;width:200px;" v-model="Title"></el-input>
       状态
       <el-select
         style="margin-top:10px;width:200px;"
-        v-model="value"
+        v-model="type_id"
         placeholder="请选择"
       >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
+        <el-option label="生效中" :value="1"></el-option>
+        <el-option label="未生效" :value="2"></el-option>
+        <el-option label="已过期" :value="3"></el-option>
+        <el-option label="作废" :value="4"></el-option>
       </el-select>
 
-      <span class="search" @click="search">查找</span>
+      <!-- <span class="search" @click="search">查找</span> -->
+      <el-button type="primary" @click="search">查找</el-button>
     </div>
     <!-- table -->
     <div class="table">
@@ -39,21 +37,21 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="topuptype"
+          prop="id"
           label="邮件序号"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="maxamount"
+          prop="start_time"
           label="创建时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="minamount"
+          prop="send_name"
           label="发件人"
           align="center"
           show-overflow-tooltip
@@ -61,35 +59,35 @@
         </el-table-column>
 
         <el-table-column
-          prop="effect"
+          prop="title"
           label="邮件标题"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="coins"
           label="邮件道具(金币)"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="start_time"
           label="邮件生效时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="recommend"
+          prop="end_time"
           label="邮件过期时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="operation"
+          prop="read_status"
           label="邮件状态"
           align="center"
           show-overflow-tooltip
@@ -97,7 +95,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="change"
+          prop=""
           label="操作"
           align="center"
           show-overflow-tooltip
@@ -107,35 +105,30 @@
             <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="detail(scope.$index, scope.row)"
+            <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="send(scope.$index, scope.row)"
+            <el-button size="mini" type="danger" @click="send(scope.row)"
               >发送邮件</el-button
             >
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visiblity">
+      <el-dialog :title="title" :visible.sync="visible">
         <el-form
           :disabled="disabled"
           ref="form"
@@ -143,31 +136,50 @@
           :model="form"
           label-width="120px"
         >
-          <el-form-item label="发件人名称" prop="common">
-            <el-input placeholder="发件人名称" v-model="form.common"></el-input>
+          <el-form-item label="发件人名称" prop="send_name">
+            <el-input
+              placeholder="发件人名称"
+              v-model="form.send_name"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="邮件标题" prop="common">
-            <el-input placeholder="邮件标题" v-model="form.common"></el-input>
+          <el-form-item label="邮件标题" prop="title">
+            <el-input placeholder="邮件标题" v-model="form.title"></el-input>
           </el-form-item>
-          <el-form-item label="邮件内容" prop="name">
+          <el-form-item label="邮件内容" prop="content">
             <el-input
               type="textarea"
               placeholder="请输入内容"
-              v-model="form.jianjie"
+              v-model="form.content"
             ></el-input>
           </el-form-item>
-          <el-form-item label="金币" prop="common">
-            <el-input placeholder="金币" v-model="form.common"></el-input>
+          <el-form-item label="金币" prop="coins">
+            <el-input placeholder="金币" v-model="form.coins"></el-input>
           </el-form-item>
-          <el-form-item label="生效时间" prop="common">
-            <el-input placeholder="生效时间" v-model="form.common"></el-input>
+          <el-form-item label="生效时间" prop="start_time">
+            <el-date-picker
+              v-model="form.start_time"
+              type="date"
+              placeholder="请输入结束时间"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
-          <el-form-item label="过期时间" prop="common">
-            <el-input placeholder="过期时间" v-model="form.common"></el-input>
+          <el-form-item label="过期时间" prop="end_time">
+            <el-date-picker
+              v-model="form.end_time"
+              type="date"
+              placeholder="请输入结束时间"
+              format="yyyy-MM-dd"
+              value-format="timestamp"
+            >
+            </el-date-picker>
           </el-form-item>
         </el-form>
         <div v-if="title != '邮件详情'" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
+          <el-button type="primary" @click="onSubmit('form', title)"
+            >确 定</el-button
+          >
         </div>
       </el-dialog>
     </div>
@@ -175,116 +187,200 @@
 </template>
 
 <script>
+import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
-      input: "",
-      options: [
-        {
-          value: "选项1",
-          label: "已读"
-        },
-        {
-          value: "选项2",
-          label: "未读"
-        },
-        {
-          value: "选项3",
-          label: "已经领取"
-        },
-        {
-          value: "选项4",
-          label: "未领取"
-        },
-        {
-          value: "选项5",
-          label: "待发送"
-        }
-      ],
-      tableData: [
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        },
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        },
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        },
-        {
-          topuptype: "充值类型",
-          maxamount: "自定义最大金额",
-          minamount: "可自定义最小金额",
-          paynode: "支付备注",
-          effect: "是否生效",
-          recommend: "是否推荐",
-          operation: "操作者",
-          operationtime: "操作时间"
-        }
-      ],
+      Title: "",
+      ids: "",
+      type_id: "",
+      tableData: [],
       value: "",
-      currentPage4: 1,
-      visiblity: false,
+      currentPage: 1,
+      limit: 10,
+      total: 0,
+      visible: false,
       rules: {
         common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
       },
-      form: {},
+      form: {
+        send_name: "",
+        title: "",
+        content: "",
+        coins: "",
+        uid: [],
+        end_time:"",
+        start_time:"",
+      },
       title: "记录",
       disabled: false
     };
   },
+  created() {
+    this.initdata({
+      page: this.currentPage,
+      limit: this.limit,
+      mail_type: 1
+    });
+  },
   methods: {
+    //写邮件
     writeEmail() {
-      this.init("记录", false);
+      this.editForm("记录", true, false, {});
     },
-    search() {},
-    handleEdit() {
-      this.init("编辑", false);
+
+    //搜索
+    search() {
+      if (this.ids === "") {
+        this.ids = 0;
+      } else if (this.type_id === "") {
+        this.type_id = 0;
+      }
+      console.log("chazhao", +this.type_id, +this.ids);
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1,
+        title: this.Title,
+        ids: +this.ids,
+        type_id: +this.type_id
+      });
+      this.ids = "";
+      this.type_id = "";
+      this.Title = "";
     },
-    detail() {
-      (this.rules = {}), this.init("邮件详情", true);
+
+    //表格编辑
+    handleEdit(row) {
+      console.log(row);
+      row = DeepData(row);
+      function data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      }
+      row.start_time = data(row.start_time);
+      row.end_time = data(row.end_time);
+      this.editForm("编辑", true, false, row);
     },
-    send() {},
-    init(title, disabled) {
-      this.visiblity = true;
-      this.disabled = disabled;
-      this.title = title;
+
+    //表格详情
+    detail(row) {
+      row = DeepData(row);
+      function data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      }
+      row.start_time = data(row.start_time);
+      row.end_time = data(row.end_time);
+      this.editForm("邮件详情", true, true, row);
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
+
+    //表格发送邮件
+    send(row) {},
+
+    //页容量变化
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1
+      });
+    },
+
+    //页码变化
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 1
+      });
+    },
+
+    //表单提交
+    onSubmit(formName, type) {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.$message({
-            message: "修改成功",
-            type: "success"
-          });
+          if (type === "记录") {
+            console.log(this.form);
+            let resData = DeepData(this.form);
+            resData.mail_type = 1;
+            let { data } = await this.$http.HallFunConfig.PostEmail(resData);
+            console.log(data);
+
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                mail_type: 1
+              });
+            }
+          } else if (type === "编辑") {
+            console.log(this.form);
+
+            let res = {
+              send_name: this.form.send_name,
+              title: this.form.title,
+              content: this.form.content,
+              coins: this.form.coins,
+              uid: this.form.uid,
+              mail_type: 1,
+              mail_id: this.form.id,
+              start_time: this.form.start_time,
+              end_time: this.form.end_time
+            };
+            let { data } = await this.$http.HallFunConfig.PutEmail(res);
+            console.log(data);
+
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                mail_type: 1
+              });
+            }
+          } else if (type === "邮件详情") {
+
+          }
+
+          this.editForm("记录", false, false, {});
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+
+    editForm(title, visible, disabled, form) {
+      this.title = title;
+      this.visible = visible;
+      this.disabled = disabled;
+      this.form = form;
+    },
+
+    formateData(res) {
+      res.forEach(item => {
+        item.read_status = item.read_status === 1 ? "未读" : "已读";
+      });
+      return res;
+    },
+
+    async initdata(params) {
+      let { data } = await this.$http.HallFunConfig.GetEmail(params);
+      let fres = this.formateData(data.data);
+      this.tableData = fres;
+      this.total = data.total;
+      if (this.total === 0) {
+        this.$message({
+          type: "warning",
+          message: "没有找到合适的数据!"
+        });
+      }
+      console.log(data);
     }
   }
 };
@@ -297,23 +393,6 @@ export default {
     padding: 20px 10px;
     box-sizing: border-box;
     border: 1px solid #eee;
-    span {
-      display: inline-block;
-      color: #fff;
-      width: 50px;
-      height: 30px;
-      margin-right: 5px;
-      line-height: 30px;
-      text-align: center;
-      background-color: #009688;
-      &:hover {
-        background-color: #30a89d;
-      }
-
-      &.search {
-        width: 50px;
-      }
-    }
   }
   .table {
     margin-top: 10px;

@@ -6,6 +6,7 @@ import Qs from 'qs'
 
 // [ 支付配置 ]---------------------------------------------------
 //1.支付配置-VIP充值配置
+//公共接口
 
 //2.支付配置-支付列表
 let GetPaylist = (params) => {
@@ -24,6 +25,9 @@ let DeletePaylist = (params) => {
 }
 
 //3.支付配置-举报方式配置
+//公共接口
+
+
 
 // [ 活动和公告 ]---------------------------------------------------
 //1.活动和公告-游戏公告
@@ -115,28 +119,49 @@ let GetEmail = (params) => { //get / search
   })
 }
 let PostEmail = (params) => {
-  console.log("put");
+  console.log("post");
   return axios.post('/lobby/mail', params)
 }
 let PutEmail = (params) => {
   console.log("put");
   return axios.put('/lobby/mail', params)
 }
-let DeleteEmail = (params) => { //get / search
-  return axios.delete('/lobby/mail', {
-    params
-  })
+let patchEmail = (params) => { //get / search
+  return axios.put('/lobby/mail', params)
 }
 
 
 
 // [ 排行榜管理 ]---------------------------------------------------
 //1.排行榜管理-排行榜配置
+//公共接口
+
 
 //2.排行榜管理-排行榜历史数据
+let GetManageHistory = (params) => { //get / search
+  return axios.get('/lobby/ranking_history', {
+    params
+  })
+}
 
+//通用接口
+let GetServerConfig = (params) => { //get / search
+  return axios.get('/lobby/server_config', {
+    params
+  })
+}
+let PutServerConfig = (params) => { //get / search
+  return axios.put('/lobby/server_config', params)
+}
+let PostServerConfig = (params) => { //get / search
+  return axios.post('/lobby/server_config', params)
+}
 
 export default {
+  //通用接口-----------------------
+  GetServerConfig,
+  PutServerConfig,
+  PostServerConfig,
   //支付配置-------------------------
   GetPaylist,
   PostPaylist,
@@ -163,6 +188,7 @@ export default {
   GetEmail,
   PostEmail,
   PutEmail,
-  DeleteEmail,
- 
+  patchEmail,
+  //排行榜历史-----------------------
+  GetManageHistory,
 }
