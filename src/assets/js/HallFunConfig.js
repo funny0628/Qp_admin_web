@@ -127,7 +127,7 @@ let PutEmail = (params) => {
   return axios.put('/lobby/mail', params)
 }
 let patchEmail = (params) => { //get / search
-  return axios.put('/lobby/mail', params)
+  return axios.patch('/lobby/mail', params)
 }
 
 

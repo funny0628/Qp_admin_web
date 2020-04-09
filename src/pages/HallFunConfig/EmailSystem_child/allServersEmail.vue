@@ -87,7 +87,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="read_status"
+          prop="send_status"
           label="邮件状态"
           align="center"
           show-overflow-tooltip
@@ -102,14 +102,18 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="mini" type="warning" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button size="mini" type="danger" @click="detail(scope.row)"
+            <el-button size="mini" type="warning" @click="detail(scope.row)"
               >详情</el-button
             >
-            <el-button size="mini" type="danger" @click="send(scope.row)"
-              >发送邮件</el-button
+            <el-button
+              size="mini"
+              v-if="scope.row.send_status !== '废弃'"
+              type="warning"
+              @click="del(scope.row)"
+              >废弃</el-button
             >
           </template>
         </el-table-column>
@@ -138,6 +142,7 @@
         >
           <el-form-item label="发件人名称" prop="send_name">
             <el-input
+              :disabled="disabledName"
               placeholder="发件人名称"
               v-model="form.send_name"
             ></el-input>
@@ -209,11 +214,12 @@ export default {
         content: "",
         coins: "",
         uid: [],
-        end_time:"",
-        start_time:"",
+        end_time: "",
+        start_time: ""
       },
       title: "记录",
-      disabled: false
+      disabled: false,
+      disabledName: false
     };
   },
   created() {
@@ -226,7 +232,7 @@ export default {
   methods: {
     //写邮件
     writeEmail() {
-      this.editForm("记录", true, false, {});
+      this.editForm("记录", true, false, false, {});
     },
 
     //搜索
@@ -236,7 +242,7 @@ export default {
       } else if (this.type_id === "") {
         this.type_id = 0;
       }
-      console.log("chazhao", +this.type_id, +this.ids);
+      // console.log("chazhao", +this.type_id, +this.ids);
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
@@ -252,33 +258,40 @@ export default {
 
     //表格编辑
     handleEdit(row) {
-      console.log(row);
+      // console.log(row);
       row = DeepData(row);
-      function data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      }
-      row.start_time = data(row.start_time);
-      row.end_time = data(row.end_time);
-      this.editForm("编辑", true, false, row);
+      row.start_time = this.data(row.start_time);
+      row.end_time = this.data(row.end_time);
+      this.editForm("编辑", true, false, true, row);
     },
 
     //表格详情
     detail(row) {
       row = DeepData(row);
-      function data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      }
-      row.start_time = data(row.start_time);
-      row.end_time = data(row.end_time);
-      this.editForm("邮件详情", true, true, row);
+      row.start_time = this.data(row.start_time);
+      row.end_time = this.data(row.end_time);
+      this.editForm("邮件详情", true, true, true, row);
     },
 
-    //表格发送邮件
-    send(row) {},
+    //表格废弃邮件
+    async del(row) {
+      // console.log(row);
+      row.send_status = "废弃";
+      let resData = {
+        mail_type: 1,
+        send_status: 2,
+        mail_id: row.id
+      };
+      let { data } = await this.$http.HallFunConfig.patchEmail(resData);
+      // console.log(data);
+      if (data.code === 1 && data.msg === "ok") {
+        this.initdata({
+          page: this.currentPage,
+          limit: this.limit,
+          mail_type: 1
+        });
+      }
+    },
 
     //页容量变化
     handleSizeChange(num) {
@@ -306,11 +319,11 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (type === "记录") {
-            console.log(this.form);
+            // console.log(this.form);
             let resData = DeepData(this.form);
             resData.mail_type = 1;
             let { data } = await this.$http.HallFunConfig.PostEmail(resData);
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -320,7 +333,7 @@ export default {
               });
             }
           } else if (type === "编辑") {
-            console.log(this.form);
+            // console.log(this.form);
 
             let res = {
               send_name: this.form.send_name,
@@ -334,7 +347,7 @@ export default {
               end_time: this.form.end_time
             };
             let { data } = await this.$http.HallFunConfig.PutEmail(res);
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -344,10 +357,9 @@ export default {
               });
             }
           } else if (type === "邮件详情") {
-
           }
 
-          this.editForm("记录", false, false, {});
+          this.editForm("记录", false, false, false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -355,18 +367,36 @@ export default {
       });
     },
 
-    editForm(title, visible, disabled, form) {
+    editForm(title, visible, disabled, disabledName, form) {
       this.title = title;
       this.visible = visible;
       this.disabled = disabled;
+      this.disabledName = disabledName;
       this.form = form;
     },
 
     formateData(res) {
       res.forEach(item => {
-        item.read_status = item.read_status === 1 ? "未读" : "已读";
+        let start_time = this.data(item.start_time);
+        let end_time = this.data(item.end_time);
+        let currentTime = Date.parse(new Date());
+        // console.log(start_time, end_time, currentTime);
+
+        if (currentTime < start_time) {
+          item.send_status = "未生效";
+        } else if (currentTime > start_time && currentTime < end_time) {
+          item.send_status = "生效中";
+        } else if (currentTime > end_time) {
+          item.send_status = "已过期";
+        }
       });
       return res;
+    },
+
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
     },
 
     async initdata(params) {
@@ -380,7 +410,7 @@ export default {
           message: "没有找到合适的数据!"
         });
       }
-      console.log(data);
+      // console.log(data);
     }
   }
 };
