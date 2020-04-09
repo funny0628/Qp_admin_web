@@ -296,16 +296,10 @@ export default {
     handleEdit(row, formName) {
       // console.log(row);
       let formData = DeepData(row);
-
-      function data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      }
       // this.form = this.formateNum(row)
-      formData.start_time = data(row.start_time);
-      formData.end_time = data(row.end_time);
-      formData.notice_time = data(row.notice_time);
+      formData.start_time = this.data(row.start_time);
+      formData.end_time = this.data(row.end_time);
+      formData.notice_time = this.data(row.notice_time);
 
       this.editForm("更新停服公告", true, formData);
 
@@ -391,6 +385,12 @@ export default {
       this.visible = visible;
       this.form = form;
     },
+
+     data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetStopNotice(params);

@@ -79,7 +79,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="read_status"
+          prop="send_status"
           label="邮件状态"
           align="center"
           show-overflow-tooltip
@@ -94,13 +94,17 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="mini"  @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
-            <el-button size="mini" type="danger" @click="send(scope.row)"
+            <el-button
+              v-if="scope.row.send_status === '待发送'"
+              size="mini"
+              type="danger"
+              @click="send(scope.row)"
               >发送邮件</el-button
             >
           </template>
@@ -133,6 +137,7 @@
             <el-input
               placeholder="多个以逗号分隔 如: 1,2,3,4"
               v-model="form.uid"
+              :disabled="disabledID"
             ></el-input>
           </el-form-item>
           <el-form-item label="发件人昵称" prop="send_name">
@@ -181,6 +186,7 @@ export default {
       total: 0,
       visible: false,
       disabled: false,
+      disabledID: false,
       rules: {
         send_name: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
@@ -212,12 +218,11 @@ export default {
   methods: {
     //写邮件
     writeEmail() {
-      this.editForm("记录", true, false, {});
+      this.editForm("记录", true, false,false, {});
     },
 
     //按条件搜索
     search() {
-      console.log("chazhao", +this.type_id, +this.ids, +this.uid);
 
       if (this.ids === "") {
         this.ids = 0;
@@ -226,7 +231,6 @@ export default {
       } else if (this.uid === "") {
         this.uid = 0;
       }
-      console.log("chazhao", +this.type_id, +this.ids, +this.uid);
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
@@ -244,18 +248,35 @@ export default {
 
     //表格编辑
     handleEdit(row) {
-      console.log(row);
+      // console.log(row);
       row.mail_id = row.id;
-      this.editForm("编辑", true, false, DeepData(row));
+      this.editForm("编辑", true, false,true, DeepData(row));
     },
 
     //表格详情
     detail(row) {
-      console.log(row);
-      this.editForm("邮件详情", true, true, DeepData(row));
+      // console.log(row);
+      this.editForm("邮件详情", true, true, true, DeepData(row));
     },
-    send(row) {
-      console.log(row);
+
+    //表格发送邮件
+    async send(row) {
+      // console.log(row);
+
+      let resData = {
+        mail_type: 2,
+        send_status: 2,
+        mail_id: row.id
+      };
+      let { data } = await this.$http.HallFunConfig.patchEmail(resData);
+      // console.log(data);
+      if (data.code === 1 && data.msg === "ok") {
+        this.initdata({
+          page: this.currentPage,
+          limit: this.limit,
+          mail_type: 2
+        });
+      }
     },
 
     //页容量改变
@@ -286,7 +307,7 @@ export default {
             let resData = DeepData(this.form);
             resData.mail_type = 2;
             let { data } = await this.$http.HallFunConfig.PostEmail(resData);
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -296,7 +317,7 @@ export default {
               });
             }
           } else if (type === "编辑") {
-            console.log(this.form);
+            // console.log(this.form);
             // this.form.mail_type = 2;
 
             let res = {
@@ -309,7 +330,7 @@ export default {
               mail_id: this.form.mail_id
             };
             let { data } = await this.$http.HallFunConfig.PutEmail(res);
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -320,7 +341,7 @@ export default {
             }
           } else if (type === "邮件详情") {
           }
-          this.editForm("记录", false, false, {});
+          this.editForm("记录", false, false,false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -328,15 +349,22 @@ export default {
       });
     },
 
-    editForm(title, visible, disabled, form) {
+    editForm(title, visible, disabled,disabledID, form) {
       this.title = title;
       this.visible = visible;
       this.disabled = disabled;
+      this.disabledID = disabledID;
       this.form = form;
     },
     formateData(res) {
       res.forEach(item => {
-        item.read_status = item.read_status === 1 ? "未读" : "已读";
+        // item.send_status = item.send_status === 1 ? "待发送" : "已发送";
+        if (item.send_status === 1) {
+          item.send_status = "待发送";
+          this.sendShow = true;
+        } else if (item.send_status === 2) {
+          item.send_status = item.read_status === 1 ? "未读" : "已读";
+        }
       });
       return res;
     },
@@ -352,7 +380,7 @@ export default {
           message: "没有找到合适的数据!"
         });
       }
-      console.log(data);
+      // console.log(data);
     }
   }
 };
