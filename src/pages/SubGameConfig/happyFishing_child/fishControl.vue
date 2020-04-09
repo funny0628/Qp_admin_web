@@ -5,14 +5,14 @@
     element-loading-background="rgba(255, 255, 255, 0.6)">
     <!-- 头部 -->
     <div class="title">
-      <el-button style="margin:0px 10px 10px 0px" type="primary" @click="save"
+      <el-button style="margin:0px 10px 10px 0px" type="primary" @click="submit(1)"
         >保存</el-button
       >
-      <el-button type="primary" @click="send">发送给服务器配置</el-button>
+      <el-button type="primary" @click="submit(2)">发送给服务器配置</el-button>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="捕鱼-低倍场" name="first"></el-tab-pane>
-        <el-tab-pane label="捕鱼-中倍场" name="second"></el-tab-pane>
-        <el-tab-pane label="捕鱼-高倍场" name="third"></el-tab-pane>
+        <el-tab-pane label="捕鱼-低倍场" name="fishing_normal"></el-tab-pane>
+        <el-tab-pane label="捕鱼-中倍场" name="fishing_junior"></el-tab-pane>
+        <el-tab-pane label="捕鱼-高倍场" name="fishing_senior"></el-tab-pane>
       </el-tabs>
     </div>
 
@@ -108,7 +108,7 @@
 export default {
   data() {
     return {
-      activeName: "first",
+      activeName: "fishing_normal",
       //三个场次总数据
       resData: {},
       //默认为最低的场次
@@ -134,9 +134,10 @@ export default {
     
   },
   methods: {
-    //保存
-   async save() {
-       let { data } = await this.$http.HallFunConfig.PutServerConfig({
+    //保存和服务器配置
+    async submit(type){
+      if(type === 1){
+          let { data } = await this.$http.HallFunConfig.PutServerConfig({
          keys:this.keys,
          values:JSON.stringify(this.resData),
          id:this.id,
@@ -148,12 +149,8 @@ export default {
         message: "保存成功!"
       });
     }
-      
-    },
-
-    //发送到服务器配置
-   async send() {
-     this.loading = true
+      }else if(type === 2){
+        this.loading = true
      
        let { data } = await this.$http.HallFunConfig.PostServerConfig({
          keys:this.keys,
@@ -168,7 +165,45 @@ export default {
         message: "发送服务器配置成功!"
       });
     }
+
+      }
     },
+
+    //保存
+  //  async save() {
+  //      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+  //        keys:this.keys,
+  //        values:JSON.stringify(this.resData),
+  //        id:this.id,
+  //      });
+  //   // console.log(data);
+  //   if(data.code === 1 && data.msg === 'ok'){
+  //     this.$message({
+  //       type: "success",
+  //       message: "保存成功!"
+  //     });
+  //   }
+      
+  //   },
+
+  //   //发送到服务器配置
+  //  async send() {
+  //    this.loading = true
+     
+  //      let { data } = await this.$http.HallFunConfig.PostServerConfig({
+  //        keys:this.keys,
+  //        values:JSON.stringify(this.resData),
+  //        id:this.id,
+  //      });
+  //     // console.log(data);
+  //     if(data.code === 1 && data.msg === 'ok'){
+  //       this.loading = false
+  //     this.$message({
+  //       type: "success",
+  //       message: "发送服务器配置成功!"
+  //     });
+  //   }
+  //   },
     
     
     //加入房间的添加
@@ -256,13 +291,18 @@ export default {
 
     //tap栏切换
     handleClick(tab, event) {
-      if(tab.name === 'first'){
-        this.Data = this.resData.fishing_normal
-      }else if(tab.name === 'second'){
-        this.Data = this.resData.fishing_junior
-      }else if(tab.name === 'third'){
-         this.Data = this.resData.fishing_senior
-      }
+      Object.keys(this.resData).forEach((item)=>{
+        if(item === tab.name){
+          this.Data = this.resData[item]
+        }
+      })
+      // if(tab.name === 'first'){
+      //   this.Data = this.resData.fishing_normal
+      // }else if(tab.name === 'second'){
+      //   this.Data = this.resData.fishing_junior
+      // }else if(tab.name === 'third'){
+      //    this.Data = this.resData.fishing_senior
+      // }
       // console.log(this.Data);
       
     }

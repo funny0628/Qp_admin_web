@@ -102,16 +102,16 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" type="warning" @click="handleEdit(scope.row)"
+            <el-button size="mini"  @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button size="mini" type="warning" @click="detail(scope.row)"
+            <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
             <el-button
               size="mini"
               v-if="scope.row.send_status !== '废弃'"
-              type="warning"
+              type="danger"
               @click="del(scope.row)"
               >废弃</el-button
             >
