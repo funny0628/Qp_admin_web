@@ -10,22 +10,33 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // proxyTable:
-    //   (function (){
-    //     let ls = ['/v1'];
-    //   let obj = {};
-    //   // let baseUrl = ' http://192.168.0.187:7300/mock/5d634af3ca80d11633b49b5b/platform';
-    //   // let baseUrl = 'http://192.168.0.186:9999';
-    //   let baseUrl = 'http://192.168.1.64:8000/v1/backend/';
-    //   ls.map(item=>{
-    //     obj[item] = {target: baseUrl, changeOrigin: true, pathRewrite: {'^/v1': '/v1'},
-    //       onProxyReq: function (proxyReq, req, res) {
-    //         //实在不知道代理后的路径，可以在这里打印出出来看看
-    //         console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
-    //       }}
-    //   });
-    //   return obj;
-    // })(),
+    proxyTable: {
+      '/lobby': {
+        target: 'http://192.168.1.64:8000/v1/backend',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/lobby': '/lobby'
+        }
+      },
+      onProxyReq: function (proxyReq, req, res) {
+        //实在不知道代理后的路径，可以在这里打印出出来看看
+        console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+      }
+    },
+  //   proxyTable: (function (){
+  //     let ls = ['/v1/backend'];
+  //   let obj = {};
+  //   // let baseUrl = ' http://192.168.0.187:7300/mock/5d634af3ca80d11633b49b5b/platform';
+  //   let baseUrl = 'http://192.168.1.64:8000';
+  //   ls.map(item=>{
+  //     obj[item] = {target: baseUrl, changeOrigin: true, pathRewrite: {'^/v1/backend': '/v1/backend'},
+  //       onProxyReq: function (proxyReq, req, res) {
+  //         //实在不知道代理后的路径，可以在这里打印出出来看看
+  //         console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+  //       }}
+  //   });
+  //   return obj;
+  // })(),
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

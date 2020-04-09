@@ -34,14 +34,6 @@
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
         <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
-        <!-- <el-table-column
-          v-for="(item,index) in func_list"
-          :key="index"
-          :label="'功能'+(index+1)"
-          align="center"
-        >
-        <template>{{item}}</template>
-        </el-table-column>-->
         <el-table-column label="功能1" prop="func_1" align="center"></el-table-column>
         <el-table-column label="功能2" prop="func_2" align="center"></el-table-column>
         <el-table-column label="功能3" prop="func_3" align="center"></el-table-column>

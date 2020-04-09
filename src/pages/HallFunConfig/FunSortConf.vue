@@ -23,7 +23,6 @@
               <span>{{JSON.parse(scope.row[scope.prop])[3]}}</span>
               <span>{{JSON.parse(scope.row[scope.prop])[4]}}</span>
               <span>{{JSON.parse(scope.row[scope.prop])[5]}}</span>
-              <span>{{func_list_index}}</span>
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -305,18 +304,6 @@ export default {
             message: "已取消删除"
           });
         });
-    }
-  },
-  computed: {
-    func_list_index: function() {
-      this.records.map((item1,index1)=> {
-        console.log(item1)
-        console.log(JSON.parse(item1.func_list))
-        JSON.parse(item1.func_list).map((item2,index2)=> {
-          console.log(item2)
-          
-        })
-      })
     }
   },
   mounted() {

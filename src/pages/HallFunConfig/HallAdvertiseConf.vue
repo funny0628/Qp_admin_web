@@ -56,7 +56,7 @@
             :on-success="handleAvatarSuccess"
             :http-request="val=>uploadFile('imgList1')"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div>{{fileList}}</div>
@@ -111,7 +111,7 @@
             :on-success="handleAvatarSuccess"
             :http-request="val=>uploadFile('imgList2')"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img v-if="imageUrl.imgList2" :src="imageUrl.imgList2" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -158,7 +158,7 @@
             :on-success="handleAvatarSuccess"
             :http-request="val=>uploadFile('imgList3')"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img v-if="imageUrl.imgList3" :src="imageUrl.imgList3" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -350,7 +350,6 @@ export default {
     };
     return {
       dialogTitle: "",
-      imageUrl: "",
       fileName: "",
       pageNum: 1,
       pageSize: 5,
@@ -412,6 +411,11 @@ export default {
         imgList2: [],
         imgList3: []
       }, //上传图片保存的图片信息列表
+      imageUrl: {
+        imgList1: "",
+        imgList2: "",
+        imgList3: ""
+      },
       uploadHeaders: {
         Authorization: "application/json"
       }
@@ -596,29 +600,20 @@ export default {
       console.log(val);
       this.pageSize = val;
     },
-    handleAvatarSuccess(res, file) {
-      console.log(res, file);
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
+    handleAvatarSuccess(res, file) {},
     handleChange(file, fileList, info) {
-      console.log(fileList);
-      console.log(info);
       this.fileList[info] = fileList;
-      console.log(this.fileList);
     },
     beforeUpload(file) {},
     uploadFile(info) {
-      console.log(info);
-      console.log(this.fileList[info]);
       let formData = new FormData();
       this.fileList[info].forEach(item => {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
       this.$http.post("upload", formData).then(res => {
-        console.log(res);
         if (res.data.code === 1) {
-          this.imageUrl = res.data.path;
+          this.imageUrl[info] = res.data.path;
         }
       });
     }
