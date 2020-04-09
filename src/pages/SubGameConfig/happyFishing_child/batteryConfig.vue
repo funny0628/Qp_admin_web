@@ -11,21 +11,25 @@
         <el-button type="primary" @click="saveData">保存</el-button>
         <el-button type="primary" @click="send">发送给服务器配置</el-button>
       </div>
-      <div class="table" v-for="(it, idx) in list" :key="idx">
+      <div class="table" v-for="(item, index) in list" :key="index">
         <el-row :gutter="10">
           <el-col :span="5">
-            <el-input v-model="name" placeholder="id"></el-input
+            <el-input v-model="item.id" placeholder="id"></el-input
           ></el-col>
           <el-col :span="5">
-            <el-input v-model="name" placeholder="vip等级"></el-input
+            <el-input v-model="item.vip_level" placeholder="vip等级"></el-input
           ></el-col>
           <el-col :span="5">
-            <el-input v-model="contact" placeholder="名称"></el-input
+            <el-input v-model="item.name" placeholder="名称"></el-input
           ></el-col>
           <el-col :span="5">
-            <el-input v-model="remark" placeholder="power"></el-input
+            <el-input v-model="item.power" placeholder="power"></el-input
           ></el-col>
-          <el-col :span="2"><el-button type="danger" @click="del">删除</el-button></el-col>
+          <el-col :span="2"
+            ><el-button type="danger" @click="del(index)"
+              >删除</el-button
+            ></el-col
+          >
         </el-row>
       </div>
     </div>
@@ -36,25 +40,56 @@
 export default {
   data() {
     return {
-      list: ["",""],
-      name:"",
-      contact:"",
-      remark:"",
-
+      list: [{}],
+      name: "",
+      contact: "",
+      remark: ""
     };
   },
+  async created() {
+    //获取数据
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "fishing_guns.lua"
+    });
+    console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    console.log(res);
+    this.list = res;
+  },
   methods: {
-    add() {},
+    add() {
+      this.list.push({});
+    },
     saveData() {},
     send() {},
-    del() {},
+    del(index) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.list.splice(index, 1);
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    }
   }
 };
 </script>
 
 <style lang="less" scoped>
 #batteryConfig {
-
   background-color: #f2f2f2;
   border: 1px solid #efefef;
   box-shadow: 1px 1px 2px #efefef;
@@ -74,7 +109,7 @@ export default {
     padding: 10px;
     box-sizing: border-box;
     .table {
-        padding-top: 20px;
+      padding-top: 20px;
     }
   }
 }

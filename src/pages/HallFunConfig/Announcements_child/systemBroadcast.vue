@@ -4,7 +4,7 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add('form')">添加</el-button>
+        <el-button type="primary" @click="add(form)">添加</el-button>
         <el-button type="primary" @click="send">发送到服务器配置</el-button>
       </div>
     </div>
@@ -69,7 +69,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
+            <el-button size="mini" @click="handleEdit(scope.row, form)"
               >编辑</el-button
             >
             <el-button
@@ -83,7 +83,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
-        v-if="total > 10"
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -148,7 +148,7 @@
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form', title)"
+          <el-button type="primary" @click="onSubmit(form, title)"
             >确 定</el-button
           >
           <el-button type="primary" @click="back()">返 回</el-button>
@@ -205,21 +205,38 @@ export default {
     this.initdata({ page: this.currentPage, limit: this.limit });
   },
   methods: {
-
     //批量删除
     async del() {
       //勾选需要删除的项目批量删除
       if (this.selectList.length != 0) {
-        //###1.删除dom的数据
-        let str = this.selectList.join();
-        // console.log(str);
-        let { data } = await this.$http.HallFunConfig.DeleteSysBroadcast({
-          id_list: `(${str})`
-        });
-        console.log(data);
-        if (data.code === 1 && data.msg === "ok") {
-          this.initdata({ page: this.currentPage, limit: this.limit });
-        }
+        this.$confirm("确认删除吗?", "信息", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(async () => {
+            //###1.删除dom的数据
+            let str = this.selectList.join();
+            // console.log(str);
+            let { data } = await this.$http.HallFunConfig.DeleteSysBroadcast({
+              id_list: `(${str})`
+            });
+            console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({ page: this.currentPage, limit: this.limit });
+            }
+
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
       } else {
         this.$message("请选择需要删除的数据");
       }
@@ -229,7 +246,7 @@ export default {
     add(formName) {
       this.editForm("添加系统公告", true, {});
 
-      this.$refs[formName].resetFields();
+      this.$refs.formName.resetFields();
     },
 
     //发送给服务器配置
@@ -280,9 +297,9 @@ export default {
       // console.log(rowform);
       this.editForm("更新系统公告", true, rowform);
 
-      this.$refs[formName].resetFields();
+      this.$refs.formName.resetFields();
     },
-    
+
     //表格删除
     handleDelete(x, row) {
       // console.log(x, row.id);
@@ -317,13 +334,12 @@ export default {
         });
     },
 
-    //表单提交 
+    //表单提交
     onSubmit(formName, type) {
       //表单验证
-      this.$refs.form.validate(async valid => {
+      this.$refs.formName.validate(async valid => {
         if (valid) {
           if (type === "添加系统公告") {
-
             // console.log(this.form);
             let { data } = await this.$http.HallFunConfig.PostSysBroadcast(
               this.form
@@ -335,8 +351,6 @@ export default {
 
             // this.initdata({ page: this.currentPage, limit: this.limit })
           } else if (type === "更新系统公告") {
-
-
             let { data } = await this.$http.HallFunConfig.PutSysBroadcast(
               this.form
             );

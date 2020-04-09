@@ -114,6 +114,18 @@ export default {
       list3: ["", ""],
     };
   },
+  async created() {
+    //获取数据
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "fishing_robot.lua"
+    });
+    console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    console.log(res);
+    // this.list = res;
+  },
   methods: {
     save() {},
     send() {},
