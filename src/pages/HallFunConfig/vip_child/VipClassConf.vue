@@ -184,20 +184,6 @@ export default {
       currentPage: 1,
       total: 0,
       dialogTitle: "",
-      // tableData: [
-      //   {
-      //     id: "1",
-      //     username: "yoo",
-      //     phone: "234",
-      //     channel: "e3r"
-      //   },
-      //   {
-      //     id: "2",
-      //     username: "yoou",
-      //     phone: "234",
-      //     channel: "e3r"
-      //   }
-      // ],
       tableData: [],
       dialogFormVisible: false,
       formLabelWidth: "160px",
@@ -253,24 +239,24 @@ export default {
         level: 6,
         privilege: "vip",
         charge_coins: 100,
-        enter_word: '我进来了',
+        enter_word: "我进来了",
         caishen_base_rate: 0.8,
         speedup_weight: 0.9,
-        icon_url: '头像框',
+        icon_url: "头像框",
         avator_id: 1,
-        name: 'CIA神',
+        name: "CIA神",
         icon_type: 1,
         number_day: 30,
-        no_condition: 'ide',
-        battery_url: 'jeiowfioepjwi',
-        img_url: 'www.baidu.com',
-        video_url: 'www.baidu.com'
-      }
-      const res = await this.$http.post('lobby/grade',params)
-      console.log(res)
-      if(res.data.code === 1) {
-        this.dialogFormVisible = false
-        this.getVipList()
+        no_condition: "ide",
+        battery_url: "jeiowfioepjwi",
+        img_url: "www.baidu.com",
+        video_url: "www.baidu.com"
+      };
+      const res = await this.$http.post("lobby/grade", params);
+      console.log(res);
+      if (res.data.code === 1) {
+        this.dialogFormVisible = false;
+        this.getVipList();
       }
     },
     handleOffline() {
@@ -296,15 +282,15 @@ export default {
       console.log(index, row);
       this.dialogFormVisible = true;
       this.dialogTitle = "更新信息";
-      this.form.vip_class = row.level
-      this.form.gold_flow = row.charge_coins
-      this.form.class_award = row.award
-      this.form.vip_tip_text = row.enter_word
-      this.form.probability = row.caishen_base_rate
-      this.form.withdraw = row.speedup_weight
-      this.form.avatar_id = row.avator_id
-      this.form.avatar_name = row.avator_name
-      this.form.unlock = row.no_condition
+      this.form.vip_class = row.level;
+      this.form.gold_flow = row.charge_coins;
+      this.form.class_award = row.award;
+      this.form.vip_tip_text = row.enter_word;
+      this.form.probability = row.caishen_base_rate;
+      this.form.withdraw = row.speedup_weight;
+      this.form.avatar_id = row.avator_id;
+      this.form.avatar_name = row.avator_name;
+      this.form.unlock = row.no_condition;
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -314,6 +300,20 @@ export default {
         type: "warning"
       })
         .then(() => {
+          // let data = {
+          //   type_id: 3,
+          //   grade_id: `${row.level}`
+          // }
+          this.$http
+            .delete("lobby/grade", {
+              params: {
+                type_id: 3,
+                grade_id: `${row.id}`
+              }
+            })
+            .then(res => {
+              console.log(res);
+            });
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -353,7 +353,7 @@ export default {
     }
   },
   mounted() {
-    this.getVipList()
+    this.getVipList();
   }
 };
 </script>

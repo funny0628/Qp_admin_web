@@ -2,7 +2,7 @@
   <div id="BottomMenu-main">
     <input-area>
       <el-button type="danger">删除</el-button>
-      <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
+      <el-button type="primary" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
       <!-- <info-table
@@ -34,19 +34,29 @@
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
         <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
-        <el-table-column
-          v-for="(item,index) in scope.row[scope.prop]"
+        <!-- <el-table-column
+          v-for="(item,index) in func_list"
           :key="index"
           :label="'功能'+(index+1)"
           align="center"
         >
-        <template slot-scope="scope">
-          <span>{{scope.row.func_list[index]}}</span>
-        </template>
+        <template>{{item}}</template>
+        </el-table-column>-->
+        <el-table-column label="功能1" prop="func_1" align="center"></el-table-column>
+        <el-table-column label="功能2" prop="func_2" align="center"></el-table-column>
+        <el-table-column label="功能3" prop="func_3" align="center"></el-table-column>
+        <el-table-column label="功能4" prop="func_4" align="center"></el-table-column>
+        <el-table-column label="功能5" prop="func_5" align="center"></el-table-column>
+        <el-table-column label="功能6" prop="func_6" align="center"></el-table-column>
+        <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
+        <el-table-column label="创建时间" prop="create_time" align="center"></el-table-column>
+        <el-table-column label="请求时间" prop="update_time" align="center"></el-table-column>
+        <el-table-column label="操作" align="center" width="150">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
         </el-table-column>
-        <el-table-column prop="auth" label="操作者" align="center"></el-table-column>
-        <el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
-        <el-table-column label="请求时间" align="center"></el-table-column>
       </el-table>
       <!-- <el-pagination
         @size-change="handleSizeChange"
@@ -60,45 +70,48 @@
     </div>
     <div>
       <!-- 添加活动入口配置 -->
-      <el-dialog title="添加活动入口配置" :visible.sync="dialogFormVisible">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
         <el-form :model="form" label-position="top">
           <el-form-item label="渠道(可多选)">
-            <el-checkbox-group v-model="form.checkList">
-              <el-checkbox label="0902代理01"></el-checkbox>
-              <el-checkbox label="0902代理02"></el-checkbox>
-              <el-checkbox label="0902代理03"></el-checkbox>
-              <el-checkbox label="0902代理04"></el-checkbox>
-              <el-checkbox label="0902代理05"></el-checkbox>
-              <el-checkbox label="0902代理06"></el-checkbox>
-              <el-checkbox label="0902代理07"></el-checkbox>
-              <el-checkbox label="0902代理08"></el-checkbox>
+            <el-checkbox-group v-if="!showEditCheckChannel" v-model="form.checkList" :max="1">
+              <el-checkbox
+                v-for="(item,index) in ChannelList"
+                :key="index"
+                :label="item.channel_name"
+              ></el-checkbox>
             </el-checkbox-group>
+            <el-checkbox
+              v-if="showEditCheckChannel"
+              v-model="isEditCheckChannel"
+            >{{editCheckChannel}}</el-checkbox>
+            <div>{{form.checkList}}</div>
           </el-form-item>
           <el-form-item label="功能1">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function1">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
             </el-row>
+            <div>{{form}}</div>
           </el-form-item>
           <el-form-item label="功能2">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function2">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -108,12 +121,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function3">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -123,12 +136,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function4">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -138,12 +151,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function5">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -153,12 +166,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function6">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -168,12 +181,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -183,12 +196,12 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function" placeholder="请选择活动区域">
+                <el-select v-model="form.function">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.name"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -197,7 +210,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary" @click="addChannelFun">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -239,10 +252,12 @@ export default {
       }
     };
     return {
-      value: true,
+      isEditCheckChannel: true,
+      showEditCheckChannel: false,
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       dialogFormVisible: false,
+      dialogTitle: "",
       platforms: [
         { value: 1, label: "平台1" },
         { value: 2, label: "平台2" }
@@ -250,18 +265,12 @@ export default {
       format: {
         platform: ""
       },
-      funOpts: [
-        { value: "1", label: "留空" },
-        { value: "2", label: "活动" },
-        { value: "3", label: "邮件" },
-        { value: "4", label: "排行榜" },
-        { value: "5", label: "设置" },
-        { value: "6", label: "保险箱" },
-        { value: "7", label: "广播" },
-        { value: "8", label: "财神" }
-      ],
+      ChannelList: [], //渠道列表
+      checkChannelCode: "",
+      editCheckChannel: "",
+      channel_code: "",
+      funOpts: [],
       tableData: [],
-      FunListOpts: [],
       tableStyle: [
         { label: "ID", prop: "channel_id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
@@ -282,14 +291,14 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
-        checkList: ["0902代理01", "0902代理02"],
-        function: "1",
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
+        id: null,
+        checkList: [],
+        function1: "留空",
+        function2: "留空",
+        function3: "留空",
+        function4: "留空",
+        function5: "留空",
+        function6: "留空"
       }
     };
   },
@@ -307,15 +316,185 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.tableData = res.data.data;
+            this.func_list_index();
           }
         });
     },
-    getFunListOpts() {
-      this.tableData.forEach((item,index) => {
-        if(item.func_list) {
-          this.FunListOpts = item.func_list
+    func_list_index: function() {
+      this.tableData.map((item1, index1) => {
+        console.log(item1);
+        console.log(JSON.parse(item1.func_list));
+        item1.func_1 = JSON.parse(item1.func_list)[0];
+        item1.func_2 = JSON.parse(item1.func_list)[1];
+        item1.func_3 = JSON.parse(item1.func_list)[2];
+        item1.func_4 = JSON.parse(item1.func_list)[3];
+        item1.func_5 = JSON.parse(item1.func_list)[4];
+        item1.func_6 = JSON.parse(item1.func_list)[5];
+        // this.func_list = JSON.parse(item1.func_list)
+        console.log(this.func_list);
+        // JSON.parse(item1.func_list).map((item2,index2)=> {
+        //   console.log(item2)
+
+        // })
+      });
+    },
+    resetForm() {
+      this.form = {
+        id: null,
+        checkList: [],
+        function1: "留空",
+        function2: "留空",
+        function3: "留空",
+        function4: "留空",
+        function5: "留空",
+        function6: "留空"
+      };
+    },
+    openAddDialog() {
+      this.dialogFormVisible = true;
+      this.dialogTitle = "添加活动入口配置";
+      this.resetForm();
+      this.showEditCheckChannel = false
+      this.getChannelList();
+      this.getFunNameList();
+    },
+    //获取功能名字列表
+    getFunNameList() {
+      this.$http
+        .get("lobby/name_type", {
+          params: {
+            type_id: 3
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.funOpts = res.data.data;
+        });
+    },
+    //获取渠道选项列表
+    getChannelList() {
+      this.$http.get("no_channel").then(res => {
+        console.log(res);
+        this.ChannelList = res.data.data;
+      });
+    },
+    //得到选中的渠道的channel-code
+    getChannleCode() {
+      this.ChannelList.forEach((item, index) => {
+        console.log(item);
+        console.log(this.form.checkList);
+        if (this.form.checkList[0] === item.channel_name) {
+          this.checkChannelCode = item.channel_code;
+          console.log(this.checkChannelCode);
         }
+      });
+    },
+    addChannelFun() {
+      if (!this.form.id) {
+        let funStr =
+          this.form.function1 +
+          "," +
+          this.form.function2 +
+          "," +
+          this.form.function3 +
+          "," +
+          this.form.function4 +
+          "," +
+          this.form.function5 +
+          "," +
+          this.form.function6;
+        let funArr = funStr.split(",");
+        let data = {
+          name: this.form.checkList[0],
+          code: this.checkChannelCode,
+          list_id: JSON.stringify(funArr),
+          type: 1
+        };
+        this.$http.post("lobby/bottom", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getBottomMenuList();
+          }
+        });
+      } else {
+        console.log("wojinlaile ");
+        let funStr =
+          this.form.function1 +
+          "," +
+          this.form.function2 +
+          "," +
+          this.form.function3 +
+          "," +
+          this.form.function4 +
+          "," +
+          this.form.function5 +
+          "," +
+          this.form.function6;
+        let funArr = funStr.split(",");
+        let data = {
+          banner_id: this.form.id,
+          name: this.editCheckChannel,
+          code: this.channel_code,
+          list_id: JSON.stringify(funArr),
+          type: 1
+        };
+        console.log(data);
+        this.$http.put("lobby/bottom", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getBottomMenuList();
+          }
+        });
+      }
+    },
+    handleEdit(row) {
+      console.log(row);
+      this.getFunNameList();
+      this.dialogFormVisible = true;
+      this.dialogTitle = "更新活动入口配置";
+      this.showEditCheckChannel = true;
+      this.editCheckChannel = row.channel_name;
+      this.channel_code = row.channel_code;
+      this.form.id = row.id;
+      this.form.function1 = JSON.parse(row.func_list)[0];
+      this.form.function2 = JSON.parse(row.func_list)[1];
+      this.form.function3 = JSON.parse(row.func_list)[2];
+      this.form.function4 = JSON.parse(row.func_list)[3];
+      this.form.function5 = JSON.parse(row.func_list)[4];
+      this.form.function6 = JSON.parse(row.func_list)[5];
+    },
+    handleDelete(row) {
+      console.log(row);
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          this.$http
+            .delete("lobby/bottom", {
+              params: {
+                id: row.id
+              }
+            })
+            .then(res => {
+              if (res.data.code === 1) {
+                this.getBottomMenuList();
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     /**搜索*/
     search() {
@@ -333,6 +512,14 @@ export default {
       }
     }
   },
+  watch: {
+    "form.checkList": function(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      if (newVal) {
+        this.getChannleCode();
+      }
+    }
+  },
   mounted() {
     this.getBottomMenuList();
   }
@@ -346,20 +533,8 @@ export default {
 #BottomMenu-main .bd p {
   margin: 0;
 }
-
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
-
-.bankCard {
-  width: 100%;
-}
-table {
-  border-collapse: collapse;
-}
-.itemClass {
-  width: 45%;
+#BottomMenu-main .bd >>> .el-button {
+  margin-left: 0px;
+  min-width: 30px;
 }
 </style>
