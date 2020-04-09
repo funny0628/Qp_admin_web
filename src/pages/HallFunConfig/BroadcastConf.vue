@@ -288,7 +288,7 @@ export default {
       this.form.is_need_fake = String(row.is_need_fake);
     },
     handleDelete(row) {
-      console.log(row)
+      console.log(row);
       let id = row.id;
       this.$confirm("此操作将删除该项, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -296,16 +296,22 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete("lobby/play_broadcast", {
-            params: {
-              id: id
-            }
-          })
-          console.log(res)
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+          const res = await this.$http
+            .delete("lobby/play_broadcast", {
+              params: {
+                id: id
+              }
+            })
+            .then(res => {
+              console.log(res);
+              if (res.data.code === 1) {
+                this.getBroadcastList()
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            });
         })
         .catch(() => {
           this.$message({

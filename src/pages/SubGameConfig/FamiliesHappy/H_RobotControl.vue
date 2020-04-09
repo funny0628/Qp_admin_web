@@ -72,6 +72,19 @@ export default {
       rules:{},
     }
   },
+
+  async created() {
+    //获取数据
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "store_bjl_key.lua"
+    });
+    console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    console.log(res);
+    // this.list = res;
+  },
   methods: {
     handleClick(){},
     save(){},

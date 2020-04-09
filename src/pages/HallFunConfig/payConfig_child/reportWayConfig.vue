@@ -1,29 +1,22 @@
 <template>
   <div id="reportWayConfig">
     <div class="title">
-      <p>保存</p>
+      <p @click="save">保存</p>
       <div class="repor">举报功能配置</div>
     </div>
     <div class="contain">
       <el-form
-        :model="formLabelAlign"
+        :model="form"
         status-icon
         :rules="rules"
-        ref="formLabelAlign"
         label-width="100px"
         label-position="right"
       >
-        <el-form-item label="微信号" prop="weixinhao">
-          <el-input
-            style="width:150px"
-            v-model="formLabelAlign.weixinhao"
-          ></el-input>
+        <el-form-item label="微信号" prop="wx">
+          <el-input style="width:150px" v-model="form.wx"></el-input>
         </el-form-item>
-        <el-form-item label="金额" prop="jine">
-          <el-input
-            style="width:150px"
-            v-model="formLabelAlign.jine"
-          ></el-input>
+        <el-form-item label="金额" prop="money">
+          <el-input style="width:150px" v-model="form.money"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -35,21 +28,51 @@ export default {
   name: "reportWayConfig",
   data() {
     return {
-      input: "",
-      input1: "",
-      formLabelAlign: {
-        weixinhao: "123456",
-        jine: "3000"
+      wx: "",
+      money: "",
+      id: "",
+      keys: "",
+      form: {
+        wx: "",
+        money: ""
       },
       rules: {
-        weixinhao: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        jine: [
+        wx: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        money: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ]
       }
     };
+  },
+  async created() {
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "complaint_config.lua"
+    });
+    // console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    // console.log(res);
+    this.form.wx = res.wx;
+    this.form.money = res.money;
+  },
+  methods: {
+    async save() {
+      // console.log(this.form);
+      
+      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+        keys: this.keys,
+        id: this.id,
+        values: JSON.stringify(this.form)
+      });
+      // console.log(data);
+      if(data.code === 1 && data.msg === "ok"){
+         this.$message({
+          type: "success",
+          message: "保存成功!"
+        });
+      }
+    }
   }
 };
 </script>

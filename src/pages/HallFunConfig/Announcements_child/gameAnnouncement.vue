@@ -83,7 +83,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row,'form')"
+            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
               >编辑</el-button
             >
             <el-button
@@ -97,7 +97,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
-       v-if="total > 10"
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -110,7 +110,11 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog
+        :before-close="handleClose"
+        :title="title"
+        :visible.sync="visible"
+      >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
             <el-input placeholder="邮件标题" v-model="form.title"></el-input>
@@ -174,19 +178,15 @@
           </el-form-item>
           <el-form-item v-if="form.type_id === 2" label="公告图片">
             <el-upload
-              v-model="form.image_url"
-              class="upload-demo"
+              class="avatar-uploader"
               action="http://192.168.1.64:8000/v1/backend/upload"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :file-list="fileList"
+              :show-file-list="false"
+              :http-request="upLoad"
+              :before-upload="beforeAvatarUpload"
               :limit="1"
-              list-type="picture"
             >
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">
-                只能上传jpg/png文件，且不超过500kb
-              </div>
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -201,7 +201,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -211,7 +210,8 @@ export default {
       limit: 10,
       total: 0,
       visible: false,
-      fileList: [],
+      imageUrl: "",
+      serveUrl: "",
       tableData: [],
       form: {
         id: -1,
@@ -255,26 +255,50 @@ export default {
     };
   },
   created() {
-    this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+    this.initdata({
+      page: this.currentPage,
+      limit: this.limit,
+      title: this.searchinput
+    });
   },
 
   methods: {
+ 
 
-    //点击已经上传的图片
-    handlePreview(file) {
+    //限制用户上传的图片格式和大小
+    beforeAvatarUpload(file) {
       console.log(file);
       
+      if (file) {
+        this.imageUrl = URL.createObjectURL(file);
+      }
+
+    },
+    upLoad(file) {
+      // console.log(file);
+      const formData = new FormData();
+      formData.append("filename", file.file);
+      formData.append("types", 1);
+      this.$http
+        .post("http://192.168.1.64:8000/v1/backend/upload", formData)
+        .then(data => {
+          // console.log(data);
+          if (data.data.code === 1 && data.data.msg === "ok") {
+            this.serveUrl = data.data.path;
+          }
+        });
     },
 
-    //移除上传文件时
-    handleRemove() {},
+    handleClose() {
+      this.imageUrl = "";
+      this.editForm("记录", false, {});
+    },
 
     //添加
     add(formName) {
-      this.editForm('记录', true,{})
-      // this.visiblity = true;
-      // this.title = "记录";
-       this.$refs[formName].resetFields();
+      this.editForm("记录", true, {});
+
+      this.$refs[formName].resetFields();
     },
 
     //搜索
@@ -287,7 +311,11 @@ export default {
       }
       this.currentPage = 1;
       this.limit = 10;
-      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        title: this.searchinput
+      });
     },
 
     //页容量发生变化
@@ -295,24 +323,26 @@ export default {
       // console.log(num);
       this.limit = num;
       this.currentPage = 1;
-      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        title: this.searchinput
+      });
     },
 
     //页码发生变化
     handleCurrentChange(pagenum) {
       // console.log(pagenum);
       this.currentPage = pagenum;
-      this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
-    },
-
-    //表单关闭
-    dialogFormVisible() {
-      // this.visiblity = false;
-       this.editForm("添加", false, {});
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        title: this.searchinput
+      });
     },
 
     //表格编辑
-    handleEdit(row,formName) {
+    handleEdit(row, formName) {
       // console.log(row);
       this.form = { ...row };
       function data(time) {
@@ -323,10 +353,8 @@ export default {
       // this.form = this.formateNum(row)
       this.form.start_time = data(row.start_time);
       this.form.end_time = data(row.end_time);
-      // console.log(this.form);
-      // this.visiblity = true;
-      // this.title = "编辑";
-      this.editForm('编辑', true, this.form)
+
+      this.editForm("编辑", true, this.form);
       this.$refs[formName].resetFields();
     },
 
@@ -344,9 +372,13 @@ export default {
             id: row.id
           });
           console.log(data);
-          if(data.code === 1 && data.msg === 'ok'){
-               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
-            }
+          if (data.code === 1 && data.msg === "ok") {
+            this.initdata({
+              page: this.currentPage,
+              limit: this.limit,
+              title: this.searchinput
+            });
+          }
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -365,30 +397,47 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (type === "记录") {
+            console.log(this.form);
+
+            this.form.image_url = this.serveUrl;
             let { data } = await this.$http.HallFunConfig.PostGameNotice(
               this.form
             );
-             if(data.code === 1 && data.msg === 'ok'){
-               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            console.log(data);
+
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                title: this.searchinput
+              });
             }
           } else if (type === "编辑") {
             // console.log(this.form);
 
             let resdata = this.formateNum(this.form);
-            // console.log(resdata);
+            console.log(resdata);
             if (resdata.type_id === 2) {
-              resdata.image_url = "image_url";
+              // resdata.image_url = "image_url";
+              resdata.image_url = this.serveUrl;
             }
-            // console.log(resdata);
+            console.log(resdata);
             let { data } = await this.$http.HallFunConfig.PutGameNotice(
               resdata
             );
-              if(data.code === 1 && data.msg === 'ok'){
-               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            console.log(data);
+
+            if (data.code === 1 && data.msg === "ok") {
+              this.initdata({
+                page: this.currentPage,
+                limit: this.limit,
+                title: this.searchinput
+              });
             }
           }
           // this.visiblity = false;
-           this.editForm("添加", false, {});
+          this.editForm("添加", false, {});
+          this.imageUrl = "";
         } else {
           console.log("error submit!!");
           return false;
@@ -442,7 +491,7 @@ export default {
       let fres = this.formateData(data.data);
       this.tableData = fres;
       this.total = data.total;
-      console.log(data);
+      // console.log(data);
     }
   }
 };
@@ -461,6 +510,31 @@ export default {
   }
   .table {
     margin-top: 10px;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+    border: 1px dashed #ccc;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+    border: 1px dashed #ccc;
   }
 }
 </style>
