@@ -2,7 +2,11 @@
   <div id="VipClassConf-main">
     <input-area>
       <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button>
-      <el-button type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="add">添加</el-button>
+      <el-button
+        type="primary"
+        style="margin-top: 10px;margin-bottom: 10px;"
+        @click="openAddDialog"
+      >添加</el-button>
       <el-button type="primary" @click="open">发送到服务端配置</el-button>
     </input-area>
     <div class="bd">
@@ -44,14 +48,12 @@
         </el-form-item>
         <el-form-item label="特权列表" :label-width="formLabelWidth">
           <el-checkbox-group v-model="form.checkList">
-            <el-checkbox label="vip头像框"></el-checkbox>
-            <el-checkbox label="vip专属炮台"></el-checkbox>
-            <el-checkbox label="财神触发概率"></el-checkbox>
-            <el-checkbox label="入场动画"></el-checkbox>
-            <el-checkbox label="上线广播"></el-checkbox>
-            <el-checkbox label="互动礼物"></el-checkbox>
-            <el-checkbox label="美女1v1"></el-checkbox>
-            <el-checkbox label="提现加速"></el-checkbox>
+            <el-checkbox
+              v-for="(item,index) in privilegeOpts"
+              :key="index"
+              :label="item.id"
+              :value="JSON.stringify(item.id)"
+            >{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="所需累计金币流水" :label-width="formLabelWidth">
@@ -83,12 +85,12 @@
         </el-form-item>
         <el-form-item label="头像框期限类型" :label-width="formLabelWidth">
           <el-select v-model="form.avatar_deadline" placeholder="请选择">
-            <el-option label="永久" value="forever"></el-option>
-            <el-option label="实时" value="now"></el-option>
+            <el-option label="永久" value="1"></el-option>
+            <el-option label="实时" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
-          v-if="form.avatar_deadline === 'now'"
+          v-if="form.avatar_deadline === '2'"
           label="使用期限"
           :label-width="formLabelWidth"
         >
@@ -99,65 +101,68 @@
         </el-form-item>
         <el-form-item label="头像框样式" :label-width="formLabelWidth">
           <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList1"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList1')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList1')"
           >
-            <el-button type="success" size="small">
-              图片上传
-              <i class="el-icon-upload el-icon--right"></i>
-            </el-button>
+            <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="专属炮台图片" :label-width="formLabelWidth">
           <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList2"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList2')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList2')"
           >
-            <el-button type="success" size="small">
-              图片上传
-              <i class="el-icon-upload el-icon--right"></i>
-            </el-button>
+            <img v-if="imageUrl.imgList2" :src="imageUrl.imgList2" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="视频缩略图上传" :label-width="formLabelWidth">
           <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList3"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList3')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList3')"
           >
-            <el-button type="success" size="small">
-              视频缩略图上传
-              <i class="el-icon-upload el-icon--right"></i>
-            </el-button>
+            <img v-if="imageUrl.imgList3" :src="imageUrl.imgList3" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="炮台演示视频" :label-width="formLabelWidth">
           <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
+            class="avatar-uploader"
+            action
+            :show-file-list="false"
+            :on-change="changeHandle"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="uploadVideo"
           >
-            <el-button type="success" size="small">
-              视频上传
-              <i class="el-icon-upload el-icon--right"></i>
-            </el-button>
+            <video v-if="videoUrl" :src="videoUrl" class="avatar"></video>
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
       </el-form>
+      {{form}}
       <div slot="footer" class="dialog-footer">
         <el-button @click="addNewConf">确认</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">返回</el-button>
@@ -189,7 +194,7 @@ export default {
       formLabelWidth: "160px",
       form: {
         vip_class: 0,
-        checkList: ["vip头像框", "vip专属炮台"],
+        checkList: [],
         gold_flow: "",
         class_award: "",
         month_money: "",
@@ -202,10 +207,51 @@ export default {
         use_deadline: "",
         unlock: ""
       },
-      fileList: []
+      fileList: {
+        imgList1: [],
+        imgList2: [],
+        imgList3: []
+      },
+      imageUrl: {
+        imgList1: "",
+        imgList2: "",
+        imgList3: ""
+      },
+      videoList: [],
+      videoUrl: "",
+      privilegeOpts: [] //特权列表项
     };
   },
   methods: {
+    resetForm() {
+      this.form = {
+        vip_class: 0,
+        checkList: [],
+        gold_flow: "",
+        class_award: "",
+        month_money: "",
+        vip_tip_text: "",
+        probability: "",
+        withdraw: "",
+        avatar_id: "",
+        avatar_name: "",
+        avatar_deadline: "",
+        use_deadline: "",
+        unlock: ""
+      };
+      (this.fileList = {
+        imgList1: [],
+        imgList2: [],
+        imgList3: []
+      }),
+        (this.imageUrl = {
+          imgList1: "",
+          imgList2: "",
+          imgList3: ""
+        }),
+        (this.videoList = []);
+      this.videoUrl = "";
+    },
     async getVipList() {
       const res = await this.$http.get("lobby/grade", {
         params: {
@@ -230,33 +276,62 @@ export default {
       this.multipleSelection = val;
       console.log(this.multipleSelection);
     },
-    async add() {
+    async openAddDialog() {
       this.dialogTitle = "添加信息";
       this.dialogFormVisible = true;
+      this.resetForm();
+      this.getPrivilegeList();
     },
     async addNewConf() {
-      let params = {
-        level: 6,
-        privilege: "vip",
-        charge_coins: 100,
-        enter_word: "我进来了",
-        caishen_base_rate: 0.8,
-        speedup_weight: 0.9,
-        icon_url: "头像框",
-        avator_id: 1,
-        name: "CIA神",
-        icon_type: 1,
-        number_day: 30,
-        no_condition: "ide",
-        battery_url: "jeiowfioepjwi",
-        img_url: "www.baidu.com",
-        video_url: "www.baidu.com"
-      };
-      const res = await this.$http.post("lobby/grade", params);
-      console.log(res);
-      if (res.data.code === 1) {
-        this.dialogFormVisible = false;
-        this.getVipList();
+      if (!this.form.grade_id) {
+        let data = {
+          level: Number(this.form.vip_class),
+          privilege: this.form.checkList,
+          charge_coins: Number(this.form.gold_flow) * 1000,
+          enter_word: this.form.vip_tip_text,
+          caishen_base_rate: Number(this.form.probability),
+          speedup_weight: Number(this.form.withdraw),
+          icon_url: this.imageUrl.imgList1,
+          avator_id: Number(this.form.avatar_id),
+          name: this.form.avatar_name,
+          icon_type: Number(this.form.avatar_deadline),
+          number_day: Number(this.form.use_deadline),
+          no_condition: this.form.unlock,
+          battery_url: this.imageUrl.imgList2,
+          img_url: this.imageUrl.imgList3,
+          video_url: this.videoUrl
+        };
+        const res = await this.$http.post("lobby/grade", data);
+        console.log(res);
+        if (res.data.code === 1) {
+          this.dialogFormVisible = false;
+          this.getVipList();
+        }
+      } else {
+        let data = {
+          level: Number(this.form.vip_class),
+          privilege: this.form.checkList,
+          charge_coins: Number(this.form.gold_flow) * 1000,
+          enter_word: this.form.vip_tip_text,
+          caishen_base_rate: Number(this.form.probability),
+          speedup_weight: Number(this.form.withdraw),
+          icon_url: this.imageUrl.imgList1,
+          avator_id: Number(this.form.avatar_id),
+          name: this.form.avatar_name,
+          icon_type: Number(this.form.avatar_deadline),
+          number_day: Number(this.form.use_deadline),
+          no_condition: this.form.unlock,
+          battery_url: this.imageUrl.imgList2,
+          img_url: this.imageUrl.imgList3,
+          video_url: this.videoUrl,
+          grade_id: this.form.grade_id
+        };
+        const res = await this.$http.put("lobby/grade", data);
+        console.log(res);
+        if (res.data.code === 1) {
+          this.dialogFormVisible = false;
+          this.getVipList();
+        }
       }
     },
     handleOffline() {
@@ -282,15 +357,25 @@ export default {
       console.log(index, row);
       this.dialogFormVisible = true;
       this.dialogTitle = "更新信息";
+      this.getPrivilegeList();
+      this.form.grade_id = row.id;
       this.form.vip_class = row.level;
+      this.form.checkList = JSON.parse(row.privilege);
       this.form.gold_flow = row.charge_coins;
       this.form.class_award = row.award;
+      this.form.month_money = row.consecrate;
       this.form.vip_tip_text = row.enter_word;
       this.form.probability = row.caishen_base_rate;
       this.form.withdraw = row.speedup_weight;
       this.form.avatar_id = row.avator_id;
       this.form.avatar_name = row.avator_name;
+      this.form.avatar_deadline = JSON.stringify(row.icon_type);
+      this.form.use_deadline = row.number_day;
       this.form.unlock = row.no_condition;
+      this.imageUrl.imgList1 = row.icon_border_url;
+      this.imageUrl.imgList2 = row.battery_url;
+      this.imageUrl.imgList3 = row.video_url;
+      this.videoUrl = row.video_url;
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -313,6 +398,9 @@ export default {
             })
             .then(res => {
               console.log(res);
+              if (res.data.code === 1) {
+                this.getVipList();
+              }
             });
           this.$message({
             type: "success",
@@ -324,6 +412,19 @@ export default {
             type: "info",
             message: "已取消删除"
           });
+        });
+    },
+    getPrivilegeList() {
+      this.$http
+        .get("lobby/name_type", {
+          params: {
+            type_id: 5
+          }
+        })
+        .then(res => {
+          if (res.data.code === 1) {
+            this.privilegeOpts = res.data.data;
+          }
         });
     },
     open() {
@@ -345,11 +446,47 @@ export default {
           });
         });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleChange(file, fileList, info) {
+      console.log(fileList);
+      console.log(info);
+      this.fileList[info] = fileList;
+      console.log(this.fileList);
     },
-    handlePreview(file) {
+    beforeUpload(file) {},
+    handleAvatarSuccess() {},
+    uploadFile(info) {
+      console.log(info);
+      console.log(this.fileList[info]);
+      let formData = new FormData();
+      this.fileList[info].forEach(item => {
+        formData.append("filename", item.raw);
+        formData.append("types", 1);
+      });
+      this.$http.post("upload", formData).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.imageUrl[info] = res.data.path;
+          console.log(this.imageUrl);
+        }
+      });
+    },
+    changeHandle(file, fileList) {
       console.log(file);
+      console.log(fileList);
+      this.videoList = fileList;
+    },
+    uploadVideo() {
+      let formData = new FormData();
+      this.videoList.forEach(item => {
+        formData.append("filename", item.raw);
+        formData.append("types", 2);
+      });
+      this.$http.post("upload", formData).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.videoUrl = res.data.path;
+        }
+      });
     }
   },
   mounted() {
@@ -372,5 +509,29 @@ export default {
 }
 .el-pagination {
   margin-top: 20px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

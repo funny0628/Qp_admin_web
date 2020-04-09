@@ -12,22 +12,35 @@
       </el-select>
     </input-area>
     <div class="bd">
-      <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
-      >
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column label="ID" prop="id" align="center"></el-table-column>
+        <el-table-column label="渠道名称" prop="channel_name" align="center"></el-table-column>
+        <el-table-column label="渠道KEY" prop="channel_code" align="center"></el-table-column>
+        <el-table-column label="游戏1" prop="game_list" align="center">
+          <!-- <template slot-scope="scope">
+            <template v-if="'game_list'.indexOf(scope.prop)>=0">
+              <span>{{JSON.parse(scope.row[scope.prop])[1]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])}}</span>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+          </template> -->
+            <template slot-scope="scope">
+              <span>{{scope.row[scope.prop]}}</span>
+            </template>
+        </el-table-column>
+        <!-- <el-table-column label="游戏2" prop="game_list" align="center"></el-table-column>
+        <el-table-column label="游戏3" prop="game_list" align="center"></el-table-column>
+        <el-table-column label="游戏4" prop="game_list" align="center"></el-table-column>
+        <el-table-column label="游戏5" prop="game_list" align="center"></el-table-column>
+        <el-table-column label="游戏6" prop="game_list" align="center"></el-table-column> -->
+        <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
+        <el-table-column label="创建时间" prop="create_time" align="center"></el-table-column>
+        <el-table-column label="操作" align="center" width="150">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
-        </info-table-item>
-      </info-table>
+        </el-table-column>
+      </el-table>
     </div>
     <div>
       <!-- 添加活动入口配置 -->
@@ -532,20 +545,7 @@ export default {
         { value: "7", label: "广播" },
         { value: "8", label: "财神" }
       ],
-      tableData: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          action: "修改 删除"
-        }
-      ],
+      tableData: [],
       tableStyle: [
         { label: "ID", prop: "channel_id", width: "" },
         { label: "渠道名称", prop: "channel_name", width: "" },
@@ -606,13 +606,12 @@ export default {
           params: {
             page: 1,
             limit: 10,
-            code: "code"
           }
         })
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            this.records = res.data.data;
+            this.tableData = res.data.data;
           }
         });
     },
