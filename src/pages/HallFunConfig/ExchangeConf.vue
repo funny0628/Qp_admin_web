@@ -27,8 +27,12 @@
                 size="mini"
                 @click="handleEdit(scope.row)"
               >编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              <el-button style="background-color:#30a99d;color:#fff;" size="mini">下线</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button
+                style="background-color:#30a99d;color:#fff;"
+                size="mini"
+                @click="updateStatus(scope.row)"
+              >{{statusTitle}}</el-button>
             </template>
             <template
               v-if="['action','method','online_status'].indexOf(scope.prop) < 0"
@@ -62,7 +66,7 @@
           <el-upload
             :limit="1"
             class="upload-demo"
-            action=""
+            action
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :file-list="fileList"
@@ -112,6 +116,7 @@ export default {
       pagesize: 5,
       currentPage: 1,
       total: 0,
+      statusTitle: "",
       tableData: [],
       dialogFormVisible: false,
       dialogVisible: false,
@@ -156,6 +161,7 @@ export default {
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
+        this.updateStatusBtn()
       }
     },
     async addConfig() {
@@ -207,34 +213,92 @@ export default {
       this.dialogFormVisible = true;
       this.dialogTitle = "编辑配置信息";
       this.form.id = row.id;
-      this.form.pay_type = String(row.method)
+      this.form.pay_type = String(row.method);
       this.form.exchange_min = row.min_money;
       this.form.exchange_max = row.max_money;
       this.form.status = String(row.status);
     },
-    handleDelete(row) {},
+    handleDelete(row) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$http
+            .delete("lobby/conversion", {
+              params: {
+                id: row.id
+              }
+            })
+            .then(res => {
+              if (res.data.code === 1) {
+                this.getExchangeList();
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    updateStatus(row) {
+      this.$confirm("确认更新状态吗?", "信息", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        let data = {
+          id: row.id,
+          online_status: row.online_status === 1 ? 2 : 1
+        };
+        this.$http.patch("lobby/conversion", data).then(res => {
+          if (res.data.code === 1) {
+            this.getExchangeList();
+          }
+        });
+      });
+    },
+    updateStatusBtn() {
+      this.records.forEach((item, index) => {
+        console.log(item, item.online_status);
+        if (item.online_status === 1) {
+          this.statusTitle = "下线";
+          console.log(this.statusTitle);
+        } else if (item.online_status === 2) {
+          this.statusTitle = "上线";
+          console.log(this.statusTitle);
+        }
+      });
+    },
     setKeepMoney() {
-      this.dialogVisible = false
+      this.dialogVisible = false;
       this.$message({
         type: "success",
         message: "设置成功"
       });
     },
     httpRequest(params) {
-          const file = params.file,
-            fileType = file.type,
-            isImage = fileType.indexOf("image") != -1,
-            isLt2M = file.size / 1024 / 1024 < 2;
-          // 这里常规检验，看项目需求而定
-          if (!isImage) {
-            this.$message.error("只能上传图片格式png、jpg、gif!");
-            return;
-          }
-          if (!isLt2M) {
-            this.$message.error("只能上传图片大小小于2M");
-            return;
-          }
-    }, 
+      const file = params.file,
+        fileType = file.type,
+        isImage = fileType.indexOf("image") != -1,
+        isLt2M = file.size / 1024 / 1024 < 2;
+      // 这里常规检验，看项目需求而定
+      if (!isImage) {
+        this.$message.error("只能上传图片格式png、jpg、gif!");
+        return;
+      }
+      if (!isLt2M) {
+        this.$message.error("只能上传图片大小小于2M");
+        return;
+      }
+    },
     handleSizeChange(val) {
       this.pagesize = val;
       this.getUserList();
@@ -276,7 +340,7 @@ export default {
   },
   mounted() {
     this.getExchangeList();
-  }
+  },
 };
 </script>
 

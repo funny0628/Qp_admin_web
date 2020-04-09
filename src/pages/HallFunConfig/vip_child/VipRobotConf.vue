@@ -26,8 +26,12 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column prop="username" label="机器人携带金币" align="center"></el-table-column>
-        <el-table-column prop="email" label="VIP级别+概率" align="center"></el-table-column>
+        <el-table-column label="机器人携带金币" align="center">
+          <template slot-scope="scope">{{[scope.row.min_coins,scope.row.max_coins]}}</template>
+        </el-table-column>
+        <el-table-column prop="vip_rate" label="VIP级别+概率" align="center">
+          <template slot-scope="scope">{{JSON.parse(scope.row.vip_rate)}}</template>
+        </el-table-column>
         <el-table-column prop="create_time" label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
@@ -157,6 +161,12 @@ export default {
     };
   },
   methods: {
+    getRobotConfList() {
+      this.$http.get("lobby/robot").then(res => {
+        console.log(res);
+        this.tableData = res.data.data;
+      });
+    },
     handleSizeChange(val) {
       this.pagesize = val;
     },
@@ -192,7 +202,9 @@ export default {
       console.log(file);
     }
   },
-  mounted() {}
+  mounted() {
+    this.getRobotConfList();
+  }
 };
 </script>
 

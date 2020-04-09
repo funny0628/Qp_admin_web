@@ -3,8 +3,8 @@
     <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;margin-left:20px;">删除</el-button>
     <el-button
       type="primary"
-      @click="dialogFormVisible=true"
       style="margin-top: 10px;margin-bottom: 10px;"
+      @click="openAddDialog"
     >添加</el-button>
     <div class="bd">
       <info-table
@@ -16,26 +16,17 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
+              <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
             </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
     </div>
     <!--添加新渠道 -->
-    <el-dialog title="添加新渠道" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form" enctype="multipart/form-data">
         <el-form-item label="渠道名" :label-width="formLabelWidth">
           <el-input v-model="form.channel_name" autocomplete="off"></el-input>
         </el-form-item>
@@ -43,7 +34,7 @@
           <el-input v-model="form.channel_key" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="文字一" :label-width="formLabelWidth">
-          <el-input
+          <!-- <el-input
             type="textarea"
             show-word-limit
             clearable
@@ -52,82 +43,159 @@
             resize="none"
             placeholder="请输入内容;最多只能写30个字;最多三行!"
             v-model="form.word1"
-          ></el-input>
+          ></el-input>-->
+          <el-upload
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList1"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList1')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList1')"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <div>{{fileList}}</div>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="文字一类型" :label-width="formLabelWidth">
               <el-select v-model="form.word1_type" placeholder="请选择文字一类型">
-                <el-option label="普通" value="general"></el-option>
-                <el-option label="复制" value="copy"></el-option>
-                <el-option label="跳转网页" value="jump_webpage"></el-option>
-                <el-option label="跳转" value="jump"></el-option>
+                <el-option
+                  v-for="(item,index) in wordTypeOpts"
+                  :key="index"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.word1_type!=='jump'" label="URL" :label-width="formLabelWidth">
+            <el-form-item v-if="form.word1_type!=='704'" label="URL" :label-width="formLabelWidth">
               <el-input v-model="form.word1_url" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
-              <el-select v-model="form.jump_position" placeholder="请选择">
+              <el-select v-model="form.word1_jump_position" placeholder="请选择">
                 <el-option
-                  v-for="(item,index) in jumpposOpts"
+                  v-for="(item,index) in jumpPathOpts"
                   :key="index"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
                 ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="文字二" :label-width="formLabelWidth">
-          <el-input
+          <!-- <el-input
             type="textarea"
             v-model="form.name"
             :autosize="{minRows:1,maxRows:3}"
             resize="none"
             maxlength="30"
             placeholder="请输入内容;最多只能写30个字;最多三行!"
-          ></el-input>
+          ></el-input>-->
+          <el-upload
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList2"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList2')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList2')"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="文字二类型" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择活动区域">
-                <el-option label="普通" value="shanghai"></el-option>
-                <el-option label="一般" value="beijing"></el-option>
+              <el-select v-model="form.word2_type">
+                <el-option
+                  v-for="(item,index) in wordTypeOpts"
+                  :key="index"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="URL" :label-width="formLabelWidth">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
+            <el-form-item v-if="form.word2_type!=='704'" label="URL" :label-width="formLabelWidth">
+              <el-input v-model="form.word2_url" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
+              <el-select v-model="form.word2_jump_position" placeholder="请选择">
+                <el-option
+                  v-for="(item,index) in jumpPathOpts"
+                  :key="index"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="文字三" :label-width="formLabelWidth">
-          <el-input type="textarea" maxlength="30" placeholder="请输入内容;最多只能写30个字;最多三行!"></el-input>
+          <!-- <el-input type="textarea" maxlength="30" placeholder="请输入内容;最多只能写30个字;最多三行!"></el-input> -->
+          <el-upload
+            class="avatar-uploader"
+            action
+            :fileList="fileList.imgList3"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-change="(val1,val2,val3)=>handleChange(val1,val2,'imgList3')"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="val=>uploadFile('imgList3')"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="文字三类型" :label-width="formLabelWidth">
-              <el-select v-model="form.region" placeholder="请选择活动区域">
-                <el-option label="普通" value="shanghai"></el-option>
-                <el-option label="一般" value="beijing"></el-option>
+              <el-select v-model="form.word3_type">
+                <el-option
+                  v-for="(item,index) in wordTypeOpts"
+                  :key="index"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="URL" :label-width="formLabelWidth">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
+            <el-form-item v-if="form.word3_type!=='704'" label="URL" :label-width="formLabelWidth">
+              <el-input v-model="form.word3_url" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
+              <el-select v-model="form.word3_jump_position" placeholder="请选择">
+                <el-option
+                  v-for="(item,index) in jumpPathOpts"
+                  :key="index"
+                  :label="item.name"
+                  :value="JSON.stringify(item.id)"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addNewChannel">确 定</el-button>
       </div>
     </el-dialog>
     <div>
@@ -281,6 +349,9 @@ export default {
       }
     };
     return {
+      dialogTitle: "",
+      imageUrl: "",
+      fileName: "",
       pageNum: 1,
       pageSize: 5,
       total: 0,
@@ -291,50 +362,15 @@ export default {
       labelPosition: "left", //左对齐
       activeName: "first",
       tableStyle: [
-        { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "KEY", prop: "channel_name", width: "" },
-        { label: "文字一", prop: "content", width: "" },
-        { label: "文字二", prop: "content", width: "" },
-        { label: "文字三", prop: "content", width: "" },
+        { label: "渠道名称", prop: "channel", width: "" },
+        { label: "KEY", prop: "channel_key", width: "" },
+        { label: "文字一", prop: "pic_one_url", width: "" },
+        { label: "文字二", prop: "pic_two_url", width: "" },
+        { label: "文字三", prop: "pic_three_url", width: "" },
         { label: "操作时间", prop: "create_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
-      tableData: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        },
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        },
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          content: "",
-          status: "启用",
-          create_time: "2020-01-01 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
-      records: [],
+      tableData: [],
       pageInfo: new PageInfo(1, [5, 10, 15, 20], 6),
       dialogFormVisible: false,
       jumpposOpts: [
@@ -353,39 +389,205 @@ export default {
         channel_name: "",
         channel_key: "",
         word1: "",
-        word1_type: "general",
+        word1_type: "701",
         word1_url: "",
-        jump_position: "",
-        name: "",
-        region: ""
+        word1_jump_position: "",
+        word2: "",
+        word2_type: "701",
+        word2_url: "",
+        word2_jump_position: "",
+        word3: "",
+        word3_type: "701",
+        word3_url: "",
+        word3_jump_position: ""
       },
+      wordTypeOpts: [],
+      jumpPathOpts: [],
       form2: {
         name: ""
       },
       formLabelWidth: "100px",
-      fileList: []
+      fileList: {
+        imgList1: [],
+        imgList2: [],
+        imgList3: []
+      }, //上传图片保存的图片信息列表
+      uploadHeaders: {
+        Authorization: "application/json"
+      }
     };
   },
   methods: {
+    resetForm() {
+      this.form = {
+        channel_name: "",
+        channel_key: "",
+        word1: "",
+        word1_type: "701",
+        word1_url: "",
+        word1_jump_position: "",
+        word2: "",
+        word2_type: "701",
+        word2_url: "",
+        word2_jump_position: "",
+        word3: "",
+        word3_type: "701",
+        word3_url: "",
+        word3_jump_position: ""
+      };
+    },
+    //获取图片类型列表
+    getPicTypeList() {
+      this.$http
+        .get("lobby/name_type", {
+          params: {
+            type_id: 7
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.wordTypeOpts = res.data.data;
+          }
+        });
+    },
+    //获取跳转路径列表
+    getJumpPathList() {
+      this.$http
+        .get("lobby/name_type", {
+          params: {
+            type_id: 8
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.jumpPathOpts = res.data.data;
+          }
+        });
+    },
     getAdvertiseConfList() {
-      this.$http.get('lobby/flyer',{
-        params: {
-          page: 1,
-          limit: 10
-        }
-      }).then(res => {
-        console.log(res)
+      this.$http
+        .get("lobby/flyer", {
+          params: {
+            page: 1,
+            limit: 10
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.tableData = res.data.data;
+        });
+    },
+    openAddDialog() {
+      this.dialogFormVisible = true;
+      this.getPicTypeList();
+      this.resetForm();
+    },
+    addNewChannel() {
+      if (!this.form.id) {
+        let data = {
+          name: this.form.channel_name,
+          key: this.form.channel_key,
+          name_one: "我是图片一",
+          url_one: "http://www.baidu.com",
+          type_one: Number(this.form.word1_type),
+          jump_id_one: Number(this.form.word1_jump_position),
+          name_two: "我是图片二",
+          url_two: "http://www.baidu.com",
+          type_two: Number(this.form.word2_type),
+          jump_id_two: Number(this.form.word2_jump_position),
+          name_three: "我是图片三",
+          url_three: "http://www.baidu.com",
+          type_three: Number(this.form.word3_type),
+          jump_id_three: Number(this.form.word3_jump_position)
+        };
+        this.$http.post("lobby/flyer", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getAdvertiseConfList();
+          }
+        });
+      } else {
+        let data = {
+          banner_id: this.form.id,
+          name: this.form.channel_name,
+          key: this.form.channel_key,
+          name_one: "我是图片一",
+          url_one: "http://www.baidu.com",
+          type_one: JSON.parse(this.form.word1_type),
+          jump_id_one: JSON.parse(this.form.word1_jump_position),
+          name_two: "我是图片二",
+          url_two: "http://www.baidu.com",
+          type_two: JSON.parse(this.form.word2_type),
+          jump_id_two: JSON.parse(this.form.word2_jump_position),
+          name_three: "我是图片三",
+          url_three: "http://www.baidu.com",
+          type_three: JSON.parse(this.form.word3_type),
+          jump_id_three: JSON.parse(this.form.word3_jump_position)
+        };
+        this.$http.put("lobby/flyer", data).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.dialogFormVisible = false;
+            this.getAdvertiseConfList();
+          }
+        });
+      }
+    },
+    handleEdit(row) {
+      console.log(row);
+      this.getPicTypeList();
+      this.getJumpPathList();
+      this.dialogFormVisible = true;
+      this.dialogTitle = "更新渠道信息";
+      this.form.id = row.id;
+      this.form.channel_name = row.channel;
+      this.form.channel_key = row.channel_key;
+      this.form.word1_type = JSON.stringify(row.pic_one_type);
+      this.form.word1_url = row.pic_one_url;
+      this.form.word2_type = JSON.stringify(row.pic_two_type);
+      this.form.word2_url = row.pic_two_url;
+      this.form.word3_type = JSON.stringify(row.pic_three_type);
+      this.form.word3_url = row.pic_three_url;
+      this.form.word1_jump_position = JSON.stringify(row.jump_id_one);
+      this.form.word2_jump_position = JSON.stringify(row.jump_id_two);
+      this.form.word3_jump_position = JSON.stringify(row.jump_id_three);
+    },
+    handleDelete(row) {
+      console.log(row);
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          this.$http
+            .delete("lobby/flyer", {
+              params: {
+                id: row.id
+              }
+            })
+            .then(res => {
+              if (res.data.code === 1) {
+                this.getAdvertiseConfList();
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     /**搜索*/
-    search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
-    },
-    handelClick() {
-      this.dialogModifyVisible = true;
-    },
+    search() {},
     pageNumFn(val) {
       console.log(val, this.pageSize, this.pageNum);
       this.pageNum = val;
@@ -394,17 +596,40 @@ export default {
       console.log(val);
       this.pageSize = val;
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleAvatarSuccess(res, file) {
+      console.log(res, file);
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
-    handlePreview(file) {
-      console.log(file);
+    handleChange(file, fileList, info) {
+      console.log(fileList);
+      console.log(info);
+      this.fileList[info] = fileList;
+      console.log(this.fileList);
+    },
+    beforeUpload(file) {},
+    uploadFile(info) {
+      console.log(info);
+      console.log(this.fileList[info]);
+      let formData = new FormData();
+      this.fileList[info].forEach(item => {
+        formData.append("filename", item.raw);
+        formData.append("types", 1);
+      });
+      this.$http.post("upload", formData).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.imageUrl = res.data.path;
+        }
+      });
     }
   },
   watch: {
     "form.word1_type": function(newVal, oldVal) {
       console.log(newVal);
-      if (newVal === "copy" || "jump_webpage" && newVal !== "general") {
+      if (newVal === "704") {
+        this.getJumpPathList();
+      }
+      if (newVal === "702" || ("703" && newVal !== "701")) {
         this.$nextTick(() => {
           this.form.word1_url = this.form.word1;
         });
@@ -416,7 +641,7 @@ export default {
     }
   },
   mounted() {
-    this.getAdvertiseConfList()
+    this.getAdvertiseConfList();
   }
 };
 </script>
@@ -429,28 +654,32 @@ export default {
 #HallAdvertiseConf-main .bd p {
   margin: 0;
 }
-#addPoster,
-#addPoster tr td {
-  border: none;
+#HallAdvertiseConf-main .bd >>> .el-button {
+  margin-left: 0px;
+  min-width: 30px;
 }
-.platformchoice {
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
   cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
+  position: relative;
+  overflow: hidden;
 }
-table {
-  border-collapse: collapse;
-  margin: 0 auto;
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
 }
-table,
-table tr td {
-  border: 1px solid #c0c4cc;
+.avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
 }
-.bankCard {
-  width: 100%;
-}
-
-.itemClass {
-  width: 45%;
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

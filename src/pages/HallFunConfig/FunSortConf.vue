@@ -18,6 +18,12 @@
                 <span>{{func}}</span>
               </div>-->
               <span>{{JSON.parse(scope.row[scope.prop])[0]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])[1]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])[2]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])[3]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])[4]}}</span>
+              <span>{{JSON.parse(scope.row[scope.prop])[5]}}</span>
+              <span>{{func_list_index}}</span>
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -288,24 +294,29 @@ export default {
         type: "warning"
       })
         .then(() => {
-          //###--------------------------------------------------------------------
-          //1.只作为把页面的数据删除
-          this.tableData.splice(y, 1);
-          //2.发送请求在后台删除数据
-
           this.$message({
             type: "success",
             message: "删除成功!"
           });
         })
         .catch(() => {
-          // console.log('点击了取消');
-
           this.$message({
             type: "info",
             message: "已取消删除"
           });
         });
+    }
+  },
+  computed: {
+    func_list_index: function() {
+      this.records.map((item1,index1)=> {
+        console.log(item1)
+        console.log(JSON.parse(item1.func_list))
+        JSON.parse(item1.func_list).map((item2,index2)=> {
+          console.log(item2)
+          
+        })
+      })
     }
   },
   mounted() {
@@ -320,21 +331,5 @@ export default {
 }
 #FunSortConf-main .bd p {
   margin: 0;
-}
-
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
-
-.bankCard {
-  width: 100%;
-}
-table {
-  border-collapse: collapse;
-}
-.itemClass {
-  width: 45%;
 }
 </style>
