@@ -365,7 +365,7 @@ export default {
     },
     //获取渠道选项列表
     getChannelList() {
-      this.$http.get("no_channel").then(res => {
+      this.$http.get("api/no_channel").then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });

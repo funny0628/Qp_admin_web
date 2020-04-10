@@ -51,7 +51,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.id"
+              :label="item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -286,7 +286,7 @@ export default {
       if (!this.form.grade_id) {
         let data = {
           level: Number(this.form.vip_class),
-          privilege: this.form.checkList,
+          privilege: JSON.stringify(this.form.checkList),
           charge_coins: Number(this.form.gold_flow) * 1000,
           enter_word: this.form.vip_tip_text,
           caishen_base_rate: Number(this.form.probability),
@@ -462,7 +462,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
@@ -481,7 +481,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 2);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.videoUrl = res.data.path;

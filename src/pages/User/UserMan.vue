@@ -214,7 +214,7 @@ export default {
       };
     },
     async getUserList() {
-      const res = await this.$http.get("auth/users", {
+      const res = await this.$http.get("api/auth/users", {
         params: {
           page: this.currentPage,
           limit: this.pagesize
@@ -228,14 +228,14 @@ export default {
     },
     async addUserFn() {
       if (!this.form.uid) {
-        const res = await this.$http.post("auth/users", this.form);
+        const res = await this.$http.post("api/auth/users", this.form);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
           this.getUserList();
         }
       } else {
-        const res = await this.$http.put("auth/users", this.form);
+        const res = await this.$http.put("api/auth/users", this.form);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
@@ -287,7 +287,7 @@ export default {
     },
     // async updateUser() {
     //   console.log(this.form);
-    //   const res = await this.$http.put("auth/users", this.form);
+    //   const res = await this.$http.put("api/auth/users", this.form);
     //   console.log(res);
     //   if (res.data.code === 200) {
     //     this.dialogAddUser = false;
@@ -321,7 +321,7 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete("auth/users", {
+          const res = await this.$http.delete("api/auth/users", {
             params: {
               uids: ids
             }
