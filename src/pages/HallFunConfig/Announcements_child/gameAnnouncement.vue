@@ -179,7 +179,7 @@
           <el-form-item v-if="form.type_id === 2" label="公告图片">
             <el-upload
               class="avatar-uploader"
-              action="http://192.168.1.64:8000/v1/backend/upload"
+              action=""
               :show-file-list="false"
               :http-request="upLoad"
               :before-upload="beforeAvatarUpload"
@@ -201,6 +201,7 @@
 </template>
 
 <script>
+import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
@@ -263,12 +264,12 @@ export default {
   },
 
   methods: {
- 
+
 
     //限制用户上传的图片格式和大小
     beforeAvatarUpload(file) {
       console.log(file);
-      
+
       if (file) {
         this.imageUrl = URL.createObjectURL(file);
       }
@@ -280,7 +281,7 @@ export default {
       formData.append("filename", file.file);
       formData.append("types", 1);
       this.$http
-        .post("http://192.168.1.64:8000/v1/backend/upload", formData)
+        .post("upload", formData)
         .then(data => {
           // console.log(data);
           if (data.data.code === 1 && data.data.msg === "ok") {
@@ -344,15 +345,10 @@ export default {
     //表格编辑
     handleEdit(row, formName) {
       // console.log(row);
-      this.form = { ...row };
-      function data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      }
+      this.form =DeepData(row);
       // this.form = this.formateNum(row)
-      this.form.start_time = data(row.start_time);
-      this.form.end_time = data(row.end_time);
+      this.form.start_time = this.data(row.start_time);
+      this.form.end_time = this.data(row.end_time);
 
       this.editForm("编辑", true, this.form);
       this.$refs[formName].resetFields();
@@ -486,6 +482,13 @@ export default {
 
       return item;
     },
+
+      data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      },
+
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetGameNotice(params);
       let fres = this.formateData(data.data);

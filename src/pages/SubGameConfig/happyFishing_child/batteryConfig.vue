@@ -1,5 +1,11 @@
 <template>
-  <div id="batteryConfig">
+  <div
+    id="batteryConfig"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- title -->
     <div class="title">
       <div class="VIP">扑鱼VIP炮台配置</div>
@@ -8,8 +14,10 @@
     <div class="contain">
       <div class="botton">
         <el-button type="primary" @click="add">添加</el-button>
-        <el-button type="primary" @click="saveData">保存</el-button>
-        <el-button type="primary" @click="send">发送给服务器配置</el-button>
+        <el-button type="primary" @click="submit(1)">保存</el-button>
+        <el-button type="primary" @click="submit(2)"
+          >发送给服务器配置</el-button
+        >
       </div>
       <div class="table" v-for="(item, index) in list" :key="index">
         <el-row :gutter="10">
@@ -40,10 +48,10 @@
 export default {
   data() {
     return {
-      list: [{}],
-      name: "",
-      contact: "",
-      remark: ""
+      list: [],
+      id: 0,
+      keys: "",
+      loading: false
     };
   },
   async created() {
@@ -51,19 +59,55 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "fishing_guns.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.list = res;
   },
   methods: {
+    //添加
     add() {
       this.list.push({});
     },
-    saveData() {},
-    send() {},
+
+    //保存和服务器配置
+    async submit(type) {
+      if (type === 1) {
+        let { data } = await this.$http.HallFunConfig.PutServerConfig({
+          keys: this.keys,
+          values: JSON.stringify(this.list),
+          id: this.id
+        });
+        // console.log(data);
+        if (data.code === 1 && data.msg === "ok") {
+          this.$message({
+            type: "success",
+            message: "保存成功!"
+          });
+        }
+      } else if (type === 2) {
+        this.loading = true;
+        // console.log(this.list);
+
+        let { data } = await this.$http.HallFunConfig.PostServerConfig({
+          keys: this.keys,
+          values: JSON.stringify(this.list),
+          id: this.id
+        });
+        // console.log(data);
+        if (data.code === 1 && data.msg === "ok") {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: "发送到服务器配置成功!"
+          });
+        }
+      }
+    },
+
+    //删除
     del(index) {
       this.$confirm("确定删除吗?", "提示", {
         confirmButtonText: "确定",
@@ -93,6 +137,9 @@ export default {
   background-color: #f2f2f2;
   border: 1px solid #efefef;
   box-shadow: 1px 1px 2px #efefef;
+  /deep/.el-loading-spinner {
+    top: 30% !important;
+  }
   .title {
     width: 100%;
     height: 40px;

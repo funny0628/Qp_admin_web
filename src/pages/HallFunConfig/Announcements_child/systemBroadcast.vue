@@ -4,7 +4,7 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add(form)">添加</el-button>
+        <el-button type="primary" @click="add('form')">添加</el-button>
         <el-button type="primary" @click="send">发送到服务器配置</el-button>
       </div>
     </div>
@@ -69,7 +69,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row, form)"
+            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
               >编辑</el-button
             >
             <el-button
@@ -148,7 +148,7 @@
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form, title)"
+          <el-button type="primary" @click="onSubmit('form', title)"
             >确 定</el-button
           >
           <el-button type="primary" @click="back()">返 回</el-button>
@@ -246,7 +246,7 @@ export default {
     add(formName) {
       this.editForm("添加系统公告", true, {});
 
-      this.$refs.formName.resetFields();
+      this.$refs[formName].resetFields();
     },
 
     //发送给服务器配置
@@ -287,17 +287,12 @@ export default {
     handleEdit(row, formName) {
       let rowform = DeepData(row);
       // console.log(rowform);
-      function data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      }
-      rowform.play_start_time = data(row.play_start_time);
-      rowform.play_end_time = data(row.play_end_time);
+      rowform.play_start_time = this.data(row.play_start_time);
+      rowform.play_end_time = this.data(row.play_end_time);
       // console.log(rowform);
       this.editForm("更新系统公告", true, rowform);
 
-      this.$refs.formName.resetFields();
+      this.$refs[formName].resetFields();
     },
 
     //表格删除
@@ -337,7 +332,7 @@ export default {
     //表单提交
     onSubmit(formName, type) {
       //表单验证
-      this.$refs.formName.validate(async valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
           if (type === "添加系统公告") {
             // console.log(this.form);
@@ -384,11 +379,12 @@ export default {
       });
       return res;
     },
-    // formateNum(res) {
-    //   res.circulation = res.circulation === "按时间" ? 1 : 2;
-
-    //   return res;
-    // },
+   
+     data(time) {
+        let long1 = Date.parse(time);
+        let long2 = new Date(long1).getTime();
+        return long2;
+      },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetSysBroadcast(params);
