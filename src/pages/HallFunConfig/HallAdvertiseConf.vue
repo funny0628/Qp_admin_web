@@ -494,15 +494,15 @@ export default {
           name: this.form.channel_name,
           key: this.form.channel_key,
           name_one: "我是图片一",
-          url_one: "http://www.baidu.com",
+          url_one: this.imageUrl.imgList1,
           type_one: Number(this.form.word1_type),
           jump_id_one: Number(this.form.word1_jump_position),
           name_two: "我是图片二",
-          url_two: "http://www.baidu.com",
+          url_two: this.imageUrl.imgList2,
           type_two: Number(this.form.word2_type),
           jump_id_two: Number(this.form.word2_jump_position),
           name_three: "我是图片三",
-          url_three: "http://www.baidu.com",
+          url_three: this.imageUrl.imgList3,
           type_three: Number(this.form.word3_type),
           jump_id_three: Number(this.form.word3_jump_position)
         };
@@ -519,15 +519,15 @@ export default {
           name: this.form.channel_name,
           key: this.form.channel_key,
           name_one: "我是图片一",
-          url_one: "http://www.baidu.com",
+          url_one: this.imageUrl.imgList1,
           type_one: JSON.parse(this.form.word1_type),
           jump_id_one: JSON.parse(this.form.word1_jump_position),
           name_two: "我是图片二",
-          url_two: "http://www.baidu.com",
+          url_two: this.imageUrl.imgList2,
           type_two: JSON.parse(this.form.word2_type),
           jump_id_two: JSON.parse(this.form.word2_jump_position),
           name_three: "我是图片三",
-          url_three: "http://www.baidu.com",
+          url_three: this.imageUrl.imgList3,
           type_three: JSON.parse(this.form.word3_type),
           jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
@@ -611,7 +611,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
         }

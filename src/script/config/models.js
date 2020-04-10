@@ -582,9 +582,9 @@ const models = {
         text: "斗地主",
         children: [
           {
-            name: "DrawWaterDate",
+            name: "LandDrawWaterDate",
             text: "斗地主-抽水数据",
-            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/DrawWaterDate')), 'DrawWaterDate')
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
           }
         ]
       },

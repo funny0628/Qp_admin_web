@@ -32,7 +32,7 @@
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="updateStatus(scope.row)"
-              >{{statusTitle}}</el-button>
+              >{{scope.row.online_status | formatStatus}}</el-button>
             </template>
             <template
               v-if="['action','method','online_status'].indexOf(scope.prop) < 0"
@@ -116,7 +116,6 @@ export default {
       pagesize: 5,
       currentPage: 1,
       total: 0,
-      statusTitle: "",
       tableData: [],
       dialogFormVisible: false,
       dialogVisible: false,
@@ -146,6 +145,11 @@ export default {
       fileList: []
     };
   },
+  filters: {
+    formatStatus: function(val) {
+      return val === 1 ? "下线" : "上线";
+    }
+  },
   methods: {
     resetForm() {
       this.form = {
@@ -161,7 +165,6 @@ export default {
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
-        this.updateStatusBtn()
       }
     },
     async addConfig() {
@@ -265,18 +268,6 @@ export default {
         });
       });
     },
-    updateStatusBtn() {
-      this.records.forEach((item, index) => {
-        console.log(item, item.online_status);
-        if (item.online_status === 1) {
-          this.statusTitle = "下线";
-          console.log(this.statusTitle);
-        } else if (item.online_status === 2) {
-          this.statusTitle = "上线";
-          console.log(this.statusTitle);
-        }
-      });
-    },
     setKeepMoney() {
       this.dialogVisible = false;
       this.$message({
@@ -340,7 +331,7 @@ export default {
   },
   mounted() {
     this.getExchangeList();
-  },
+  }
 };
 </script>
 
