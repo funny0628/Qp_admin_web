@@ -297,7 +297,7 @@ export default {
   methods: {
     getBottomMenuList() {
       this.$http
-        .get("lobby/bottom", {
+        .get("api/lobby/bottom", {
           params: {
             page: 1,
             limit: 10,
@@ -353,7 +353,7 @@ export default {
     //获取功能名字列表
     getFunNameList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 3
           }
@@ -402,7 +402,7 @@ export default {
           list_id: JSON.stringify(funArr),
           type: 1
         };
-        this.$http.post("lobby/bottom", data).then(res => {
+        this.$http.post("api/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -432,7 +432,7 @@ export default {
           type: 1
         };
         console.log(data);
-        this.$http.put("lobby/bottom", data).then(res => {
+        this.$http.put("api/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -466,7 +466,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/bottom", {
+            .delete("api/lobby/bottom", {
               params: {
                 id: row.id
               }

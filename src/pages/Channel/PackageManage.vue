@@ -85,8 +85,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="大厅热更" prop="lobbyupdate" class="lobbyupdate">
-                <el-switch v-model="ruleForm.lobbyupdate"></el-switch>
+              <el-form-item label="大厅热更" prop="api/lobbyupdate" class="api/lobbyupdate">
+                <el-switch v-model="ruleForm.api/lobbyupdate"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -157,7 +157,7 @@ export default {
         mark: "",
         user: "",
         url: "",
-        lobbyupdate: true,
+        api/lobbyupdate: true,
         packagestatus: true,
         type: []
       },
@@ -258,7 +258,7 @@ export default {
 .el-row {
   margin: 10px 0 30px;
 }
-.lobbyupdate {
+.api/lobbyupdate {
   margin-left: 8px;
 }
 .packagestatus {

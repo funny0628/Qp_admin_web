@@ -198,7 +198,7 @@ export default {
       };
     },
     getRobotConfList() {
-      this.$http.get("lobby/robot").then(res => {
+      this.$http.get("api/lobby/robot").then(res => {
         console.log(res);
         this.tableData = res.data.data;
       });
@@ -224,7 +224,7 @@ export default {
           max_coins: Number(this.form.max_coins),
           vip_rate: JSON.stringify(rate)
         };
-        this.$http.post("lobby/robot", data).then(res => {
+        this.$http.post("api/lobby/robot", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -247,7 +247,7 @@ export default {
           vip_rate: JSON.stringify(rate),
           robot_id: this.form.robot_id
         };
-        this.$http.put("lobby/robot", data).then(res => {
+        this.$http.put("api/lobby/robot", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -280,7 +280,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/robot", {
+            .delete("api/lobby/robot", {
               params: {
                 robot_id: row.id
               }
