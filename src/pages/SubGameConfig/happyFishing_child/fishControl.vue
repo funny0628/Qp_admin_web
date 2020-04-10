@@ -10,9 +10,9 @@
       >
       <el-button type="primary" @click="submit(2)">发送给服务器配置</el-button>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="捕鱼-低倍场" name="fishing_normal"></el-tab-pane>
-        <el-tab-pane label="捕鱼-中倍场" name="fishing_junior"></el-tab-pane>
-        <el-tab-pane label="捕鱼-高倍场" name="fishing_senior"></el-tab-pane>
+        <el-tab-pane label="捕鱼-低倍场" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="捕鱼-中倍场" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="捕鱼-高倍场" :name="namelist[2]"></el-tab-pane>
       </el-tabs>
     </div>
 
@@ -108,6 +108,7 @@
 export default {
   data() {
     return {
+      namelist:[],
       activeName: "fishing_normal",
       //三个场次总数据
       resData: {},
@@ -123,14 +124,20 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "fishing_robot.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.resData = res
-    this.Data = res.fishing_normal
-    console.log(this.Data);
+    Object.keys(res).forEach((item,index)=>{
+      this.namelist.push(item)
+      if(index === 0){
+        this.Data = res[item]
+      }
+    })
+    // this.Data = res.fishing_normal
+    // console.log(this.Data,this.namelist);
     
   },
   methods: {
@@ -169,41 +176,6 @@ export default {
       }
     },
 
-    //保存
-  //  async save() {
-  //      let { data } = await this.$http.HallFunConfig.PutServerConfig({
-  //        keys:this.keys,
-  //        values:JSON.stringify(this.resData),
-  //        id:this.id,
-  //      });
-  //   // console.log(data);
-  //   if(data.code === 1 && data.msg === 'ok'){
-  //     this.$message({
-  //       type: "success",
-  //       message: "保存成功!"
-  //     });
-  //   }
-      
-  //   },
-
-  //   //发送到服务器配置
-  //  async send() {
-  //    this.loading = true
-     
-  //      let { data } = await this.$http.HallFunConfig.PostServerConfig({
-  //        keys:this.keys,
-  //        values:JSON.stringify(this.resData),
-  //        id:this.id,
-  //      });
-  //     // console.log(data);
-  //     if(data.code === 1 && data.msg === 'ok'){
-  //       this.loading = false
-  //     this.$message({
-  //       type: "success",
-  //       message: "发送服务器配置成功!"
-  //     });
-  //   }
-  //   },
     
     
     //加入房间的添加
@@ -296,14 +268,6 @@ export default {
           this.Data = this.resData[item]
         }
       })
-      // if(tab.name === 'first'){
-      //   this.Data = this.resData.fishing_normal
-      // }else if(tab.name === 'second'){
-      //   this.Data = this.resData.fishing_junior
-      // }else if(tab.name === 'third'){
-      //    this.Data = this.resData.fishing_senior
-      // }
-      // console.log(this.Data);
       
     }
   }

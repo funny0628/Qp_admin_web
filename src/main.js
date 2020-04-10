@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import App from './App'
+
+// import axios from 'axios'
+// import HallFunConfig from './assets/js/HallFunConfig.js'
+
 import {install} from './plugin/install'
 import config from './script/config/config';
 import models from './script/config/models';
@@ -17,6 +21,9 @@ import 'quill/dist/quill.bubble.css'
 Vue.use(VueQuillEditor, /* { default global options } */)
 Vue.use(http);
 
+
+// axios.HallFunConfig = HallFunConfig;
+// Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false;
 Vue.filter('dateFormat', (originVal) => {
