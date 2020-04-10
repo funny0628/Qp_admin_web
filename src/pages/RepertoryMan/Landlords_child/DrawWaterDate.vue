@@ -108,7 +108,7 @@ export default {
   methods: {
     getFunSortList() {
       this.$http
-        .get("lobby/bottom", {
+        .get("api/lobby/bottom", {
           params: {
             page: 1,
             limit: 10,

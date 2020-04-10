@@ -253,7 +253,7 @@ export default {
       this.videoUrl = "";
     },
     async getVipList() {
-      const res = await this.$http.get("lobby/grade", {
+      const res = await this.$http.get("api/lobby/grade", {
         params: {
           page: 1,
           limit: 10
@@ -301,7 +301,7 @@ export default {
           img_url: this.imageUrl.imgList3,
           video_url: this.videoUrl
         };
-        const res = await this.$http.post("lobby/grade", data);
+        const res = await this.$http.post("api/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -326,7 +326,7 @@ export default {
           video_url: this.videoUrl,
           grade_id: this.form.grade_id
         };
-        const res = await this.$http.put("lobby/grade", data);
+        const res = await this.$http.put("api/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -390,7 +390,7 @@ export default {
           //   grade_id: `${row.level}`
           // }
           this.$http
-            .delete("lobby/grade", {
+            .delete("api/lobby/grade", {
               params: {
                 type_id: 3,
                 grade_id: `${row.id}`
@@ -416,7 +416,7 @@ export default {
     },
     getPrivilegeList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 5
           }

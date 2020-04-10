@@ -602,7 +602,7 @@ export default {
   methods: {
     getGameSortList() {
       this.$http
-        .get("lobby/game_sort", {
+        .get("api/lobby/game_sort", {
           params: {
             page: 1,
             limit: 10,

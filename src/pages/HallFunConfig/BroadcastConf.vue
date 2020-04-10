@@ -188,7 +188,7 @@ export default {
   methods: {
     getBroadcastList() {
       this.$http
-        .get("lobby/play_broadcast", {
+        .get("api/lobby/play_broadcast", {
           params: {
             page: 1,
             limit: 10
@@ -216,7 +216,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.post("lobby/play_broadcast", data).then(res => {
+        this.$http.post("api/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -241,7 +241,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.put("lobby/play_broadcast", data).then(res => {
+        this.$http.put("api/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -297,7 +297,7 @@ export default {
       })
         .then(async () => {
           const res = await this.$http
-            .delete("lobby/play_broadcast", {
+            .delete("api/lobby/play_broadcast", {
               params: {
                 id: id
               }

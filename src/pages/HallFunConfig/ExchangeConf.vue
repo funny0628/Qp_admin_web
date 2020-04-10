@@ -157,7 +157,7 @@ export default {
       };
     },
     async getExchangeList() {
-      const res = await this.$http.get("lobby/conversion");
+      const res = await this.$http.get("api/lobby/conversion");
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
@@ -175,7 +175,7 @@ export default {
           thumb: "thumb"
         };
         console.log(data);
-        const res = await this.$http.post("lobby/conversion", data);
+        const res = await this.$http.post("api/lobby/conversion", data);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
           this.getExchangeList();
@@ -193,7 +193,7 @@ export default {
         };
         const res = await this.$http({
           method: "put",
-          url: "lobby/conversion",
+          url: "api/lobby/conversion",
           data: data
         });
         console.log(res);
@@ -226,7 +226,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/conversion", {
+            .delete("api/lobby/conversion", {
               params: {
                 id: row.id
               }
@@ -258,7 +258,7 @@ export default {
           id: row.id,
           online_status: row.online_status === 1 ? 2 : 1
         };
-        this.$http.patch("lobby/conversion", data).then(res => {
+        this.$http.patch("api/lobby/conversion", data).then(res => {
           if (res.data.code === 1) {
             this.getExchangeList();
           }

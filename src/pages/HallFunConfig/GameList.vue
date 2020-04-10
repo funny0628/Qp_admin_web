@@ -128,7 +128,7 @@ export default {
   methods: {
     getGameList() {
       this.$http
-        .get("lobby/game_list", {
+        .get("api/lobby/game_list", {
           params: {
             page: 1,
             limit: 10,
@@ -173,7 +173,7 @@ export default {
           robot_type: this.form.robot_type,
           game_id: Number(this.form.game_id)
         };
-        this.$http.post("lobby/game_list", data).then(res => {
+        this.$http.post("api/lobby/game_list", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -195,7 +195,7 @@ export default {
           id: this.form.id,
           game_name: this.form.game_name
         };
-        this.$http.patch("lobby/game_list", data).then(res => {
+        this.$http.patch("api/lobby/game_list", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -213,7 +213,7 @@ export default {
           id: this.form.id,
           game_name: this.form.game_name
         };
-        this.$http.patch("lobby/game_list", data).then(res => {
+        this.$http.patch("api/lobby/game_list", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -261,7 +261,7 @@ export default {
       this.game_name = row.game_name;
       let pid = row.game_id;
       this.$http
-        .get("lobby/game_list", {
+        .get("api/lobby/game_list", {
           params: {
             page: 1,
             limit: 10,
