@@ -266,11 +266,9 @@ export default {
   methods: {
  
 
-
     //限制用户上传的图片格式和大小
     beforeAvatarUpload(file) {
       console.log(file);
-
       if (file) {
         this.imageUrl = URL.createObjectURL(file);
       }
