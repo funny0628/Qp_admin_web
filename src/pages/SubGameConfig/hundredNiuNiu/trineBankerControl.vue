@@ -138,12 +138,34 @@ export default {
   methods: {
     //三倍场上庄机器人控制添加
     addpeople() {
-      this.resData.banker_rate_people_min.push("");
+       if (this.resData.banker_rate_people_min.length === 0) {
+        this.resData.banker_rate_people_min = [""];
+        this.resData.banker_rate_people_max = [""];
+        this.resData.banker_rate_rate_min = [""];
+        this.resData.banker_rate_people_num_min = [""];
+      } else {
+        this.resData.banker_rate_people_min.push("");
+        this.resData.banker_rate_people_max.push("");
+        this.resData.banker_rate_rate_min.push("");
+        this.resData.banker_rate_people_num_min.push("");
+      }
+       console.log(this.resData);
     },
 
     //上庄机器人带的金币所对应的上庄局数设置添加
     addround() {
-      this.resData.banker_rate_people_min.push("");
+       if (this.resData.banker_round_coin_min.length === 0) {
+        this.resData.banker_round_coin_min = [""];
+        this.resData.banker_round_coin_max = [""];
+        this.resData.banker_round_round_range_min = [""];
+        this.resData.banker_round_round_range_max = [""];
+      } else {
+        this.resData.banker_round_coin_min.push("");
+        this.resData.banker_round_coin_max.push("");
+        this.resData.banker_round_round_range_min.push("");
+        this.resData.banker_round_round_range_max.push("");
+      }
+       console.log(this.resData);
     },
 
     // 三倍场上庄机器人控制删除
@@ -154,7 +176,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.resData.banker_round_coin_min.splice(index, 1);
+          this.resData.banker_rate_people_min.splice(index, 1);
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -190,8 +212,8 @@ export default {
         });
     },
 
-     async submit(type) {
-      console.log(this.resData);
+    async submit(type) {
+      // console.log(this.resData);
 
       //判断type
       if (type === 1) {
@@ -201,7 +223,7 @@ export default {
           values: JSON.stringify(this.resData),
           id: this.id
         });
-        console.log(data);
+        // console.log(data);
         if (data.code === 1 && data.msg === "ok") {
           this.$message({
             type: "success",
