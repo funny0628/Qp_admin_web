@@ -4,7 +4,7 @@ import HallFunConfig from './HallFunConfig.js'
 const httpHelper = {};
 // 配置Vue插件
 httpHelper.install = function fn(Vue) {
-  // axios.defaults.baseURL = 'http://192.168.1.64:8000/v1/backend/';
+  axios.defaults.baseURL = 'http://192.168.1.64:8000/v1/backend/';
   // axios.defaults.baseURL = 'http://192.168.1.24:8000/v1/backend/';
   // axios 拦截器
   // 当不是登录的时候添加Authorization
