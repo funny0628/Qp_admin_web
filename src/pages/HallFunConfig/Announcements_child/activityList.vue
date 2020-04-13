@@ -1,5 +1,11 @@
 <template>
-  <div id="activityList">
+  <div
+    id="activityList"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
@@ -89,7 +95,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row,form)"
+            <el-button size="mini" @click="handleEdit(scope.row, form)"
               >编辑</el-button
             >
             <el-button
@@ -313,7 +319,8 @@ export default {
       limit: 10,
       visible: false,
       title: "添加系统公告",
-      selectList: []
+      selectList: [],
+      loading: false
     };
   },
   created() {
@@ -334,7 +341,6 @@ export default {
           type: "warning"
         })
           .then(async () => {
-
             let str = this.selectList.join();
             // console.log(str);
             let { data } = await this.$http.HallFunConfig.DeleteActivityList({
@@ -342,7 +348,7 @@ export default {
             });
             console.log(data);
             if (data.code === 1 && data.msg === "ok") {
-               this.initdata({
+              this.initdata({
                 page: this.currentPage,
                 limit: this.limit,
                 title: this.searchinput
@@ -376,11 +382,20 @@ export default {
       this.$confirm("确认发送吗?", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
-      }).then(() => {
-        this.$message({
-          type: "success",
-          message: "发送配置成功!"
+      }).then(async () => {
+        this.loading = true;
+        let { data } = await this.$http.HallFunConfig.PostTableConfig({
+          type_id: 7
         });
+        // console.log(data);
+        if (data.code === 1 && data.data) {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: data.msg
+          });
+        }
+       
       });
     },
 
@@ -439,7 +454,7 @@ export default {
     },
 
     //表格编辑
-    handleEdit(row,formName) {
+    handleEdit(row, formName) {
       // this.visiblity = true;
       // this.title = "更新系统公告";
       this.editForm("更新活动", true, {});

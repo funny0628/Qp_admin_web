@@ -124,20 +124,14 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "fishing_robot.lua"
     });
-    // console.log(data);
+    console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.resData = res
-    Object.keys(res).forEach((item,index)=>{
-      this.namelist.push(item)
-      if(index === 0){
-        this.Data = res[item]
-      }
-    })
-    // this.Data = res.fishing_normal
-    // console.log(this.Data,this.namelist);
+    this.namelist = Object.keys(res)
+    this.Data = res[this.namelist[0]]
     
   },
   methods: {

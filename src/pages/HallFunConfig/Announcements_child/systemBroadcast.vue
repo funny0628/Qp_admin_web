@@ -1,5 +1,11 @@
 <template>
-  <div id="systemBroadcast">
+  <div
+    id="systemBroadcast"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
@@ -198,7 +204,8 @@ export default {
       limit: 10,
       visible: false,
       title: "添加系统公告",
-      selectList: []
+      selectList: [],
+      loading: false
     };
   },
   created() {
@@ -254,11 +261,21 @@ export default {
       this.$confirm("确认发送吗?", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
-      }).then(() => {
-        this.$message({
-          type: "success",
-          message: "发送配置成功!"
+      }).then(async () => {
+        this.loading = true;
+        let { data } = await this.$http.HallFunConfig.PostTableConfig({
+          type_id: 6
         });
+        // console.log(data);
+        if (data.code === 1 && data.data ) {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: data.msg
+          });
+        }
+
+       
       });
     },
 
@@ -379,12 +396,12 @@ export default {
       });
       return res;
     },
-   
-     data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      },
+
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
+    },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetSysBroadcast(params);

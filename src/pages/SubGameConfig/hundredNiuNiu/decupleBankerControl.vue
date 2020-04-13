@@ -19,7 +19,7 @@
         牌局中的人数对应的概率和上庄人数设置
         <el-button type="primary" @click="addpeople">添加</el-button>
       </div>
-      
+
       <div
         v-for="(peopleitem, peopleindex) in resData.banker_rate_people_min"
         :key="peopleindex"
@@ -121,9 +121,7 @@ export default {
       id: 0,
       keys: "",
       loading: false,
-      resData: {},
-      listpeople:[],
-      listround:[],
+      resData: {}
     };
   },
 
@@ -136,20 +134,40 @@ export default {
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.resData = res;
-    this.listpeople = res.banker_rate_people_min
-    this.listround = res.banker_round_coin_min
   },
   methods: {
     //牌局中的人数对应的概率和上庄人数设置添加
     addpeople() {
-      this.resData.banker_rate_people_min.push("");
+      if (this.resData.banker_rate_people_min.length === 0) {
+        this.resData.banker_rate_people_min = [""];
+        this.resData.banker_rate_people_max = [""];
+        this.resData.banker_rate_rate_min = [""];
+        this.resData.banker_rate_people_num_min = [""];
+      } else {
+        this.resData.banker_rate_people_min.push("");
+        this.resData.banker_rate_people_max.push("");
+        this.resData.banker_rate_rate_min.push("");
+        this.resData.banker_rate_people_num_min.push("");
+      }
+      //  console.log(this.resData);
     },
 
     //上庄机器人带的金币所对应的上庄局数设置添加
     addround() {
-      this.resData.banker_round_coin_min.push("");
+      if (this.resData.banker_round_coin_min.length === 0) {
+        this.resData.banker_round_coin_min = [""];
+        this.resData.banker_round_coin_max = [""];
+        this.resData.banker_round_round_range_min = [""];
+        this.resData.banker_round_round_range_max = [""];
+      } else {
+        this.resData.banker_round_coin_min.push("");
+        this.resData.banker_round_coin_max.push("");
+        this.resData.banker_round_round_range_min.push("");
+        this.resData.banker_round_round_range_max.push("");
+      }
+      // console.log(this.resData);
     },
 
     //牌局中的人数对应的概率和上庄人数设置删除
@@ -196,7 +214,7 @@ export default {
         });
     },
 
-     async submit(type) {
+    async submit(type) {
       console.log(this.resData);
 
       //判断type

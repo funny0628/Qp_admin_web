@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 import Qs from 'qs'
 
@@ -157,11 +156,22 @@ let PostServerConfig = (params) => { //get / search
   return axios.post('api/lobby/server_config', params)
 }
 
+//将表格数据提交到服务器
+let GetTableConfig = (params) => { //仅限于查看type_id
+  return axios.get('api/lobby/server_config_two')
+}
+
+let PostTableConfig = (params) => { 
+  return axios.post('api/lobby/server_config_two', params)
+}
+
 export default {
   //通用接口-----------------------
   GetServerConfig,
   PutServerConfig,
   PostServerConfig,
+  GetTableConfig,
+  PostTableConfig,
   //支付配置-------------------------
   GetPaylist,
   PostPaylist,
