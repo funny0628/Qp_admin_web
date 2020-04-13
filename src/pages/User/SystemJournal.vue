@@ -140,10 +140,10 @@ export default {
   },
   methods: {
     async getSystemOperationList() {
-      const res = await this.$http.get("auth/operation-logs");
+      const res = await this.$http.get("api/auth/operation-logs");
       console.log(res);
       if (res.data.code === 200) {
-        this.tabelData = res.data.data;
+        this.tableData = res.data.data;
         this.total = res.data.data.total;
       }
       console.log(res);

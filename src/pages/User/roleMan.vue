@@ -116,7 +116,7 @@ export default {
 
   methods: {
     async getRoleList() {
-      const res = await this.$http.get("auth/roles", {
+      const res = await this.$http.get("api/auth/roles", {
         params: {
           page: this.currentPage,
           limit: this.pagesize
@@ -138,12 +138,12 @@ export default {
       }
     },
     async getRigthList() {
-      const res = await this.$http.get("auth/permissions");
+      const res = await this.$http.get("api/auth/permissions");
       console.log(res);
     },
     async addRoleFn() {
       if (!this.form.role_id) {
-        const res = await this.$http.post("auth/roles", {
+        const res = await this.$http.post("api/auth/roles", {
           name: this.form.name,
           display_name: this.form.display_name
         });
@@ -162,7 +162,7 @@ export default {
         }
       } else {
         console.log(this.form);
-        const res = await this.$http.put("auth/roles", {
+        const res = await this.$http.put("api/auth/roles", {
           name: this.form.name,
           display_name: this.form.display_name,
           role_id: this.form.role_id
@@ -227,7 +227,7 @@ export default {
     async handleRight(index, row) {
       this.dialogRightAssign = true;
       this.roleId = row.id;
-      const res = await this.$http.get("auth/permissions");
+      const res = await this.$http.get("api/auth/permissions");
       console.log(res);
       if (res.data.code === 200) {
         this.rightData = res.data.data;
@@ -242,7 +242,7 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete("auth/roles", {
+          const res = await this.$http.delete("api/auth/roles", {
             params: {
               role_id: this.form.role_id
             }

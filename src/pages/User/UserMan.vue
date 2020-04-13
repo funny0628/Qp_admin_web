@@ -71,12 +71,12 @@
         </el-form-item>
         <div>{{form}}</div>
         <el-form-item label="渠道" :label-width="formLabelWidth" style="width:100%;">
-          <el-checkbox-group v-model="form.channel">
-            <el-checkbox label="0902代理">0902代理</el-checkbox>
-            <el-checkbox label="官网">官网</el-checkbox>
-            <el-checkbox label="ios">ios</el-checkbox>
-            <el-checkbox label="殴打平均分IPO">殴打平均分IPO</el-checkbox>
-            <el-checkbox label="无服务范围">无服务范围</el-checkbox>
+          <el-checkbox-group :limit="1" v-model="form.channel">
+            <el-checkbox v-for="(item,index) in channelList" :key="index" :label="item.name"></el-checkbox>
+            <!-- <el-checkbox label="官网"></el-checkbox>
+            <el-checkbox label="ios"></el-checkbox>
+            <el-checkbox label="殴打平均分IPO"></el-checkbox>
+            <el-checkbox label="无服务范围"></el-checkbox>-->
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -178,8 +178,9 @@ export default {
         phone: "",
         password: "123456",
         password2: "123456",
-        channel: ""
+        channel: []
       },
+      channelList: [],
       form2: {
         role: ""
       },
@@ -210,7 +211,7 @@ export default {
         phone: "",
         password: "123456",
         password2: "123456",
-        channel: ""
+        channel: []
       };
     },
     async getUserList() {
@@ -228,14 +229,32 @@ export default {
     },
     async addUserFn() {
       if (!this.form.uid) {
-        const res = await this.$http.post("api/auth/users", this.form);
+        let data = {
+          username: this.form.username,
+          nick_name: this.form.nick_name,
+          email: this.form.email,
+          phone: this.form.phone,
+          password: this.form.password,
+          password2: this.form.password2,
+          channel: JSON.stringify(this.form.channel)
+        };
+        const res = await this.$http.post("api/auth/users", data);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
           this.getUserList();
         }
       } else {
-        const res = await this.$http.put("api/auth/users", this.form);
+        let data = {
+          username: this.form.username,
+          nick_name: this.form.nick_name,
+          email: this.form.email,
+          phone: this.form.phone,
+          password: this.form.password,
+          password2: this.form.password2,
+          channel: JSON.stringify(this.form.channel)
+        };
+        const res = await this.$http.put("api/auth/users", data);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
@@ -271,6 +290,7 @@ export default {
       if (this.$refs.form) {
         this.$refs.form.resetFields();
       }
+      this.getChannelList();
     },
     handleEdit(index, row) {
       console.log(index, row);
@@ -279,11 +299,13 @@ export default {
       if (this.$refs.form) {
         this.$refs.form.resetFields();
       }
+      this.getChannelList()
       this.form.username = row.username;
       this.form.nick_name = row.username;
       this.form.email = row.email;
       this.form.phone = row.phone;
       this.form.uid = row.id;
+      this.form.channel = JSON.parse(row.channel)
     },
     // async updateUser() {
     //   console.log(this.form);
@@ -305,10 +327,10 @@ export default {
         role_id: this.form2.role,
         user_id: this.form.uid
       };
-      const res = await this.$http.post(`auth/role-assignment`, data);
-      console.log(res)
-      if(res.data.code === 200) {
-        this.dialogRoleAssign = false
+      const res = await this.$http.post(`api/auth/role-assignment`, data);
+      console.log(res);
+      if (res.data.code === 200) {
+        this.dialogRoleAssign = false;
       }
     },
     handleDelete(index, row) {
@@ -345,7 +367,7 @@ export default {
     },
     //角色列表
     async getRoleList() {
-      const res = await this.$http.get("auth/roles");
+      const res = await this.$http.get("api/auth/roles");
       console.log(res);
       if (res.data.code === 200) {
         this.roleOpts = res.data.data;
@@ -359,6 +381,21 @@ export default {
           message: res.data.msg
         });
       }
+    },
+    getChannelList() {
+      this.$http
+        .get("api/operation/channels", {
+          params: {
+            page: 1,
+            limit: 100
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.channelList = res.data.data;
+          }
+        });
     }
   },
   mounted() {
