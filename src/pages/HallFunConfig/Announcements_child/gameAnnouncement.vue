@@ -264,6 +264,7 @@ export default {
   },
 
   methods: {
+ 
 
 
     //限制用户上传的图片格式和大小
