@@ -1,6 +1,11 @@
 <template>
   <div id="GameList-main">
-    <el-button v-if="!showReturn" type="primary" @click="openAdd" style="margin-top: 10px;margin-bottom: 10px;">添加</el-button>
+    <el-button
+      v-if="!showReturn"
+      type="primary"
+      @click="openAdd"
+      style="margin-top: 10px;margin-bottom: 10px;"
+    >添加</el-button>
     <el-button
       v-if="showReturn"
       type="primary"
@@ -13,6 +18,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -29,6 +35,16 @@
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!--添加 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -95,8 +111,8 @@ export default {
       }
     };
     return {
-      pageNum: 1,
-      pageSize: 5,
+      pagesize: 5,
+      currentPage: 1,
       total: 0,
       formLabelWidth: "120px",
       showReturn: false,
@@ -139,6 +155,7 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.records = res.data.data;
+            this.total = res.data.total
             // this.gameOpts = res.data.data
           }
         });
@@ -263,8 +280,8 @@ export default {
       this.$http
         .get("api/lobby/game_list", {
           params: {
-            page: 1,
-            limit: 10,
+            page: this.currentPage,
+            limit: this.pagesize,
             parent_id: pid
           }
         })
@@ -272,13 +289,14 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.records = res.data.data;
+            this.total = res.data.total
             // this.gameOpts = res.data.data
           }
         });
     },
     returnSupClass() {
       this.showReturn = false;
-      this.resetForm()
+      this.resetForm();
       this.getGameList();
     },
     /**搜索*/
@@ -287,17 +305,13 @@ export default {
         user_id = 1000;
       this.userList(data, user_id);
     },
-    handelClick(btn, row) {
-      if (btn.type === "子游戏") {
-      }
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getGameList();
     },
-    pageNumFn(val) {
-      console.log(val, this.pageSize, this.pageNum);
-      this.pageNum = val;
-    },
-    pageSizeFn(val) {
-      console.log(val);
-      this.pageSize = val;
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getGameList();
     }
   },
   watch: {

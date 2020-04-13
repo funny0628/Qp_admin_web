@@ -10,7 +10,7 @@
       <el-button type="primary" @click="dialogVisible=true">保留金额设置</el-button>
     </input-area>
     <div class="bd">
-      <info-table :table-style="tableStyle" :records="records" :page-info="pageInfo">
+      <info-table :table-style="tableStyle" :records="records" :page-info="pageInfo" :hide-page="true">
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'method'.indexOf(scope.prop) >= 0">
@@ -40,6 +40,16 @@
           </template>
         </info-table-item>
       </info-table>
+       <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!-- 添加配置信息 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -161,10 +171,16 @@ export default {
       };
     },
     async getExchangeList() {
-      const res = await this.$http.get("api/lobby/conversion");
+      const res = await this.$http.get("api/lobby/conversion",{
+        params:  {
+          page: this.currentPage,
+          limit: this.pagesize
+        }
+      });
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
+        this.total = res.data.total
       }
     },
     async addConfig() {
@@ -292,11 +308,11 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val;
-      this.getUserList();
+      this.getExchangeList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getUserList();
+      this.getExchangeList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
