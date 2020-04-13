@@ -13,12 +13,12 @@
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="非R" name="1"></el-tab-pane>
-        <el-tab-pane label="小R" name="2"></el-tab-pane>
-        <el-tab-pane label="中R" name="3"></el-tab-pane>
-        <el-tab-pane label="大R" name="4"></el-tab-pane>
-        <el-tab-pane label="土豪" name="5"></el-tab-pane>
-        <el-tab-pane label="上庄" name="6"></el-tab-pane>
+        <el-tab-pane label="非R" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="小R" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="中R" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane label="大R" :name="namelist[3]"></el-tab-pane>
+        <el-tab-pane label="土豪" :name="namelist[4]"></el-tab-pane>
+        <el-tab-pane label="上庄" :name="namelist[5]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
@@ -136,6 +136,7 @@
 export default {
   data() {
     return {
+      namelist:[],
       activeName: "1",
       ruleForm: {
         count_range: "",
@@ -204,8 +205,13 @@ export default {
     let res = JSON.parse(data.data[0].sys_val);
     // console.log(res);
     this.resData = res.brnn_normal.robot_type_list;
-    this.ruleForm = res.brnn_normal.robot_type_list[1];
     this.card_compare_value = res.brnn_normal.card_compare_value;
+    Object.keys(this.resData).forEach((item,index)=>{
+      this.namelist.push(item)
+      if(index === 0){
+        this.ruleForm = this.resData[item];
+      }
+    })
     // console.log(this.resData, this.ruleForm);
   },
 

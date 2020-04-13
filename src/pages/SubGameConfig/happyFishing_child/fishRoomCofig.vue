@@ -1,16 +1,27 @@
 <template>
-  <div id="fishRoomCofig">
+  <div
+    id="fishRoomCofig"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="捕鱼-低倍场" name="first"></el-tab-pane>
-        <el-tab-pane label="捕鱼-中倍场" name="second"></el-tab-pane>
-        <el-tab-pane label="捕鱼-高倍场" name="third"></el-tab-pane>
+        <el-tab-pane label="捕鱼-低倍场" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="捕鱼-中倍场" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="捕鱼-高倍场" :name="namelist[2]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
     <div class="form">
-      <el-button style="margin-bottom:10px" type="primary" @click="send">发送到服务器配置</el-button>
+      <el-button
+        style="margin-bottom:10px"
+        type="primary"
+        @click="submit('ruleForm', 2)"
+        >发送到服务器配置</el-button
+      >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -18,57 +29,52 @@
         label-width="150px"
         class="demo-ruleForm"
       >
-        <el-form-item label="房间名称" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
+        <el-form-item label="房间名称" prop="type_id">
+          <el-input v-model="ruleForm.type_id"></el-input>
           <span>房间ID:602</span>
         </el-form-item>
 
-        <el-form-item label="场次开关" prop="region">
+        <el-form-item label="场次开关" prop="open_game">
           <el-switch
-            v-model="value"
+            v-model="ruleForm.open_game"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
           </el-switch>
         </el-form-item>
 
-        <el-form-item label="是否开放机器人" prop="region">
+        <el-form-item label="是否开放机器人" prop="open_robot">
           <el-switch
-            v-model="value1"
+            v-model="ruleForm.open_robot"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
           </el-switch>
         </el-form-item>
 
-        <el-form-item label="ip限制" prop="region">
+        <el-form-item label="ip限制" prop="ip_limit">
           <el-switch
-            v-model="value2"
+            v-model="ruleForm.ip_limit"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
           </el-switch>
         </el-form-item>
 
-        <el-form-item label="携带上限" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
-        
+        <el-form-item label="携带上限" prop="max">
+          <el-input v-model="ruleForm.max"></el-input>
         </el-form-item>
 
-        <el-form-item label="携带下限" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
-        
+        <el-form-item label="携带下限" prop="min">
+          <el-input v-model="ruleForm.min"></el-input>
         </el-form-item>
 
-        <el-form-item label="子弹倍数" prop="region">
-          <el-input v-model="ruleForm.region"></el-input>
-         
+        <el-form-item label="子弹倍数" prop="multiple">
+          <el-input v-model="ruleForm.multiple"></el-input>
         </el-form-item>
-
-  
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
+          <el-button type="primary" @click="submit('ruleForm', 1)"
             >立即提交</el-button
           >
         </el-form-item>
@@ -81,20 +87,139 @@
 export default {
   data() {
     return {
-      ruleForm: {},
-      rules: {},
-      activeName: "first",
-      value: true,
-      value1: true,
-      value2: true
+      ruleForm: {
+        type_id: "",
+        open_game: "",
+        open_robot: "",
+        ip_limit: "",
+        max: "",
+        min: "",
+        multiple: "",
+        name: "",
+        robot_type: "",
+        is_hundred_game: ""
+      },
+      rules: {
+        type_id: [
+          { required: true, message: "请填写活动形式", trigger: "blur" }
+        ],
+        open_game: [
+          { required: true, message: "请填写活动形式", trigger: "blur" }
+        ],
+        open_robot: [
+          { required: true, message: "请填写活动形式", trigger: "blur" }
+        ],
+        ip_limit: [
+          { required: true, message: "请填写活动形式", trigger: "blur" }
+        ],
+        max: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
+        multiple: [
+          { required: true, message: "请填写活动形式", trigger: "blur" }
+        ]
+      },
+      activeName: "",
+      id: 0,
+      keys: "",
+      loading: false,
+      //所有房间的数据
+      allData: "",
+      //匹配当前游戏的条件
+      namelist: ["600", "601", "602"],
+      //当前游戏的所有数据
+      currentlist: {}
     };
   },
+
+  //roomdata.lua
+  async created() {
+    //获取数据
+    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "roomdata.lua"
+    });
+    // console.log(data);
+    this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    // console.log(res);
+    this.allData = res;
+
+    this.namelist.forEach((it, index) => {
+      Object.keys(res).forEach(item => {
+        if (item === it) {
+          this.currentlist[item] =res[item];
+        }
+        if (index === 0) {
+          this.ruleForm = res[it];
+          this.activeName = it;
+        }
+      });
+    });
+    // console.log(this.ruleForm, this.currentlist);
+  },
+
   methods: {
-    submitForm() {},
-    handleClick(tab, event) {
-      console.log(tab, event);
+    submit(formName, type) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          Object.keys(this.currentlist).forEach(item => {
+            if (item === this.ruleForm.type_id) {
+              this.currentlist[item] = this.ruleForm;
+            }
+          });
+          // console.log(this.ruleForm,this.currentlist);
+
+          Object.keys(this.currentlist).forEach(item => {
+            Object.keys(this.allData).forEach(it => {
+              if (item === it) {
+                this.allData[it] = this.currentlist[item];
+              }
+            });
+          });
+          // console.log(this.allData,this.currentlist);
+
+          if (type === 1) {
+            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          } else if (type === 2) {
+            this.loading = true;
+
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
-    send() {}
+    handleClick(tab, event) {
+      this.namelist.forEach(item => {
+        if (tab.name === item) {
+          this.ruleForm = this.currentlist[item];
+        }
+      });
+    }
   }
 };
 </script>
@@ -107,16 +232,9 @@ export default {
     padding: 10px 10px;
     box-sizing: border-box;
     border: 1px solid #eee;
-    // ul {
-    //   display: flex;
-    //   li {
-    //     list-style: none;
-    //     margin-right: 10px;
-    //   }
-    // }
   }
   .form {
-      padding: 10px;
+    padding: 10px;
   }
 }
 </style>
