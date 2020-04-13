@@ -4,7 +4,7 @@
       <div>
         <el-button type="danger">删除</el-button>
         <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
-        <el-button type="primary" @click="open">发送到服务端配置</el-button>
+        <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
       <el-select v-model="form.region" placeholder="请选择渠道" style="margin-top:10px;">
         <el-option label="区域一" value="shanghai"></el-option>
@@ -594,6 +594,20 @@ export default {
     };
   },
   methods: {
+    sendDataToServer() {
+      let data = {
+        type_id: 4
+      };
+      this.$http.post("api/lobby/server_config_two", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        }
+      });
+    },
     getGameSortList() {
       this.$http
         .get("api/lobby/game_sort", {
@@ -619,25 +633,6 @@ export default {
     addUser() {
       this.dialogAddVisible = true;
     },
-    open() {
-      this.$confirm("确认发送吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "发送成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消发送"
-          });
-        });
-    }
   },
   mounted() {
     this.getGameSortList();

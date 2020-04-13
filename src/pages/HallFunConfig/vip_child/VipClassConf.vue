@@ -224,12 +224,17 @@ export default {
   },
   methods: {
     sendTabelData() {
-      this.$http.post('lobby/server_config_two',{
-        params: {
-          type_id: 1,
-        }
-      }).then(res => {
+      let data = {
+        type_id: 1
+      }
+      this.$http.post('api/lobby/server_config_two',data).then(res => {
         console.log(res)
+        if(res.data.code === 1) {
+          this.$message({
+            type:"success",
+            message: res.data.msg
+          })
+        }
       })
     },
     resetForm() {
