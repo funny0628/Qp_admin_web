@@ -4,7 +4,7 @@
       <div>
         <el-button type="danger">删除</el-button>
         <el-button type="primary" @click="openAdd">添加</el-button>
-        <el-button type="primary" @click="open">发送到服务端配置</el-button>
+        <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
     </input-area>
     <div class="bd">
@@ -200,6 +200,20 @@ export default {
     };
   },
   methods: {
+    sendDataToServer() {
+      let data = {
+        type_id: 5
+      };
+      this.$http.post("api/lobby/server_config_two", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        }
+      });
+    },
     getBroadcastList() {
       this.$http
         .get("api/lobby/play_broadcast", {
@@ -355,25 +369,6 @@ export default {
       this.dialogFormVisible = true;
       this.resetForm();
     },
-    open() {
-      this.$confirm("确认发送吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "发送成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消发送"
-          });
-        });
-    }
   },
   mounted() {
     this.getBroadcastList();

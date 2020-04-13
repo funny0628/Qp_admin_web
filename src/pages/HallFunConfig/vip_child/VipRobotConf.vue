@@ -7,7 +7,7 @@
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="openAddDialog"
       >添加</el-button>
-      <el-button type="primary" @click="open">发送到服务端配置</el-button>
+      <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       <el-button
         type="danger"
         size="medium"
@@ -184,6 +184,20 @@ export default {
     this.rankRobotProbList = res;
   },
   methods: {
+    sendDataToServer() {
+      let data = {
+        type_id: 3
+      };
+      this.$http.post("api/lobby/server_config_two", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        }
+      });
+    },
     resetForm() {
       this.form = {
         min_coins: "",

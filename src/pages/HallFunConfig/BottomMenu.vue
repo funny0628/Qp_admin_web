@@ -267,22 +267,6 @@ export default {
       channel_code: "",
       funOpts: [],
       tableData: [],
-      tableStyle: [
-        { label: "ID", prop: "channel_id", width: "" },
-        { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "渠道KEY", prop: "channel_name", width: "" },
-        { label: "功能1", prop: "fun_1", width: "" },
-        { label: "功能2", prop: "fun_2", width: "" },
-        { label: "功能3", prop: "fun_3", width: "" },
-        { label: "功能4", prop: "fun_4", width: "" },
-        { label: "功能5", prop: "fun_5", width: "" },
-        { label: "功能6", prop: "fun_6", width: "" },
-        { label: "功能7", prop: "fun_7", width: "" },
-        { label: "功能8", prop: "fun_8", width: "" },
-        { label: "操作者", prop: "operator", width: "" },
-        { label: "创建时间", prop: "create_time", width: "160" },
-        { label: "操作", prop: "action", width: "120" }
-      ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
@@ -314,25 +298,15 @@ export default {
             this.tableData = res.data.data;
             this.total = res.data.total
             this.func_list_index();
+          console.log(this.tableData)
           }
         });
     },
     func_list_index: function() {
       this.tableData.map((item1, index1) => {
-        console.log(item1);
-        console.log(JSON.parse(item1.func_list));
-        item1.func_1 = JSON.parse(item1.func_list)[0];
-        item1.func_2 = JSON.parse(item1.func_list)[1];
-        item1.func_3 = JSON.parse(item1.func_list)[2];
-        item1.func_4 = JSON.parse(item1.func_list)[3];
-        item1.func_5 = JSON.parse(item1.func_list)[4];
-        item1.func_6 = JSON.parse(item1.func_list)[5];
-        // this.func_list = JSON.parse(item1.func_list)
-        console.log(this.func_list);
-        // JSON.parse(item1.func_list).map((item2,index2)=> {
-        //   console.log(item2)
-
-        // })
+        JSON.parse(item1.func_list).map((item2,index2) => {
+          item1[`func_${index2+1}`] =  item2
+        })
       });
     },
     resetForm() {
