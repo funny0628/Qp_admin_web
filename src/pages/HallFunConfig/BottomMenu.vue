@@ -50,7 +50,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <el-pagination
+      <el-pagination
+        style="margin-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -58,7 +59,7 @@
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      ></el-pagination>-->
+      ></el-pagination>
     </div>
     <div>
       <!-- 添加活动入口配置 -->
@@ -246,6 +247,9 @@ export default {
     return {
       isEditCheckChannel: true,
       showEditCheckChannel: false,
+      pagesize: 5,
+      currentPage: 1,
+      total: 0,
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       dialogFormVisible: false,
@@ -299,8 +303,8 @@ export default {
       this.$http
         .get("api/lobby/bottom", {
           params: {
-            page: 1,
-            limit: 10,
+            page: this.currentPage,
+            limit: this.pagesize,
             type: 1
           }
         })
@@ -308,6 +312,7 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.tableData = res.data.data;
+            this.total = res.data.total
             this.func_list_index();
           }
         });
@@ -487,6 +492,14 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getBottomMenuList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getBottomMenuList();
     },
     /**搜索*/
     search() {

@@ -12,6 +12,7 @@
         :table-style="tableStyle"
         :records="tableData"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -23,6 +24,16 @@
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!--添加新渠道 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -350,16 +361,11 @@ export default {
     };
     return {
       dialogTitle: "",
-      fileName: "",
-      pageNum: 1,
-      pageSize: 5,
+      pagesize: 5,
+      currentPage: 1,
       total: 0,
       formLabelWidth: "120px",
-      value: true,
-      dialogModifyVisible: false,
       dialogVisible: false,
-      labelPosition: "left", //左对齐
-      activeName: "first",
       tableStyle: [
         { label: "渠道名称", prop: "channel", width: "" },
         { label: "KEY", prop: "channel_key", width: "" },
@@ -372,18 +378,6 @@ export default {
       tableData: [],
       pageInfo: new PageInfo(1, [5, 10, 15, 20], 6),
       dialogFormVisible: false,
-      jumpposOpts: [
-        { label: "vip", value: "vip" },
-        { label: "全民代理", value: "agent" },
-        { label: "客服", value: "server" },
-        { label: "兑换", value: "exchange" },
-        { label: "充值", value: "recharge" },
-        { label: "活动", value: "active" },
-        { label: "绑定手机", value: "bind_phone" },
-        { label: "返水", value: "return" },
-        { label: "vip福利", value: "vip_reward" },
-        { label: "签到", value: "attendance" }
-      ],
       form: {
         channel_name: "",
         channel_key: "",
@@ -474,13 +468,14 @@ export default {
       this.$http
         .get("api/lobby/flyer", {
           params: {
-            page: 1,
-            limit: 10
+            page: this.currentPage,
+            limit: this.pagesize
           }
         })
         .then(res => {
           console.log(res);
           this.tableData = res.data.data;
+          this.total = res.data.total
         });
     },
     openAddDialog() {
@@ -592,13 +587,13 @@ export default {
     },
     /**搜索*/
     search() {},
-    pageNumFn(val) {
-      console.log(val, this.pageSize, this.pageNum);
-      this.pageNum = val;
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getAdvertiseConfList();
     },
-    pageSizeFn(val) {
-      console.log(val);
-      this.pageSize = val;
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getAdvertiseConfList();
     },
     handleAvatarSuccess(res, file) {},
     handleChange(file, fileList, info) {
