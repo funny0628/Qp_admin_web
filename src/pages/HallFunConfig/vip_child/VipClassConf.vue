@@ -7,7 +7,7 @@
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="openAddDialog"
       >添加</el-button>
-      <el-button type="primary" @click="open">发送到服务端配置</el-button>
+      <el-button type="primary" @click="sendTabelData">发送到服务端配置</el-button>
     </input-area>
     <div class="bd">
       <el-table
@@ -223,6 +223,15 @@ export default {
     };
   },
   methods: {
+    sendTabelData() {
+      this.$http.post('lobby/server_config_two',{
+        params: {
+          type_id: 1,
+        }
+      }).then(res => {
+        console.log(res)
+      })
+    },
     resetForm() {
       this.form = {
         vip_class: 0,
