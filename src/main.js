@@ -25,7 +25,6 @@ import 'quill/dist/quill.bubble.css'
 Vue.use(VueQuillEditor, /* { default global options } */)
 // Vue.use(http);
 
-
 // axios.HallFunConfig = HallFunConfig;
 // Vue.prototype.$http = axios;
 
