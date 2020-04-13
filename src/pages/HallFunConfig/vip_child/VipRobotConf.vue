@@ -198,10 +198,18 @@ export default {
       };
     },
     getRobotConfList() {
-      this.$http.get("api/lobby/robot").then(res => {
-        console.log(res);
-        this.tableData = res.data.data;
-      });
+      this.$http
+        .get("api/lobby/robot", {
+          params: {
+            page: this.currentPage,
+            limit: this.pagesize
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.tableData = res.data.data;
+          this.total = res.data.total;
+        });
     },
     openAddDialog() {
       this.dialogFormVisible = true;
@@ -328,7 +336,7 @@ export default {
       });
       // console.log(data);
       if (data.code === 1 && data.msg === "ok") {
-        this.dialogVisible = false
+        this.dialogVisible = false;
         this.$message({
           type: "success",
           message: "保存成功!"
@@ -337,9 +345,11 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val;
+      this.getRobotConfList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
+      this.getRobotConfList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

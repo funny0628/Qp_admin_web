@@ -255,22 +255,23 @@ export default {
     async getVipList() {
       const res = await this.$http.get("api/lobby/grade", {
         params: {
-          page: 1,
-          limit: 10
+          page: this.currentPage,
+          limit: this.pagesize
         }
       });
       console.log(res);
       if (res.data.code === 1) {
         this.tableData = res.data.data;
+        this.total = res.data.total
       }
     },
     handleSizeChange(val) {
       this.pagesize = val;
-      this.getUserList();
+      this.getVipList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getUserList();
+      this.getVipList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
