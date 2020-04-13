@@ -6,7 +6,11 @@ import models from './script/config/models';
 import './assets/styles/common.css';
 import echarts from 'echarts'
 import VueQuillEditor from 'vue-quill-editor'
-import http from './assets/js/http';
+import axios from 'axios'
+import HallFunConfig from './assets/js/HallFunConfig.js'
+// import http from './assets/js/http';
+axios.HallFunConfig = HallFunConfig;
+Vue.prototype.$http = axios;
 Vue.prototype.$echarts = echarts;
 
 // require styles
@@ -15,7 +19,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 Vue.use(VueQuillEditor, /* { default global options } */)
-Vue.use(http);
+// Vue.use(http);
 
 
 Vue.config.productionTip = false;

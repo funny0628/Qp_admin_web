@@ -198,10 +198,18 @@ export default {
       };
     },
     getRobotConfList() {
-      this.$http.get("lobby/robot").then(res => {
-        console.log(res);
-        this.tableData = res.data.data;
-      });
+      this.$http
+        .get("api/lobby/robot", {
+          params: {
+            page: this.currentPage,
+            limit: this.pagesize
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.tableData = res.data.data;
+          this.total = res.data.total;
+        });
     },
     openAddDialog() {
       this.dialogFormVisible = true;
@@ -224,7 +232,7 @@ export default {
           max_coins: Number(this.form.max_coins),
           vip_rate: JSON.stringify(rate)
         };
-        this.$http.post("lobby/robot", data).then(res => {
+        this.$http.post("api/lobby/robot", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -247,7 +255,7 @@ export default {
           vip_rate: JSON.stringify(rate),
           robot_id: this.form.robot_id
         };
-        this.$http.put("lobby/robot", data).then(res => {
+        this.$http.put("api/lobby/robot", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -280,7 +288,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/robot", {
+            .delete("api/lobby/robot", {
               params: {
                 robot_id: row.id
               }
@@ -328,7 +336,7 @@ export default {
       });
       // console.log(data);
       if (data.code === 1 && data.msg === "ok") {
-        this.dialogVisible = false
+        this.dialogVisible = false;
         this.$message({
           type: "success",
           message: "保存成功!"
@@ -337,9 +345,11 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val;
+      this.getRobotConfList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
+      this.getRobotConfList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

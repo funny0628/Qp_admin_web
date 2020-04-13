@@ -51,7 +51,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.id"
+              :label="item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -253,24 +253,25 @@ export default {
       this.videoUrl = "";
     },
     async getVipList() {
-      const res = await this.$http.get("lobby/grade", {
+      const res = await this.$http.get("api/lobby/grade", {
         params: {
-          page: 1,
-          limit: 10
+          page: this.currentPage,
+          limit: this.pagesize
         }
       });
       console.log(res);
       if (res.data.code === 1) {
         this.tableData = res.data.data;
+        this.total = res.data.total
       }
     },
     handleSizeChange(val) {
       this.pagesize = val;
-      this.getUserList();
+      this.getVipList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getUserList();
+      this.getVipList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -286,7 +287,7 @@ export default {
       if (!this.form.grade_id) {
         let data = {
           level: Number(this.form.vip_class),
-          privilege: this.form.checkList,
+          privilege: JSON.stringify(this.form.checkList),
           charge_coins: Number(this.form.gold_flow) * 1000,
           enter_word: this.form.vip_tip_text,
           caishen_base_rate: Number(this.form.probability),
@@ -301,7 +302,7 @@ export default {
           img_url: this.imageUrl.imgList3,
           video_url: this.videoUrl
         };
-        const res = await this.$http.post("lobby/grade", data);
+        const res = await this.$http.post("api/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -326,7 +327,7 @@ export default {
           video_url: this.videoUrl,
           grade_id: this.form.grade_id
         };
-        const res = await this.$http.put("lobby/grade", data);
+        const res = await this.$http.put("api/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -390,7 +391,7 @@ export default {
           //   grade_id: `${row.level}`
           // }
           this.$http
-            .delete("lobby/grade", {
+            .delete("api/lobby/grade", {
               params: {
                 type_id: 3,
                 grade_id: `${row.id}`
@@ -416,7 +417,7 @@ export default {
     },
     getPrivilegeList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 5
           }
@@ -462,7 +463,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
@@ -481,7 +482,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 2);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.videoUrl = res.data.path;

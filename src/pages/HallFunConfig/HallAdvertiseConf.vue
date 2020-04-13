@@ -12,6 +12,7 @@
         :table-style="tableStyle"
         :records="tableData"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -23,6 +24,16 @@
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!--添加新渠道 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -350,16 +361,11 @@ export default {
     };
     return {
       dialogTitle: "",
-      fileName: "",
-      pageNum: 1,
-      pageSize: 5,
+      pagesize: 5,
+      currentPage: 1,
       total: 0,
       formLabelWidth: "120px",
-      value: true,
-      dialogModifyVisible: false,
       dialogVisible: false,
-      labelPosition: "left", //左对齐
-      activeName: "first",
       tableStyle: [
         { label: "渠道名称", prop: "channel", width: "" },
         { label: "KEY", prop: "channel_key", width: "" },
@@ -372,18 +378,6 @@ export default {
       tableData: [],
       pageInfo: new PageInfo(1, [5, 10, 15, 20], 6),
       dialogFormVisible: false,
-      jumpposOpts: [
-        { label: "vip", value: "vip" },
-        { label: "全民代理", value: "agent" },
-        { label: "客服", value: "server" },
-        { label: "兑换", value: "exchange" },
-        { label: "充值", value: "recharge" },
-        { label: "活动", value: "active" },
-        { label: "绑定手机", value: "bind_phone" },
-        { label: "返水", value: "return" },
-        { label: "vip福利", value: "vip_reward" },
-        { label: "签到", value: "attendance" }
-      ],
       form: {
         channel_name: "",
         channel_key: "",
@@ -443,7 +437,7 @@ export default {
     //获取图片类型列表
     getPicTypeList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 7
           }
@@ -458,7 +452,7 @@ export default {
     //获取跳转路径列表
     getJumpPathList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 8
           }
@@ -472,15 +466,16 @@ export default {
     },
     getAdvertiseConfList() {
       this.$http
-        .get("lobby/flyer", {
+        .get("api/lobby/flyer", {
           params: {
-            page: 1,
-            limit: 10
+            page: this.currentPage,
+            limit: this.pagesize
           }
         })
         .then(res => {
           console.log(res);
           this.tableData = res.data.data;
+          this.total = res.data.total
         });
     },
     openAddDialog() {
@@ -494,19 +489,19 @@ export default {
           name: this.form.channel_name,
           key: this.form.channel_key,
           name_one: "我是图片一",
-          url_one: "http://www.baidu.com",
+          url_one: this.imageUrl.imgList1,
           type_one: Number(this.form.word1_type),
           jump_id_one: Number(this.form.word1_jump_position),
           name_two: "我是图片二",
-          url_two: "http://www.baidu.com",
+          url_two: this.imageUrl.imgList2,
           type_two: Number(this.form.word2_type),
           jump_id_two: Number(this.form.word2_jump_position),
           name_three: "我是图片三",
-          url_three: "http://www.baidu.com",
+          url_three: this.imageUrl.imgList3,
           type_three: Number(this.form.word3_type),
           jump_id_three: Number(this.form.word3_jump_position)
         };
-        this.$http.post("lobby/flyer", data).then(res => {
+        this.$http.post("api/lobby/flyer", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -519,19 +514,19 @@ export default {
           name: this.form.channel_name,
           key: this.form.channel_key,
           name_one: "我是图片一",
-          url_one: "http://www.baidu.com",
+          url_one: this.imageUrl.imgList1,
           type_one: JSON.parse(this.form.word1_type),
           jump_id_one: JSON.parse(this.form.word1_jump_position),
           name_two: "我是图片二",
-          url_two: "http://www.baidu.com",
+          url_two: this.imageUrl.imgList2,
           type_two: JSON.parse(this.form.word2_type),
           jump_id_two: JSON.parse(this.form.word2_jump_position),
           name_three: "我是图片三",
-          url_three: "http://www.baidu.com",
+          url_three: this.imageUrl.imgList3,
           type_three: JSON.parse(this.form.word3_type),
           jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
-        this.$http.put("lobby/flyer", data).then(res => {
+        this.$http.put("api/lobby/flyer", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -568,7 +563,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/flyer", {
+            .delete("api/lobby/flyer", {
               params: {
                 id: row.id
               }
@@ -592,13 +587,13 @@ export default {
     },
     /**搜索*/
     search() {},
-    pageNumFn(val) {
-      console.log(val, this.pageSize, this.pageNum);
-      this.pageNum = val;
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getAdvertiseConfList();
     },
-    pageSizeFn(val) {
-      console.log(val);
-      this.pageSize = val;
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getAdvertiseConfList();
     },
     handleAvatarSuccess(res, file) {},
     handleChange(file, fileList, info) {
@@ -611,7 +606,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("upload", formData).then(res => {
+      this.$http.post("api/upload", formData).then(res => {
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
         }

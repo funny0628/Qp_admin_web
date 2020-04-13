@@ -13,6 +13,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -29,6 +30,16 @@
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <div>
       <!-- 添加系统广播 -->
@@ -135,6 +146,9 @@ export default {
       }
     };
     return {
+      pagesize: 5,
+      currentPage: 1,
+      total: 0,
       formLabelWidth: "120px",
       dialogTitle: "",
       value: true,
@@ -188,16 +202,17 @@ export default {
   methods: {
     getBroadcastList() {
       this.$http
-        .get("lobby/play_broadcast", {
+        .get("api/lobby/play_broadcast", {
           params: {
-            page: 1,
-            limit: 10
+            page: this.currentPage,
+            limit: this.pagesize
           }
         })
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.records = res.data.data;
+            this.total = res.data.total
           }
         });
     },
@@ -216,7 +231,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.post("lobby/play_broadcast", data).then(res => {
+        this.$http.post("api/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -241,7 +256,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.put("lobby/play_broadcast", data).then(res => {
+        this.$http.put("api/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -297,7 +312,7 @@ export default {
       })
         .then(async () => {
           const res = await this.$http
-            .delete("lobby/play_broadcast", {
+            .delete("api/lobby/play_broadcast", {
               params: {
                 id: id
               }
@@ -319,6 +334,14 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getBroadcastList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getBroadcastList();
     },
     /**搜索*/
     search() {

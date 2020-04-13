@@ -10,7 +10,7 @@
       <el-button type="primary" @click="dialogVisible=true">保留金额设置</el-button>
     </input-area>
     <div class="bd">
-      <info-table :table-style="tableStyle" :records="records" :page-info="pageInfo">
+      <info-table :table-style="tableStyle" :records="records" :page-info="pageInfo" :hide-page="true">
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'method'.indexOf(scope.prop) >= 0">
@@ -32,7 +32,7 @@
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="updateStatus(scope.row)"
-              >{{statusTitle}}</el-button>
+              >{{scope.row.online_status | formatStatus}}</el-button>
             </template>
             <template
               v-if="['action','method','online_status'].indexOf(scope.prop) < 0"
@@ -40,6 +40,16 @@
           </template>
         </info-table-item>
       </info-table>
+       <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!-- 添加配置信息 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -116,7 +126,6 @@ export default {
       pagesize: 5,
       currentPage: 1,
       total: 0,
-      statusTitle: "",
       tableData: [],
       dialogFormVisible: false,
       dialogVisible: false,
@@ -146,6 +155,11 @@ export default {
       fileList: []
     };
   },
+  filters: {
+    formatStatus: function(val) {
+      return val === 1 ? "下线" : "上线";
+    }
+  },
   methods: {
     resetForm() {
       this.form = {
@@ -157,11 +171,16 @@ export default {
       };
     },
     async getExchangeList() {
-      const res = await this.$http.get("lobby/conversion");
+      const res = await this.$http.get("api/lobby/conversion",{
+        params:  {
+          page: this.currentPage,
+          limit: this.pagesize
+        }
+      });
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
-        this.updateStatusBtn()
+        this.total = res.data.total
       }
     },
     async addConfig() {
@@ -175,7 +194,7 @@ export default {
           thumb: "thumb"
         };
         console.log(data);
-        const res = await this.$http.post("lobby/conversion", data);
+        const res = await this.$http.post("api/lobby/conversion", data);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
           this.getExchangeList();
@@ -193,7 +212,7 @@ export default {
         };
         const res = await this.$http({
           method: "put",
-          url: "lobby/conversion",
+          url: "api/lobby/conversion",
           data: data
         });
         console.log(res);
@@ -226,7 +245,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/conversion", {
+            .delete("api/lobby/conversion", {
               params: {
                 id: row.id
               }
@@ -258,23 +277,11 @@ export default {
           id: row.id,
           online_status: row.online_status === 1 ? 2 : 1
         };
-        this.$http.patch("lobby/conversion", data).then(res => {
+        this.$http.patch("api/lobby/conversion", data).then(res => {
           if (res.data.code === 1) {
             this.getExchangeList();
           }
         });
-      });
-    },
-    updateStatusBtn() {
-      this.records.forEach((item, index) => {
-        console.log(item, item.online_status);
-        if (item.online_status === 1) {
-          this.statusTitle = "下线";
-          console.log(this.statusTitle);
-        } else if (item.online_status === 2) {
-          this.statusTitle = "上线";
-          console.log(this.statusTitle);
-        }
       });
     },
     setKeepMoney() {
@@ -301,11 +308,11 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val;
-      this.getUserList();
+      this.getExchangeList();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getUserList();
+      this.getExchangeList();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -340,7 +347,7 @@ export default {
   },
   mounted() {
     this.getExchangeList();
-  },
+  }
 };
 </script>
 

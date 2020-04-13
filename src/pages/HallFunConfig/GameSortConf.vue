@@ -16,22 +16,16 @@
         <el-table-column label="ID" prop="id" align="center"></el-table-column>
         <el-table-column label="渠道名称" prop="channel_name" align="center"></el-table-column>
         <el-table-column label="渠道KEY" prop="channel_code" align="center"></el-table-column>
-        <el-table-column label="游戏1" prop="game_list" align="center">
-          <!-- <template slot-scope="scope">
-            <template v-if="'game_list'.indexOf(scope.prop)>=0">
-              <span>{{JSON.parse(scope.row[scope.prop])[1]}}</span>
-              <span>{{JSON.parse(scope.row[scope.prop])}}</span>
-            </template>
-          </template> -->
-            <template slot-scope="scope">
-              <span>{{scope.row[scope.prop]}}</span>
-            </template>
+        <el-table-column label="游戏1" align="center">
+          <template slot-scope="scope">
+            <span>{{JSON.parse(scope.row.game_list)}}</span>
+          </template>
         </el-table-column>
         <!-- <el-table-column label="游戏2" prop="game_list" align="center"></el-table-column>
         <el-table-column label="游戏3" prop="game_list" align="center"></el-table-column>
         <el-table-column label="游戏4" prop="game_list" align="center"></el-table-column>
         <el-table-column label="游戏5" prop="game_list" align="center"></el-table-column>
-        <el-table-column label="游戏6" prop="game_list" align="center"></el-table-column> -->
+        <el-table-column label="游戏6" prop="game_list" align="center"></el-table-column>-->
         <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
         <el-table-column label="创建时间" prop="create_time" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="150">
@@ -602,10 +596,10 @@ export default {
   methods: {
     getGameSortList() {
       this.$http
-        .get("lobby/game_sort", {
+        .get("api/lobby/game_sort", {
           params: {
             page: 1,
-            limit: 10,
+            limit: 10
           }
         })
         .then(res => {
@@ -646,7 +640,7 @@ export default {
     }
   },
   mounted() {
-    this.getGameSortList()
+    this.getGameSortList();
   }
 };
 </script>

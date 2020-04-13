@@ -50,7 +50,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <el-pagination
+      <el-pagination
+        style="margin-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -58,7 +59,7 @@
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      ></el-pagination>-->
+      ></el-pagination>
     </div>
     <div>
       <!-- 添加活动入口配置 -->
@@ -246,6 +247,9 @@ export default {
     return {
       isEditCheckChannel: true,
       showEditCheckChannel: false,
+      pagesize: 5,
+      currentPage: 1,
+      total: 0,
       player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       dialogFormVisible: false,
@@ -297,10 +301,10 @@ export default {
   methods: {
     getBottomMenuList() {
       this.$http
-        .get("lobby/bottom", {
+        .get("api/lobby/bottom", {
           params: {
-            page: 1,
-            limit: 10,
+            page: this.currentPage,
+            limit: this.pagesize,
             type: 1
           }
         })
@@ -308,6 +312,7 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.tableData = res.data.data;
+            this.total = res.data.total
             this.func_list_index();
           }
         });
@@ -353,7 +358,7 @@ export default {
     //获取功能名字列表
     getFunNameList() {
       this.$http
-        .get("lobby/name_type", {
+        .get("api/lobby/name_type", {
           params: {
             type_id: 3
           }
@@ -365,7 +370,7 @@ export default {
     },
     //获取渠道选项列表
     getChannelList() {
-      this.$http.get("no_channel").then(res => {
+      this.$http.get("api/no_channel").then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });
@@ -402,7 +407,7 @@ export default {
           list_id: JSON.stringify(funArr),
           type: 1
         };
-        this.$http.post("lobby/bottom", data).then(res => {
+        this.$http.post("api/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -432,7 +437,7 @@ export default {
           type: 1
         };
         console.log(data);
-        this.$http.put("lobby/bottom", data).then(res => {
+        this.$http.put("api/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -466,7 +471,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("lobby/bottom", {
+            .delete("api/lobby/bottom", {
               params: {
                 id: row.id
               }
@@ -487,6 +492,14 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getBottomMenuList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getBottomMenuList();
     },
     /**搜索*/
     search() {
