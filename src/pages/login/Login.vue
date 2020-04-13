@@ -92,23 +92,19 @@ export default {
   },
   methods: {
     async login() {
-      const res = await this.$http.post(
-        "http://192.168.1.24:8000/v1/backend/login",
-        {
-          params: {
-            username: this.formData.username,
-            password: this.formData.password
-          }
-        }
-      );
+      let data = {
+        username: this.formData.username,
+        password: this.formData.password
+      };
+      const res = await this.$http.post("api/login", data);
       console.log(res);
-      if (data.meta.status === 200) {
+      if (res.data.code === 200) {
         this.$message({
           type: "success",
           message: "登录成功!"
         });
         // 登录成功，把token记录到本地存储中
-        localStorage.setItem("token", data.data.token);
+        // localStorage.setItem("token", data.data.token);
         this.$router.push({
           name: "home"
         });
@@ -120,9 +116,6 @@ export default {
         });
       }
     },
-    test() {
-      this.$router.push({ name: "home" });
-    }
   }
 };
 </script>
