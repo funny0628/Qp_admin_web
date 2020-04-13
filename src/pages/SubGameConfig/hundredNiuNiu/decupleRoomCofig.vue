@@ -23,6 +23,9 @@
         @click="submit('ruleForm', 2)"
         >发送到服务器配置</el-button
       >
+       <el-button type="primary" @click="submit('ruleForm', 1)"
+            >立即提交</el-button
+          >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -162,11 +165,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item>
-          <el-button type="primary" @click="submit('ruleForm', 1)"
-            >立即提交</el-button
-          >
-        </el-form-item>
+       
       </el-form>
     </div>
   </div>
