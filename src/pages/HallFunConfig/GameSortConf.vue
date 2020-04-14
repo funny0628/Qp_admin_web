@@ -598,7 +598,7 @@ export default {
       let data = {
         type_id: 4
       };
-      this.$http.post("api/lobby/server_config_two", data).then(res => {
+      this.$http.post("v1/backend/lobby/server_config_two", data).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.$message({
@@ -610,7 +610,7 @@ export default {
     },
     getGameSortList() {
       this.$http
-        .get("api/lobby/game_sort", {
+        .get("v1/backend/lobby/game_sort", {
           params: {
             page: 1,
             limit: 10

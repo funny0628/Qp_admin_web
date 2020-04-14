@@ -227,7 +227,7 @@ export default {
       let data = {
         type_id: 1
       }
-      this.$http.post('api/lobby/server_config_two',data).then(res => {
+      this.$http.post('v1/backend/lobby/server_config_two',data).then(res => {
         console.log(res)
         if(res.data.code === 1) {
           this.$message({
@@ -267,7 +267,7 @@ export default {
       this.videoUrl = "";
     },
     async getVipList() {
-      const res = await this.$http.get("api/lobby/grade", {
+      const res = await this.$http.get("v1/backend/lobby/grade", {
         params: {
           page: this.currentPage,
           limit: this.pagesize
@@ -316,7 +316,7 @@ export default {
           img_url: this.imageUrl.imgList3,
           video_url: this.videoUrl
         };
-        const res = await this.$http.post("api/lobby/grade", data);
+        const res = await this.$http.post("v1/backend/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -341,7 +341,7 @@ export default {
           video_url: this.videoUrl,
           grade_id: this.form.grade_id
         };
-        const res = await this.$http.put("api/lobby/grade", data);
+        const res = await this.$http.put("v1/backend/lobby/grade", data);
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
@@ -405,7 +405,7 @@ export default {
           //   grade_id: `${row.level}`
           // }
           this.$http
-            .delete("api/lobby/grade", {
+            .delete("v1/backend/lobby/grade", {
               params: {
                 type_id: 3,
                 grade_id: `${row.id}`
@@ -431,7 +431,7 @@ export default {
     },
     getPrivilegeList() {
       this.$http
-        .get("api/lobby/name_type", {
+        .get("v1/backend/lobby/name_type", {
           params: {
             type_id: 5
           }
@@ -477,7 +477,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("api/upload", formData).then(res => {
+      this.$http.post("v1/backend/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
@@ -496,7 +496,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 2);
       });
-      this.$http.post("api/upload", formData).then(res => {
+      this.$http.post("v1/backend/upload", formData).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.videoUrl = res.data.path;

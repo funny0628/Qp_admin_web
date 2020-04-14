@@ -96,7 +96,7 @@ export default {
         username: this.formData.username,
         password: this.formData.password
       };
-      const res = await this.$http.post("api/login", data);
+      const res = await this.$http.post("v1/backend/login", data);
       console.log(res);
       if (res.data.code === 200) {
         this.$message({
