@@ -285,7 +285,7 @@ export default {
   methods: {
     getBottomMenuList() {
       this.$http
-        .get("api/lobby/bottom", {
+        .get("v1/backend/lobby/bottom", {
           params: {
             page: this.currentPage,
             limit: this.pagesize,
@@ -332,7 +332,7 @@ export default {
     //获取功能名字列表
     getFunNameList() {
       this.$http
-        .get("api/lobby/name_type", {
+        .get("v1/backend/lobby/name_type", {
           params: {
             type_id: 3
           }
@@ -344,7 +344,7 @@ export default {
     },
     //获取渠道选项列表
     getChannelList() {
-      this.$http.get("api/no_channel").then(res => {
+      this.$http.get("v1/backend/no_channel").then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });
@@ -381,7 +381,7 @@ export default {
           list_id: JSON.stringify(funArr),
           type: 1
         };
-        this.$http.post("api/lobby/bottom", data).then(res => {
+        this.$http.post("v1/backend/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -411,7 +411,7 @@ export default {
           type: 1
         };
         console.log(data);
-        this.$http.put("api/lobby/bottom", data).then(res => {
+        this.$http.put("v1/backend/lobby/bottom", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -445,7 +445,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("api/lobby/bottom", {
+            .delete("v1/backend/lobby/bottom", {
               params: {
                 id: row.id
               }

@@ -171,7 +171,7 @@ export default {
       };
     },
     async getExchangeList() {
-      const res = await this.$http.get("api/lobby/conversion",{
+      const res = await this.$http.get("v1/backend/lobby/conversion",{
         params:  {
           page: this.currentPage,
           limit: this.pagesize
@@ -194,7 +194,7 @@ export default {
           thumb: "thumb"
         };
         console.log(data);
-        const res = await this.$http.post("api/lobby/conversion", data);
+        const res = await this.$http.post("v1/backend/lobby/conversion", data);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
           this.getExchangeList();
@@ -212,7 +212,7 @@ export default {
         };
         const res = await this.$http({
           method: "put",
-          url: "api/lobby/conversion",
+          url: "v1/backend/lobby/conversion",
           data: data
         });
         console.log(res);
@@ -245,7 +245,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("api/lobby/conversion", {
+            .delete("v1/backend/lobby/conversion", {
               params: {
                 id: row.id
               }
@@ -277,7 +277,7 @@ export default {
           id: row.id,
           online_status: row.online_status === 1 ? 2 : 1
         };
-        this.$http.patch("api/lobby/conversion", data).then(res => {
+        this.$http.patch("v1/backend/lobby/conversion", data).then(res => {
           if (res.data.code === 1) {
             this.getExchangeList();
           }

@@ -181,7 +181,7 @@
               class="avatar-uploader"
               action=""
               :show-file-list="false"
-              :http-request="api/upload"
+              :http-request="v1/backend/upload"
               :before-upload="beforeAvatarUpload"
               :limit="1"
             >
@@ -280,7 +280,7 @@ export default {
       formData.append("filename", file.file);
       formData.append("types", 1);
       this.$http
-        .post("api/upload", formData)
+        .post("v1/backend/upload", formData)
         .then(data => {
           // console.log(data);
           if (data.data.code === 1 && data.data.msg === "ok") {

@@ -149,7 +149,7 @@ export default {
     },
     getChannelList() {
       this.$http
-        .get("api/operation/channels", {
+        .get("v1/backend/operation/channels", {
           params: {
             page: this.currentPage,
             limit: this.pageSize,
@@ -167,7 +167,7 @@ export default {
     },
     //获取公司列表
     getCompanyList() {
-      this.$http.get("api/operation/channel/company").then(res => {
+      this.$http.get("v1/backend/operation/channel/company").then(res => {
         console.log(res);
         if (res.data.code === 200) {
           this.companyList = res.data.data;
@@ -186,7 +186,7 @@ export default {
           channel_num: this.form.channel_id,
           company: this.form.belong_company
         };
-        this.$http.post("api/operation/channels", data).then(res => {
+        this.$http.post("v1/backend/operation/channels", data).then(res => {
           console.log(res);
           if (res.data.code === 200) {
             this.dialogFormVisible = false;
@@ -205,7 +205,7 @@ export default {
           company: this.form.belong_company,
           channel_id: this.form.id
         };
-        this.$http.put("api/operation/channels", data).then(res => {
+        this.$http.put("v1/backend/operation/channels", data).then(res => {
           console.log(res);
           if (res.data.code === 200) {
             this.dialogFormVisible = false;
@@ -246,7 +246,7 @@ export default {
             channel_id: row.id
           }
           this.$http
-            .delete("api/operation/channels", data)
+            .delete("v1/backend/operation/channels", data)
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {

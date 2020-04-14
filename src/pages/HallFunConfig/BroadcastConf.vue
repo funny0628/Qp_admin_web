@@ -204,7 +204,7 @@ export default {
       let data = {
         type_id: 5
       };
-      this.$http.post("api/lobby/server_config_two", data).then(res => {
+      this.$http.post("v1/backend/lobby/server_config_two", data).then(res => {
         console.log(res);
         if (res.data.code === 1) {
           this.$message({
@@ -216,7 +216,7 @@ export default {
     },
     getBroadcastList() {
       this.$http
-        .get("api/lobby/play_broadcast", {
+        .get("v1/backend/lobby/play_broadcast", {
           params: {
             page: this.currentPage,
             limit: this.pagesize
@@ -245,7 +245,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.post("api/lobby/play_broadcast", data).then(res => {
+        this.$http.post("v1/backend/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -270,7 +270,7 @@ export default {
           interval_time: this.form.interval_time,
           is_need_fake: this.form.is_need_fake
         };
-        this.$http.put("api/lobby/play_broadcast", data).then(res => {
+        this.$http.put("v1/backend/lobby/play_broadcast", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -326,7 +326,7 @@ export default {
       })
         .then(async () => {
           const res = await this.$http
-            .delete("api/lobby/play_broadcast", {
+            .delete("v1/backend/lobby/play_broadcast", {
               params: {
                 id: id
               }
