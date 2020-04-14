@@ -215,7 +215,7 @@ export default {
       };
     },
     async getUserList() {
-      const res = await this.$http.get("api/auth/users", {
+      const res = await this.$http.get("v1/backend/auth/users", {
         params: {
           page: this.currentPage,
           limit: this.pagesize
@@ -238,7 +238,7 @@ export default {
           password2: this.form.password2,
           channel: JSON.stringify(this.form.channel)
         };
-        const res = await this.$http.post("api/auth/users", data);
+        const res = await this.$http.post("v1/backend/auth/users", data);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
@@ -254,7 +254,7 @@ export default {
           password2: this.form.password2,
           channel: JSON.stringify(this.form.channel)
         };
-        const res = await this.$http.put("api/auth/users", data);
+        const res = await this.$http.put("v1/backend/auth/users", data);
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
@@ -309,7 +309,7 @@ export default {
     },
     // async updateUser() {
     //   console.log(this.form);
-    //   const res = await this.$http.put("api/auth/users", this.form);
+    //   const res = await this.$http.put("v1/backend/auth/users", this.form);
     //   console.log(res);
     //   if (res.data.code === 200) {
     //     this.dialogAddUser = false;
@@ -327,7 +327,7 @@ export default {
         role_id: this.form2.role,
         user_id: this.form.uid
       };
-      const res = await this.$http.post(`api/auth/role-assignment`, data);
+      const res = await this.$http.post(`v1/backend/auth/role-assignment`, data);
       console.log(res);
       if (res.data.code === 200) {
         this.dialogRoleAssign = false;
@@ -343,7 +343,7 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete("api/auth/users", {
+          const res = await this.$http.delete("v1/backend/auth/users", {
             params: {
               uids: ids
             }
@@ -367,14 +367,10 @@ export default {
     },
     //角色列表
     async getRoleList() {
-      const res = await this.$http.get("api/auth/roles");
+      const res = await this.$http.get("v1/backend/auth/roles");
       console.log(res);
       if (res.data.code === 200) {
         this.roleOpts = res.data.data;
-        this.$message({
-          type: "success",
-          message: res.data.msg
-        });
       } else {
         this.$message({
           type: "info",
@@ -384,7 +380,7 @@ export default {
     },
     getChannelList() {
       this.$http
-        .get("api/operation/channels", {
+        .get("v1/backend/operation/channels", {
           params: {
             page: 1,
             limit: 100

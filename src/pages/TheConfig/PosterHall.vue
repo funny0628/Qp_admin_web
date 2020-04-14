@@ -76,7 +76,7 @@
               :on-change="changeUpload"
               :before-upload="beforeupload"
               :limit="1"
-              ref="api/upload"
+              ref="v1/backend/upload"
               :auto-upload="false"
               accept="image/jpeg,image/gif,image/png,image/bmp"
             >

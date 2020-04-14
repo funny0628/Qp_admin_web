@@ -437,7 +437,7 @@ export default {
     //获取图片类型列表
     getPicTypeList() {
       this.$http
-        .get("api/lobby/name_type", {
+        .get("v1/backend/lobby/name_type", {
           params: {
             type_id: 7
           }
@@ -452,7 +452,7 @@ export default {
     //获取跳转路径列表
     getJumpPathList() {
       this.$http
-        .get("api/lobby/name_type", {
+        .get("v1/backend/lobby/name_type", {
           params: {
             type_id: 8
           }
@@ -466,7 +466,7 @@ export default {
     },
     getAdvertiseConfList() {
       this.$http
-        .get("api/lobby/flyer", {
+        .get("v1/backend/lobby/flyer", {
           params: {
             page: this.currentPage,
             limit: this.pagesize
@@ -501,7 +501,7 @@ export default {
           type_three: Number(this.form.word3_type),
           jump_id_three: Number(this.form.word3_jump_position)
         };
-        this.$http.post("api/lobby/flyer", data).then(res => {
+        this.$http.post("v1/backend/lobby/flyer", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -526,7 +526,7 @@ export default {
           type_three: JSON.parse(this.form.word3_type),
           jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
-        this.$http.put("api/lobby/flyer", data).then(res => {
+        this.$http.put("v1/backend/lobby/flyer", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -563,7 +563,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("api/lobby/flyer", {
+            .delete("v1/backend/lobby/flyer", {
               params: {
                 id: row.id
               }
@@ -606,7 +606,7 @@ export default {
         formData.append("filename", item.raw);
         formData.append("types", 1);
       });
-      this.$http.post("api/upload", formData).then(res => {
+      this.$http.post("v1/backend/upload", formData).then(res => {
         if (res.data.code === 1) {
           this.imageUrl[info] = res.data.path;
         }

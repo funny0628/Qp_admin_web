@@ -140,7 +140,7 @@ export default {
   },
   methods: {
     async getSystemOperationList() {
-      const res = await this.$http.get("api/auth/operation-logs");
+      const res = await this.$http.get("v1/backend/auth/operation-logs");
       console.log(res);
       if (res.data.code === 200) {
         this.tableData = res.data.data;

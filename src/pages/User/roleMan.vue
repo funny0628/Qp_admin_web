@@ -26,7 +26,7 @@
         <el-table-column prop="action" label="操作" align="center" width="200">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="primary" @click="handleRight(scope.$index, scope.row)">权限</el-button>
+            <el-button size="mini" type="primary" @click="showRightsDialog(scope.row)">权限</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -63,16 +63,25 @@
         <el-tree
           default-expand-all
           :data="rightData"
+          ref="tree"
           show-checkbox
-          check-strictly
           node-key="id"
-          :default-checked-keys="[5]"
+          :default-checked-keys="checkedKeys"
           :props="defaultProps"
         ></el-tree>
+        <!-- <el-tree
+        :data="rightsData"
+        ref="tree"
+        default-expand-all
+        :default-checked-keys="checkedKeys"
+        show-checkbox
+        node-key="id"
+        :props="defaultProps">
+      </el-tree> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRightAssign = false">取 消</el-button>
-        <el-button type="primary" @click="dialogRightAssign = false">确 定</el-button>
+        <el-button type="primary" @click="handleRights">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -110,13 +119,15 @@ export default {
       defaultProps: {
         children: "children",
         label: "display_name"
-      }
+      },
+      checkedKeys: [],//默认选中的权限id
+      currentRole: {},//记录点击权限按钮时的角色信息
     };
   },
 
   methods: {
     async getRoleList() {
-      const res = await this.$http.get("api/auth/roles", {
+      const res = await this.$http.get("v1/backend/auth/roles", {
         params: {
           page: this.currentPage,
           limit: this.pagesize
@@ -138,12 +149,12 @@ export default {
       }
     },
     async getRigthList() {
-      const res = await this.$http.get("api/auth/permissions");
+      const res = await this.$http.get("v1/backend/auth/permissions");
       console.log(res);
     },
     async addRoleFn() {
       if (!this.form.role_id) {
-        const res = await this.$http.post("api/auth/roles", {
+        const res = await this.$http.post("v1/backend/auth/roles", {
           name: this.form.name,
           display_name: this.form.display_name
         });
@@ -162,7 +173,7 @@ export default {
         }
       } else {
         console.log(this.form);
-        const res = await this.$http.put("api/auth/roles", {
+        const res = await this.$http.put("v1/backend/auth/roles", {
           name: this.form.name,
           display_name: this.form.display_name,
           role_id: this.form.role_id
@@ -182,6 +193,46 @@ export default {
           });
         }
       }
+    },
+    async handleRights() {
+      // 获取所有选中的权限id
+      const nodes = this.$refs.tree.getCheckedNodes();
+      console.log(nodes)
+      let arr = [];
+      nodes.forEach((item) => {
+        // 选中的子权限id
+        arr.push(item.id.toString());
+
+        // 子权限的id 对应的父权限的id
+        if (typeof (item.parent_id) === 'number') {
+          arr.push(item.parent_id.toString());
+        } else {
+          arr = arr.concat(item.parent_id.split(','));
+        }
+        console.log(arr)
+      });
+
+      // 数组去重
+      // const set = new Set(arr);
+
+      // const ids = [...set].join(',');
+
+      // const res = await this.$http.post(`/roles/${this.currentRole.id}/rights`, {
+      //   rids: ids
+      // });
+      // if (res.data.meta.status === 200) {
+      //   this.editRightsDialog = false;
+      //   this.$message({
+      //     type: 'success',
+      //     message: '权限分配成功'
+      //   });
+      //   this.loadData();
+      // } else {
+      //   this.$message({
+      //     type: 'error',
+      //     message: '权限分配失败'
+      //   });
+      // }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -224,14 +275,38 @@ export default {
     handleRole(index, row) {
       this.dialogRoleAssign = true;
     },
-    async handleRight(index, row) {
+    async showRightsDialog(row) {
+      console.log(row)
       this.dialogRightAssign = true;
       this.roleId = row.id;
-      const res = await this.$http.get("api/auth/permissions");
+      //获取当前角色具有的权限
+      const result = await this.$http.get("v1/backend/auth/permissions",{
+        params: {
+          role_id: row.id
+        }
+      }).then(res => {
+      })
+      // function getCurrentRoleRights(rightsList) {
+      //   const arr = []
+      //   const fn = function (list) {
+      //     list.forEach((item) => {
+      //       if(!item.children) {
+      //         arr.push(item.id)
+      //       }else {
+      //         fn(item.children)
+      //       }
+      //     })
+      //   }
+      //   fn(rightsList)
+      //   return arr
+      // }
+      // this.currentRole = role
+      const res = await this.$http.get("v1/backend/auth/permissions");
       console.log(res);
       if (res.data.code === 200) {
         this.rightData = res.data.data;
       }
+      // this.checkedKeys = getCurrentRoleRights(role.children)
     },
     handleDelete(index, row) {
       this.form.role_id = row.id;
@@ -242,7 +317,7 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete("api/auth/roles", {
+          const res = await this.$http.delete("v1/backend/auth/roles", {
             params: {
               role_id: this.form.role_id
             }
