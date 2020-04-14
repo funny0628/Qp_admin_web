@@ -198,53 +198,53 @@ export default {
         is_hundred_game: ""
       },
       rules: {
-        cost: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
-        max: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
-        min: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
+        cost: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        max: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        min: [{ required: true, message: "不可以为空", trigger: "blur" }],
         sit_coins_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         min_banker_coins: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         min_bet: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         person_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         spade_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         heart_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         club_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         diamond_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         all_spade_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         all_heart_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         all_club_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         all_diamond_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         type_id: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         open_game: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ],
         open_robot: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          { required: true, message: "不可以为空", trigger: "blur" }
         ]
       },
       activeName: "",
