@@ -4,7 +4,7 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add('form')">添加</el-button>
+        <el-button type="primary" @click="add">添加</el-button>
       </div>
     </div>
     <!-- 表格 -->
@@ -82,7 +82,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
+            <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -109,7 +109,7 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
             <el-input
@@ -135,7 +135,7 @@
               v-model="form.notice_time"
               type="date"
               placeholder="请输入通知时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -146,7 +146,7 @@
               v-model="form.start_time"
               type="date"
               placeholder="请输入结束时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -157,7 +157,7 @@
               v-model="form.end_time"
               type="date"
               placeholder="请输入结束时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -266,9 +266,8 @@ export default {
     },
 
     //添加
-    add(formName) {
+    add() {
       this.editForm("添加停服公告", true, {});
-      this.$refs[formName].resetFields();
     },
 
     //表格选中
@@ -293,7 +292,7 @@ export default {
     },
 
     //表格编辑
-    handleEdit(row, formName) {
+    handleEdit(row) {
       // console.log(row);
       let formData = DeepData(row);
       // this.form = this.formateNum(row)
@@ -302,8 +301,6 @@ export default {
       formData.notice_time = this.data(row.notice_time);
 
       this.editForm("更新停服公告", true, formData);
-
-      this.$refs[formName].resetFields();
     },
 
     //表格删除

@@ -10,7 +10,7 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add(form)">添加</el-button>
+        <el-button type="primary" @click="add">添加</el-button>
         <el-button type="primary" @click="send">发送到服务器配置</el-button>
       </div>
     </div>
@@ -75,7 +75,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row, form)"
+            <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -102,7 +102,11 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog
+        :title="title"
+        :visible.sync="visible"
+        :destroy-on-close="true"
+      >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告内容" prop="info">
             <el-input
@@ -128,7 +132,7 @@
               v-model="form.play_start_time"
               type="date"
               placeholder="请输入播放开始时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -143,7 +147,7 @@
               v-model="form.play_end_time"
               type="date"
               placeholder="请输入播放结束时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -154,7 +158,7 @@
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form, title)"
+          <el-button type="primary" @click="onSubmit('form', title)"
             >确 定</el-button
           >
           <el-button type="primary" @click="back()">返 回</el-button>
@@ -205,7 +209,14 @@ export default {
       visible: false,
       title: "添加系统公告",
       selectList: [],
-      loading: false
+      loading: false,
+      initForm: {
+        info: "",
+        num_times: "",
+        circulation: "",
+        play_start_time: "",
+        play_end_time: ""
+      }
     };
   },
   created() {
@@ -228,7 +239,7 @@ export default {
             let { data } = await this.$http.HallFunConfig.DeleteSysBroadcast({
               id_list: `(${str})`
             });
-            console.log(data);
+            // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({ page: this.currentPage, limit: this.limit });
             }
@@ -250,10 +261,8 @@ export default {
     },
 
     //添加
-    add(formName) {
+    add() {
       this.editForm("添加系统公告", true, {});
-
-      this.$refs.formName.resetFields();
     },
 
     //发送给服务器配置
@@ -267,15 +276,13 @@ export default {
           type_id: 6
         });
         // console.log(data);
-        if (data.code === 1 && data.data ) {
+        if (data.code === 1 && data.data) {
           this.loading = false;
           this.$message({
             type: "success",
             message: data.msg
           });
         }
-
-       
       });
     },
 
@@ -283,7 +290,6 @@ export default {
     handleSelectionChange(sel) {
       let idList = sel.map(item => item.id);
       // console.log(idList);
-
       this.selectList = idList;
     },
 
@@ -301,21 +307,17 @@ export default {
     },
 
     //表格编辑
-    handleEdit(row, formName) {
+    handleEdit(row) {
       let rowform = DeepData(row);
       // console.log(rowform);
       rowform.play_start_time = this.data(row.play_start_time);
       rowform.play_end_time = this.data(row.play_end_time);
-      // console.log(rowform);
       this.editForm("更新系统公告", true, rowform);
-
-      this.$refs.formName.resetFields();
     },
 
     //表格删除
     handleDelete(x, row) {
       // console.log(x, row.id);
-
       this.$confirm("确认删除吗?", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -351,6 +353,8 @@ export default {
       //表单验证
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          // console.log(this.form);
+          this.form = this.formateNum(this.form);
           if (type === "添加系统公告") {
             // console.log(this.form);
             let { data } = await this.$http.HallFunConfig.PostSysBroadcast(
@@ -360,8 +364,6 @@ export default {
               this.initdata({ page: this.currentPage, limit: this.limit });
             }
             // console.log(data);
-
-            // this.initdata({ page: this.currentPage, limit: this.limit })
           } else if (type === "更新系统公告") {
             let { data } = await this.$http.HallFunConfig.PutSysBroadcast(
               this.form
@@ -395,6 +397,11 @@ export default {
         item.circulation = item.circulation === 1 ? "按时间" : "按日期时间";
       });
       return res;
+    },
+
+    formateNum(item) {
+      item.circulation = item.circulation === "按时间" ? 1 : 2;
+      return item;
     },
 
     data(time) {
