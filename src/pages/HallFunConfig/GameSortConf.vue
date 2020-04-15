@@ -2,7 +2,7 @@
   <div id="GameSortConf-main">
     <input-area>
       <div>
-        <el-button type="danger">删除</el-button>
+        <!-- <el-button type="danger">删除</el-button> -->
         <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
         <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>

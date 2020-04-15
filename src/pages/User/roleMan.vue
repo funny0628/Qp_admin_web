@@ -1,7 +1,7 @@
 <template>
   <div id="userList—main">
     <input-area>
-      <el-button type="danger">删除</el-button>
+      <!-- <el-button type="danger">删除</el-button> -->
       <el-button type="primary" @click="addRole">添加</el-button>
     </input-area>
     <div class="bd">
@@ -137,7 +137,7 @@ export default {
       console.log(res);
       if (res.data.code === 200) {
         this.tableData = res.data.data;
-        this.total = res.data.data.total;
+        this.total = res.data.total;
         this.$message({
           type: "success",
           message: res.data.msg
@@ -283,9 +283,23 @@ export default {
     },
     async showRightsDialog(row) {
       console.log(row);
+      this.checkedKeys = [];
       this.dialogRightAssign = true;
       this.currentRole = row;
       this.roleId = row.id;
+      // this.$nextTick(() => {
+      //   this.$http.get("v1/backend/auth/permissions").then(res => {
+      //     console.log(res);
+      //     if (res.data.code === 200) {
+      //       this.rightData = res.data.data;
+      //     }
+      //   });
+      // });
+      const res = await this.$http.get("v1/backend/auth/permissions");
+      console.log(res);
+      if (res.data.code === 200) {
+        this.rightData = res.data.data;
+      }
       //获取当前角色具有的权限
       function getCurrentRoleRights(rightsList) {
         console.log(rightsList);
@@ -296,14 +310,11 @@ export default {
             return undefined;
           }
           list.forEach(item => {
-            console.log(item);
             // arr.push(item.id)
             if (!item.children) {
-              console.log("我进来了？");
               arr.push(item.id);
-              console.log(arr);
             } else {
-              arr.push(item.id)
+              arr.push(item.id);
               fn(item.children);
             }
           });
@@ -312,22 +323,20 @@ export default {
         return arr;
       }
       const result = await this.$http
-        .get("v1/backend/auth/permissions", {
+        .get("v1/backend/auth/permission-assignment", {
           params: {
             role_id: row.id
           }
         })
         .then(res => {
           console.log(res);
-          console.log(row.id)
-          this.checkedKeys = getCurrentRoleRights(res.data.data);
+          console.log(row.id);
+          if (res.data.code === 200) {
+            this.checkedKeys = getCurrentRoleRights(res.data.data);
+            // this.getRoleList()
+          }
           console.log(this.checkedKeys);
         });
-      const res = await this.$http.get("v1/backend/auth/permissions");
-      console.log(res);
-      if (res.data.code === 200) {
-        this.rightData = res.data.data;
-      }
     },
     handleDelete(index, row) {
       this.form.role_id = row.id;

@@ -16,11 +16,11 @@
       <info-table
         :search="search"
         :table-style="tableStyle"
-        :records="records"
+        :records="tableData"
         :page-info="pageInfo"
         :hide-page="true"
       >
-        <info-table-item :table-style="tableStyle">
+        <info-table-item :table-style="tableStyle" :hide-mul="true">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
               <el-button
@@ -123,6 +123,7 @@ export default {
         { label: "操作", prop: "action", width: "" }
       ],
       records: [],
+      tableData: [],
       pageInfo: new PageInfo(1, [5, 10, 15, 20], 6),
       dialogFormVisible: false,
       dialogTitle: "",
@@ -144,8 +145,8 @@ export default {
       this.$http
         .get("/v1/backend/lobby/game_list", {
           params: {
-            page: 1,
-            limit: 10,
+            page: this.currentPage,
+            limit: this.pagesize,
             parent_id: this.form.parent_id
           }
         })
@@ -153,6 +154,7 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.records = res.data.data;
+            this.tableData = res.data.data.slice(1)
             this.total = res.data.total
             // this.gameOpts = res.data.data
           }

@@ -12,33 +12,21 @@
       </el-select>
       <el-input v-model="format.router_name" placeholder="请输入路由名称" size="medium" clearable></el-input>
       <el-date-picker
-        v-model="value2"
+        v-model="format.dateArr"
         type="datetimerange"
         :picker-options="pickerOptions"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        :clearable="false"
+        disabled
       ></el-date-picker>
       <el-button type="primary" size="medium" @click="search">搜索</el-button>
     </input-area>
     <div class="bd">
-      <!-- <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="tabeData"
-        :page-info="pageInfo"
-        @pageNumFn="pageNumFn"
-        @pageSizeFn="pageSizeFn"
-      >
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template>{{scope.row[scope.prop]}}</template>
-          </template>
-        </info-table-item>
-      </info-table>-->
       <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="user_id" label="用户ID" align="center"></el-table-column>
         <el-table-column prop="user_id" label="操作者" align="center"></el-table-column>
         <el-table-column prop="req_method" label="请求方法" align="center"></el-table-column>
         <el-table-column prop="req_path" label="请求路由" align="center"></el-table-column>
@@ -60,20 +48,11 @@
 </template>
 
 <script>
-import InfoTable from "../../plugin/components/InfoTable";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PermissionButton from "../../plugin/components/PermissionButton";
-import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
   name: "SystemJournal",
-  extends: BaseIframe,
   components: {
-    InfoTableItem,
-    InputArea,
-    InfoTable
+    InputArea
   },
   data() {
     return {
@@ -111,36 +90,34 @@ export default {
           }
         ]
       },
-      value2: "",
       requestWay: [
-        { value: 1, label: "GET" },
-        { value: 2, label: "POST" },
-        { value: 3, label: "DELETE" },
-        { value: 4, label: "PUT" }
+        { value: "GET", label: "GET" },
+        { value: "POST", label: "POST" },
+        { value: "DELETE", label: "DELETE" },
+        { value: "PUT", label: "PUT" }
       ],
       format: {
         man_id: "",
         req_way: "",
-        router_name: ""
+        router_name: "",
+        dateArr: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()]
       },
-      tableStyle: [
-        { label: "ID", prop: "id", width: "" },
-        { label: "操作者", prop: "user_id", width: "" },
-        { label: "请求方法", prop: "req_method", width: "" },
-        { label: "请求路由", prop: "req_path", width: "" },
-        { label: "请求参数", prop: "req_params", width: "" },
-        { label: "请求IP", prop: "req_ip", width: "" },
-        { label: "请求时间", prop: "create_time", width: "" }
-      ],
-      tableData: [],
-      records: [],
-      pageInfo: new PageInfo(1, [5, 10, 15, 20],1),
-      dialogAddVisible: false
+      tableData: []
     };
   },
   methods: {
     async getSystemOperationList() {
-      const res = await this.$http.get("v1/backend/auth/operation-logs");
+      const res = await this.$http.get("v1/backend/auth/operation-logs", {
+        params: {
+          user_id: Number(this.format.man_id),
+          req_method: this.format.req_way,
+          req_route: this.format.router_name,
+          start_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[0])).getTime()/1000) : 0,
+          end_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[1])).getTime()/1000) : 0,
+          page: this.currentPage,
+          limit: this.pagesize
+        }
+      });
       console.log(res);
       if (res.data.code === 200) {
         this.tableData = res.data.data;
@@ -148,7 +125,9 @@ export default {
       }
       console.log(res);
     },
-    search() {},
+    search() {
+      this.getSystemOperationList();
+    },
     // pageNumFn(val) {
     //   console.log(val, this.pageSize, this.pageNum);
     //   this.pageNum = val;
@@ -158,13 +137,13 @@ export default {
     //   this.pageSize = val;
     // },
     handleSizeChange(val) {
-      this.pagesize = val
-      this.getSystemOperationList()
+      this.pagesize = val;
+      this.getSystemOperationList();
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getSystemOperationList()
-    },
+      this.currentPage = val;
+      this.getSystemOperationList();
+    }
   },
   mounted() {
     this.getSystemOperationList();
@@ -184,10 +163,9 @@ export default {
   margin-top: 20px;
 }
 #SystemJournal-main >>> .el-date-editor .el-range-separator {
-  width: 10%;
+  width: 6%;
 }
 #home .main-box .input-area >>> .el-date-editor {
   width: auto;
 }
-
 </style>
