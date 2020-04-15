@@ -1,5 +1,11 @@
 <template>
-  <div id="F_ProbConfig">
+  <div
+    id="F_ProbConfig"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- 头部 -->
     <div class="title">
       <el-button type="primary" @click="submit(1)">保存</el-button
@@ -18,7 +24,7 @@
           </p>
         </div>
       </div>
-      <div class="item" v-for="(item,index) in list">
+      <div class="item" v-for="(item, index) in list">
         <div class="item_div left">
           {{ item.title }}
         </div>
@@ -36,20 +42,19 @@
 export default {
   data() {
     return {
-      Data:{
-        gaopaibudaiA:"高牌不带A",
-        gaopaidaiA:"高牌带A",
-        duizi2_9:"对子2-9",
-        duizi10_A:"对子10-A",
-        shunzi:"顺子",
-        jinhua:"金花",
-        shunjin:"顺金",
-        baozi:"豹子",
+      Data: {
+        gaopaibudaiA: "高牌不带A",
+        gaopaidaiA: "高牌带A",
+        duizi2_9: "对子2-9",
+        duizi10_A: "对子10-A",
+        shunzi: "顺子",
+        jinhua: "金花",
+        shunjin: "顺金",
+        baozi: "豹子"
       },
       id: 0,
       keys: "",
       loading: false,
-      input: "",
       list: []
     };
   },
@@ -59,78 +64,66 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "card_type_general.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     Object.keys(res.card_type_general).forEach(item => {
-      this.list.push({title:item,val:res.card_type_general[item]})
+      this.list.push({ title: item, val: res.card_type_general[item] });
     });
-    console.log(this.list);
-    Object.keys(this.Data).forEach((item)=>{
-      this.list.forEach((it)=>{
-        if(item === it.title){
-          it.title = this.Data[item]
+    // console.log(this.list);
+    Object.keys(this.Data).forEach(item => {
+      this.list.forEach(it => {
+        if (item === it.title) {
+          it.title = this.Data[item];
         }
-      })
-    })
+      });
+    });
   },
 
   methods: {
     async submit(type) {
-    if(type === 1){
-
- console.log(this.Data,this.list);
-      Object.keys(this.Data).forEach((item)=>{
-        this.list.forEach((it)=>{
-          if(it.title === this.Data[item]){
-            console.log("=============");
-            
-           this.Data[item] = it.val
-            
+      let newobj = {};
+      Object.keys(this.Data).forEach(item => {
+        this.list.forEach(it => {
+          if (it.title === this.Data[item]) {
+            newobj[item] = it.val;
           }
-        })
-      })
-       console.log(this.Data,this.list);
-      
-      let resData = {
-        card_type_general:this.Data
-      }
-      console.log(resData);
-      
-    //       let { data } = await this.$http.HallFunConfig.PutServerConfig({
-    //      keys:this.keys,
-    //      values:JSON.stringify(this.resData),
-    //      id:this.id,
-    //    });
-    // console.log(data);
-    // if(data.code === 1 && data.msg === 'ok'){
-    //   this.$message({
-    //     type: "success",
-    //     message: "保存成功!"
-    //   });
-    // }
-      }else if(type === 2){
-        this.loading = true
-     
-       let { data } = await this.$http.HallFunConfig.PostServerConfig({
-         keys:this.keys,
-         values:JSON.stringify(this.resData),
-         id:this.id,
-       });
-      console.log(data);
-    //   if(data.code === 1 && data.msg === 'ok'){
-    //     this.loading = false
-    //   this.$message({
-    //     type: "success",
-    //     message: "发送服务器配置成功!"
-    //   });
-    // }
+        });
+      });
 
+      if (type === 1) {
+        let { data } = await this.$http.HallFunConfig.PutServerConfig({
+          keys: this.keys,
+          values: JSON.stringify({ card_type_general: newobj }),
+          id: this.id
+        });
+        // console.log(data);
+        if (data.code === 1 && data.msg === "ok") {
+          this.$message({
+            type: "success",
+            message: "保存成功!"
+          });
+        }
+      } else if (type === 2) {
+        this.loading = true;
+
+        let { data } = await this.$http.HallFunConfig.PostServerConfig({
+          keys: this.keys,
+          values: JSON.stringify({ card_type_general: newobj }),
+          id: this.id
+        });
+        // console.log(data);
+        if (data.code === 1 && data.msg === "ok") {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: "发送服务器配置成功!"
+          });
+        }
       }
-    },
-    
+    }
   }
 };
 </script>
