@@ -1,11 +1,11 @@
 <template>
   <div id="ExchangeConf-main">
     <input-area>
-      <el-button
+      <!-- <el-button
         type="danger"
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="dialogFormVisible=true"
-      >删除</el-button>
+      >删除</el-button> -->
       <el-button type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="openAdd">添加</el-button>
       <el-button type="primary" @click="dialogVisible=true">保留金额设置</el-button>
     </input-area>
@@ -73,22 +73,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="角标" :label-width="formLabelWidth">
-          <el-upload
-            :limit="1"
-            class="upload-demo"
+           <el-upload
+            class="avatar-uploader"
             action
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
-            :http-request="httpRequest"
+            :fileList="fileList"
+            accept="image/jpeg, image/png"
+            :show-file-list="false"
+            :on-change="handleChange"
+            :before-upload="beforeUpload"
+            :on-success="handleAvatarSuccess"
+            :http-request="uploadFile"
           >
-            <el-button size="small" type="primary">点击上传</el-button>
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
       </el-form>
-      <div>{{fileList}}</div>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addConfig">确 定</el-button>
@@ -126,6 +126,8 @@ export default {
       pagesize: 5,
       currentPage: 1,
       total: 0,
+      imageUrl: "",
+      fileList: [],
       tableData: [],
       dialogFormVisible: false,
       dialogVisible: false,
@@ -191,7 +193,7 @@ export default {
           min_money: Number(this.form.exchange_min),
           max_money: Number(this.form.exchange_max),
           online_status: Number(this.form.status),
-          thumb: "thumb"
+          thumb: this.imageUrl
         };
         console.log(data);
         const res = await this.$http.post("v1/backend/lobby/conversion", data);
@@ -207,7 +209,7 @@ export default {
           min_money: Number(this.form.exchange_min),
           max_money: Number(this.form.exchange_max),
           online_status: Number(this.form.status),
-          thumb: "thumb",
+          thumb: this.imageUrl,
           id: this.form.id
         };
         const res = await this.$http({
@@ -226,6 +228,8 @@ export default {
       this.dialogFormVisible = true;
       this.dialogTitle = "添加配置信息";
       this.resetForm();
+      this.imageUrl = "",
+      this.fileList = []
     },
     handleEdit(row) {
       console.log(row);
@@ -236,6 +240,7 @@ export default {
       this.form.exchange_min = row.min_money;
       this.form.exchange_max = row.max_money;
       this.form.status = String(row.status);
+      this.imageUrl = row.thumb
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -291,20 +296,23 @@ export default {
         message: "设置成功"
       });
     },
-    httpRequest(params) {
-      const file = params.file,
-        fileType = file.type,
-        isImage = fileType.indexOf("image") != -1,
-        isLt2M = file.size / 1024 / 1024 < 2;
-      // 这里常规检验，看项目需求而定
-      if (!isImage) {
-        this.$message.error("只能上传图片格式png、jpg、gif!");
-        return;
-      }
-      if (!isLt2M) {
-        this.$message.error("只能上传图片大小小于2M");
-        return;
-      }
+    handleAvatarSuccess(res, file) {},
+    handleChange(file, fileList) {
+      this.fileList = fileList;
+    },
+    beforeUpload(file) {},
+    uploadFile() {
+      let formData = new FormData();
+      this.fileList.forEach(item => {
+        formData.append("filename", item.raw);
+        formData.append("types", 1);
+      });
+      this.$http.post("v1/backend/upload", formData).then(res => {
+        console.log(res)
+        if (res.data.code === 1) {
+          this.imageUrl = res.data.path;
+        }
+      });
     },
     handleSizeChange(val) {
       this.pagesize = val;
@@ -338,12 +346,6 @@ export default {
           });
         });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    }
   },
   mounted() {
     this.getExchangeList();
@@ -365,5 +367,29 @@ export default {
 }
 .el-pagination {
   margin-top: 20px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

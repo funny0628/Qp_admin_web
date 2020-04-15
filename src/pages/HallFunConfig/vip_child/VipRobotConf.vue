@@ -1,7 +1,7 @@
 <template>
   <div id="VipClassConf-main">
     <input-area>
-      <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button>
+      <!-- <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button> -->
       <el-button
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"

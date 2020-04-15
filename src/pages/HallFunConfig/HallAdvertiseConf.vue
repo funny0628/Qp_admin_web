@@ -70,7 +70,6 @@
             <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <div>{{fileList}}</div>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
@@ -203,7 +202,6 @@
           </el-col>
         </el-row>
       </el-form>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addNewChannel">确 定</el-button>
@@ -553,6 +551,9 @@ export default {
       this.form.word1_jump_position = JSON.stringify(row.jump_id_one);
       this.form.word2_jump_position = JSON.stringify(row.jump_id_two);
       this.form.word3_jump_position = JSON.stringify(row.jump_id_three);
+      this.imageUrl.imgList1 = row.pic_one_url
+      this.imageUrl.imgList2 = row.pic_two_url
+      this.imageUrl.imgList3 = row.pic_three_url
     },
     handleDelete(row) {
       console.log(row);

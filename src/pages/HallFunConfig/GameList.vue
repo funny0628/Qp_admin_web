@@ -68,8 +68,6 @@
           <el-input v-model="form.robot_type" disabled autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
-      <div>{{records}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addGame">确 定</el-button>
