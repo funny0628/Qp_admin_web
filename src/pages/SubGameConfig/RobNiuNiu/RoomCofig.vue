@@ -1,5 +1,8 @@
 <template>
-  <div id="RoomCofig">
+  <div id="RoomCofig"  v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)">
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -68,7 +71,7 @@
 export default {
   data() {
     return {
-      activeName: "first",
+      activeName: "",
       ruleForm: {
         dizhu: "",
         cost: "",
@@ -95,22 +98,27 @@ export default {
          open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
       },
       //房间配置的所有数据
-      allData:'',
+      allData:{},
       //当前游戏房间的所有数据
       currentlist:{},
       //匹配当前游戏的条件
       namelist:['200','201','202','203'],
       //游戏场次类别
       labellist:[],
+      id: 0,
+      keys: "",
+      loading: false,
     };
   },
   async created() {
       let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "roomdata.lua"
     });
-    console.log(data);
+    // console.log(data);
+     this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.allData = res
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
@@ -127,7 +135,7 @@ export default {
     })
   
     
-    console.log(this.currentlist,this.activeName,this.ruleForm,this.labellist);
+    // console.log(this.currentlist,this.activeName,this.ruleForm,this.labellist,this.allData );
     
   },
   methods: {
@@ -139,27 +147,57 @@ export default {
      })
     },
     submitForm(formName,type) {
-      console.log(this.ruleForm);
-      Object.keys(this.currentlist).forEach((item)=>{
-        if(this.ruleForm.type_id === item){
-          this.currentlist[item] = this.ruleForm
-        }
-        
-       
-      })
-      console.log(this.ruleForm,this.currentlist);
+        this.$refs[formName].validate(async valid => {
+        if (valid) {
+          // console.log(this.ruleForm,this.currentlist,this.allData);
+          let all = JSON.parse(JSON.stringify(this.allData))
+          this.namelist.forEach((item)=>{
+            Object.keys(all).forEach((it)=>{
+              if(item === it){
+                all[it].grab_banker_times = all[it].grab_banker_times.split('|')
+              }
+            })
+          })
+          // console.log(all);
+      if(type === 1){
+        //发送put
+         let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(all),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+      }else if(type === 2){
+        //发送post
+          this.loading = true;
 
-      Object.keys(this.currentlist).forEach((item)=>{
-        
-        Object.keys(this.allData).forEach((it)=>{
-          if(item === it){
-            // this.allData[it].grab_banker_times =this.currentlist[item].grab_banker_times.join('|')
-            this.allData[it] = this.currentlist[item]
-           
-          }
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(all),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }
+      }
+
+        }else{
+            console.log("error submit!!");
+          return false;
+        }
         })
-      })
-      console.log(this.allData,this.currentlist);
+   
       
       
 

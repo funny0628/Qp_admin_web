@@ -1,7 +1,7 @@
 <template>
   <div id="BottomMenu-main">
     <input-area>
-      <el-button type="danger">删除</el-button>
+      <!-- <el-button type="danger">删除</el-button> -->
       <el-button type="primary" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
@@ -77,7 +77,6 @@
               v-if="showEditCheckChannel"
               v-model="isEditCheckChannel"
             >{{editCheckChannel}}</el-checkbox>
-            <div>{{form.checkList}}</div>
           </el-form-item>
           <el-form-item label="功能1">
             <el-row :gutter="20" style="width:100%;">
@@ -93,7 +92,6 @@
                 </el-select>
               </el-col>
             </el-row>
-            <div>{{form}}</div>
           </el-form-item>
           <el-form-item label="功能2">
             <el-row :gutter="20" style="width:100%;">
@@ -170,7 +168,7 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="功能7">
+          <!-- <el-form-item label="功能7">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
@@ -184,8 +182,8 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item>
-          <el-form-item label="功能8">
+          </el-form-item> -->
+          <!-- <el-form-item label="功能8">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
@@ -199,7 +197,7 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>

@@ -1,7 +1,7 @@
 <template>
   <div id="VipClassConf-main">
     <input-area>
-      <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button>
+      <!-- <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button> -->
       <el-button
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"
@@ -25,7 +25,7 @@
         <el-table-column prop="icon_border_url" label="头像框" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleOffline">下线</el-button>
+            <!-- <el-button size="mini" type="primary" @click="handleOffline">下线</el-button> -->
             <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -164,8 +164,8 @@
       </el-form>
       {{form}}
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addNewConf">确认</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">返回</el-button>
+        <el-button type="primary" @click="addNewConf">确认</el-button>
+        <el-button @click="dialogFormVisible = false">返回</el-button>
       </div>
     </el-dialog>
   </div>
@@ -323,6 +323,7 @@ export default {
           this.getVipList();
         }
       } else {
+        console.log(this.form.checkList)
         let data = {
           level: Number(this.form.vip_class),
           privilege: this.form.checkList,

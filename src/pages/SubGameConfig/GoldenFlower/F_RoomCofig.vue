@@ -1,20 +1,26 @@
 
 
 <template>
-  <div id="F_RoomCofig">
+  <div id="F_RoomCofig"  v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)">
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="金花-低倍场" name="first"></el-tab-pane>
-        <el-tab-pane label="金花-中倍场" name="second"></el-tab-pane>
-        <el-tab-pane label="金花-高倍场 " name="third"></el-tab-pane>
-        <el-tab-pane label="金花-土豪场" name="four"></el-tab-pane>
+        <el-tab-pane :label="labellist[0]" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane :label="labellist[1]" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane :label="labellist[2] " :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane :label="labellist[3]" :name="namelist[3]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
     
     <div class="form">
-      <el-button style="margin-bottom:10px" type="success" @click="send">发送到服务器配置</el-button>
+      <el-button style="margin-bottom:10px" type="success" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
+       <el-button type="primary" @click="submitForm('ruleForm',1)"
+            >立即提交</el-button
+          >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -22,59 +28,51 @@
         label-width="200px"
         class="demo-ruleForm"
       >
-        <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.room" placeholder="房间名称"></el-input>房间ID:103
+        <el-form-item label="房间名称" prop="type_id">
+          <el-input style="width:200px" v-model="ruleForm.type_id" placeholder="房间名称"></el-input>房间ID:103
         </el-form-item>
 
-        <el-form-item label="场次开关" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
+        <el-form-item label="场次开关" prop="open_game">
+          <el-switch v-model="ruleForm.open_game"></el-switch>
         </el-form-item>
-        <el-form-item label="是否开放机器人" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
+        <el-form-item label="是否开放机器人" prop="open_robot">
+          <el-switch v-model="ruleForm.open_robot"></el-switch>
         </el-form-item>
-        <el-form-item label="ip限制" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
+        <el-form-item label="ip限制" prop="ip_limit">
+          <el-switch v-model="ruleForm.ip_limit"></el-switch>
         </el-form-item>
 
-        <el-form-item label="底注" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="底注" prop="dizhu">
+          <el-input style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
         </el-form-item>
-        <el-form-item label="顶注" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="顶注" prop="dingzhu">
+          <el-input style="width:200px" v-model="ruleForm.dingzhu" placeholder="0"></el-input>
         </el-form-item>
-        <el-form-item label="台费" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>(百分比)
+        <el-form-item label="台费" prop="cost">
+          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
-        <el-form-item label="携带上限" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="携带上限" prop="max">
+          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
-        <el-form-item label="携带下限" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="携带下限" prop="min">
+          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="最大看牌轮数" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="最大看牌轮数" prop="max_look_round">
+          <el-input style="width:200px" v-model="ruleForm.max_look_round" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="最大可比轮数" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="最大可比轮数" prop="max_bet_round">
+          <el-input style="width:200px" v-model="ruleForm.max_bet_round" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="最小可比轮数" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="最小可比轮数" prop="comparable_bet_round">
+          <el-input style="width:200px" v-model="ruleForm.comparable_bet_round" placeholder="0"></el-input>
      </el-form-item>
      
-       
-     
-
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
-            >立即提交</el-button
-          >
-        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -84,18 +82,133 @@
 export default {
   data() {
     return {
-      activeName: "first",
+      activeName: "",
       ruleForm: {
-        delivery:true,
-
+        dizhu:"",
+        dingzhu:"",
+        cost: "",
+        max:"",
+        min:"",
+        max_look_round: "",
+        comparable_bet_round: "",
+        max_bet_round: "",
+        type_id: "",
+        name: "",
+        ip_limit:"",
+        open_game:"",
+        open_robot:"",
+        robot_type: "",
+        is_hundred_game:"",
       },
-      rules: {}
+      rules: {
+        dizhu: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        dingzhu: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        cost: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        max: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        min: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        max_look_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        comparable_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        max_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        type_id: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        name: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        robot_type: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        is_hundred_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
+      },
+       //房间配置的所有数据
+      allData:{},
+      //当前游戏房间的所有数据
+      currentlist:{},
+      //匹配当前游戏的条件
+      namelist:['100','101','102','103'],
+      //游戏场次类别
+      labellist:[],
+      id: 0,
+      keys: "",
+      loading: false,
     };
   },
+  async created() {
+       let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      key: "roomdata.lua"
+    });
+    // console.log(data);
+     this.id = data.data[0].id;
+    this.keys = data.data[0].sys_key;
+    let res = JSON.parse(data.data[0].sys_val);
+    // console.log(res);
+    this.allData = res;
+    this.namelist.forEach((item,index)=>{
+      Object.keys(res).forEach((it)=>{
+        if(item === it){
+          this.currentlist[item] = res[it]
+          this.labellist.push(res[it].name)
+        }
+        if(index === 0){
+          this.activeName = item
+          this.ruleForm = res[item]
+        }
+      })
+    })
+    // console.log(this.allData,this.currentlist,this.ruleForm,this.labellist);
+    
+     
+  },
   methods: {
-    send() {},
-    handleClick() {},
-    submitForm() {},
+
+    handleClick(tab) {
+      this.namelist.forEach((item)=>{
+        if(item === tab.name){
+          this.ruleForm = this.currentlist[item]
+        }
+      })
+    },
+    submitForm(formName,type) {
+       this.$refs[formName].validate(async valid => {
+        if (valid) {
+          // console.log(this.ruleForm,this.currentlist,this.allData);
+          
+          if(type === 1){
+            //发送put
+              let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          }else if(type === 2){
+            //发送post
+             this.loading = true;
+
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }
+          }
+
+        }else{
+          console.log("error submit!!");
+          return false;
+        }
+       })
+    },
   }
 };
 </script>

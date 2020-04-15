@@ -66,6 +66,7 @@
           ref="tree"
           show-checkbox
           node-key="id"
+          check-strictly
           :default-checked-keys="checkedKeys"
           :props="defaultProps"
         ></el-tree>
@@ -77,7 +78,7 @@
         show-checkbox
         node-key="id"
         :props="defaultProps">
-      </el-tree> -->
+        </el-tree>-->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRightAssign = false">取 消</el-button>
@@ -120,8 +121,8 @@ export default {
         children: "children",
         label: "display_name"
       },
-      checkedKeys: [],//默认选中的权限id
-      currentRole: {},//记录点击权限按钮时的角色信息
+      checkedKeys: [], //默认选中的权限id
+      currentRole: {} //记录点击权限按钮时的角色信息
     };
   },
 
@@ -178,7 +179,7 @@ export default {
           display_name: this.form.display_name,
           role_id: this.form.role_id
         });
-        console.log(res)
+        console.log(res);
         if (res.data.code === 200) {
           this.dialogAddRole = false;
           this.getRoleList();
@@ -197,42 +198,47 @@ export default {
     async handleRights() {
       // 获取所有选中的权限id
       const nodes = this.$refs.tree.getCheckedNodes();
-      console.log(nodes)
+      console.log(nodes);
       let arr = [];
-      nodes.forEach((item) => {
+      nodes.forEach(item => {
         // 选中的子权限id
         arr.push(item.id.toString());
 
         // 子权限的id 对应的父权限的id
-        if (typeof (item.parent_id) === 'number') {
-          arr.push(item.parent_id.toString());
-        } else {
-          arr = arr.concat(item.parent_id.split(','));
-        }
-        console.log(arr)
+        // if (typeof item.parent_id === "number") {
+        //   arr.push(item.parent_id.toString());
+        // } else {
+        //   arr = arr.concat(item.parent_id.split(","));
+        // }
+        console.log(arr);
       });
 
       // 数组去重
-      // const set = new Set(arr);
+      const set = new Set(arr);
 
-      // const ids = [...set].join(',');
-
-      // const res = await this.$http.post(`/roles/${this.currentRole.id}/rights`, {
-      //   rids: ids
-      // });
-      // if (res.data.meta.status === 200) {
-      //   this.editRightsDialog = false;
-      //   this.$message({
-      //     type: 'success',
-      //     message: '权限分配成功'
-      //   });
-      //   this.loadData();
-      // } else {
-      //   this.$message({
-      //     type: 'error',
-      //     message: '权限分配失败'
-      //   });
-      // }
+      const ids = [...set].join(",");
+      console.log(ids);
+      let data = {
+        permission_ids: ids,
+        role_id: this.currentRole.id
+      };
+      const res = await this.$http.post(
+        "v1/backend/auth/permission-assignment",
+        data
+      );
+      console.log(res);
+      if (res.data.code === 200) {
+        this.dialogRightAssign = false;
+        this.$message({
+          type: "success",
+          message: res.data.msg
+        });
+      } else {
+        this.$message({
+          type: "error",
+          message: res.data.msg
+        });
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -276,37 +282,52 @@ export default {
       this.dialogRoleAssign = true;
     },
     async showRightsDialog(row) {
-      console.log(row)
+      console.log(row);
       this.dialogRightAssign = true;
+      this.currentRole = row;
       this.roleId = row.id;
       //获取当前角色具有的权限
-      const result = await this.$http.get("v1/backend/auth/permissions",{
-        params: {
-          role_id: row.id
-        }
-      }).then(res => {
-      })
-      // function getCurrentRoleRights(rightsList) {
-      //   const arr = []
-      //   const fn = function (list) {
-      //     list.forEach((item) => {
-      //       if(!item.children) {
-      //         arr.push(item.id)
-      //       }else {
-      //         fn(item.children)
-      //       }
-      //     })
-      //   }
-      //   fn(rightsList)
-      //   return arr
-      // }
-      // this.currentRole = role
+      function getCurrentRoleRights(rightsList) {
+        console.log(rightsList);
+        const arr = [];
+        const fn = function(list) {
+          console.log(list, list.length);
+          if (list.length === 0 || undefined) {
+            return undefined;
+          }
+          list.forEach(item => {
+            console.log(item);
+            // arr.push(item.id)
+            if (!item.children) {
+              console.log("我进来了？");
+              arr.push(item.id);
+              console.log(arr);
+            } else {
+              arr.push(item.id)
+              fn(item.children);
+            }
+          });
+        };
+        fn(rightsList);
+        return arr;
+      }
+      const result = await this.$http
+        .get("v1/backend/auth/permissions", {
+          params: {
+            role_id: row.id
+          }
+        })
+        .then(res => {
+          console.log(res);
+          console.log(row.id)
+          this.checkedKeys = getCurrentRoleRights(res.data.data);
+          console.log(this.checkedKeys);
+        });
       const res = await this.$http.get("v1/backend/auth/permissions");
       console.log(res);
       if (res.data.code === 200) {
         this.rightData = res.data.data;
       }
-      // this.checkedKeys = getCurrentRoleRights(role.children)
     },
     handleDelete(index, row) {
       this.form.role_id = row.id;
@@ -317,6 +338,9 @@ export default {
         type: "warning"
       })
         .then(async () => {
+          // let data = {
+          //   role_id: this.form.role_id
+          // }
           const res = await this.$http.delete("v1/backend/auth/roles", {
             params: {
               role_id: this.form.role_id

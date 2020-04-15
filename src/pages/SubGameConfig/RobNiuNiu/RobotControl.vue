@@ -1,5 +1,11 @@
 <template>
-  <div id="RobotControl">
+  <div
+    id="RobotControl"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <el-button type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
     ><el-button type="primary" @click="submitForm('ruleForm', 2)"
       >发送到服务器配置</el-button
@@ -7,10 +13,10 @@
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="抢庄牛牛-低倍场" name="nn_normal"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-中倍场" name="nn_senior"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-高倍场" name="nn_three"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-土豪场" name="nn_four"></el-tab-pane>
+        <el-tab-pane label="抢庄牛牛-低倍场" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="抢庄牛牛-中倍场" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="抢庄牛牛-高倍场" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane label="抢庄牛牛-土豪场" :name="namelist[3]"></el-tab-pane>
         <!-- <el-tab-pane label="test1" name="five"></el-tab-pane> -->
       </el-tabs>
     </div>
@@ -151,8 +157,8 @@
 export default {
   data() {
     return {
-      activeName: "nn_normal",
-      resData:{},
+      activeName: "",
+      resData: {},
       ruleForm: {
         count: "",
         num_rate: "",
@@ -213,7 +219,8 @@ export default {
       },
       id: 0,
       keys: "",
-      loading: false
+      loading: false,
+      namelist: []
     };
   },
 
@@ -222,15 +229,17 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "qznn_robot_control.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.resData = res;
-    this.ruleForm = res.nn_normal;
+    this.namelist = Object.keys(res);
+    this.activeName = this.namelist[0];
+    this.ruleForm = res[this.namelist[0]];
 
-    console.log(this.resData, this.ruleForm);
+    // console.log(this.resData, this.ruleForm);
   },
 
   methods: {
@@ -244,21 +253,46 @@ export default {
     },
 
     submitForm(formName, type) {
-      console.log(this.ruleForm, type);
+      // console.log(this.ruleForm, this.resData, type);
 
       this.$refs[formName].validate(async valid => {
         if (valid) {
           //1.先拿到要发送到后台的数据
           //2.判断类型
-          if(type == 1){
+          if (type == 1) {
             //发送put
-          }else if(type === 2){
+            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          } else if (type === 2) {
+            this.loading = true;
             //发送post
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }
           }
-
-        }else{
-          console.log('error');
-          return false
+        } else {
+          console.log("error");
+          return false;
         }
       });
     }

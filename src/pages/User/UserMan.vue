@@ -1,7 +1,7 @@
 <template>
   <div id="userMan—main">
     <input-area>
-      <el-button type="danger">删除</el-button>
+      <!-- <el-button type="danger">删除</el-button> -->
       <el-button type="primary" @click="addUser">添加</el-button>
     </input-area>
     <div class="bd">
@@ -69,14 +69,9 @@
         >
           <el-input v-model="form.password2" type="password" autocomplete="off"></el-input>
         </el-form-item>
-        <div>{{form}}</div>
         <el-form-item label="渠道" :label-width="formLabelWidth" style="width:100%;">
           <el-checkbox-group :limit="1" v-model="form.channel">
             <el-checkbox v-for="(item,index) in channelList" :key="index" :label="item.name"></el-checkbox>
-            <!-- <el-checkbox label="官网"></el-checkbox>
-            <el-checkbox label="ios"></el-checkbox>
-            <el-checkbox label="殴打平均分IPO"></el-checkbox>
-            <el-checkbox label="无服务范围"></el-checkbox>-->
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -97,7 +92,6 @@
               :value="item.id"
             >{{item.display_name}}</el-option>
           </el-select>
-          <div>{{form2.role}}</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -176,8 +170,8 @@ export default {
         nick_name: "",
         email: "",
         phone: "",
-        password: "123456",
-        password2: "123456",
+        password: "",
+        password2: "",
         channel: []
       },
       channelList: [],
@@ -209,8 +203,8 @@ export default {
         nick_name: "",
         email: "",
         phone: "",
-        password: "123456",
-        password2: "123456",
+        password: "",
+        password2: "",
         channel: []
       };
     },
@@ -246,6 +240,7 @@ export default {
         }
       } else {
         let data = {
+          uid: this.form.uid,
           username: this.form.username,
           nick_name: this.form.nick_name,
           email: this.form.email,
