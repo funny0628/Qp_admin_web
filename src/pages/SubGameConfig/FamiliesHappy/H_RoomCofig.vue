@@ -1,22 +1,25 @@
 
 
 <template>
-  <div id="H_RoomCofig">
+  <div id="H_RoomCofig"  v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)">
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="传奇厅01" name="first"></el-tab-pane>
-        <el-tab-pane label="传奇厅02" name="second"></el-tab-pane>
-        <el-tab-pane label="荣耀厅01 " name="third"></el-tab-pane>
-        <el-tab-pane label="荣耀厅02" name="four"></el-tab-pane>
-        <el-tab-pane label="聚龙厅01" name="five"></el-tab-pane>
-        <el-tab-pane label="聚龙厅02" name="six"></el-tab-pane>
+        <el-tab-pane :label="labellist[0]" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane :label="labellist[1]" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane :label="labellist[2] " :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane :label="labellist[3]" :name="namelist[3]"></el-tab-pane>
+        <el-tab-pane :label="labellist[4]" :name="namelist[4]"></el-tab-pane>
+        <el-tab-pane :label="labellist[5]" :name="namelist[5]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
     
     <div class="form">
-      <el-button style="margin-bottom:10px" type="success" @click="send">发送到服务器配置</el-button>
+      <el-button style="margin-bottom:10px" type="primary" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -25,77 +28,72 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.room" placeholder="房间名称"></el-input>房间ID:200600
+          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
-        <el-form-item label="场次开关" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
+        <el-form-item label="场次开关" prop="open_game">
+          <el-switch v-model="ruleForm.open_game" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
-        <el-form-item label="是否开放机器人" prop="delivery">
-          <el-switch v-model="ruleForm.delivery"></el-switch>
+        <el-form-item label="是否开放机器人" prop="open_robot">
+          <el-switch v-model="ruleForm.open_robot" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
     
          </el-form-item>
-        <el-form-item label="携带上限" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="携带上限" prop="max">
+          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
-        <el-form-item label="携带下限" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="携带下限" prop="min">
+          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="上座金额" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="上座金额" prop="sit_coins_limit">
+          <el-input style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="下注最低携带" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="下注最低携带" prop="min_bet">
+          <el-input style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="个人限红" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>格式如1,10000
+        <el-form-item label="个人限红" prop="person_limit">
+          <el-input style="width:200px" v-model="ruleForm.person_limit" placeholder="0"></el-input>格式如1,10000
      </el-form-item>
 
-        <el-form-item label="个人区域限红（闲)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="个人区域限红（闲)" prop="play_limit">
+          <el-input style="width:200px" v-model="ruleForm.play_limit" placeholder="0"></el-input>
      </el-form-item>
 
-        <el-form-item label="个人区域限红 (庄)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="个人区域限红 (庄)" prop="bank_limit">
+          <el-input style="width:200px" v-model="ruleForm.bank_limit" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="个人区域限红 (和)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="个人区域限红 (和)" prop="tie_limit">
+          <el-input style="width:200px" v-model="ruleForm.tie_limit" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="个人区域限红 (闲对)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="个人区域限红 (闲对)" prop="play_pair_limit">
+          <el-input style="width:200px" v-model="ruleForm.play_pair_limit" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="个人区域限红 (庄对)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="个人区域限红 (庄对)" prop="bank_pair_limit">
+          <el-input style="width:200px" v-model="ruleForm.bank_pair_limit" placeholder="0"></el-input>
      </el-form-item>
-        <el-form-item label="区域限红 (庄、闲差)" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
-     </el-form-item>
-     
-        <el-form-item label="和总值" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="区域限红 (庄、闲差)" prop="bank_play_limit">
+          <el-input style="width:200px" v-model="ruleForm.bank_play_limit" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="庄对总值" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="和总值" prop="tie_total_limit">
+          <el-input style="width:200px" v-model="ruleForm.tie_total_limit" placeholder="0"></el-input>
      </el-form-item>
      
-        <el-form-item label="闲对总值" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="0"></el-input>
+        <el-form-item label="庄对总值" prop="bank_pair_total_limit">
+          <el-input style="width:200px" v-model="ruleForm.bank_pair_total_limit" placeholder="0"></el-input>
      </el-form-item>
      
-      
-     
-       
-     
+        <el-form-item label="闲对总值" prop="play_pair_total_limit">
+          <el-input style="width:200px" v-model="ruleForm.play_pair_total_limit" placeholder="0"></el-input>
+     </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
+          <el-button type="primary" @click="submitForm('ruleForm',1)"
             >立即提交</el-button
           >
         </el-form-item>
@@ -105,17 +103,105 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   data() {
     return {
       id:0,
       keys:'',
-      activeName: "first",
+      activeName: "",
       ruleForm: {
-        delivery:true,
-
+        cost: "",
+        max: "",
+        min: "",
+        sit_coins_limit: "",
+        min_bet: "",
+        person_limit: "",
+        times_5_limit: "",
+        times_10_limit: "",
+        times_20_limit: "",
+        times_30_limit: "",
+        times_40_limit: "",
+        all_times_5_limit: "",
+        all_times_10_limit: "",
+        all_times_20_limit: "",
+        all_times_30_limit: "",
+        all_times_40_limit: "",
+        type_id: "",
+        name: "",
+        open_game: "",
+        open_robot: "",
+        robot_type: "",
+        is_hundred_game: "",
       },
-      rules: {}
+      rules: {
+         name: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         open_game: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         open_robot: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         cost: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         max: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         min: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         sit_coins_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         min_bet: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         person_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         times_5_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         times_10_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         times_20_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         times_30_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         times_40_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         all_times_5_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         all_times_10_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         all_times_20_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         all_times_30_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+         all_times_40_limit: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+      },
+         //房间配置的所有数据
+      allData:{},
+      //当前游戏房间的所有数据
+      currentlist:{},
+      //匹配当前游戏的条件
+      namelist:['200600','200601','200602','200603','200604','200605'],
+      //游戏场次类别
+      labellist:[],
+      loading: false,
     };
   },
    async created() {
@@ -123,17 +209,87 @@ export default {
     let { data } = await this.$http.HallFunConfig.GetServerConfig({
       key: "roomdata.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
-    // this.list = res;
+    // console.log(res);
+    this.allData = res;
+    this.namelist.forEach((item,index)=>{
+      Object.keys(res).forEach((it)=>{
+        if(item === it){
+          this.currentlist[item] = res[it]
+          this.currentlist[item].person_limit = res[it].person_limit.replace(/\{|}/g,'')
+          this.labellist.push(res[it].name)
+        }
+        if(index === 0){
+          this.activeName = item
+          this.ruleForm = res[item]
+        }
+      })
+    });
+    // console.log(this.currentlist,this.allData,this.ruleForm);
+    
   },
   methods: {
-    send() {},
-    handleClick() {},
-    submitForm() {},
+    handleClick(tab) {
+      this.namelist.forEach((item)=>{
+        if(item === tab.name){
+          this.ruleForm = this.currentlist[item]
+        }
+      })
+    },
+    submitForm(formName,type) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          let resData = DeepData(this.allData);
+          this.namelist.forEach((item)=>{
+            Object.keys(resData).forEach((it)=>{
+              if(item === it){
+                resData[it].person_limit = `{${resData[item].person_limit}}`
+              }
+            })
+          })
+          //  console.log(this.allData,this.currentlist,this.ruleForm,resData);
+          
+          if(type === 1){
+            //put
+                 let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          }else if(type === 2){
+            //post
+             this.loading = true;
+
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }
+          }
+        }else{
+           console.log("error submit!!");
+          return false;
+        }
+      })
+    },
   }
 };
 </script>
@@ -148,7 +304,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 0px 10px;
+    padding: 20px;
   }
 }
 </style>
