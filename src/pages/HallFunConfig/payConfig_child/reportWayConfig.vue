@@ -59,6 +59,13 @@ export default {
   methods: {
     async save() {
       // console.log(this.form);
+      if(this.form.wx === '' || this.form.money === ''){
+         this.$message({
+          type: "warning",
+          message: "请完整填写信息!"
+        });
+        return false;
+      }
       
       let { data } = await this.$http.HallFunConfig.PutServerConfig({
         keys: this.keys,

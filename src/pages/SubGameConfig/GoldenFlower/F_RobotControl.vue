@@ -10,10 +10,10 @@
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="金花-低倍场" name="zjh_junior"></el-tab-pane>
-        <el-tab-pane label="金花-中倍场" name="zjh_normal"></el-tab-pane>
-        <el-tab-pane label="金花-高倍场" name="zjh_three"></el-tab-pane>
-        <el-tab-pane label="金花-土豪场" name="zjh_four"></el-tab-pane>
+        <el-tab-pane label="金花-低倍场" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="金花-中倍场" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="金花-高倍场" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane label="金花-土豪场" :name="namelist[3]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
@@ -73,7 +73,7 @@
 export default {
   data() {
     return {
-      activeName: "zjh_junior",
+      activeName: "",
       ruleForm: {
         count: "",
         num_rate: "",
@@ -95,7 +95,8 @@ export default {
       id: 0,
       keys: "",
       loading: false,
-      resData: {}
+      resData: {},
+      namelist: [],
     };
   },
 
@@ -110,7 +111,9 @@ export default {
     let res = JSON.parse(data.data[0].sys_val);
     // console.log(res);
     this.resData = res;
-    this.ruleForm = res.zjh_junior;
+    this.namelist = Object.keys(res);
+    this.ruleForm = res[this.namelist[0]];
+    this.activeName = this.namelist[0];
 
     // console.log(this.resData, this.ruleForm);
   },
@@ -186,7 +189,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 0px 10px;
+    padding: 20px;
   }
 }
 </style>
