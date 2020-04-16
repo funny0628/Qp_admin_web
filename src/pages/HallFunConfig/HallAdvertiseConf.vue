@@ -39,7 +39,14 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" enctype="multipart/form-data">
         <el-form-item label="渠道名" :label-width="formLabelWidth">
-          <el-input v-model="form.channel_name" autocomplete="off"></el-input>
+          <el-select v-model="form.channel_name" placeholder="请选择渠道名" style="width:100%;">
+            <el-option
+              v-for="(item) in channelOpts"
+              :key="item.id"
+              :label="item.channel_name"
+              :value="item.channel_name"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="KEY" :label-width="formLabelWidth">
           <el-input v-model="form.channel_key" autocomplete="off"></el-input>
@@ -392,6 +399,7 @@ export default {
         word3_url: "",
         word3_jump_position: ""
       },
+      channelOpts: [],
       wordTypeOpts: [],
       jumpPathOpts: [],
       form2: {
@@ -431,6 +439,21 @@ export default {
         word3_url: "",
         word3_jump_position: ""
       };
+    },
+    //获取渠道列表
+    getChannelList() {
+      this.$http
+        .get("v1/backend/no_channel", {
+          params: {
+            type_id: 2
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.channelOpts = res.data.data;
+          }
+        });
     },
     //获取图片类型列表
     getPicTypeList() {
@@ -473,13 +496,14 @@ export default {
         .then(res => {
           console.log(res);
           this.tableData = res.data.data;
-          this.total = res.data.total
+          this.total = res.data.total;
         });
     },
     openAddDialog() {
       this.dialogFormVisible = true;
       this.getPicTypeList();
       this.resetForm();
+      this.getChannelList();
     },
     addNewChannel() {
       if (!this.form.id) {
@@ -551,9 +575,9 @@ export default {
       this.form.word1_jump_position = JSON.stringify(row.jump_id_one);
       this.form.word2_jump_position = JSON.stringify(row.jump_id_two);
       this.form.word3_jump_position = JSON.stringify(row.jump_id_three);
-      this.imageUrl.imgList1 = row.pic_one_url
-      this.imageUrl.imgList2 = row.pic_two_url
-      this.imageUrl.imgList3 = row.pic_three_url
+      this.imageUrl.imgList1 = row.pic_one_url;
+      this.imageUrl.imgList2 = row.pic_two_url;
+      this.imageUrl.imgList3 = row.pic_three_url;
     },
     handleDelete(row) {
       console.log(row);

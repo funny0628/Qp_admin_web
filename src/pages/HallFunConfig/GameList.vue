@@ -155,7 +155,7 @@ export default {
           if (res.data.code === 1) {
             this.records = res.data.data;
             this.tableData = res.data.data.slice(1)
-            this.total = res.data.total
+            this.total = res.data.total -1
             // this.gameOpts = res.data.data
           }
         });

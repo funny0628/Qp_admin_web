@@ -66,17 +66,13 @@
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
         <el-form :model="form" label-position="top">
           <el-form-item label="渠道(可多选)">
-            <el-checkbox-group v-if="!showEditCheckChannel" v-model="form.checkList" :max="1">
+            <el-checkbox-group v-model="form.checkList" :max="1">
               <el-checkbox
                 v-for="(item,index) in ChannelList"
                 :key="index"
                 :label="item.channel_name"
               ></el-checkbox>
             </el-checkbox-group>
-            <el-checkbox
-              v-if="showEditCheckChannel"
-              v-model="isEditCheckChannel"
-            >{{editCheckChannel}}</el-checkbox>
           </el-form-item>
           <el-form-item label="功能1">
             <el-row :gutter="20" style="width:100%;">
@@ -244,7 +240,6 @@ export default {
     };
     return {
       isEditCheckChannel: true,
-      showEditCheckChannel: false,
       pagesize: 5,
       currentPage: 1,
       total: 0,
@@ -261,7 +256,6 @@ export default {
       },
       ChannelList: [], //渠道列表
       checkChannelCode: "",
-      editCheckChannel: "",
       channel_code: "",
       funOpts: [],
       tableData: [],
@@ -323,7 +317,6 @@ export default {
       this.dialogFormVisible = true;
       this.dialogTitle = "添加活动入口配置";
       this.resetForm();
-      this.showEditCheckChannel = false
       this.getChannelList();
       this.getFunNameList();
     },
@@ -403,8 +396,8 @@ export default {
         let funArr = funStr.split(",");
         let data = {
           banner_id: this.form.id,
-          name: this.editCheckChannel,
-          code: this.channel_code,
+          name: this.form.checkList[0],
+          code: this.form.checkList[0],
           list_id: JSON.stringify(funArr),
           type: 1
         };
@@ -420,12 +413,11 @@ export default {
     },
     handleEdit(row) {
       console.log(row);
+      this.getChannelList();
       this.getFunNameList();
       this.dialogFormVisible = true;
       this.dialogTitle = "更新活动入口配置";
-      this.showEditCheckChannel = true;
-      this.editCheckChannel = row.channel_name;
-      this.channel_code = row.channel_code;
+      this.form.checkList = [row.channel_name];
       this.form.id = row.id;
       this.form.function1 = JSON.parse(row.func_list)[0];
       this.form.function2 = JSON.parse(row.func_list)[1];
