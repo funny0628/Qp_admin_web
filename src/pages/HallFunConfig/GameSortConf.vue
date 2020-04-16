@@ -6,9 +6,13 @@
         <el-button type="primary" @click="openAddDialog">添加</el-button>
         <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
-      <el-select v-model="form.region" placeholder="请选择渠道" style="margin-top:10px;">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
+      <el-select v-model="searchChannel" placeholder="请选择渠道" style="margin-top:10px;">
+        <el-option
+          v-for="(item) in channelOpts"
+          :key="item.id"
+          :label="item.channel_name"
+          :value="item.channel_name"
+        ></el-option>
       </el-select>
     </input-area>
     <div class="bd">
@@ -50,9 +54,13 @@
               <el-checkbox label="0902代理06"></el-checkbox>
               <el-checkbox label="0902代理07"></el-checkbox>
               <el-checkbox label="0902代理08"></el-checkbox>
-            </el-checkbox-group> -->
+            </el-checkbox-group>-->
             <el-checkbox-group v-model="form.checkList" :max="1">
-              <el-checkbox v-for="(item,index) in channelOpts" :key="index" :label="item.channel_code">{{item.channel_name}}</el-checkbox>
+              <el-checkbox
+                v-for="(item,index) in channelOpts"
+                :key="index"
+                :label="item.channel_code"
+              >{{item.channel_name}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="游戏1">
@@ -510,16 +518,9 @@ export default {
   data() {
     return {
       value: true,
-      player_id: "", // 玩家id
       labelPosition: "left", //左对齐
       dialogFormVisible: false,
-      platforms: [
-        { value: 1, label: "平台1" },
-        { value: 2, label: "平台2" }
-      ],
-      format: {
-        platform: ""
-      },
+      searchChannel: "", //table页面渠道列表
       funOpts: [
         { value: "1", label: "留空" },
         { value: "2", label: "活动" },
@@ -531,44 +532,6 @@ export default {
         { value: "8", label: "财神" }
       ],
       tableData: [],
-      tableStyle: [
-        { label: "ID", prop: "channel_id", width: "" },
-        { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "渠道KEY", prop: "channel_code", width: "" },
-        { label: "游戏1", prop: "fun_1", width: "" },
-        { label: "游戏2", prop: "fun_2", width: "" },
-        { label: "游戏3", prop: "fun_3", width: "" },
-        { label: "游戏4", prop: "fun_4", width: "" },
-        { label: "游戏5", prop: "fun_5", width: "" },
-        { label: "游戏6", prop: "fun_6", width: "" },
-        { label: "游戏7", prop: "fun_7", width: "" },
-        { label: "游戏8", prop: "fun_8", width: "" },
-        { label: "操作者", prop: "operator", width: "" },
-        { label: "创建时间", prop: "create_time", width: "160" },
-        { label: "操作", prop: "action", width: "150" }
-      ],
-      records: [
-        {
-          channel_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: [
-            { label: "编辑", type: "edit" },
-            { label: "删除", type: "delete" }
-          ]
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogAddVisible: false,
       form: {
         checkList: [],
         function: "1",
@@ -582,7 +545,7 @@ export default {
         phone: "",
         user_type: "1"
       },
-      channelOpts: [],
+      channelOpts: []
     };
   },
   methods: {
@@ -616,24 +579,27 @@ export default {
         });
     },
     getChannelList() {
-      this.$http.get('v1/backend/no_channel',{
-        params: {
-          type_id: 2
-        }
-      }).then(res => {
-        console.log(res)
-        if(res.data.code === 1) {
-          this.channelOpts = res.data.data
-        }
-      })
+      this.$http
+        .get("v1/backend/no_channel", {
+          params: {
+            type_id: 2
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.channelOpts = res.data.data;
+          }
+        });
     },
     openAddDialog() {
-      this.dialogFormVisible = true
-      this.getChannelList()
-    },
+      this.dialogFormVisible = true;
+      this.getChannelList();
+    }
   },
   mounted() {
     this.getGameSortList();
+    this.getChannelList()
   }
 };
 </script>

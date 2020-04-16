@@ -103,13 +103,11 @@ export default {
           type: "success",
           message: "登录成功!"
         });
-        // 登录成功，把token记录到本地存储中
-        // localStorage.setItem("token", data.data.token);
+        // localStorage.setItem("token", res.data.data.token);
         this.$router.push({
           name: "home"
         });
       } else {
-        // 登录失败，返回失败的原因
         this.$message({
           type: "error",
           message: data.meta.msg
