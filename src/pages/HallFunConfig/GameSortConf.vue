@@ -2,8 +2,8 @@
   <div id="GameSortConf-main">
     <input-area>
       <div>
-        <el-button type="danger">删除</el-button>
-        <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
+        <!-- <el-button type="danger">删除</el-button> -->
+        <el-button type="primary" @click="openAddDialog">添加</el-button>
         <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
       <el-select v-model="form.region" placeholder="请选择渠道" style="margin-top:10px;">
@@ -41,7 +41,7 @@
       <el-dialog title="添加活动入口配置" :visible.sync="dialogFormVisible">
         <el-form :model="form" label-position="top">
           <el-form-item label="渠道(可多选)">
-            <el-checkbox-group v-model="form.checkList">
+            <!-- <el-checkbox-group v-model="form.checkList">
               <el-checkbox label="0902代理01"></el-checkbox>
               <el-checkbox label="0902代理02"></el-checkbox>
               <el-checkbox label="0902代理03"></el-checkbox>
@@ -50,6 +50,9 @@
               <el-checkbox label="0902代理06"></el-checkbox>
               <el-checkbox label="0902代理07"></el-checkbox>
               <el-checkbox label="0902代理08"></el-checkbox>
+            </el-checkbox-group> -->
+            <el-checkbox-group v-model="form.checkList" :max="1">
+              <el-checkbox v-for="(item,index) in channelOpts" :key="index" :label="item.channel_code">{{item.channel_name}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="游戏1">
@@ -505,18 +508,6 @@ export default {
     PermissionButton
   },
   data() {
-    /*校验手机号*/
-    let checkPhone = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("手机号不能为空"));
-      } else {
-        if (/^[1][345789]\d{9}$/.test(value)) {
-          callback();
-        } else {
-          return callback(new Error("请输入正确的手机号"));
-        }
-      }
-    };
     return {
       value: true,
       player_id: "", // 玩家id
@@ -579,7 +570,7 @@ export default {
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
-        checkList: ["0902代理01", "0902代理02"],
+        checkList: [],
         function: "1",
         status: "normal",
         corner_remark: "recommend",
@@ -590,7 +581,8 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
-      }
+      },
+      channelOpts: [],
     };
   },
   methods: {
@@ -623,15 +615,21 @@ export default {
           }
         });
     },
-    /**搜索*/
-    search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
+    getChannelList() {
+      this.$http.get('v1/backend/no_channel',{
+        params: {
+          type_id: 2
+        }
+      }).then(res => {
+        console.log(res)
+        if(res.data.code === 1) {
+          this.channelOpts = res.data.data
+        }
+      })
     },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
+    openAddDialog() {
+      this.dialogFormVisible = true
+      this.getChannelList()
     },
   },
   mounted() {

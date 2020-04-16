@@ -1,7 +1,7 @@
 <template>
   <div id="gameAnnouncement">
     <div class="title">
-      <p><el-button type="primary" @click="add('form')">添加</el-button></p>
+      <p><el-button type="primary" @click="add">添加</el-button></p>
       标题
       <el-input
         style="margin-top:10px;width:200px"
@@ -83,7 +83,7 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row, 'form')"
+            <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -111,9 +111,9 @@
     <!-- form表单 -->
     <div class="dialog">
       <el-dialog
-        :before-close="handleClose"
         :title="title"
         :visible.sync="visible"
+        :destroy-on-close="true"
       >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
@@ -149,7 +149,7 @@
               v-model="form.start_time"
               type="date"
               placeholder="选择日期"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -160,7 +160,7 @@
               v-model="form.end_time"
               type="date"
               placeholder="选择日期"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -181,11 +181,11 @@
               class="avatar-uploader"
               action=""
               :show-file-list="false"
-              :http-request="v1/backend/upload"
+              :http-request="upLoad"
               :before-upload="beforeAvatarUpload"
               :limit="1"
             >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <img v-if="form.image_url" :src="form.image_url" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -205,7 +205,7 @@ import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
-      title: "记录",
+      title: "新增",
       searchinput: "",
       currentPage: 1,
       limit: 10,
@@ -217,14 +217,14 @@ export default {
       form: {
         id: -1,
         title: "",
-        type_id: "",
+        type_id: 1,
         description: "",
         image_url: "",
-        tag: "",
+        tag: 1,
         start_time: "",
         end_time: "",
         sort: "",
-        show_status: ""
+        show_status: 1
       },
       rules: {
         title: [
@@ -252,6 +252,18 @@ export default {
         show_status: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
         ]
+      },
+      initForm: {
+        id: -1,
+        title: "",
+        type_id: 1,
+        description: "",
+        image_url: "",
+        tag: 1,
+        start_time: "",
+        end_time: "",
+        sort: "",
+        show_status: 1
       }
     };
   },
@@ -264,41 +276,29 @@ export default {
   },
 
   methods: {
- 
-
     //限制用户上传的图片格式和大小
     beforeAvatarUpload(file) {
-      console.log(file);
+      // console.log(file);
       if (file) {
-        this.imageUrl = URL.createObjectURL(file);
+        this.form.image_url = URL.createObjectURL(file);
       }
-
     },
     upLoad(file) {
       // console.log(file);
       const formData = new FormData();
       formData.append("filename", file.file);
       formData.append("types", 1);
-      this.$http
-        .post("v1/backend/upload", formData)
-        .then(data => {
-          // console.log(data);
-          if (data.data.code === 1 && data.data.msg === "ok") {
-            this.serveUrl = data.data.path;
-          }
-        });
-    },
-
-    handleClose() {
-      this.imageUrl = "";
-      this.editForm("记录", false, {});
+      this.$http.post("v1/backend/upload", formData).then(data => {
+        // console.log(data);
+        if (data.data.code === 1 && data.data.msg === "ok") {
+          this.serveUrl = data.data.path;
+        }
+      });
     },
 
     //添加
-    add(formName) {
-      this.editForm("记录", true, {});
-
-      this.$refs[formName].resetFields();
+    add() {
+      this.editForm("新增", true, {});
     },
 
     //搜索
@@ -342,20 +342,19 @@ export default {
     },
 
     //表格编辑
-    handleEdit(row, formName) {
+    handleEdit(row) {
       // console.log(row);
-      this.form =DeepData(row);
-      // this.form = this.formateNum(row)
+      this.form = this.formateNum(DeepData(row));
+
       this.form.start_time = this.data(row.start_time);
       this.form.end_time = this.data(row.end_time);
-
+      // console.log(this.form);
       this.editForm("编辑", true, this.form);
-      this.$refs[formName].resetFields();
     },
 
     //表格删除
     handleDelete(y, row) {
-      console.log(y, row.id);
+      // console.log(y, row.id);
       this.$confirm("确认删除吗？", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -366,7 +365,7 @@ export default {
           let { data } = await this.$http.HallFunConfig.DeleteGameNotice({
             id: row.id
           });
-          console.log(data);
+          // console.log(data);
           if (data.code === 1 && data.msg === "ok") {
             this.initdata({
               page: this.currentPage,
@@ -391,14 +390,15 @@ export default {
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          if (type === "记录") {
-            console.log(this.form);
+          this.form.image_url = this.serveUrl;
+          // console.log(this.form);
 
-            this.form.image_url = this.serveUrl;
+          if (type === "新增") {
+            // console.log(this.form);
             let { data } = await this.$http.HallFunConfig.PostGameNotice(
               this.form
             );
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -409,18 +409,13 @@ export default {
             }
           } else if (type === "编辑") {
             // console.log(this.form);
-
-            let resdata = this.formateNum(this.form);
-            console.log(resdata);
-            if (resdata.type_id === 2) {
-              // resdata.image_url = "image_url";
-              resdata.image_url = this.serveUrl;
+            if (this.form.image_url === "") {
+              this.form.image_url = "image_url";
             }
-            console.log(resdata);
             let { data } = await this.$http.HallFunConfig.PutGameNotice(
-              resdata
+              this.form
             );
-            console.log(data);
+            // console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
@@ -430,9 +425,7 @@ export default {
               });
             }
           }
-          // this.visiblity = false;
           this.editForm("添加", false, {});
-          this.imageUrl = "";
         } else {
           console.log("error submit!!");
           return false;
@@ -444,6 +437,7 @@ export default {
       this.title = title;
       this.visible = visible;
       this.form = form;
+      console.log(this.form);
     },
 
     formateData(res) {
@@ -482,11 +476,11 @@ export default {
       return item;
     },
 
-      data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      },
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
+    },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetGameNotice(params);
