@@ -125,7 +125,7 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
         <el-form
           :disabled="disabled"
           ref="form"
@@ -205,7 +205,7 @@ export default {
         coins: "",
         uid: []
       },
-      title: "记录"
+      title: "新增"
     };
   },
   created() {
@@ -218,7 +218,7 @@ export default {
   methods: {
     //写邮件
     writeEmail() {
-      this.editForm("记录", true, false,false, {});
+      this.editForm("新增", true, false,false, {});
     },
 
     //按条件搜索
@@ -302,7 +302,7 @@ export default {
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          if (type === "记录") {
+          if (type === "新增") {
             console.log(this.form);
             let resData = DeepData(this.form);
             resData.mail_type = 2;
@@ -341,7 +341,7 @@ export default {
             }
           } else if (type === "邮件详情") {
           }
-          this.editForm("记录", false, false,false, {});
+          this.editForm("新增", false, false,false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -374,12 +374,7 @@ export default {
       let fres = this.formateData(data.data);
       this.tableData = fres;
       this.total = data.total;
-      if (this.total === 0) {
-        this.$message({
-          type: "warning",
-          message: "没有找到合适的数据!"
-        });
-      }
+     
       // console.log(data);
     }
   }

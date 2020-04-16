@@ -9,9 +9,9 @@
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="捕鱼-低倍场" :name="namelist[0]"></el-tab-pane>
-        <el-tab-pane label="捕鱼-中倍场" :name="namelist[1]"></el-tab-pane>
-        <el-tab-pane label="捕鱼-高倍场" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane :label="labellist[0]" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane :label="labellist[1]" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane :label="labellist[2]" :name="namelist[2]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
@@ -29,9 +29,9 @@
         label-width="150px"
         class="demo-ruleForm"
       >
-        <el-form-item label="房间名称" prop="type_id">
-          <el-input v-model="ruleForm.type_id"></el-input>
-          <span>房间ID:602</span>
+        <el-form-item label="房间名称" prop="name">
+          <el-input v-model="ruleForm.name"></el-input>
+          <span>房间ID:{{ruleForm.type_id}}</span>
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -100,7 +100,7 @@ export default {
         is_hundred_game: ""
       },
       rules: {
-        type_id: [
+        name: [
           { required: true, message: "请填写活动形式", trigger: "blur" }
         ],
         open_game: [
@@ -126,7 +126,9 @@ export default {
       //匹配当前游戏的条件
       namelist: ["600", "601", "602"],
       //当前游戏的所有数据
-      currentlist: {}
+      currentlist: {},
+       //游戏场次类别
+      labellist:[],
     };
   },
 
@@ -147,6 +149,7 @@ export default {
       Object.keys(res).forEach(item => {
         if (item === it) {
           this.currentlist[item] =res[item];
+           this.labellist.push(res[it].name)
         }
         if (index === 0) {
           this.ruleForm = res[it];
@@ -161,21 +164,7 @@ export default {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          Object.keys(this.currentlist).forEach(item => {
-            if (item === this.ruleForm.type_id) {
-              this.currentlist[item] = this.ruleForm;
-            }
-          });
-          // console.log(this.ruleForm,this.currentlist);
-
-          Object.keys(this.currentlist).forEach(item => {
-            Object.keys(this.allData).forEach(it => {
-              if (item === it) {
-                this.allData[it] = this.currentlist[item];
-              }
-            });
-          });
-          // console.log(this.allData,this.currentlist);
+          // console.log(this.ruleForm,this.currentlist,this.allData);
 
           if (type === 1) {
             let { data } = await this.$http.HallFunConfig.PutServerConfig({
