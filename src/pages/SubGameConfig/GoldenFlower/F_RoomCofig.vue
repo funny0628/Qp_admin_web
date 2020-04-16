@@ -28,18 +28,21 @@
         label-width="200px"
         class="demo-ruleForm"
       >
-        <el-form-item label="房间名称" prop="type_id">
-          <el-input style="width:200px" v-model="ruleForm.type_id" placeholder="房间名称"></el-input>房间ID:103
+        <el-form-item label="房间名称" prop="name">
+          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
-          <el-switch v-model="ruleForm.open_game"></el-switch>
+          <el-switch v-model="ruleForm.open_game"  active-color="#13ce66"
+            inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="是否开放机器人" prop="open_robot">
-          <el-switch v-model="ruleForm.open_robot"></el-switch>
+          <el-switch v-model="ruleForm.open_robot"  active-color="#13ce66"
+            inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="ip限制" prop="ip_limit">
-          <el-switch v-model="ruleForm.ip_limit"></el-switch>
+          <el-switch v-model="ruleForm.ip_limit"  active-color="#13ce66"
+            inactive-color="#ff4949"></el-switch>
         </el-form-item>
 
         <el-form-item label="底注" prop="dizhu">
@@ -109,13 +112,12 @@ export default {
         max_look_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
         comparable_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
         max_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        type_id: [{ required: true, message: "不可以为空", trigger: "blur" }],
+
         name: [{ required: true, message: "不可以为空", trigger: "blur" }],
         ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
         open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
         open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        robot_type: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        is_hundred_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        
       },
        //房间配置的所有数据
       allData:{},

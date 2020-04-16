@@ -102,7 +102,7 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini"  @click="handleEdit(scope.row)"
+            <el-button size="mini"  v-if="scope.row.send_status === '生效中' || scope.row.send_status === '未生效'"  @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button size="mini" type="danger" @click="detail(scope.row)"
@@ -110,7 +110,7 @@
             >
             <el-button
               size="mini"
-              v-if="scope.row.send_status !== '废弃'"
+              v-if="scope.row.send_status === '生效中'"
               type="danger"
               @click="del(scope.row)"
               >废弃</el-button
@@ -132,7 +132,7 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
         <el-form
           :disabled="disabled"
           ref="form"
@@ -165,7 +165,7 @@
               v-model="form.start_time"
               type="date"
               placeholder="请输入结束时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -175,7 +175,7 @@
               v-model="form.end_time"
               type="date"
               placeholder="请输入结束时间"
-              format="yyyy-MM-dd"
+              format="yyyy-MM-dd HH:mm:ss"
               value-format="timestamp"
             >
             </el-date-picker>
@@ -206,7 +206,12 @@ export default {
       total: 0,
       visible: false,
       rules: {
-        common: [{ required: true, message: "充值金额不合法", trigger: "blur" }]
+        send_name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        title: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        content: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        coins: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        end_time: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        start_time: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
       },
       form: {
         send_name: "",
@@ -217,7 +222,7 @@ export default {
         end_time: "",
         start_time: ""
       },
-      title: "记录",
+      title: "新增",
       disabled: false,
       disabledName: false
     };
@@ -232,7 +237,7 @@ export default {
   methods: {
     //写邮件
     writeEmail() {
-      this.editForm("记录", true, false, false, {});
+      this.editForm("新增", true, false, false, {});
     },
 
     //搜索
@@ -318,7 +323,7 @@ export default {
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          if (type === "记录") {
+          if (type === "新增") {
             // console.log(this.form);
             let resData = DeepData(this.form);
             resData.mail_type = 1;
@@ -359,7 +364,7 @@ export default {
           } else if (type === "邮件详情") {
           }
 
-          this.editForm("记录", false, false, false, {});
+          this.editForm("新增", false, false, false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -404,12 +409,7 @@ export default {
       let fres = this.formateData(data.data);
       this.tableData = fres;
       this.total = data.total;
-      if (this.total === 0) {
-        this.$message({
-          type: "warning",
-          message: "没有找到合适的数据!"
-        });
-      }
+     
       // console.log(data);
     }
   }

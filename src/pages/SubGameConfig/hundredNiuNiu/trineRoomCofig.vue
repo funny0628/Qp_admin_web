@@ -33,13 +33,13 @@
         label-width="200px"
         class="demo-ruleForm"
       >
-        <el-form-item label="房间名称" prop="type_id">
+        <el-form-item label="房间名称" prop="name">
           <el-input
             style="width:200px"
-            v-model="ruleForm.type_id"
+            v-model="ruleForm.name"
             placeholder="房间名称"
           ></el-input
-          >房间ID:200100
+          >房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -237,7 +237,7 @@ export default {
         all_diamond_limit: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
-        type_id: [
+        name: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
         open_game: [
