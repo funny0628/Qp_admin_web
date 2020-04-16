@@ -241,10 +241,10 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            if(res.data.total === 0) {
-              this.currentPage = 1
-              this.getFunSortList()
-            }
+            // if(res.data.total === 0) {
+            //   this.currentPage = 1
+            //   this.getFunSortList()
+            // }
             this.records = res.data.data;
             this.total = res.data.total;
             this.func_list_index();
