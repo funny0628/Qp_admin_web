@@ -12,8 +12,10 @@ import echarts from 'echarts'
 import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
 import HallFunConfig from './assets/js/HallFunConfig.js'
+import OperationMan from './assets/js/OperationMan.js'
 // import http from './assets/js/http';
 axios.HallFunConfig = HallFunConfig;
+axios.OperationMan = OperationMan;
 Vue.prototype.$http = axios;
 Vue.prototype.$echarts = echarts;
 

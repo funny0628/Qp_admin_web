@@ -1,225 +1,349 @@
 <template>
   <div id="UserList-main">
-    <input-area>
-     <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-     <el-input v-model="format.phone" placeholder="请输入手机号码" size="medium" clearable></el-input>
-     <el-input v-model="format.ip" placeholder="请输入登录ip" size="medium" clearable></el-input>
-     <el-input v-model="format.robot_code" placeholder="请输入机器码" size="medium" clearable></el-input>
-      <el-select v-model="format.channel" placeholder="请选择渠道" clearable size="medium">
-        <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
-      </el-select>
-      <el-select v-model="format.order_status" filterable placeholder="状态" size="medium" clearable>
+    <!-- title -->
+    <div class="title">
+      UID<el-input
+        v-model="input"
+        style="margin-top:10px;width:200px"
+      ></el-input>
+      手机号码<el-input
+        v-model="input"
+        style="margin-top:10px;width:200px"
+      ></el-input>
+      IP
+      <el-input v-model="input" style="margin-top:10px;width:200px"></el-input>
+      渠道<el-select v-model="value" style="margin-top:10px;width:200px">
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.value"
-        ></el-option>
+        >
+        </el-option>
       </el-select>
-     <el-select v-model="format.vip_class" filterable placeholder="请输入vip等级" size="medium" clearable>
+      状态<el-select v-model="value" placeholder="请选择">
         <el-option
-          v-for="item in Vipoptions"
+          v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.value"
-        ></el-option>
+        >
+        </el-option>
       </el-select>
-      <el-date-picker
-        v-model="format.time_range"
-        type="datetimerange"
-        :picker-options="pickerOptions"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        align="right"
-      ></el-date-picker>
-      <el-button type="primary">查找</el-button>
-      <el-button type="primary">导出excel</el-button>
-    </input-area>
-    <div class="bd">
-      <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
+      vip等级<el-select
+        v-model="value"
+        placeholder="请选择"
+        style="margin-top:10px;width:200px"
       >
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
-            </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
-          </template>
-        </info-table-item>
-      </info-table>
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      日期
+      <el-date-picker
+        style="margin-top:10px;width:200px"
+        v-model="form.end_time"
+        type="date"
+        placeholder="选择日期"
+        format="yyyy-MM-dd HH:mm:ss"
+        value-format="timestamp"
+      >
+      </el-date-picker>
+      -
+      <el-date-picker
+        style="margin-top:10px;width:200px"
+        v-model="form.end_time"
+        type="date"
+        placeholder="选择日期"
+        format="yyyy-MM-dd HH:mm:ss"
+        value-format="timestamp"
+      >
+      </el-date-picker>
+      <el-button type="primary" @click="search">查找</el-button>
     </div>
-    <el-dialog title="添加人工订单" :visible.sync="dialogFormVisible" width="30%">
-      <el-form :model="form">
-        <el-form-item label="用户id" :label-width="formLabelWidth">
-          <el-input v-model="form.user_id" autocomplete="off" placeholder="请输入用户id"></el-input>
-        </el-form-item>
-        <el-form-item label="付款方式" :label-width="formLabelWidth">
-          <el-input v-model="form.pay_type" autocomplete="off" placeholder="人工充值"></el-input>
-        </el-form-item>
-        <el-form-item label="商品类型" :label-width="formLabelWidth">
-          <el-select v-model="form.goods_type" placeholder="请选择" style="width:100%;">
-            <el-option label="金币" value="gold"></el-option>
-            <el-option label="现金" value="money"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金额" :label-width="formLabelWidth">
-          <el-input v-model="form.money" autocomplete="off" placeholder="请输入金额"></el-input>
-        </el-form-item>
-        <el-form-item label="确认金额" :label-width="formLabelWidth">
-          <el-input v-model="form.check_money" autocomplete="off" placeholder="请确认输入金额"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-      </div>
-    </el-dialog>
+
+    <!-- table -->
+    <div class="table">
+      <el-table
+        :data="tableData"
+        highlight-current-row
+        tooltip-effect="dark"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          fixed
+          prop="date"
+          label="玩家Id"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="玩家昵称"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="账号类型"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column prop="date" label="vip等级" align="center" width="120">
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="累计充值"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="手机号码"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column prop="date" label="渠道" align="center" width="120">
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="注册时间"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column prop="date" label="创建IP" align="center" width="120">
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="最后登录时间"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="最后充值时间"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="最后登陆IP"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="银行卡信息"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="支付宝信息"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="客户端版本"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column prop="date" label="机器码" align="center" width="120">
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" align="center" width="200">
+          <template slot-scope="scope">
+            <!-- 正式用户才有 -->
+            <!-- <el-button @click="handleClick(scope.row)" type="text" size="small"
+              >修改登陆密码</el-button
+            > -->
+            <el-button size="mini" type="danger" @click="handleClick(scope.row)"
+              >封号</el-button
+            >
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.$index, scope.row)"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- dialog -->
+    <div class="dialog">
+      <el-dialog title="用户详情" :visible.sync="visible" width="50%">
+        <div class="msg">
+          <div class="left">
+            <p class="image">
+              <img
+                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587117883027&di=6f4043c74c615c71e54ae49211f71f12&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F78%2F52%2F01200000123847134434529793168.jpg"
+                alt=""
+              />
+            </p>
+            <p>名字</p>
+            <p>状态:</p>
+          </div>
+          <div class="right">
+            <p class="title">基本信息</p>
+            <div class="item">
+              <div class="i-f">
+                <p>uid/昵称:10456/名字</p>
+                <p>注册时间:2020-04-16 15:18:51</p>
+                <p>最后登陆时间:2020-04-16 15:18:51</p>
+                <p>手机号:</p>
+                <p>渠道:windows</p>
+              </div>
+              <div class="i-r">
+                <p>性别:男</p>
+                <p>注册IP:192.168.1.61</p>
+                <p>最后登陆IP:192.168.1.61</p>
+                <p>设备号:122312</p>
+                <p>客户端版本号:1.0.0</p>
+              </div>
+            </div>
+            <p class="title">累计信息</p>
+            <div class="item">
+              <div class="i-f">
+                <p>首次充值时间:10456/名字</p>
+                <p>金币余额:2020-04-16 15:18:51</p>
+                <p>保险箱金币:2020-04-16 15:18:51</p>
+                <p>累计充值:</p>
+                <p>累计赢金币:windows</p>
+                <p>累计充值数量:windows</p>
+              </div>
+              <div class="i-r">
+                <p>最后充值时间:男</p>
+                <p>累计兑换:192.168.1.61</p>
+                <p>累计扣台费:192.168.1.61</p>
+                <p>累计押注:122312</p>
+                <p>vip等级:1.0.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <el-table
+            :data="tableData"
+            highlight-current-row
+            tooltip-effect="dark"
+            border
+            style="width: 100%"
+          >
+            <el-table-column prop="date" label="UID" align="center" width="120">
+            </el-table-column>
+            <el-table-column
+              prop="date"
+              label="	封号状态"
+              align="center"
+              width="120"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="date"
+              label="原因"
+              align="center"
+              width="120"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="date"
+              label="结束时间"
+              align="center"
+              width="120"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="date"
+              label="最后修改的操作人"
+              align="center"
+              width="120"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="date"
+              label="操作时间"
+              align="center"
+              width="120"
+            >
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
-         
 
 <script>
-import SelectTime from "../../plugin/components/SelectTime";
-import InfoTable from "../../plugin/components/InfoTable";
-import PageInfo from "../../plugin/script/common/PageInfo";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PermissionButton from "../../plugin/components/PermissionButton";
-import UserHandler from "../../script/handlers/UserHandler";
-import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
-
 export default {
   name: "UserList",
   extends: BaseIframe,
-  components: {
-    InfoTableItem,
-    InputArea,
-    SelectTime,
-    InfoTable,
-    PermissionButton
-  },
+
   data() {
     return {
-      formLabelWidth: "120px",
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
-      },
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" }
+      visible: false,
+      input: "",
+      value: "",
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          province: "上海",
+          city: "普陀区",
+          address: "上海市普陀区金沙江路 1518 弄",
+          zip: 200333
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          province: "上海",
+          city: "普陀区",
+          address: "上海市普陀区金沙江路 1517 弄",
+          zip: 200333
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          province: "上海",
+          city: "普陀区",
+          address: "上海市普陀区金沙江路 1519 弄",
+          zip: 200333
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          province: "上海",
+          city: "普陀区",
+          address: "上海市普陀区金沙江路 1516 弄",
+          zip: 200333
+        }
       ],
-      operas: [
-        { value: 1, label: "渠道1" },
-        { value: 2, label: "渠道2" }
-      ],
+
       options: [
         { value: "1", label: "启用" },
         { value: "2", label: "在线" },
         { value: "3", label: "离线" },
         { value: "4", label: "冻结" }
       ],
-      Vipoptions: [
-        { value: "1", label: "全部" },
-        { value: "2", label: "vip1" },
-        { value: "3", label: "VIP2" },
-        { value: "4", label: "vip3" }
-      ],
-      format: {
-        user_id: "",
-        phone: "",
-        ip: "",
-        robot_code: "",
-        channel: "",
-        order_status: "",
-        vip_class: "",
-        time_range: ""
-      },
-      tableStyle: [
-        { label: "玩家id", prop: "order_id", width: "" },
-        { label: "玩家昵称", prop: "channel_name", width: "" },
-        { label: "账号类型", prop: "channel_name", width: "" },
-        { label: "VIP等级", prop: "fun_1", width: "" },
-        { label: "累计充值", prop: "fun_2", width: "" },
-        { label: "手机号码", prop: "fun_3", width: "" },
-        { label: "渠道", prop: "fun_4", width: "" },
-        { label: "注册时间", prop: "fun_5", width: "" },
-        { label: "创建ip", prop: "fun_6", width: "" },
-        { label: "最后登录时间", prop: "fun_7", width: "" },
-        { label: "最后充值时间", prop: "fun_8", width: "" },
-        { label: "最后登录ip", prop: "fun_8", width: "" },
-        { label: "是否在线", prop: "fun_8", width: "" },
-        { label: "银行卡", prop: "fun_8", width: "" },
-        { label: "操作", prop: "action", width: "120" }
-      ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogFormVisible: false,
+
       form: {
         user_id: "",
         pay_type: "1",
@@ -229,6 +353,14 @@ export default {
       }
     };
   },
+
+  async created() {
+    console.log("000000");
+
+    let data = await this.$http.OperationMan.GetUsers({ page: 1, limit: 10 });
+    console.log(data);
+  },
+
   methods: {
     getUserList() {
       this.$http.get('v1/backend/operation/users').then(res=>{
@@ -236,37 +368,70 @@ export default {
       })
     },
     /**搜索*/
-    search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
-    },
-    handelClick(btn, row) {
+    search() {},
+    handleClick(btn, row) {
       if (btn.type === "edit") {
         this.dialogFormVisible = true;
       }
+    },
+    handleEdit() {
+      console.log("-------");
+
+      this.visible = true;
     }
-  },
-  mounted() {
-    // this.getUserList()
   }
 };
 </script>
 
-<style scoped>
-#UserList-main .bd {
-  padding-left: 20px;
-}
-#UserList-main .bd p {
-  margin: 0;
-}
-#UserList-main >>> .el-date-editor .el-range-separator {
-  width: 10%;
-}
-#home .main-box .input-area >>> .el-date-editor {
-  width: auto;
-}
-table {
-  border-collapse: collapse;
+<style scoped lang="less">
+#UserList-main {
+  background-color: #f2f2f2;
+  .title {
+    padding: 10px;
+    box-sizing: border-box;
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .table {
+    margin-top: 10px;
+  }
+  .dialog {
+    .msg {
+      display: flex;
+      justify-content: space-between;
+      align-items: top;
+      .left {
+        flex: 1;
+        .image {
+          width: 100px;
+          height: 100px;
+          border: 1px solid red;
+          background-color: red;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      .right {
+        flex: 3;
+        .title {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          background-color: #eee;
+          height: 30px;
+          line-height: 30px;
+        }
+        .item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+  }
 }
 </style>
