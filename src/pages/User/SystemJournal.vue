@@ -20,7 +20,6 @@
         end-placeholder="结束日期"
         align="right"
         :clearable="false"
-        disabled
       ></el-date-picker>
       <el-button type="primary" size="medium" @click="search">搜索</el-button>
     </input-area>

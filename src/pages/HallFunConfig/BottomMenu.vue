@@ -335,7 +335,11 @@ export default {
     },
     //获取渠道选项列表
     getChannelList() {
-      this.$http.get("v1/backend/no_channel").then(res => {
+      let data = {
+        type_id: 1,
+          add_id: 3
+      }
+      this.$http.post("v1/backend/no_channel",data).then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });
