@@ -230,6 +230,11 @@ export default {
     };
   },
   methods: {
+    getUserList() {
+      this.$http.get('v1/backend/operation/users').then(res=>{
+        console.log(res)
+      })
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -242,7 +247,9 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+    // this.getUserList()
+  }
 };
 </script>
 
