@@ -101,19 +101,18 @@ export default {
       if (res.data.code === 200) {
         this.$message({
           type: "success",
-          message: "登录成功!"
+          message: res.data.msg
         });
-        // localStorage.setItem("token", res.data.data.token);
         this.$router.push({
           name: "home"
         });
       } else {
         this.$message({
           type: "error",
-          message: data.meta.msg
+          message: res.data.msg
         });
       }
-    },
+    }
   }
 };
 </script>

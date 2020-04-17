@@ -96,18 +96,6 @@ export default {
     PermissionButton
   },
   data() {
-    /*校验手机号*/
-    let checkPhone = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("手机号不能为空"));
-      } else {
-        if (/^[1][345789]\d{9}$/.test(value)) {
-          callback();
-        } else {
-          return callback(new Error("请输入正确的手机号"));
-        }
-      }
-    };
     return {
       pagesize: 5,
       currentPage: 1,
@@ -288,7 +276,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            this.records = res.data.data;
+            this.tableData = res.data.data;
             this.total = res.data.total
             // this.gameOpts = res.data.data
           }

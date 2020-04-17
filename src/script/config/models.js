@@ -488,13 +488,13 @@ const models = {
       {
         name: "Landlords",
         text: "斗地主",
-        // children: [
-        //   {
-        //     name: "LandDrawWaterDate",
-        //     text: "斗地主-抽水数据",
-        //     vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
-        //   }
-        // ]
+        children: [
+          {
+            name: "LandDrawWaterDate",
+            text: "斗地主-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
+          }
+        ]
       },
       {
         name: "BombFlower",
@@ -508,7 +508,7 @@ const models = {
           {
             name: "DrawWaterDate",
             text: "炸金花-抽水数据",
-            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/DrawWaterDate')), 'DrawWaterDate')
+            // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/DrawWaterDate')), 'DrawWaterDate')
           }
         ]
       },
@@ -524,7 +524,7 @@ const models = {
           {
             name: "DrawWaterDate",
             text: "牛牛-抽水数据",
-            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
+            // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
           }
         ]
       }

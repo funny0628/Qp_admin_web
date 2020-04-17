@@ -21,6 +21,9 @@ Vue.prototype.$echarts = echarts;
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import VueCookie from 'vue-cookie';
+// Tell Vue to use the plugin
+Vue.use(VueCookie);
 
 Vue.use(VueQuillEditor, /* { default global options } */)
 // Vue.use(http);
