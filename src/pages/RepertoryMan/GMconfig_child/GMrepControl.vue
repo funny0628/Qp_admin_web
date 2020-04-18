@@ -8,7 +8,7 @@
       </div>
     </input-area>
     <div class="bd">
-      <el-form :model="form" style="width:30%;">
+      <el-form :rules="rulesF" :model="form" style="width:30%;">
         <el-form-item label="实时库存值(元)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
@@ -46,7 +46,8 @@ export default {
         resource: "",
         desc: ""
       },
-      formLabelWidth: "120px"
+      rulesF:{},
+      formLabelWidth: "150px"
     };
   },
   methods: {
@@ -99,5 +100,6 @@ export default {
   background-color: #ccc;
   line-height: 36px;
   text-align: center;
+  border-bottom: 1px solid #ccc;
 }
 </style>

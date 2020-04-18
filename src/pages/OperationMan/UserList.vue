@@ -17,7 +17,7 @@
           v-for="item in optionchannels"
           :key="item.levelO"
           :label="item.avator_nameO"
-          :value="item.levelO"
+          :value="item.avator_nameO"
         >
         </el-option>
       </el-select>
@@ -334,7 +334,7 @@
         :visible.sync="visibleF"
         :destroy-on-close="true"
       >
-        <el-form ref="form" :rules="rulesF" :model="formF" label-width="120px">
+        <el-form ref="formF"  :model="formF" label-width="120px">
           <el-form-item label="ID" prop="user_id">
             <el-input placeholder="ID" v-model="formF.user_id"></el-input>
           </el-form-item>
@@ -342,7 +342,15 @@
             <el-input placeholder="原因" v-model="formF.reason	"></el-input>
           </el-form-item>
           <el-form-item label="结束时间" prop="end_time">
-            <el-input placeholder="结束时间" v-model="formF.end_time"></el-input>
+            <el-date-picker
+          v-model="formF.end_time"
+          type="date"
+          placeholder="结束时间"
+          format="yyyy-MM-dd"
+          value-format="timestamp"
+        >
+        </el-date-picker>
+            <!-- <el-input placeholder="结束时间" v-model="formF.end_time"></el-input> -->
           </el-form-item>
          
         </el-form>
@@ -395,7 +403,7 @@ export default {
         reason:'',
         end_time:'',
       },
-      rulesF:{}
+     
     };
   },
 
@@ -407,11 +415,13 @@ export default {
   methods: {
     //筛查
     search() {
-      console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
+      // console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
+      if(this.avator_nameO === '所有渠道'){
+        this.avator_nameO = ''
+      }
 
-      // this.initdata({ page: this.currentPage, limit: this.limit, uid:this.UID, last_ip:this.IP, channel:this.avator_nameO, status:this.value, vip_level:this.level, start_time:this.start_time/1000, end_time:this.end_time/1000,});
-
-      // this.initdata({ page: this.currentPage, limit: this.limit, channel:this.avator_nameO, status:this.value, vip_level:this.level,});
+      this.initdata({ page: this.currentPage, limit: this.limit, uid:this.UID || 0, last_ip:this.IP, phone:this.phone, channel:this.avator_nameO, status:this.value, vip_level:this.level, start_time:this.start_time/1000 || 0, end_time:this.end_time/1000 || 0,});
+      this.avator_nameO = '所有渠道'
       
     },
     //封号
@@ -421,28 +431,43 @@ export default {
         this.visibleF = true
         this.formF.user_id = row.uid
       }else if(status === '解封'){
-        //1,发送解封的请求,2.最新的数据的请求
+
+        //1,发送解封的请求,2.最新的数据的请求PostUserUnlock
+        let { data } = await this.$http.OperationMan.PostUserUnlock({user_id:row.uid});
+        console.log(data);
+         this.initdata({ page: this.currentPage, limit: this.limit });
       }
-      
-      
+
 
     },
 
     //表单确认封号
     async onSubmit(formName){
-      console.log(this.formF);
-      let resData = {
-        user_id: +this.formF.user_id,
-        reason:this.formF.reason,
-        end_time:this.data(this.formF.end_time)/1000
+        if (this.formF.user_id === '' || this.formF.reason === '' || this.formF.end_time === ''){
+          this.$message({
+            type: "info",
+            message: "请完整填写信息"
+          });
+        }else{
+          let Time =( this.formF.end_time + 60* 60*24 *1000) / 1000
+          // console.log(Time);
+          let resData = {
+            user_id: +this.formF.user_id,
+            reason:this.formF.reason,
+            end_time:Time
+          }
+          // console.log(resData);
+          let { data } = await this.$http.OperationMan.PostUserLock(resData);
+          // console.log(data);
+          if(data.code === 200){
+            this.initdata({ page: this.currentPage, limit: this.limit });
+          }
+          this.visibleF = false
+          this.formF = {}
+        
       }
-      console.log(resData);
-      
-      // let { data } = await this.$http.OperationMan.PostUserLock(resData);
-      // console.log(data);
-      if(data.code === 200){
-        //再次拿到最新的数据,展示状态
-      }
+           
+        
       
     },
     //表格详情
@@ -474,7 +499,7 @@ export default {
           item.nickname === "" || item.nickname === undefined
             ? item.uid
             : item.nickname;
-        item.status = item.status === 1 ? "封号" : "解封";
+        item.status = item.status === 1 ? "解封" : "封号";
         // item.last_deposit_time = this.data(item.last_deposit_time*1000)
         //处理返回的事件戳为格式时间
       });
@@ -488,7 +513,7 @@ export default {
     },
 
     formateNum(item) {
-      item.status = item.status === 1 ? "封号" : "解封";
+      item.status = item.status === 1 ? "解封" : "封号";
       item.sex = item.sex === 1 ? "男" : "女";
       item.nickname =
         item.nickname === "" || item.nickname === undefined
@@ -505,27 +530,27 @@ export default {
       // console.log(fres);
       this.tableData = fres;
       this.total = data.total;
-      // console.log(data);
+      console.log(data);
     },
     //VIP记录列表 / 渠道列表
     async initVIP(params) {
       let { data } = await this.$http.OperationMan.GetVips(params);
-      console.log(data);
+      // console.log(data);
       
       this.optionData = DeepData(data.data);
       this.optionData.unshift({avator_name: '所有', level: -1})
       let Channelsdata = await this.$http.OperationMan.GetChannels(params);
-      console.log(Channelsdata);
+      // console.log(Channelsdata);
       let changeData = [];
       Channelsdata.data.data.forEach(item => {
         changeData.push(item.name);
       });
-      console.log(changeData);
+      // console.log(changeData);
       changeData.forEach((item, index) => {
         this.optionchannels.push({ avator_nameO: item, levelO: index });
       });
-       this.optionchannels.unshift({avator_nameO: '请选择渠道', levelO: -1})
-      console.log(this.optionchannels);
+       this.optionchannels.unshift({avator_nameO: '所有渠道', levelO: -1})
+      // console.log(this.optionchannels);
     },
 
     //获取用户详情

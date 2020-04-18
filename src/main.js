@@ -13,9 +13,12 @@ import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
 import HallFunConfig from './assets/js/HallFunConfig.js'
 import OperationMan from './assets/js/OperationMan.js'
+import allAgency from './assets/js/allAgency.js'
 // import http from './assets/js/http';
 axios.HallFunConfig = HallFunConfig;
 axios.OperationMan = OperationMan;
+//全民代理配置
+axios.allAgency = allAgency;
 Vue.prototype.$http = axios;
 Vue.prototype.$echarts = echarts;
 

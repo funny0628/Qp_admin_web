@@ -28,6 +28,28 @@ const models = {
       },
     ]
   },
+  allAgency: {
+    name: 'allAgency',
+    vue: null,
+    text: '全民代理',
+    children: [
+      {
+        name: 'AgencyConfig',
+        text: '全民代理配置',
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyConfig')), 'AgencyConfig'),
+      },
+      {
+        name: 'Agency',
+        text: '全民代理',
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/Agency')), 'Agency'),
+      },
+      // {
+      //   name: 'AgencyTop',
+      //   text: '全民代理top100',
+      //   vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyTop')), 'AgencyTop'),
+      // },
+    ]
+  },
   gameMan:{
     name:'SubGameConfig',
     vue:null,
@@ -524,7 +546,7 @@ const models = {
           {
             name: "DrawWaterDate",
             text: "牛牛-抽水数据",
-            // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
           }
         ]
       }
