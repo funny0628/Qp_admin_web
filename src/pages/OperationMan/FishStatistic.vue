@@ -2,37 +2,64 @@
   <div id="FishStatistic-main">
     <input-area>
       <el-input v-model="format.play_id" placeholder="请输入玩家id" size="medium" clearable></el-input>
-      <el-input v-model="format.play_counter" placeholder="请输入玩家账号" size="medium" clearable></el-input>
+      <!-- <el-input v-model="format.play_counter" placeholder="请输入玩家账号" size="medium" clearable></el-input> -->
       <span>时间范围</span>
       <el-date-picker
-        v-model="format.time_range"
+        v-model="format.dateArr"
         type="datetimerange"
         :picker-options="pickerOptions"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" size="medium">查询</el-button>
+      <div>{{format}}</div>
+      <el-button type="primary" size="medium" @click="searchData">查询</el-button>
     </input-area>
     <div class="bd">
       <info-table
-        :search="search"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="'payment'.indexOf(scope.prop) >= 0">
+              <span>{{ Number(scope.row.fish_value) - Number(scope.row.bullet_value) }}</span>
+            </template>
             <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleRecord(scope.row)">记录</el-button>
             </template>
             <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
+    <el-dialog title="捕鱼记录" :visible.sync="dialogFormVisible">
+      <el-table :data="recordTableData" style="width: 100%" border>
+        <el-table-column prop="create_date" label="时间" width="180" align="center">
+        </el-table-column>
+        <el-table-column prop="bullet_value" label="子弹总价值" width="180" align="center"></el-table-column>
+        <el-table-column prop="fish_value" label="鱼价值" align="center"></el-table-column>
+        <el-table-column label="收支" align="center">
+          <template slot-scope="scope">
+            <span>{{ Number(scope.row.fish_value) - Number(scope.row.bullet_value) }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
          
@@ -59,6 +86,10 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
+      dialogFormVisible: false,
       pickerOptions: {
         shortcuts: [
           {
@@ -92,68 +123,93 @@ export default {
       },
       format: {
         play_id: "",
-        play_counter: "",
-        time_range: ""
+        // play_counter: "",
+        dateArr: [
+          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
+          new Date()
+        ]
       },
       tableStyle: [
-        { label: "玩家账号", prop: "order_id", width: "" },
-        { label: "玩家id", prop: "channel_name", width: "" },
-        { label: "子弹发送总量", prop: "channel_name", width: "" },
-        { label: "子弹价值", prop: "fun_1", width: "" },
-        { label: "鱼总价值", prop: "fun_2", width: "" },
-        { label: "收支", prop: "fun_5", width: "" },
+        { label: "玩家id", prop: "uid", width: "" },
+        { label: "子弹发送总量", prop: "total_bullet", width: "" },
+        { label: "子弹价值", prop: "bullet_value", width: "" },
+        { label: "鱼总价值", prop: "fish_value", width: "" },
+        { label: "收支", prop: "payment", width: "" },
         { label: "操作", prop: "action", width: "150" }
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
+      records: [],
+      recordTableData: [],
+      pageInfo: new PageInfo(0, [5, 10, 15], 5)
     };
   },
   methods: {
-    /**搜索*/
-    search() {},
-    handleEdit(index, row) {
-      console.log(index, row);
+    getFishList() {
+      this.$http.get("v1/backend/operation/fishes").then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.records = res.data.data;
+          this.total = res.data.total;
+        }
+      });
     },
-    handleDelete(index, row) {
-      console.log(row);
-      const ids = row.id.toString();
-      console.log(ids);
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(
-          this.$message({
-            type: "success",
-            message: res.data.msg
-          })
-        )
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: res.data.msg
-          });
+    /**搜索*/
+    searchData() {
+      let params = {
+        user_id: Number(this.format.play_id),
+        start_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[0])).getTime() / 1000)
+          : 0,
+        end_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[1])).getTime() / 1000)
+          : 0
+      };
+      this.$http
+        .get("v1/backend/operation/fishes", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
         });
+    },
+    handleRecord(row) {
+      console.log(row);
+      this.dialogFormVisible = true;
+      let params = {
+        user_id: Number(row.uid),
+        start_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[0])).getTime() / 1000)
+          : 0,
+        end_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[1])).getTime() / 1000)
+          : 0
+      };
+      this.$http
+        .get("v1/backend/operation/fish-data", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if(res.data.code === 200) {
+            this.recordTableData = res.data.data
+          }
+        });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getFishList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getFishList();
     }
   },
-  mounted() {}
+  mounted() {
+    this.getFishList();
+  }
 };
 </script>
 

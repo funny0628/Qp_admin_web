@@ -53,7 +53,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -131,7 +131,7 @@ export default {
   },
   data() {
     return {
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       imageUrl: "",

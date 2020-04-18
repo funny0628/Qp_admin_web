@@ -146,6 +146,11 @@ export default {
     };
   },
   methods: {
+    getWithdrawRec() {
+      this.$http.get('v1/backend/operation/withdraws').then(res=> {
+        console.log(res)
+      })
+    },
     /**搜索*/
     search() {},
     handleEdit(index, row) {
@@ -174,7 +179,9 @@ export default {
         });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getWithdrawRec()
+  }
 };
 </script>
 

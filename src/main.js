@@ -33,7 +33,7 @@ Vue.use(VueQuillEditor, /* { default global options } */)
 
 Vue.config.productionTip = false;
 Vue.filter('dateFormat', (originVal) => {
-  const dt = new Date(originVal);
+  const dt = new Date(originVal*1000);
   const y = dt.getFullYear();
   const m = (dt.getMonth() + 1).toString().padStart(2, '0');
   const d = dt

@@ -50,7 +50,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="modPlayGold">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -123,6 +123,14 @@ export default {
     };
   },
   methods: {
+    getModGoldList() {
+      this.$http.get('v1/backend/operation/coin-modify').then(res=>{
+        console.log(res)
+      })
+    },
+    modPlayGold() {
+
+    },
     /**搜索*/
     search() {},
     handleEdit(index, row) {
@@ -151,7 +159,9 @@ export default {
         });
     }
   },
-  mounted() {}
+  mounted() {
+    this.getModGoldList()
+  }
 };
 </script>
 

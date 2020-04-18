@@ -64,7 +64,6 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addChannel">确 定</el-button>
@@ -74,12 +73,12 @@
     <el-dialog title="添加公司" :visible.sync="dialogVisible" width="30%">
       <el-form :model="form">
         <el-form-item label="公司名" :label-width="formLabelWidth">
-          <el-input v-model="form.company_name" autocomplete="off" placeholder="请输入公司名"></el-input>
+          <el-input v-model="form1.company_name" autocomplete="off" placeholder="请输入公司名"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addCompany">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -136,6 +135,9 @@ export default {
         channel_name: "",
         channel_id: "",
         belong_company: ""
+      },
+      form1: {
+        company_name: ""
       }
     };
   },
@@ -179,6 +181,21 @@ export default {
       this.dialogTitle = "添加渠道";
       this.dialogFormVisible = true;
     },
+    addCompany() {
+      let data = {
+        name: this.form1.company_name
+      }
+      this.$http.post('v1/backend/operation/channel/company',data).then(res=>{
+        console.log(res)
+        if(res.data.code === 200) {
+          this.dialogVisible = false
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+        }
+      })
+    },
     addChannel() {
       if (!this.form.id) {
         let data = {
@@ -220,11 +237,6 @@ export default {
     },
     /**搜索*/
     search() {},
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
-    },
     handleEdit(index, row) {
       console.log(index, row);
       this.dialogTitle = "编辑渠道";
@@ -242,11 +254,12 @@ export default {
         type: "warning"
       })
         .then(() => {
-          let data = {
-            channel_id: row.id
-          }
           this.$http
-            .delete("v1/backend/operation/channels", data)
+            .delete("v1/backend/operation/channels", {
+              params: {
+                channel_id: row.id
+              }
+            })
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {
