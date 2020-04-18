@@ -3,50 +3,45 @@
     <!-- title -->
     <div class="title">
       UID<el-input
-        v-model="input"
+        v-model="UID"
         style="margin-top:10px;width:200px"
       ></el-input>
       手机号码<el-input
-        v-model="input"
+        v-model="phone"
         style="margin-top:10px;width:200px"
       ></el-input>
       IP
-      <el-input v-model="input" style="margin-top:10px;width:200px"></el-input>
-      渠道<el-select v-model="value" style="margin-top:10px;width:200px">
+      <el-input v-model="IP" style="margin-top:10px;width:200px"></el-input>
+      渠道<el-select v-model="avator_nameO" style="margin-top:10px;width:200px">
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in optionchannels"
+          :key="item.levelO"
+          :label="item.avator_nameO"
+          :value="item.levelO"
         >
         </el-option>
       </el-select>
       状态<el-select v-model="value" placeholder="请选择">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
+        <el-option label="所有" :value="0"></el-option>
+        <el-option label="封号" :value="1"></el-option>
       </el-select>
       vip等级<el-select
-        v-model="value"
+        v-model="level"
         placeholder="请选择"
         style="margin-top:10px;width:200px"
       >
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in optionData"
+          :key="item.level"
+          :label="item.avator_name"
+          :value="item.level"
         >
         </el-option>
       </el-select>
       日期
       <el-date-picker
         style="margin-top:10px;width:200px"
-        v-model="form.end_time"
+        v-model="start_time"
         type="date"
         placeholder="选择日期"
         format="yyyy-MM-dd HH:mm:ss"
@@ -56,7 +51,7 @@
       -
       <el-date-picker
         style="margin-top:10px;width:200px"
-        v-model="form.end_time"
+        v-model="end_time"
         type="date"
         placeholder="选择日期"
         format="yyyy-MM-dd HH:mm:ss"
@@ -77,105 +72,138 @@
       >
         <el-table-column
           fixed
-          prop="date"
+          prop="uid"
           label="玩家Id"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="nickname"
           label="玩家昵称"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
+
         <el-table-column
-          prop="date"
+          prop="accountType"
           label="账号类型"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="date" label="vip等级" align="center" width="120">
+        <el-table-column
+          prop="level"
+          label="vip等级"
+          align="center"
+          width="120"
+        >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="buycount"
           label="累计充值"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="phone"
           label="手机号码"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="date" label="渠道" align="center" width="120">
+        <el-table-column prop="channel" label="渠道" align="center" width="120">
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="created_time"
           label="注册时间"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="date" label="创建IP" align="center" width="120">
+        <el-table-column prop="ip" label="创建IP" align="center" width="120">
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="modified_time"
           label="最后登录时间"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="last_deposit_time"
           label="最后充值时间"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="last_ip"
           label="最后登陆IP"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="bank_info"
           label="银行卡信息"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="alipay"
           label="支付宝信息"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="client_version"
           label="客户端版本"
           align="center"
           width="120"
+          show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="date" label="机器码" align="center" width="120">
+        <el-table-column
+          prop="device_id"
+          label="机器码"
+          align="center"
+          width="120"
+          show-overflow-tooltip
+        >
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="200">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          align="center"
+          width="200"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
             <!-- 正式用户才有 -->
             <!-- <el-button @click="handleClick(scope.row)" type="text" size="small"
               >修改登陆密码</el-button
             > -->
-            <el-button size="mini" type="danger" @click="handleClick(scope.row)"
-              >封号</el-button
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleClick(scope.row,scope.row.status)"
+              >{{ scope.row.status }}</el-button
             >
             <el-button
               size="mini"
@@ -186,6 +214,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <el-pagination
+        v-if="total > 5"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </div>
     <!-- dialog -->
     <div class="dialog">
@@ -193,55 +233,54 @@
         <div class="msg">
           <div class="left">
             <p class="image">
-              <img
-                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587117883027&di=6f4043c74c615c71e54ae49211f71f12&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F78%2F52%2F01200000123847134434529793168.jpg"
-                alt=""
-              />
+              <img :src="'192.168.1.24:8000/' + formData.icon_border" alt="" />
             </p>
-            <p>名字</p>
-            <p>状态:</p>
+            <p>{{ formData.nickname }}</p>
+            <p>状态:{{ formData.status }}</p>
           </div>
           <div class="right">
             <p class="title">基本信息</p>
             <div class="item">
               <div class="i-f">
-                <p>uid/昵称:10456/名字</p>
-                <p>注册时间:2020-04-16 15:18:51</p>
-                <p>最后登陆时间:2020-04-16 15:18:51</p>
-                <p>手机号:</p>
-                <p>渠道:windows</p>
+                <p>uid/昵称:{{ formData.uid + "/" + formData.nickname }}</p>
+                <p>注册时间:{{ formData.created_time }}</p>
+                <p>最后登陆时间:{{ formData.modified_time }}</p>
+                <p>手机号:{{ formData.phone }}</p>
+                <p>渠道:{{ formData.channel }}</p>
               </div>
               <div class="i-r">
-                <p>性别:男</p>
-                <p>注册IP:192.168.1.61</p>
-                <p>最后登陆IP:192.168.1.61</p>
-                <p>设备号:122312</p>
-                <p>客户端版本号:1.0.0</p>
+                <p>性别:{{ formData.sex }}</p>
+                <p>注册IP:{{ formData.ip }}</p>
+                <p>最后登陆IP:{{ formData.last_ip }}</p>
+                <p>设备号:{{ formData.device_id }}</p>
+                <p>客户端版本号:{{ formData.client_version }}</p>
               </div>
             </div>
-            <p class="title">累计信息</p>
+            <p class="title">高级信息</p>
             <div class="item">
               <div class="i-f">
-                <p>首次充值时间:10456/名字</p>
-                <p>金币余额:2020-04-16 15:18:51</p>
-                <p>保险箱金币:2020-04-16 15:18:51</p>
-                <p>累计充值:</p>
-                <p>累计赢金币:windows</p>
-                <p>累计充值数量:windows</p>
+                <p>首次充值时间:{{ formData.first_buy_time }}</p>
+                <p>金币余额:{{ formData.total_coins }}</p>
+                <p>最后充值时间:{{ formData.last_deposit_time }}</p>
+                <p>累积赢金币:{{ formData.total_win_coins }}</p>
+                <p>累积充值次数:{{ formData.total_count }}</p>
+                <p>累积押注:{{ formData.total_lose_coins }}</p>
               </div>
               <div class="i-r">
-                <p>最后充值时间:男</p>
-                <p>累计兑换:192.168.1.61</p>
-                <p>累计扣台费:192.168.1.61</p>
-                <p>累计押注:122312</p>
-                <p>vip等级:1.0.0</p>
+                <p>VIP等级:{{ formData.vip_level }}</p>
+                <p>今日流水:{{ formData.today_cash_flow }}</p>
+                <p>累积充值:{{ formData.total_deposit }}</p>
+                <p>累积兑换:{{ formData.buycount }}</p>
+                <p>累积扣台费:{{ formData.total_fee_coins }}</p>
+                <p>今日充值:{{ formData.today_depoist_amount }}</p>
+                <p>今日兑换:{{ formData.today_exchange_coins }}</p>
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="visibiTable">
           <el-table
-            :data="tableData"
+            :data="formTable"
             highlight-current-row
             tooltip-effect="dark"
             border
@@ -267,24 +306,50 @@
               prop="date"
               label="结束时间"
               align="center"
-              width="120"
+              width="130"
             >
             </el-table-column>
             <el-table-column
               prop="date"
               label="最后修改的操作人"
               align="center"
-              width="120"
+              width="150"
             >
             </el-table-column>
             <el-table-column
               prop="date"
               label="操作时间"
               align="center"
-              width="120"
+              width="130"
             >
             </el-table-column>
           </el-table>
+        </div>
+      </el-dialog>
+    </div>
+      <!-- form表单 -->
+    <div class="dialog">
+      <el-dialog
+        title="封号"
+        :visible.sync="visibleF"
+        :destroy-on-close="true"
+      >
+        <el-form ref="form" :rules="rulesF" :model="formF" label-width="120px">
+          <el-form-item label="ID" prop="user_id">
+            <el-input placeholder="ID" v-model="formF.user_id"></el-input>
+          </el-form-item>
+          <el-form-item label="原因" prop="reason	">
+            <el-input placeholder="原因" v-model="formF.reason	"></el-input>
+          </el-form-item>
+          <el-form-item label="结束时间" prop="end_time">
+            <el-input placeholder="结束时间" v-model="formF.end_time"></el-input>
+          </el-form-item>
+         
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="onSubmit('formF')"
+            >确 定</el-button
+          >
         </div>
       </el-dialog>
     </div>
@@ -293,6 +358,7 @@
 
 <script>
 import BaseIframe from "../../plugin/script/common/BaseIframe";
+import DeepData from "../../assets/js/formate.js";
 export default {
   name: "UserList",
   extends: BaseIframe,
@@ -300,84 +366,188 @@ export default {
   data() {
     return {
       visible: false,
+      visibleF:false,
       input: "",
-      value: "",
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1517 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1519 弄",
-          zip: 200333
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1516 弄",
-          zip: 200333
-        }
-      ],
+      total: "",
+      currentPage: 1,
+      limit: 10,
+      accountType: "",
+      //所有数据表格
+      tableData: [],
+      visibiTable: false,
+      //详情中的表格
+      formTable: [],
+      // 详情数据
+      formData: {},
+      optionData: [],
+      optionchannels: [],
+      avator_nameO: '所有渠道',
+       value: 0,
+      level: -1,
+      UID:'',
+      IP:'',
+      phone:'',
+      start_time:'',
+      end_time:'',
 
-      options: [
-        { value: "1", label: "启用" },
-        { value: "2", label: "在线" },
-        { value: "3", label: "离线" },
-        { value: "4", label: "冻结" }
-      ],
-
-      form: {
-        user_id: "",
-        pay_type: "1",
-        goods_type: 100,
-        money: "",
-        check_money: ""
-      }
+      formF: {
+        user_id:'',
+        reason:'',
+        end_time:'',
+      },
+      rulesF:{}
     };
   },
 
   async created() {
-    console.log("000000");
-
-    let data = await this.$http.OperationMan.GetUsers({ page: 1, limit: 10 });
-    console.log(data);
+    this.initdata({ page: this.currentPage, limit: this.limit });
+    this.initVIP();
   },
 
   methods: {
-    getUserList() {
-      this.$http.get('v1/backend/operation/users').then(res=>{
-        console.log(res)
-      })
-    },
-    /**搜索*/
-    search() {},
-    handleClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
-    },
-    handleEdit() {
-      console.log("-------");
+    //筛查
+    search() {
+      console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
 
+      // this.initdata({ page: this.currentPage, limit: this.limit, uid:this.UID, last_ip:this.IP, channel:this.avator_nameO, status:this.value, vip_level:this.level, start_time:this.start_time/1000, end_time:this.end_time/1000,});
+
+      // this.initdata({ page: this.currentPage, limit: this.limit, channel:this.avator_nameO, status:this.value, vip_level:this.level,});
+      
+    },
+    //封号
+    async handleClick( row,status) {
+      console.log(row,status);
+      if(status === '封号'){
+        this.visibleF = true
+        this.formF.user_id = row.uid
+      }else if(status === '解封'){
+        //1,发送解封的请求,2.最新的数据的请求
+      }
+      
+      
+
+    },
+
+    //表单确认封号
+    async onSubmit(formName){
+      console.log(this.formF);
+      let resData = {
+        user_id: +this.formF.user_id,
+        reason:this.formF.reason,
+        end_time:this.data(this.formF.end_time)/1000
+      }
+      console.log(resData);
+      
+      // let { data } = await this.$http.OperationMan.PostUserLock(resData);
+      // console.log(data);
+      if(data.code === 200){
+        //再次拿到最新的数据,展示状态
+      }
+      
+    },
+    //表格详情
+    handleEdit(index, row) {
+      // console.log(index, row);
       this.visible = true;
+      //用户详情
+      this.iniDetail({ user_id: row.uid });
+      this.initUserLock({ user_id: row.uid });
+    },
+
+    //页容量发生变化
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initdata({ page: this.currentPage, limit: this.limit });
+    },
+    //页码发生变化
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initdata({ page: this.currentPage, limit: this.limit });
+    },
+
+    formateData(res) {
+      res.forEach(item => {
+        item.accountType =
+          item.phone === "" || item.phone === undefined ? "游客" : "正式用户";
+        item.nickname =
+          item.nickname === "" || item.nickname === undefined
+            ? item.uid
+            : item.nickname;
+        item.status = item.status === 1 ? "封号" : "解封";
+        // item.last_deposit_time = this.data(item.last_deposit_time*1000)
+        //处理返回的事件戳为格式时间
+      });
+      return res;
+    },
+
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
+    },
+
+    formateNum(item) {
+      item.status = item.status === 1 ? "封号" : "解封";
+      item.sex = item.sex === 1 ? "男" : "女";
+      item.nickname =
+        item.nickname === "" || item.nickname === undefined
+          ? item.uid
+          : item.nickname;
+
+      return item;
+    },
+
+    //获取用户列表
+    async initdata(params) {
+      let { data } = await this.$http.OperationMan.GetUsers(params);
+      let fres = this.formateData(DeepData(data.data));
+      // console.log(fres);
+      this.tableData = fres;
+      this.total = data.total;
+      // console.log(data);
+    },
+    //VIP记录列表 / 渠道列表
+    async initVIP(params) {
+      let { data } = await this.$http.OperationMan.GetVips(params);
+      console.log(data);
+      
+      this.optionData = DeepData(data.data);
+      this.optionData.unshift({avator_name: '所有', level: -1})
+      let Channelsdata = await this.$http.OperationMan.GetChannels(params);
+      console.log(Channelsdata);
+      let changeData = [];
+      Channelsdata.data.data.forEach(item => {
+        changeData.push(item.name);
+      });
+      console.log(changeData);
+      changeData.forEach((item, index) => {
+        this.optionchannels.push({ avator_nameO: item, levelO: index });
+      });
+       this.optionchannels.unshift({avator_nameO: '请选择渠道', levelO: -1})
+      console.log(this.optionchannels);
+    },
+
+    //获取用户详情
+    async iniDetail(params) {
+      let { data } = await this.$http.OperationMan.GetUserDetail(params);
+      // console.log(data.data);
+      this.formData = this.formateNum(data.data);
+      // console.log(this.formData);
+    },
+
+    //获取用户封号信息
+    async initUserLock(params) {
+      let { data } = await this.$http.OperationMan.GetUserLock(params);
+      // console.log(data.data);
+      if (Object.keys(data.data || {}).length !== 0) {
+        let resData = { ...data.dada };
+        this.visibiTable = true;
+        this.formTable.push(resData);
+      } else {
+        return false;
+      }
+      // console.log(this.formTable);
     }
   }
 };

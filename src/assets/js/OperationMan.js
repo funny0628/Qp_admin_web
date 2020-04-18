@@ -7,7 +7,50 @@ let GetUsers = (params) => { //get / search
     })
 }
 
+//用户详情记录
+let GetUserDetail = (params) => { //get / search
+    return axios.get('v1/backend/operation/user/detail', {
+        params
+    })
+}
+
+//用户封号
+let PostUserLock = (params) => { //get / search
+    return axios.post('v1/backend/operation/user/lock',params)
+}
+
+//用户解封
+let PostUserUnlock = (params) => { //get / search
+    return axios.post('v1/backend/operation/user/unlock',params)
+}
+
+//用户封号状态
+let GetUserLock = (params) => { //get / search
+    return axios.get('v1/backend/operation/user/lock', {
+        params
+    })
+}
+
+//VIP记录列表
+let GetVips = (params) => { //get / search
+    return axios.get('v1/backend/operation/vips', {
+        params
+    })
+}
+
+//渠道列表
+let GetChannels = (params) => { //get / search
+    return axios.get('v1/backend/operation/channels', {
+        params
+    })
+}
+
 export default {
     GetUsers,
-    
+    GetUserDetail,
+    PostUserLock,
+    PostUserUnlock,
+    GetUserLock,
+    GetVips,
+    GetChannels,
 }

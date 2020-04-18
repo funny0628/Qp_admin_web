@@ -485,17 +485,17 @@ const models = {
           },
         ]
       },
-      {
-        name: "Landlords",
-        text: "斗地主",
-        children: [
-          {
-            name: "LandDrawWaterDate",
-            text: "斗地主-抽水数据",
-            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
-          }
-        ]
-      },
+      // {
+      //   name: "Landlords",
+      //   text: "斗地主",
+      //   children: [
+      //     {
+      //       name: "LandDrawWaterDate",
+      //       text: "斗地主-抽水数据",
+      //       vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
+      //     }
+      //   ]
+      // },
       {
         name: "BombFlower",
         text: "炸金花",
