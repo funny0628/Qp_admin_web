@@ -78,6 +78,16 @@
           width="120"
           show-overflow-tooltip
         >
+
+        <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="ToGM(scope.row)"
+              >{{scope.row.uid}}</el-button
+            >
+          </template>
+
         </el-table-column>
         <el-table-column
           prop="nickname"
@@ -233,7 +243,7 @@
         <div class="msg">
           <div class="left">
             <p class="image">
-              <img :src="'192.168.1.24:8000/' + formData.icon_border" alt="" />
+              <img :src="formData.icon_border" alt="" />
             </p>
             <p>{{ formData.nickname }}</p>
             <p>状态:{{ formData.status }}</p>
@@ -286,38 +296,38 @@
             border
             style="width: 100%"
           >
-            <el-table-column prop="date" label="UID" align="center" width="120">
+            <el-table-column prop="uid" label="uid" align="center" width="120">
             </el-table-column>
             <el-table-column
-              prop="date"
+              prop="lock_status"
               label="	封号状态"
               align="center"
               width="120"
             >
             </el-table-column>
             <el-table-column
-              prop="date"
+              prop="reason"
               label="原因"
               align="center"
               width="120"
             >
             </el-table-column>
             <el-table-column
-              prop="date"
+              prop="endtime"
               label="结束时间"
               align="center"
               width="130"
             >
             </el-table-column>
             <el-table-column
-              prop="date"
+              prop="op_name"
               label="最后修改的操作人"
               align="center"
               width="150"
             >
             </el-table-column>
             <el-table-column
-              prop="date"
+              prop="op_time"
               label="操作时间"
               align="center"
               width="130"
@@ -413,6 +423,12 @@ export default {
   },
 
   methods: {
+    ToGM(row){
+      console.log("00000");
+      // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMcontrol')), 'GMcontrol')
+  
+    },
+    
     //筛查
     search() {
       // console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
@@ -474,6 +490,7 @@ export default {
     handleEdit(index, row) {
       // console.log(index, row);
       this.visible = true;
+      this.formTable = []
       //用户详情
       this.iniDetail({ user_id: row.uid });
       this.initUserLock({ user_id: row.uid });
@@ -489,6 +506,21 @@ export default {
     handleCurrentChange(pagenum) {
       this.currentPage = pagenum;
       this.initdata({ page: this.currentPage, limit: this.limit });
+    },
+
+    //十位时间戳转格式日期
+    timestampToTime(timestamp) {
+      var date = new Date(timestamp * 1000);
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D = date.getDate() + " ";
+      var h = date.getHours() + ":";
+      var m = date.getMinutes() + ":";
+      var s = date.getSeconds();
+      return Y + M + D + h + m + s;
     },
 
     formateData(res) {
@@ -558,21 +590,27 @@ export default {
       let { data } = await this.$http.OperationMan.GetUserDetail(params);
       // console.log(data.data);
       this.formData = this.formateNum(data.data);
+      this.formData.icon_border = 'http://192.168.1.24:8000/' + this.formData.icon_border
       // console.log(this.formData);
     },
 
     //获取用户封号信息
     async initUserLock(params) {
       let { data } = await this.$http.OperationMan.GetUserLock(params);
-      // console.log(data.data);
+      console.log(data.data);
       if (Object.keys(data.data || {}).length !== 0) {
-        let resData = { ...data.dada };
+        console.log('--------');
+        console.log(data.data);
+        let resData = data.dada;
+        console.log(timestampToTime);
+        resData.endtime = this.timestampToTime(resData.endtime)
+        resData.op_time = this.timestampToTime(resData.op_time)
         this.visibiTable = true;
         this.formTable.push(resData);
       } else {
         return false;
       }
-      // console.log(this.formTable);
+      console.log(this.formTable);
     }
   }
 };

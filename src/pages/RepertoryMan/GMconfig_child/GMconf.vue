@@ -5,38 +5,38 @@
       <el-button type="primary" size="mini" @click="open">发送到服务器配置</el-button>
     </input-area>
     <div class="bd">
-      <el-form :model="form">
-        <el-form-item label="控制概率(百分比)" :label-width="formLabelWidth">
+      <el-form :rules="rules" :model="form">
+        <el-form-item prop="name" label="控制概率(百分比)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="首冲返水率(百分比)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="首冲返水率(百分比)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="首冲返水权重" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="首冲返水权重" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="充值返水率(百分比)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="充值返水率(百分比)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="充值返水权重" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="充值返水权重" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="兑换返水率(百分比)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="兑换返水率(百分比)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="兑换返水权重" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="兑换返水权重" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="新增加返水率(百分比)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="新增加返水率(百分比)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="新增加返水权重" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="新增加返水权重" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth">
+        <el-form-item prop="name" :label-width="formLabelWidth">
           <el-button type="success" size="mini" @click="add">新增区间控制</el-button>
         </el-form-item>
-        <el-form-item label="个人库存区间" :label-width="formLabelWidth" v-for="(item,index) in counter" :key="index">
+        <el-form-item prop="name" label="个人库存区间" :label-width="formLabelWidth" v-for="(item,index) in counter" :key="index">
           <el-row>
               <el-col :span="6">
                   <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -80,6 +80,9 @@ export default {
         type: [],
         resource: "",
         desc: ""
+      },
+       rules:{
+         name: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
       },
       formLabelWidth: "150px",
       counter: [1]

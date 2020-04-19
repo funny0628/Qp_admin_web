@@ -8,17 +8,17 @@
       </div>
     </input-area>
     <div class="bd">
-      <el-form :rules="rulesF" :model="form" style="width:30%;">
-        <el-form-item label="实时库存值(元)" :label-width="formLabelWidth">
+      <el-form :rules="rules" :model="form" style="width:30%;">
+        <el-form-item prop="name" label="实时库存值(元)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="警报值(元)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="警报值(元)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="库存累计添加值(元)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="库存累计添加值(元)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="添加库存(元)" :label-width="formLabelWidth">
+        <el-form-item prop="name" label="添加库存(元)" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
           <el-button type="primary" style="margin-top:10px;">添加库存</el-button>
         </el-form-item>
@@ -38,15 +38,10 @@ export default {
     return {
       form: {
         name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
       },
-      rulesF:{},
+      rules:{
+         name: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+      },
       formLabelWidth: "150px"
     };
   },
