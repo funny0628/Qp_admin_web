@@ -3,34 +3,34 @@
     <div>
       <el-button type="primary" size="medium" @click="add">添加</el-button>
     </div>
-    玩家id<el-input
+    <el-input
       v-model="format.play_id"
       placeholder="请输入玩家id"
       size="medium"
       clearable
       style="width:200px;margin-top:20px"
     ></el-input>
-    状态<el-select
+    <el-select
       v-model="format.status"
-      placeholder="请选择"
+      placeholder="请选择状态"
       clearable
       size="medium"
     >
       <el-option
-        v-for="item in platforms"
+        v-for="item in opationStatus"
         :key="item.value"
         :label="item.label"
         :value="item.value"
       ></el-option>
     </el-select>
-    控制金额<el-select
+    <el-select
       v-model="format.control_money"
-      placeholder="请选择"
+      placeholder="请选择控制金额"
       clearable
       size="medium"
     >
       <el-option
-        v-for="item in platforms"
+        v-for="item in opationAmount"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -49,13 +49,13 @@
         tooltip-effect="dark"
         style="width: 100%"
       >
-        <el-table-column sortable prop="id" label="玩家昵称" align="center">
+        <el-table-column  prop="id" label="玩家昵称" align="center">
         </el-table-column>
-        <el-table-column prop="sort_num" label="玩家Id" align="center">
+        <el-table-column prop="uid" label="玩家Id" align="center">
         </el-table-column>
         <el-table-column
-          prop="pay_name"
-          label="控制金额"
+          prop="control_amount"
+          label="控制金额(分)"
           align="center"
           show-overflow-tooltip
         >
@@ -68,7 +68,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="pay_way"
+          prop="curr_status"
           label="状态"
           align="center"
           show-overflow-tooltip
@@ -76,7 +76,7 @@
         </el-table-column>
         <el-table-column
           sortable
-          prop="money_num"
+          prop="weights"
           label="权重值"
           align="center"
           show-overflow-tooltip
@@ -84,7 +84,7 @@
         </el-table-column>
         <el-table-column
           sortable
-          prop="is_diy"
+          prop="lose_rate"
           label="输钱概率(%)"
           align="center"
           show-overflow-tooltip
@@ -92,28 +92,28 @@
         </el-table-column>
         <el-table-column
           sortable
-          prop="diy_max"
+          prop="win_rate"
           label="赢钱概率(%)"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="diy_min"
+          prop="creation_type"
           label="创建类型"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="pay_desc"
+          prop="create_at"
           label="创建时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="o_status"
+          prop="editor"
           label="最后修人员"
           align="center"
           show-overflow-tooltip
@@ -145,7 +145,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
-        v-if="total > 10"
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -240,7 +240,7 @@
 </template>
 
 <script>
-
+import DeepData from "../../../assets/js/formate.js";
 export default {
   name: "GMcontrol",
 
@@ -254,18 +254,20 @@ export default {
       limit: 10,
       total: "",
       title: "添加控制名单",
-      platforms: [
+      opationStatus: [
+        { value: 2, label: "全部" },
+        { value: 0, label: "终止" },
+        { value: 1, label: "执行" },
+      ],
+      opationAmount: [
         { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" }
+        { value: 2, label: "正数" },
+        { value: 3, label: "负数" },
       ],
       format: {
         play_id: "",
-        status: "",
-        control_money: ""
+        status: "全部",
+        control_money: "全部"
       },
 
       form: {
@@ -284,6 +286,9 @@ export default {
       visible:false,
     };
   },
+  created() {
+    this.initData()
+  },
   methods: {
     /**搜索*/
     add() {
@@ -291,7 +296,6 @@ export default {
       this.title = "添加控制名单";
     },
     search() {},
-
     //表格停止
     handleStop() {
 
@@ -311,10 +315,17 @@ export default {
     },
 
     //页容量变化
-    handleSizeChange() {},
+    handleSizeChange(num) {
+      this.limit = num;
+      this.currentPage = 1;
+      this.initData()
+    },
 
     //页码变化
-    handleCurrentChange() {},
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum
+      this.initData()
+    },
 
     //表单提交
     onSubmit(formName) {
@@ -326,7 +337,35 @@ export default {
           return false;
         }
       });
-    }
+    },
+
+    GetData(){
+      this.initData({
+        page:this.currentPage,
+        limit:this.limit,
+        uid:this.format.play_id,
+        status:this.format.status,
+        amount	:this.format.control_money,
+      })
+    },
+
+    formatData(res){
+      res.forEach((item)=>{
+        item.curr_status = item.curr_status === 1 ? '启用' : '终止'
+      })
+      return res
+    },
+
+    async initData(params){
+      let {data} = await this.$http.OperationMan.GetGameControl(params)
+      console.log(data);
+      let res = DeepData(data.data)
+      console.log(res);
+      
+      this.tableData =this.formatData(res);
+      this.total = data.total
+      
+    },
 
     // handleDelete(index, row) {
     //   console.log(row);

@@ -702,6 +702,48 @@ const models = {
       },
     ]
   },
+  DataAnalysis:{
+    name:'DataAnalysis',
+    vue: null,
+    text:'数据分析',
+    children:[
+      {
+        name:'ChannelsReport',
+        text:'渠道报表日',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'ChannelsReport')
+      },
+      {
+        name:'LTVReport',
+        text:'LTV报表',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LTVReport')), 'LTVReport')
+      },
+      {
+        name:'lastAnalysis',
+        text:'留存分析',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/lastAnalysis')), 'lastAnalysis')
+      },
+      {
+        name:'NewPlayerChange',
+        text:'新玩家付费转换',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/NewPlayerChange')), 'NewPlayerChange')
+      },
+      {
+        name:'Statistics',
+        text:'台费统计',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Statistics')), 'Statistics')
+      },
+      {
+        name:'CardpPandect',
+        text:'牌局总览',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/CardpPandect')), 'CardpPandect')
+      },
+      {
+        name:'AddUser',
+        text:'新增用户',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/AddUser')), 'AddUser')
+      },
+    ]
+  },
 };
 
 export default models;

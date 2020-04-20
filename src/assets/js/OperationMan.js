@@ -45,6 +45,15 @@ let GetChannels = (params) => { //get / search
     })
 }
 
+
+
+//GM控制
+let GetGameControl = (params) => {
+    return axios.get('v1/backend/inventory/game_control', {
+        params
+    })
+}
+
 export default {
     GetUsers,
     GetUserDetail,
@@ -53,4 +62,6 @@ export default {
     GetUserLock,
     GetVips,
     GetChannels,
+    //库存管理->GM控制
+    GetGameControl,
 }

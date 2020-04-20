@@ -107,6 +107,9 @@ export default {
       limit:10,
     };
   },
+  created() {
+    this.GetOPtion()
+  },
   methods: {
     //查找
     search() {},
@@ -116,6 +119,27 @@ export default {
 
     //页码变化
     handleCurrentChange() {},
+  
+
+     async GetOPtion(params) {
+      let { data } = await this.$http.HallFunConfig.GetAllGameList({type_id:3});
+      console.log(data);
+      // let Game_id;
+      // data.data.forEach((item)=>{
+      //   if(item.game_name === '斗地主'){
+      //     Game_id = item.game_id
+      //   }
+      // })
+      // console.log(Game_id);
+      
+
+      // let deepData = DeepData(data.data)
+      // let localdata = this.formateData(DeepData(data.data));
+      // this.tableData = localdata;
+      // this.total = data.total;
+      // console.log(localdata);
+      // console.log(data);
+    },
   }
 };
 </script>
