@@ -4,11 +4,15 @@ import App from './App'
 // import axios from 'axios'
 // import HallFunConfig from './assets/js/HallFunConfig.js'
 
-import {install} from './plugin/install'
+import {
+  install
+} from './plugin/install'
 import config from './script/config/config';
 import models from './script/config/models';
 import './assets/styles/common.css';
 import echarts from 'echarts'
+import Blob from "./excel/Blob";
+import Export2Excel from "./excel/Export2Excel";
 import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
 import HallFunConfig from './assets/js/HallFunConfig.js'
@@ -25,7 +29,7 @@ import VueCookie from 'vue-cookie';
 // Tell Vue to use the plugin
 Vue.use(VueCookie);
 
-Vue.use(VueQuillEditor, /* { default global options } */)
+Vue.use(VueQuillEditor, /* { default global options } */ )
 // Vue.use(http);
 
 // axios.HallFunConfig = HallFunConfig;
@@ -33,7 +37,7 @@ Vue.use(VueQuillEditor, /* { default global options } */)
 
 Vue.config.productionTip = false;
 Vue.filter('dateFormat', (originVal) => {
-  const dt = new Date(originVal*1000);
+  const dt = new Date(originVal * 1000);
   const y = dt.getFullYear();
   const m = (dt.getMonth() + 1).toString().padStart(2, '0');
   const d = dt
@@ -56,14 +60,48 @@ Vue.filter('dateFormat', (originVal) => {
 
   return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
 });
-
+Vue.directive('has', {
+  inserted: function (el, binding) {
+    if (!permissionJudge(binding.value)) {
+      el.parentNode.removeChild(el);
+    }
+    function get_permission_names(rightArr) {
+      let arr = [];
+      const fn = function (list) {
+        if (list.length === 0) {
+          return undefined
+        }
+        list.forEach(item => {
+          if (!item.children) {
+            arr.push(item.name)
+          } else {
+            arr.push(item.name)
+            fn(item.children)
+          }
+        })
+      }
+      fn(rightArr)
+      return arr;
+    }
+    function permissionJudge(value) {
+      let userInfo = JSON.parse(localStorage.getItem('user_info'));
+      let permission_names = get_permission_names(userInfo);
+      for (let i = 0; i < permission_names.length; i++) {
+        if (permission_names[i] === value) {
+          return true
+        }
+      }
+      return false
+    }
+  }
+});
 Vue.use(install, {
   config: config,
   models: models,
   checkPermission(name) {
+
   },
   headerVue: r => require.ensure([], () => r(require('./components/HeaderMenu.vue')), 'headerVue'),
   loginVue: r => require.ensure([], () => r(require('./pages/login/Login.vue')), 'loginVue'),
   startApp: App
 });
-

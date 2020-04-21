@@ -14,7 +14,6 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <div>{{format}}</div>
       <el-button type="primary" size="medium" @click="searchData">查询</el-button>
     </input-area>
     <div class="bd">
@@ -75,7 +74,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "FishStatistic",
+  name: "fish_statistic",
   extends: BaseIframe,
   components: {
     InfoTableItem,

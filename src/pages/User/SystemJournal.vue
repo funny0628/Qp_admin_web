@@ -53,7 +53,7 @@
 <script>
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "SystemJournal",
+  name: "operation_logs",
   components: {
     InputArea
   },

@@ -56,7 +56,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "WithdrawRec",
+  name: "withdraw_records",
   extends: BaseIframe,
   components: {
     InfoTableItem,

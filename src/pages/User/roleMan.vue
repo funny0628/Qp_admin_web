@@ -2,10 +2,11 @@
   <div id="userList—main">
     <input-area>
       <!-- <el-button type="danger">删除</el-button> -->
-      <el-button type="primary" @click="addRole">添加</el-button>
+      <el-button v-has= "'add_role'" type="primary" @click="addRole">添加</el-button>
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'roles'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -18,16 +19,16 @@
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
         <el-table-column prop="display_name" label="显示名称" align="center"></el-table-column>
         <el-table-column prop="create_time" label="创建时间" align="center">
-          <template slot-scope="scope">{{scope.row.create_time*1000 | dateFormat}}</template>
+          <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
         <el-table-column prop="update_time" label="更新时间" align="center">
-          <template slot-scope="scope">{{scope.row.update_time*1000 | dateFormat}}</template>
+          <template slot-scope="scope">{{scope.row.update_time | dateFormat}}</template>
         </el-table-column>
         <el-table-column prop="action" label="操作" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button v-has="'modify_role'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="primary" @click="showRightsDialog(scope.row)">权限</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button v-has= "'delete_role'" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -91,7 +92,7 @@
 <script>
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "userList",
+  name: "role_manage",
   components: {
     InputArea
   },
@@ -173,7 +174,6 @@ export default {
           });
         }
       } else {
-        console.log(this.form);
         const res = await this.$http.put("v1/backend/auth/roles", {
           name: this.form.name,
           display_name: this.form.display_name,
@@ -198,7 +198,6 @@ export default {
     async handleRights() {
       // 获取所有选中的权限id
       const nodes = this.$refs.tree.getCheckedNodes();
-      console.log(nodes);
       let arr = [];
       nodes.forEach(item => {
         // 选中的子权限id
@@ -210,14 +209,10 @@ export default {
         // } else {
         //   arr = arr.concat(item.parent_id.split(","));
         // }
-        console.log(arr);
       });
 
-      // 数组去重
       const set = new Set(arr);
-
       const ids = [...set].join(",");
-      console.log(ids);
       let data = {
         permission_ids: ids,
         role_id: this.currentRole.id
@@ -226,7 +221,6 @@ export default {
         "v1/backend/auth/permission-assignment",
         data
       );
-      console.log(res);
       if (res.data.code === 200) {
         this.dialogRightAssign = false;
         this.$message({
@@ -242,15 +236,12 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.pagesize = val;
       this.getRoleList();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.currentPage = val;
       this.getRoleList();
     },
@@ -287,14 +278,6 @@ export default {
       this.dialogRightAssign = true;
       this.currentRole = row;
       this.roleId = row.id;
-      // this.$nextTick(() => {
-      //   this.$http.get("v1/backend/auth/permissions").then(res => {
-      //     console.log(res);
-      //     if (res.data.code === 200) {
-      //       this.rightData = res.data.data;
-      //     }
-      //   });
-      // });
       const res = await this.$http.get("v1/backend/auth/permissions");
       console.log(res);
       if (res.data.code === 200) {
@@ -302,10 +285,8 @@ export default {
       }
       //获取当前角色具有的权限
       function getCurrentRoleRights(rightsList) {
-        console.log(rightsList);
         const arr = [];
         const fn = function(list) {
-          console.log(list, list.length);
           if (list.length === 0 || undefined) {
             return undefined;
           }
@@ -329,18 +310,14 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
-          console.log(row.id);
           if (res.data.code === 200) {
             this.checkedKeys = getCurrentRoleRights(res.data.data);
             // this.getRoleList()
           }
-          console.log(this.checkedKeys);
         });
     },
     handleDelete(index, row) {
       this.form.role_id = row.id;
-      console.log(this.form.role_id);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

@@ -23,12 +23,12 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <div>{{format}}</div>
       <el-button type="primary" @click="searchData">查找</el-button>
       <el-button type="primary">导出excel</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'play_lists'"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -47,7 +47,7 @@
               <span>{{scope.row.all_user_count + "/" + scope.row.true_user_count}}</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+              <el-button v-has="'play_detail'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
             </template>
             <template
               v-if="['action','all_user_count','begin_time','end_time'].indexOf(scope.prop) < 0"
@@ -107,7 +107,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "GamblingRecord",
+  name: "paly_records",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -248,7 +248,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getPlayList();
-    }
+    },
   },
   mounted() {
     this.getPlayList();

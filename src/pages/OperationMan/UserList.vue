@@ -47,6 +47,7 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
@@ -107,7 +108,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "UserList",
+  name: "users",
   extends: BaseIframe,
   components: {
     InfoTableItem,

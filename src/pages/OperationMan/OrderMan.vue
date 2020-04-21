@@ -41,13 +41,13 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <div>{{format}}</div>
       <el-button type="primary" @click="searchData">查找</el-button>
-      <el-button type="primary" @click="openPeopleDialog">添加人工订单</el-button>
+      <el-button v-has="'add_order'" type="primary" @click="openPeopleDialog">添加人工订单</el-button>
       <el-button type="primary">导出excel</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'order_list'"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -74,18 +74,20 @@
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button
+                v-has="'order_forbidden'"
                 style="background-color:#01c8ae;color:#fff;"
                 size="mini"
-                @click="abandon"
+                @click="abandon(scope.row)"
               >废弃</el-button>
               <el-button
+                v-has="'order_detail'"
                 style="background-color:#01c8ae;color:#fff;"
                 size="mini"
                 @click="handleDetail(scope.row)"
               >操作详情</el-button>
             </template>
             <template
-              v-if="['action','status','payment_channel'].indexOf(scope.prop) < 0"
+              v-if="['action','status','payment_channel','create_time'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
@@ -110,12 +112,12 @@
         <el-form-item label="付款方式" :label-width="formLabelWidth">
           <el-input v-model="form.pay_type" disabled autocomplete="off" placeholder="人工充值"></el-input>
         </el-form-item>
-        <el-form-item label="商品类型" :label-width="formLabelWidth">
+        <!-- <el-form-item label="商品类型" :label-width="formLabelWidth">
           <el-select v-model="form.goods_type" placeholder="请选择" style="width:100%;">
             <el-option label="金币" value="gold"></el-option>
             <el-option label="现金" value="money"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="金额" :label-width="formLabelWidth">
           <el-input
             type="number"
@@ -181,7 +183,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "OrderMan",
+  name: "order_manage",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -284,6 +286,7 @@ export default {
         check_money: ""
       },
       abandonForm: {
+        order_id: "",
         reason: ""
       }
     };
@@ -337,28 +340,54 @@ export default {
     },
     openPeopleDialog() {
       this.dialogFormVisible = true;
+      this.form = {
+        user_id: "",
+        pay_type: "人工充值",
+        goods_type: 100,
+        money: "",
+        check_money: ""
+      };
     },
     addPeopleOrder() {
-      this.$http
-        .get("v1/backend/operation/orders", {
-          params: {
-            user_id: Number(this.form.user_id),
-            amount: Number(this.form.money),
-            confirmed_amount: Number(this.form.check_money)
-          }
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogFormVisible = false;
-            this.getOrderList();
-          }
-        });
+      let data = {
+        user_id: Number(this.form.user_id),
+        amount: Number(this.form.money),
+        confirmed_amount: Number(this.form.check_money)
+      };
+      this.$http.post("v1/backend/operation/orders", data).then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.dialogFormVisible = false;
+          this.getOrderList();
+        }
+      });
     },
-    abandon() {
+    abandon(row) {
+      console.log(row);
       this.dialogAbandonVisible = true;
+      this.abandonForm.order_id = row.order_id;
     },
-    confirmDrop() {},
+    confirmDrop() {
+      let data = {
+        order_id: this.abandonForm.order_id,
+        desc: this.abandonForm.reason
+      };
+      this.$http.post("v1/backend/operation/order/detail", data).then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.dialogAbandonVisible = false;
+          this.abandonForm = {
+            order_id: "",
+            reason: ""
+          };
+          this.getOrderList();
+          this.messages({
+            type: "success",
+            message: res.data.msg
+          });
+        }
+      });
+    },
     handleDetail(row) {
       console.log(row);
       this.dialogOptRecordVisible = true;
@@ -389,7 +418,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getOrderList();
-    }
+    },
   },
   mounted() {
     this.getOrderList();

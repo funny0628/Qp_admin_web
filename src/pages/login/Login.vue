@@ -87,7 +87,7 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 11, message: "长度在 6 到 11 个字符", trigger: "blur" }
         ]
-      }
+      },
     };
   },
   methods: {
@@ -104,8 +104,12 @@ export default {
           message: res.data.msg
         });
         this.$router.push({
-          name: "home"
+          name: "home",
+          // params: {
+          //   userRightsData: res.data.data
+          // }
         });
+        localStorage.setItem('user_info', JSON.stringify(res.data.data));
       } else {
         this.$message({
           type: "error",

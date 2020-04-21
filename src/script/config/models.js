@@ -6,30 +6,30 @@ const models = {
     text: '首页',
     children: []
   },
-  right: {
-    name: 'right',
+  authentications: {
+    name: "authentications",
     vue: null,
     text: '权限管理',
     children: [
       {
-        name: 'userMan',
+        name: 'user_manage',
         text: '用户管理',
-        vue: r => require.ensure([], () => r(require('../../pages/User/UserMan')), 'userMan'),
+        vue: r => require.ensure([], () => r(require('../../pages/User/UserMan')), 'user_manage'),
       },
       {
-        name: 'roleMan',
+        name: 'role_manage',
         text: '角色管理',
-        vue: r => require.ensure([], () => r(require('../../pages/User/roleMan')), 'roleMan'),
+        vue: r => require.ensure([], () => r(require('../../pages/User/roleMan')), 'role_manage'),
       },
       {
-        name: 'systemJournal',
+        name: 'operation_logs',
         text: '系统操作日志',
-        vue: r => require.ensure([], () => r(require('../../pages/User/SystemJournal')), 'systemJournal'),
+        vue: r => require.ensure([], () => r(require('../../pages/User/SystemJournal')), 'operation_logs'),
       },
     ]
   },
-  gameMan:{
-    name:'SubGameConfig',
+  game_config:{
+    name: "game_config",
     vue:null,
     text:'子游戏配置',
     children:[
@@ -250,8 +250,8 @@ const models = {
       // }
     ]
   },
-  hallFunConfig:{
-    name:'HallFunConfig',
+  lobby_config:{
+    name:'lobby_config',
     text:'大厅功能配置',
     vue:null,
     children:[
@@ -392,60 +392,60 @@ const models = {
       },
     ]
   },
-  operationMan: {
-    name: 'operationMan',
+  operations: {
+    name: 'operations',
     vue: null,
     text: '运营管理',
     children: [
       {
-        name: 'BankOrder',
+        name: 'bank_card',
         text: '银行卡订单',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/BankOrder')), 'BankOrder'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/BankOrder')), 'bank_card'),
       },
       {
-        name: 'OrderMan',
+        name: 'order_manage',
         text: '订单管理',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/OrderMan')), 'OrderMan'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/OrderMan')), 'order_manage'),
       },
       {
-        name: 'userList',
+        name: 'users',
         text: '用户列表',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/UserList')), 'UserList'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/UserList')), 'users'),
       },
       {
-        name: 'channelList',
+        name: 'channels',
         text: '渠道列表',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ChannelList')), 'channelList'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ChannelList')), 'channels'),
       },
       {
-        name: 'gamblingRecord',
+        name: 'paly_records',
         text: '牌局记录',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'gamblingRecord'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'paly_records'),
       },
       {
-        name: 'freshmanReward',
+        name: 'fresher_awards',
         text: '新人奖励',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FreshmanReward')), 'freshmanReward'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FreshmanReward')), 'fresher_awards'),
       },
       {
-        name: 'flowSearch',
+        name: 'cash_flows',
         text: '流水查询',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FlowSearch')), 'flowSearch'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FlowSearch')), 'cash_flows'),
       },
       {
-        name: 'fishStatistic',
+        name: 'fish_statistic',
         text: '捕鱼统计',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FishStatistic')), 'fishStatistic'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FishStatistic')), 'fish_statistic'),
       },
       {
-        name: 'WithdrawRec',
+        name: 'withdraw_records',
         text: '提现记录',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/WithdrawRec')), 'WithdrawRec'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/WithdrawRec')), 'withdraw_records'),
       },
       {
-        name: 'modPlayGold',
+        name: 'change_coins',
         text: '修改玩家金币',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ModPlayGold')), 'modPlayGold'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ModPlayGold')), 'change_coins'),
       },
     ]
   },
@@ -530,25 +530,20 @@ const models = {
       }
     ]
   },
-  SystemConfig:{
-    name:'SystemConfig',
+  sys_config:{
+    name:'sys_config',
     vue: null,
     text:'系统配置',
     children:[
       {
-        name:'PushFunction',
-        text:'推送功能',
-        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/PushFunction')), 'PushFunction')
+        name:'whiteList',
+        text:'ip白名单',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/WhiteList')), 'whiteList')
       },
       {
-        name:'PropertyConf',
-        text:'属性配置',
-        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/PropertyConf')), 'PropertyConf')
-      },
-      {
-        name:'popularizeConf',
-        text:'推广配置',
-        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/popularizeConf')), 'popularizeConf')
+        name:'hotUpdate',
+        text:'ip黑名单',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/HotUpdate')), 'hotUpdate')
       },
     ]
   },

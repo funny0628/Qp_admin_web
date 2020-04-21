@@ -29,12 +29,12 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <div>{{format}}</div>
       <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
       <el-button type="primary" size="medium">导出excel</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'flow_list'"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
@@ -108,7 +108,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "FlowSearch",
+  name: "cash_flows",
   extends: BaseIframe,
   components: {
     InfoTableItem,

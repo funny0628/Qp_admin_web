@@ -12,17 +12,35 @@
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <template v-if="'type'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  === 1">加金币</span>
+              <span v-if="scope.row[scope.prop]  === 2">减金币</span>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="'path'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row[scope.prop]  === 1">普通</span>
+              <span v-if="scope.row[scope.prop]  === 2">流水</span>
+            </template>
+            <template v-if="'updated_at'.indexOf(scope.prop) >= 0">
+              <span>{{scope.row.updated_at | dateFormat}}</span>
+            </template>
+            <template v-if="['action','type','path','updated_at'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <el-dialog title="修改玩家金币" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -31,14 +49,14 @@
         </el-form-item>
         <el-form-item label="修改类型" :label-width="formLabelWidth">
           <el-select v-model="form.mod_type" placeholder="请选择" style="width:100%;">
-            <el-option label="减金币" value="shanghai"></el-option>
-            <el-option label="加金币" value="beijing"></el-option>
+            <!-- <el-option label="加金币" value="1"></el-option> -->
+            <el-option label="减金币" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="修改途径" :label-width="formLabelWidth">
           <el-select v-model="form.mod_path" placeholder="请选择" style="width:100%;">
-            <el-option label="普通" value="shanghai"></el-option>
-            <el-option label="流水" value="beijing"></el-option>
+            <el-option label="普通" value="1"></el-option>
+            <el-option label="流水" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="修改数量" :label-width="formLabelWidth">
@@ -48,9 +66,10 @@
           <el-input v-model="form.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
+      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="modPlayGold">确 定</el-button>
+        <el-button type="primary" @click="modPlayGoldFn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -68,7 +87,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "ModPlayGold",
+  name: "change_coins",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -79,39 +98,24 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
       dialogFormVisible: false,
       formLabelWidth: "120px",
       format: {
         play_id: ""
       },
       tableStyle: [
-        { label: "ID", prop: "order_id", width: "" },
-        { label: "玩家ID", prop: "channel_name", width: "" },
-        { label: "修改类型", prop: "channel_name", width: "" },
-        { label: "修改途径", prop: "fun_1", width: "" },
-        { label: "修改数量", prop: "fun_2", width: "" },
-        { label: "备注", prop: "fun_5", width: "" },
-        { label: "操作者", prop: "fun_5", width: "" },
-        { label: "操作时间", prop: "fun_5", width: "" },
-        { label: "操作", prop: "action", width: "150" }
+        { label: "玩家ID", prop: "uid", width: "" },
+        { label: "修改类型", prop: "type", width: "" },
+        { label: "修改途径", prop: "path", width: "" },
+        { label: "修改数量", prop: "value", width: "" },
+        { label: "备注", prop: "remarks", width: "" },
+        { label: "操作者", prop: "auth", width: "" },
+        { label: "操作时间", prop: "updated_at", width: "" },
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
+      records: [],
       form: {
         play_id: "",
         mod_type: "",
@@ -124,12 +128,40 @@ export default {
   },
   methods: {
     getModGoldList() {
-      this.$http.get('v1/backend/operation/coin-modify').then(res=>{
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize,
+        user_id: Number(this.format.play_id)
+      }
+      this.$http.get('v1/backend/operation/coin-modify',{
+        params
+      }).then(res=>{
         console.log(res)
+        if(res.data.code === 200) {
+          this.records = res.data.data
+          this.total = res.data.total
+        }
       })
     },
-    modPlayGold() {
-
+    modPlayGoldFn() {
+      let data = {
+        user_id: Number(this.form.play_id),
+        modify_type: Number(this.form.mod_type),
+        modify_path: Number(this.form.mod_path),
+        modify_value: Number(this.form.mod_num),
+        remarks: this.form.remark
+      }
+      this.$http.post('v1/backend/operation/coin-modify',data).then(res=>{
+        console.log(res)
+        if(res.data.code === 200) {
+          this.dialogFormVisible = false
+          this.getModGoldList()
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          })
+        }
+      })
     },
     /**搜索*/
     search() {},
@@ -157,7 +189,15 @@ export default {
             message: res.data.msg
           });
         });
-    }
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getModGoldList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getModGoldList();
+    },
   },
   mounted() {
     this.getModGoldList()
