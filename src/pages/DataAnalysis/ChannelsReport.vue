@@ -267,14 +267,15 @@ export default {
   },
 
   created() {
-    this.start_time = this.initTime();
+     let today = new Date().getTime();
+    this.start_time = this.initTime(today);
     this.initChannel();
     this.getData();
   },
 
   methods: {
     search() {
-      console.log(this.start_time, this.avator_nameO);
+      // console.log(this.start_time, this.avator_nameO);
       this.getData();
     },
 
@@ -296,8 +297,8 @@ export default {
     initTime() {
       let myDate = new Date();
       let year = myDate.getFullYear();
-      let month = myDate.getMonth() + 1;
-      let day = myDate.getDate();
+      let month = (myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : (myDate.getMonth() + 1);
+      let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
       return `${year}-${month}-${day}`;
     },
 

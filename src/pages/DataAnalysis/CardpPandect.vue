@@ -58,7 +58,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="user_reg"
+          prop="reg_user"
           label="新增账号"
           align="center"
          width="120"
@@ -74,7 +74,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="day_change"
+          prop="reg_user_game"
           label="新增玩牌人数"
           align="center"
          width="120"
@@ -83,7 +83,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="pay_user_w"
+          prop="active_user_game"
           label="活跃玩牌人数"
           align="center"
          width="120"
@@ -91,7 +91,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="reg_ratio"
           label="注册玩牌率"
           align="center"
          width="120"
@@ -99,7 +99,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="active_ratio"
           label="活跃玩牌率"
           align="center"
          width="120"
@@ -107,7 +107,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="game_user"
           label="玩牌人次"
           align="center"
          width="120"
@@ -155,7 +155,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="consume"
           label="总消耗"
           align="center"
          width="120"
@@ -171,7 +171,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="bankrupt_ratio"
           label="破产率"
           align="center"
          width="120"

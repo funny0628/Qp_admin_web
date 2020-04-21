@@ -131,37 +131,19 @@ export default {
         user_id: "",
         order_status: ""
       },
-   
-      // records: [
-      //   {
-      //     order_id: "10012",
-      //     channel_name: "主包",
-      //     fun_1: "备份",
-      //     fun_2: "排行榜",
-      //     fun_3: "邮箱",
-      //     fun_4: "客服",
-      //     fun_5: "未设定",
-      //     fun_6: "未设定",
-      //     fun_7: "未设定",
-      //     fun_8: "设定",
-      //     operator: "json",
-      //     create_time: "2020-02-10 12:00:00",
-      //     action: ""
-      //   }
-      // ],
+  
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
-      // form: {
-      //   checkList: ["0902代理01", "0902代理02"],
-      //   function: "1",
-      //   agent: 100,
-      //   nickname: "",
-      //   password: "",
-      //   money_password: "",
-      //   phone: "",
-      //   user_type: "1"
-      // }
+    
     };
+  },
+  created() {
+    let today = new Date().getTime();
+   
+    let end = Math.ceil(today / 1000);
+    let start = Math.ceil((today - 60 * 60 * 24 * 7 * 1000) / 1000);
+    
+    this.initData()
   },
   methods: {
     /**搜索*/
@@ -179,58 +161,17 @@ export default {
         this.dialogFormVisible = true;
       }
     },
-    /**获取用户列表接口 */
-    // userList(data, user_id) {
-    //   UserHandler.list(data, user_id).promise.then(res => {
-    //     if (Number(res.code) === 200) {
-    //       this.records = res.data.list;
-    //       /**数据处理*/
-    //       let goldArr = [];
-    //       let top_up_amount = "";
-    //       let change_amount = "";
-    //       let alipay_account = [];
-    //       let personArr = [];
-    //       this.records.map(item => {
-    //         goldArr.push("总金额：" + item.money);
-    //         goldArr.push("理财：" + item.fanancial);
-    //         top_up_amount = item.pay_sum + "/" + item.pay_count;
-    //         change_amount = item.draw_sum + "/" + item.draw_count;
-    //         if (item.bank_info.length > 0) {
-    //           item.bank_info.map(bank => {
-    //             if (Number(bank.bank_id) !== 1) {
-    //               /** 支付宝 **/
-    //               personArr.push("开户人：" + bank.bank_user);
-    //               personArr.push("卡号：" + bank.bank_card);
-    //               personArr.push("开户行：" + bank.subbranch);
-    //             } else {
-    //               alipay_account.push("账号：" + bank.bank_card);
-    //               alipay_account.push("名称：" + bank.bank_name);
-    //             }
-    //           });
-    //         }
-    //         item.action = [
-    //           {
-    //             label: "修改",
-    //             type: "edit"
-    //           },
-    //           {
-    //             label: "冻结",
-    //             type: "freeze"
-    //           },
-    //           {
-    //             label: "强制下线",
-    //             type: "light"
-    //           }
-    //         ];
-    //         item.user_gold = goldArr;
-    //         item.top_up_amount = top_up_amount;
-    //         item.change_amount = change_amount;
-    //         item.alipay_account = alipay_account;
-    //         item.account_person = personArr;
-    //       });
-    //     }
-    //   });
-    // }
+
+
+
+     async initData(params){
+      let {data} = await this.$http.OperationMan.GetGameWater(params)
+      console.log(data);
+    
+      
+    },
+
+
   },
   mounted() {}
 };

@@ -3,7 +3,7 @@
 
       <el-select
         v-model="format.widthdraw_status"
-        placeholder="请选择"
+        placeholder="GM库存控制"
         clearable
         size="medium"
       >
@@ -21,39 +21,39 @@
       <el-table
         border
         highlight-current-row
-        :default-sort="{ prop: 'ID', order: orderlist[0] }"
+        :default-sort="{ prop: 'ID', order: 'ascending' }"
         ref="multipleTable"
         :data="tableData"
         tooltip-effect="dark"
         style="width: 100%"
       >
-        <el-table-column sortable prop="id" label="日期" align="center">
+        <el-table-column sortable prop="date" label="日期" align="center">
         </el-table-column>
-        <el-table-column prop="sort_num" label="实时库存值" align="center">
+        <el-table-column prop="gm_coins" label="实时库存值" align="center">
         </el-table-column>
         <el-table-column
-          prop="pay_name"
+          prop="base_change"
           label="实时库存变化值"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="pay_channel"
+          prop="gm_add_coins"
           label="添加库存值"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="pay_way"
+          prop="add_change"
           label="添加库存变化值"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="money_num"
+          prop="fee_store"
           label="回收值"
           align="center"
           show-overflow-tooltip
@@ -78,13 +78,13 @@
 
 <script>
 
-
+import DeepData from "../../../assets/js/formate.js";
 export default {
   name: "GMdata",
 
   data() {
     return {
-      orderlist: ["ascending", "descending"],
+      // orderlist: ["ascending", "descending"],
       tableData: [],
       total: "",
       currentPage: 1,
@@ -97,44 +97,47 @@ export default {
       }
     };
   },
+  created() {
+    this.getData()
+  },
   methods: {
     /**搜索*/
-    search() {},
+    search() {
+      this.getData()
+    },
 
     //页容量变化
     handleSizeChange(num) {
-      console.log(num);
+      this.limit = num
+      this.currentPage = 1
+      this.getData()
     },
 
     //页码变化
     handleCurrentChange(pagenum) {
-      console.log(pagenum);
+      this.currentPage = pagenum
+      this.getData()
     },
 
-    // handleDelete(index, row) {
-    //   console.log(row);
-    //   const ids = row.id.toString();
-    //   console.log(ids);
-    //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(
-    //       this.$message({
-    //         type: "success",
-    //         message: res.data.msg
-    //       })
-    //     )
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: res.data.msg
-    //       });
-    //     });
-    // }
+    getData(){
+      this.initData({
+        page:this.currentPage,
+        limit:this.limit,
+        grade:'gm_coins'
+      })
+    },
+
+   async initData(params){
+      let {data} = await this.$http.OperationMan.GetInvenData(params)
+      // console.log(data);
+      // let res = DeepData(data.data)
+      // console.log(res);
+      
+      this.tableData = data.data;
+      this.total = data.total
+      
+    },
   },
-  mounted() {}
 };
 </script>
 

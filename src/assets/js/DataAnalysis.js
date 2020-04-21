@@ -44,6 +44,13 @@ let GetrNewUsers = (params) => {
     })
 }
 
+//数据分析 ->台费统计
+let GetStatistical = (params) => {
+    return axios.get('v1/backend/channel/fee_statistical', {
+        params
+    })
+}
+
 
 export default {
     GetrReportEveryday,
@@ -52,4 +59,5 @@ export default {
     GetrPaySwitch,
     GetrMatchOverview,
     GetrNewUsers,
+    GetStatistical,
 }

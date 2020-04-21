@@ -54,6 +54,20 @@ let GetGameControl = (params) => {
     })
 }
 
+//GM库存数据
+let GetInvenData = (params) => {
+    return axios.get('v1/backend/inventory/inventory_data', {
+        params
+    })
+}
+
+//GM库存流水
+let GetGameWater = (params) => {
+    return axios.get('v1/backend/inventory/game_water', {
+        params
+    })
+}
+
 export default {
     GetUsers,
     GetUserDetail,
@@ -64,4 +78,6 @@ export default {
     GetChannels,
     //库存管理->GM控制
     GetGameControl,
+    GetInvenData,
+    GetGameWater,
 }
