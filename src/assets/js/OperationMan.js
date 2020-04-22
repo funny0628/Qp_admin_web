@@ -68,6 +68,13 @@ let GetGameWater = (params) => {
     })
 }
 
+//所有子游戏列表
+let GetSonGame = (params) => {//type_id=5
+    return axios.get('v1/backend/lobby/all_game_list', {
+        params
+    })
+}
+
 export default {
     GetUsers,
     GetUserDetail,
@@ -80,4 +87,5 @@ export default {
     GetGameControl,
     GetInvenData,
     GetGameWater,
+    GetSonGame,
 }

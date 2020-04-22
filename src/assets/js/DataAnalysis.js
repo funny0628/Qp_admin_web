@@ -51,6 +51,38 @@ let GetStatistical = (params) => {
     })
 }
 
+//数据分析 ->渠道报表
+let GetrReport = (params) => {
+    return axios.get('v1/backend/channel/report_eachday', {
+        params
+    })
+}
+
+//数据分析 ->流失于回归
+let GetrLoss = (params) => {
+    return axios.get('v1/backend/channel/loss_regression', {
+        params
+    })
+}
+
+//子游戏 ->斗地主防刷配置
+let GetDdz = (params) => {
+    return axios.get('v1/backend/songame/ddz_prevent', {
+        params
+    })
+}
+let PostDdz = (params) => {
+    return axios.post('v1/backend/songame/ddz_prevent', params)
+}
+let PutDdz = (params) => {
+    return axios.put('v1/backend/songame/ddz_prevent', params)
+}
+let DeleterDdz = (params) => {
+    return axios.delete('v1/backend/songame/ddz_prevent', {
+        params
+    })
+}
+
 
 export default {
     GetrReportEveryday,
@@ -60,4 +92,10 @@ export default {
     GetrMatchOverview,
     GetrNewUsers,
     GetStatistical,
+    GetrReport,
+    GetrLoss,
+    GetDdz,
+    PostDdz,
+    PutDdz,
+    DeleterDdz,
 }

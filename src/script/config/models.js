@@ -713,6 +713,11 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'ChannelsReport')
       },
       {
+        name:'Channels',
+        text:'渠道报表',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Channels')), 'Channels')
+      },
+      {
         name:'LTVReport',
         text:'LTV报表',
         vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LTVReport')), 'LTVReport')
@@ -741,6 +746,43 @@ const models = {
         name:'AddUser',
         text:'新增用户',
         vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/AddUser')), 'AddUser')
+      },
+      {
+        name:'FlyBack',
+        text:'流失与回归',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/FlyBack')), 'FlyBack')
+      },
+    ]
+  },
+  ActivityOperations:{
+    name:'ActivityOperations',
+    vue: null,
+    text:'活动运营',
+    children:[
+      {
+        name:'FirstConfig',
+        text:'首充配置',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/FirstConfig')), 'FirstConfig')
+      },
+      {
+        name:'SignUp',
+        text:'每日签到',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SignUp')), 'SignUp')
+      },
+      {
+        name:'SaveMoney',
+        text:'每日救赎金',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SaveMoney')), 'SaveMoney')
+      },
+      {
+        name:'Rainstorm',
+        text:'每日暴风雨',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/Rainstorm')), 'Rainstorm')
+      },
+      {
+        name:'MoneyTree',
+        text:'摇钱树',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree')), 'MoneyTree')
       },
     ]
   },

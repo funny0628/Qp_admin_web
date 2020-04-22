@@ -1,8 +1,9 @@
 <template>
   <div id="GMrepFlow-main">
-    <input-area>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.order_status" placeholder="房间选择" clearable size="medium">
+<!-- title -->
+<div class="title">
+      <el-input v-model="user_id" placeholder="请输入用户id" style="width:200px" size="medium" clearable></el-input>
+      <el-select v-model="room_status" placeholder="房间选择" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -18,40 +19,41 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        value-format="timestamp"
       ></el-date-picker>
       <el-button type="primary" @click="search">搜索</el-button>
+</div>
 
-    </input-area>
     <!-- table -->
     <div class="table">
        <el-table
         border
         highlight-current-row
         ref="multipleTable"
-        :data="tableDialog"
+        :data="tableData"
         tooltip-effect="dark"
         style="width: 100%"
       >
-        <el-table-column  prop="id" label="uid" align="center">
+        <el-table-column  prop="uid" label="uid" align="center">
         </el-table-column>
-        <el-table-column prop="sort_num" label="房间类型" align="center">
+        <el-table-column prop="table_type" label="房间类型" align="center">
         </el-table-column>
         <el-table-column
-          prop="pay_name"
+          prop="add_coins"
           label="金币变化值"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="pay_channel"
+          prop="by_web" 
           label="是否后台添加"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="pay_way"
+          prop="gm_add_coins"
           label="后台添加GM总值"
           align="center"
           show-overflow-tooltip
@@ -59,31 +61,35 @@
         </el-table-column>
         <el-table-column
           
-          prop="money_num"
+          prop="date"
           label="时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
       </el-table>
+       <!-- 分页 -->
+      <el-pagination
+        v-if="total > 5"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
          
 
 <script>
-import InfoTable from "../../../plugin/components/InfoTable";
-import PageInfo from "../../../plugin/script/common/PageInfo";
-import InputArea from "../../../plugin/components/InputArea";
-import InfoTableItem from "../../../plugin/components/InfoTableItem";
 
 export default {
   name: "GMrepFlow",
-  components: {
-    InfoTableItem,
-    InputArea,
-    InfoTable,
-  },
+
   data() {
     return {
       pickerOptions: {
@@ -117,80 +123,93 @@ export default {
           }
         ]
       },
-      value2: [1587225600000,1587225700000],
-      tableDialog:[],
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" },
-      ],
-      format: {
-        user_id: "",
-        order_status: ""
-      },
-  
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogAddVisible: false,
+      value2: [],
+      tableData:[],
+      platforms: [],
+      user_id: "",
+      room_status: "",
+      currentPage:1,
+      limit:10,
+      total:'',
     
     };
   },
   created() {
     let today = new Date().getTime();
-   
-    let end = Math.ceil(today / 1000);
-    let start = Math.ceil((today - 60 * 60 * 24 * 7 * 1000) / 1000);
     
-    this.initData()
+    this.value2[this.value2.length] = today - 60 * 60 * 24 * 7 * 1000;
+    this.value2[this.value2.length] = today
+    // console.log(this.value2);    
+    this.initGame()
+    this.getData()
   },
   methods: {
     /**搜索*/
     search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
-    },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
-    },
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
+
+      this.getData()
     },
 
 
+    //页容量变化
+    handleSizeChange(num){
+      this.limit = num
+      this.currentPage = 1
+      this.getData()
+    },
 
+    //页码变化
+    handleCurrentChange(pagenum){
+      this.currentPage = pagenum
+      this.getData()
+    },
+
+
+     getData() {
+      this.initData({
+        page: this.currentPage,
+        limit: this.limit,
+        start_time:  Math.ceil(this.value2[0] / 1000),
+        end_time: Math.ceil(this.value2[1] / 1000),
+        uid:this.user_id === '' ? 0 : +this.user_id,
+        table_type: this.room_status === "" ? 0 : this.room_status
+      });
+    },
+
+
+    //获取表格和数据
      async initData(params){
       let {data} = await this.$http.OperationMan.GetGameWater(params)
-      console.log(data);
-    
-      
+      // console.log(data);
+      this.total = data.total
+      data.data.forEach((item)=>{
+        item.by_web = item.by_web === 1 ? '是' : '不是'
+      })
+      this.tableData = data.data
+    },
+
+    //获取素有子游戏
+     async initGame(params){
+      let {data} = await this.$http.OperationMan.GetSonGame({type_id:5})
+      // console.log(data);
+      data.data.forEach((item)=>{
+        this.platforms.push({value:item.game_id,label:item.game_name})
+      })
+      this.platforms.unshift({value:'',label:'房间选择'})
+      // console.log(this.platforms);
     },
 
 
   },
-  mounted() {}
 };
 </script>
 
-<style scoped>
-#GMrepFlow-main .bd {
-  padding-left: 20px;
+<style scoped lang="less">
+#GMrepFlow-main  {
+  .table {
+    margin-top: 20px;
+  }
 }
-#GMrepFlow-main .bd p {
-  margin: 0;
-}
-#GMrepFlow-main >>> .el-date-editor .el-range-separator {
-  width: 10%;
-}
-#home .main-box .input-area >>> .el-date-editor {
-  width: auto;
-}
-table {
-  border-collapse: collapse;
-}
+
+
 </style>
