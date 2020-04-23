@@ -2,10 +2,10 @@
   <div id="lastAnalysis">
     <!-- title -->
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="新增留存" :name="1"></el-tab-pane>
-      <el-tab-pane label="活跃留存" :name="2"></el-tab-pane>
-      <el-tab-pane label=" 付费留存" :name="3"></el-tab-pane>
-      <el-tab-pane label="回流用户留存" :name="4"></el-tab-pane>
+      <el-tab-pane label="新增留存" name="1"></el-tab-pane>
+      <el-tab-pane label="活跃留存" name="2"></el-tab-pane>
+      <el-tab-pane label=" 付费留存" name="3"></el-tab-pane>
+      <el-tab-pane label="回流用户留存" name="4"></el-tab-pane>
     </el-tabs>
     <!-- title -->
     <div class="title">
@@ -171,7 +171,7 @@ import DeepData from "../../assets/js/formate.js";
 export default {
   data() {
     return {
-      activeName: 1,
+      activeName: '1',
       avator_nameO: "",
       optionchannels: [],
       tableData: [],
@@ -239,7 +239,7 @@ export default {
         start_date: +this.startDate,
         end_data: +this.endDate,
         channel_name: this.avator_nameO === "所有渠道" ? "" : this.avator_nameO,
-        type_id:this.activeName
+        type_id: +this.activeName
       });
     },
 

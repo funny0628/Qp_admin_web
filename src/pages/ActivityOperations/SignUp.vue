@@ -9,10 +9,11 @@
     <div class="title">
       <div class="VIP">签到配置</div>
     </div>
-    <el-button type="primary" @click="send(1)">保存</el-button>
-    <el-button type="primary" @click="send(2)">发送到服务器</el-button>
+    <el-button type="primary" @click="send('form', 1)">保存</el-button>
+    <el-button type="primary" @click="send('form', 2)">发送到服务器</el-button>
     <div class="contain">
       <el-form
+        ref="form"
         :model="form"
         status-icon
         :rules="rules"
@@ -38,14 +39,18 @@ export default {
   data() {
     return {
       form: {
-          need_coin:'',
-          award_coin:'',
-          salary_days:'',
+        need_coin: "",
+        award_coin: "",
+        salary_days: ""
       },
       rules: {
         need_coin: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        award_coin: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        salary_days: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        award_coin: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ],
+        salary_days: [
+          { required: true, message: "不可以为空", trigger: "blur" }
+        ]
       },
       keys: "",
       id: "",
@@ -57,49 +62,64 @@ export default {
     this.initData();
   },
   methods: {
-    async send(type) {
-      console.log(this.allData);
-
-      if (type === 1) {
-        let { data } = await this.$http.HallFunConfig.PutServerConfig({
-          keys: this.keys,
-          values: JSON.stringify(this.allData),
-          id: this.id
-        });
-        console.log(data);
-        if (data.code === 1 && data.msg === "ok") {
+    send(formName, type) {
+      // console.log(this.allData);
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          if (type === 1) {
+            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          } else if (type === 2) {
+            this.loading = true;
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            } else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
+          }
+        } else {
           this.$message({
-            type: "success",
-            message: "保存成功!"
+            type: "warning",
+            message: "必填的项不可以为空!"
           });
+          return false;
         }
-      } else if (type === 2) {
-        // this.loading = true;
-        let { data } = await this.$http.HallFunConfig.PostServerConfig({
-          keys: this.keys,
-          values: JSON.stringify(this.allData),
-          id: this.id
-        });
-        console.log(data);
-        if (data.code === 1 && data.msg === "ok") {
-          this.loading = false;
-          this.$message({
-            type: "success",
-            message: "发送服务器配置成功!"
-          });
-        }
-      }
+      });
     },
     async initData() {
       let { data } = await this.$http.HallFunConfig.GetServerConfig({
         key: "activity_new.lua"
       });
-    //   console.log(data);
+      //   console.log(data);
       this.keys = data.data[0].sys_key;
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
-    //   console.log(this.keys, this.id, this.allData);
+      //   console.log(this.keys, this.id, this.allData);
       Object.keys(this.allData).forEach(item => {
         if (this.allData[item].ac_type === "10005") {
           this.form = this.allData[item];

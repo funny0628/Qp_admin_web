@@ -781,8 +781,25 @@ const models = {
       },
       {
         name:'MoneyTree',
-        text:'摇钱树',
-        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree')), 'MoneyTree')
+        text:'摇钱树活动',
+        vue: null,
+        children:[
+          {
+            name:'MT_Config',
+            text:'摇钱树配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_Config')), 'MT_Config'),
+          },
+          {
+            name:'MT_TaskConfig',
+            text:'摇钱树任务配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_TaskConfig')), 'MT_TaskConfig'),
+          },
+          {
+            name:'MT_OtherConfig',
+            text:'其他配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_OtherConfig')), 'MT_OtherConfig'),
+          },
+        ]
       },
     ]
   },

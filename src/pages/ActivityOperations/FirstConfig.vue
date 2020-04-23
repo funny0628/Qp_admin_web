@@ -1,8 +1,16 @@
 <template>
-  <div id="FirstConfig">
+  <div
+    id="FirstConfig"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <div>
       <h2>首冲配置</h2>
-      <el-button type="primary" @click="send">发送到服务器配置</el-button>
+      <el-button type="primary" @click="send('form', 2)"
+        >发送到服务器配置</el-button
+      >
     </div>
     <el-form
       ref="form"
@@ -70,6 +78,9 @@
         </div>
       </el-form-item>
     </el-form>
+    <div style="margin-left:20px">
+      <el-button type="primary" @click="send('form', 1)">保存</el-button>
+    </div>
   </div>
 </template>
 
@@ -82,7 +93,7 @@ export default {
         open_state: "",
         ac_begin_time: "",
         ac_end_time: "",
-        level: {}
+        level: []
       },
       rules: {
         first_charge_coin: [
@@ -99,29 +110,78 @@ export default {
         ],
         level: [{ required: true, message: "不可以为空", trigger: "blur" }]
       },
-      options: [],
-      list: [""],
       keys: "",
       id: "",
-      allData: {}
+      allData: {},
+      loading: false
     };
   },
   created() {
     this.initData();
   },
   methods: {
-    send() {},
-    Change() {},
-    add() {
-      console.log(this.form.level);
+    //发送到服务器
+    send(formName, type) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          let resData = this.form.level;
+          this.form.level = {};
+          resData.forEach((item, index) => {
+            this.form.level[index + 1] = item;
+          });
+          //   console.log(resData, this.form.level,this.allData);
+          if (type === 1) {
+            //put
+            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }
+          } else if (type === 2) {
+            //post
+            this.loading = true;
+            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+              keys: this.keys,
+              values: JSON.stringify(this.allData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            } else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
+          }
+          this.initData();
+        } else {
+          this.$message({
+            type: "warning",
+            message: "必填的项不可以为空!"
+          });
+          return false;
+        }
+      });
+    },
 
-      Object.keys(this.form.level);
-      console.log(Object.keys(this.form.level).length);
-      this.form.level[Object.keys(this.form.level).length + 1] = {
-        need_coin: "",
-        award_coin: ""
-      };
-      console.log(this.form.level);
+    //档次新增
+    add() {
+      this.form.level = Object.values(this.form.level);
+      this.form.level.push({});
     },
     del(index) {
       this.form.level = this.form.level.filter((it, idx) => {
@@ -132,19 +192,18 @@ export default {
       let { data } = await this.$http.HallFunConfig.GetServerConfig({
         key: "activity_new.lua"
       });
-      console.log(data);
+      //   console.log(data);
       this.keys = data.data[0].sys_key;
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
-      console.log(this.keys, this.id, this.allData);
-
       Object.keys(this.allData).forEach(item => {
         if (this.allData[item].ac_type === "10001") {
           this.form = this.allData[item];
         }
       });
-      console.log(this.form);
+      this.form.level = Object.values(this.form.level);
+      //   console.log(this.form);
     }
   }
 };
