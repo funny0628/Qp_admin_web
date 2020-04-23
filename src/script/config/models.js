@@ -418,9 +418,9 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ChannelList')), 'channels'),
       },
       {
-        name: 'paly_records',
+        name: 'play_records',
         text: '牌局记录',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'paly_records'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'play_records'),
       },
       {
         name: 'fresher_awards',
@@ -536,14 +536,24 @@ const models = {
     text:'系统配置',
     children:[
       {
+        name:'hot_update',
+        text:'热更新',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/HotUpdate')), 'hot_update')
+      },
+      {
         name:'whiteList',
         text:'ip白名单',
         vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/WhiteList')), 'whiteList')
       },
       {
-        name:'hotUpdate',
+        name:'ip_blacklist',
         text:'ip黑名单',
-        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/HotUpdate')), 'hotUpdate')
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/BlackList')), 'ip_blacklist')
+      },
+      {
+        name:'device_blacklist',
+        text:'设备黑名单',
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/DeviceBlackList')), 'device_blacklist')
       },
     ]
   },

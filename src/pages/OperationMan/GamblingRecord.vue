@@ -107,7 +107,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "paly_records",
+  name: "play_records",
   extends: BaseIframe,
   components: {
     InfoTableItem,

@@ -592,51 +592,45 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            this.gameOpts = res.data.data.slice(1)
+            this.gameOpts = res.data.data.slice(1);
           }
         });
     },
     //获取新增页面的渠道列表
     getAddChannelList() {
-      this.$http
-        .post("v1/backend/no_channel", {
-          params: {
-            type_id: 1,
-            add_id: 2
-          }
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 1) {
-            this.channelOpts = res.data.data;
-          }
-        });
+      let data = {
+        type_id: 2,
+        add_id: 1
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
     },
     //获取列表页的所有渠道
     getAllChannelList() {
-      this.$http
-        .post("v1/backend/no_channel", {
-          params: {
-            type_id: 2,
-            add_id: 2
-          }
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 1) {
-            this.allChannelOpts = res.data.data;
-          }
-        });
+      let data = {
+        type_id: 2,
+        add_id: 2
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.allChannelOpts = res.data.data;
+        }
+      });
     },
     openAddDialog() {
       this.dialogFormVisible = true;
       this.getAddChannelList();
-      this.getGameList()
+      this.getGameList();
     }
   },
   mounted() {
     this.getGameSortList();
-    this.getAllChannelList()
+    this.getAllChannelList();
   }
 };
 </script>
@@ -648,20 +642,8 @@ export default {
 #GameSortConf-main .bd p {
   margin: 0;
 }
-
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
-
-.bankCard {
-  width: 100%;
-}
-table {
-  border-collapse: collapse;
-}
-.itemClass {
-  width: 45%;
+#GameSortConf-main .bd >>> .el-button {
+  margin-left: 0px;
+  min-width: 30px;
 }
 </style>

@@ -11,8 +11,6 @@ import config from './script/config/config';
 import models from './script/config/models';
 import './assets/styles/common.css';
 import echarts from 'echarts'
-import Blob from "./excel/Blob";
-import Export2Excel from "./excel/Export2Excel";
 import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
 import HallFunConfig from './assets/js/HallFunConfig.js'

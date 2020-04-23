@@ -66,8 +66,8 @@
           :data="rightData"
           ref="tree"
           show-checkbox
-          node-key="id"
           check-strictly
+          node-key="id"
           :default-checked-keys="checkedKeys"
           :props="defaultProps"
         ></el-tree>
@@ -198,11 +198,13 @@ export default {
     async handleRights() {
       // 获取所有选中的权限id
       const nodes = this.$refs.tree.getCheckedNodes();
+      console.log(nodes)
       let arr = [];
+      let arrList = []
       nodes.forEach(item => {
         // 选中的子权限id
         arr.push(item.id.toString());
-
+        arrList.push(item.display_name)
         // 子权限的id 对应的父权限的id
         // if (typeof item.parent_id === "number") {
         //   arr.push(item.parent_id.toString());
@@ -210,7 +212,8 @@ export default {
         //   arr = arr.concat(item.parent_id.split(","));
         // }
       });
-
+      console.log(arr)
+      console.log(arrList)
       const set = new Set(arr);
       const ids = [...set].join(",");
       let data = {
@@ -301,6 +304,7 @@ export default {
           });
         };
         fn(rightsList);
+        console.log(arr)
         return arr;
       }
       const result = await this.$http

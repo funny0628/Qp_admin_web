@@ -2,7 +2,7 @@
   <div id="hotUpdate-main">
     <input-area>
       <div style="margin-bottom:10px;">
-        <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加</el-button>
+        <el-button type="primary" size="medium" @click="openAddDialog">添加</el-button>
       </div>
     </input-area>
     <div class="bd">
@@ -14,21 +14,50 @@
         style="width: 100%;"
       >
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column prop="username" label="更新版本" align="center"></el-table-column>
-        <el-table-column prop="email" label="是否强更" align="center"></el-table-column>
-        <el-table-column prop="phone" label="类型" align="center"></el-table-column>
-        <el-table-column prop="channel" label="允许版本" align="center"></el-table-column>
-        <el-table-column prop="channel" label="允许渠道" align="center"></el-table-column>
-        <el-table-column prop="channel" label="平台" align="center"></el-table-column>
-        <el-table-column prop="channel" label="版本公开" align="center"></el-table-column>
-        <el-table-column prop="channel" label="状态" align="center"></el-table-column>
-        <el-table-column prop="create_time" label="更新时间" align="center">
-          <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
+        <el-table-column prop="version" label="更新版本" align="center"></el-table-column>
+        <el-table-column prop="is_force" label="是否强更" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.is_force === 1">强更</span>
+            <span v-if="scope.row.is_force === 0">非强更</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="update_type" label="类型" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.update_type === 1">热更</span>
+            <span v-if="scope.row.update_type === 0">apk更新</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="allow_version" label="允许版本" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.allow_version === '*'">所有</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="allow_channel" label="允许渠道" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.allow_channel === '*'">所有</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="platform" label="平台" align="center"></el-table-column>
+        <el-table-column prop="is_public" label="版本公开" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.is_public === '*'">所有</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 2">禁止</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="modified_time" label="更新时间" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.modified_time | dateFormat }}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,39 +76,69 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="允许版本更新" :label-width="formLabelWidth">
-          <el-radio v-model="form.versionUpd.radio" label="allVersion">所有版本</el-radio>
+          <el-radio v-model="form.versionUpd.radio" label="*">所有版本</el-radio>
           <el-radio v-model="form.versionUpd.radio" label="custom">自定义</el-radio>
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-if="form.versionUpd.radio==='custom'"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-if="form.versionUpd.radio==='custom'"
+          ></el-input>
         </el-form-item>
         <el-form-item label="允许更新渠道" :label-width="formLabelWidth">
-          <el-radio v-model="form.channelUpd.radio" label="allVersion">所有版本</el-radio>
+          <el-radio v-model="form.channelUpd.radio" label="*">所有版本</el-radio>
           <el-radio v-model="form.channelUpd.radio" label="custom">自定义</el-radio>
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-if="form.channelUpd.radio==='custom'"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-if="form.channelUpd.radio==='custom'"
+          ></el-input>
         </el-form-item>
         <el-form-item label="不允许更新版本" :label-width="formLabelWidth">
-          <el-radio v-model="form.forbidUpdVersion.radio" label="none">无</el-radio>
+          <el-radio v-model="form.forbidUpdVersion.radio" label="*">无</el-radio>
           <el-radio v-model="form.forbidUpdVersion.radio" label="custom">自定义</el-radio>
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-if="form.forbidUpdVersion.radio==='custom'"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-if="form.forbidUpdVersion.radio==='custom'"
+          ></el-input>
         </el-form-item>
         <el-form-item label="不允许更新渠道" :label-width="formLabelWidth">
-          <el-radio v-model="form.forbidUpdChannel.radio" label="none">无</el-radio>
+          <el-radio v-model="form.forbidUpdChannel.radio" label="*">无</el-radio>
           <el-radio v-model="form.forbidUpdChannel.radio" label="custom">自定义</el-radio>
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-if="form.forbidUpdChannel.radio==='custom'"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-if="form.forbidUpdChannel.radio==='custom'"
+          ></el-input>
         </el-form-item>
         <el-form-item label="是否公开" :label-width="formLabelWidth">
-          <el-radio v-model="form.isPublic.radio" label="none">所有人更新</el-radio>
+          <el-radio v-model="form.isPublic.radio" label="*">所有人更新</el-radio>
           <el-radio v-model="form.isPublic.radio" label="custom">内部人更新</el-radio>
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-if="form.isPublic.radio==='custom'"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-if="form.isPublic.radio==='custom'"
+          ></el-input>
         </el-form-item>
         <el-form-item label="更新状态" :label-width="formLabelWidth">
-          <el-radio v-model="form.updStatus.radio" label="none">启用</el-radio>
-          <el-radio v-model="form.updStatus.radio" label="custom">禁用</el-radio>
+          <el-radio v-model="form.updStatus.radio" label="1">启用</el-radio>
+          <el-radio v-model="form.updStatus.radio" label="2">禁用</el-radio>
         </el-form-item>
         <el-form-item label="更新客户端" :label-width="formLabelWidth">
           <el-checkbox-group v-model="form.checkList">
-            <el-checkbox label="Android"></el-checkbox>
-            <el-checkbox label="ios"></el-checkbox>
-            <el-checkbox label="windows"></el-checkbox>
+            <el-checkbox label="1">android</el-checkbox>
+            <el-checkbox label="2">ios</el-checkbox>
+            <el-checkbox label="3">windows</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="更新时间" :label-width="formLabelWidth">
@@ -97,17 +156,17 @@
         <el-form-item label="更新类型" :label-width="formLabelWidth">
           <el-select v-model="form.update_type" placeholder="请选择更新类型">
             <el-option label="强更" value="1"></el-option>
-            <el-option label="非强更" value="2"></el-option>
+            <el-option label="非强更" value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="更新方式" :label-width="formLabelWidth">
           <el-select v-model="form.update_way" placeholder="请选择更新方式">
             <el-option label="热更" value="1"></el-option>
-            <el-option label="整包更新" value="2"></el-option>
+            <el-option label="整包更新" value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="上传资源包" :label-width="formLabelWidth">
-          <el-upload
+          <!-- <el-upload
             class="avatar-uploader"
             action
             accept="image/jpeg, image/png"
@@ -119,21 +178,44 @@
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          </el-upload>-->
+          <div>
+            <button @click="file"></button>
+            <label ref="upload" style="position: relative;">
+              <input
+                type="file"
+                @change="selectFile"
+                style="position: absolute; width: 1px; height: 1px; opacity: 0; z-index: -1;"
+              />
+            </label>
+          </div>
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="form.android"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-model="form.android"
+          ></el-input>
         </el-form-item>
         <el-form-item label="ios配置" :label-width="formLabelWidth">
-            <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="form.ios"></el-input>
+          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="form.ios"></el-input>
         </el-form-item>
         <el-form-item label="windows配置" :label-width="formLabelWidth">
-            <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="form.windows"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-model="form.windows"
+          ></el-input>
         </el-form-item>
       </el-form>
+      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addChannel">确 定</el-button>
+        <el-button type="primary" @click="addUpdateConf">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -141,29 +223,17 @@
          
 
 <script>
-import SelectTime from "../../plugin/components/SelectTime";
-import InfoTable from "../../plugin/components/InfoTable";
-import PageInfo from "../../plugin/script/common/PageInfo";
-import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PermissionButton from "../../plugin/components/PermissionButton";
-import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "hotUpdate",
-  extends: BaseIframe,
+  name: "hot_update",
   components: {
-    InfoTableItem,
-    InputArea,
-    SelectTime,
-    InfoTable,
-    PermissionButton
+    InputArea
   },
   data() {
     return {
       currentPage: 1,
-      pageSize: 5,
+      pageSize: 10,
       total: 0,
       dialogTitle: "",
       formLabelWidth: "120px",
@@ -177,7 +247,7 @@ export default {
         forbidUpdChannel: { radio: "none" },
         isPublic: { radio: "none" },
         updStatus: { radio: "none" },
-        checkList: ["android", "ios", "windows"],
+        checkList: ["1", "2", "3"],
         updateTime: "",
         version: "",
         update_type: "",
@@ -216,103 +286,63 @@ export default {
   methods: {
     resetForm() {
       this.form = {
-        channel_name: "",
-        channel_id: "",
-        belong_company: ""
+        versionUpd: { radio: "*" },
+        channelUpd: { radio: "*" },
+        forbidUpdVersion: { radio: "*" },
+        forbidUpdChannel: { radio: "*" },
+        isPublic: { radio: "*" },
+        updStatus: { radio: "1" },
+        checkList: ["1", "2", "3"],
+        updateTime: "",
+        version: "",
+        update_type: "",
+        update_way: ""
       };
     },
 
-    getChannelList() {
+    getHotUpdateList() {
       this.$http
-        .get("v1/backend/operation/channels", {
+        .get("v1/backend/sys-conf/hot-update", {
           params: {
             page: this.currentPage,
-            limit: this.pageSize,
-            company: "",
-            channel_name: ""
+            limit: this.pageSize
           }
         })
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
-            this.records = res.data.data;
+            this.tableData = res.data.data;
             this.total = res.data.total;
           }
         });
     },
-    //获取公司列表
-    getCompanyList() {
-      this.$http.get("v1/backend/operation/channel/company").then(res => {
-        console.log(res);
-        if (res.data.code === 200) {
-          this.companyList = res.data.data;
-        }
-      });
-    },
     openAddDialog() {
       this.resetForm();
-      this.dialogTitle = "添加渠道";
+      this.dialogTitle = "添加信息";
       this.dialogFormVisible = true;
     },
-    addCompany() {
+    addUpdateConf() {
       let data = {
-        name: this.form1.company_name
+        allow_version: this.form.versionUpd.radio,
+        allow_channel: this.form.channelUpd.radio,
+        deny_version: this.form.forbidUpdVersion.radio,
+        deny_channel: this.form.forbidUpdChannel.radio,
+        is_public: this.form.isPublic.radio,
+        status: Number(this.form.updStatus.radio),
+        clients: String(this.form.checkList),
+        release_time: this.form.updateTime
+          ? parseInt(new Date(Number(this.form.updateTime)).getTime() / 1000)
+          : 0,
+        version_num: this.form.version,
+        is_force: Number(this.form.update_type),
+        update_type: Number(this.form.update_way),
+        game_info: "我是game_info"
       };
-      this.$http
-        .post("v1/backend/operation/channel/company", data)
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogVisible = false;
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
+      this.$http.post("v1/backend/sys-conf/hot-update", data).then(res => {
+        console.log(res);
+      });
     },
-    addChannel() {
-      if (!this.form.id) {
-        let data = {
-          channel_name: this.form.channel_name,
-          channel_num: this.form.channel_id,
-          company: this.form.belong_company
-        };
-        this.$http.post("v1/backend/operation/channels", data).then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogFormVisible = false;
-            this.getChannelList();
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
-      } else {
-        console.log("wojinolei");
-        let data = {
-          channel_name: this.form.channel_name,
-          channel_num: this.form.channel_id,
-          company: this.form.belong_company,
-          channel_id: this.form.id
-        };
-        this.$http.put("v1/backend/operation/channels", data).then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogFormVisible = false;
-            this.getChannelList();
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
-      }
-    },
-    /**搜索*/
-    search() {},
-    handleEdit(index, row) {
+    handleEdit(row) {
       console.log(index, row);
       this.dialogTitle = "编辑渠道";
       this.dialogFormVisible = true;
@@ -321,7 +351,7 @@ export default {
       this.form.channel_id = row.code;
       this.form.belong_company = row.cname;
     },
-    handleDelete(index, row) {
+    handleDelete(row) {
       console.log(row);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -330,15 +360,15 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("v1/backend/operation/channels", {
+            .delete("v1/backend/sys-conf/hot-update", {
               params: {
-                channel_id: row.id
+                version_id: row.id
               }
             })
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {
-                this.getChannelList();
+                this.getHotUpdateList();
                 this.$message({
                   type: "success",
                   message: res.data.msg
@@ -354,36 +384,45 @@ export default {
         });
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.pageSize = val;
-      this.getChannelList();
+      this.getHotUpdateList();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.getChannelList();
+      this.getHotUpdateList();
     },
-    handleAvatarSuccess(res, file) {},
-    handleChange(file, fileList, info) {
-      this.fileList[info] = fileList;
+    // handleAvatarSuccess(res, file) {},
+    // handleChange(file, fileList, info) {
+    //   this.fileList[info] = fileList;
+    // },
+    // beforeUpload(file) {},
+    // uploadFile() {
+    //   let formData = new FormData();
+    //   this.fileList.forEach(item => {
+    //     formData.append("filename", item.raw);
+    //     formData.append("types", 1);
+    //   });
+    //   this.$http.post("v1/backend/upload", formData).then(res => {
+    //     if (res.data.code === 1) {
+    //       this.imageUrl = res.data.path;
+    //     }
+    //   });
+    // }
+    file() {
+        // 模拟点击file input触发选择文件，注意：不能在任何方式的回调里面执行此语句
+        this.$refs.upload.click()
     },
-    beforeUpload(file) {},
-    uploadFile() {
-      let formData = new FormData();
-      this.fileList.forEach(item => {
-        formData.append("filename", item.raw);
-        formData.append("types", 1);
-      });
-      this.$http.post("v1/backend/upload", formData).then(res => {
-        if (res.data.code === 1) {
-          this.imageUrl = res.data.path;
-        }
-      });
+    selectFile(event) {
+        // 调用上传方法，传入选择的文件对象
+        this.uploadFile(event.target.files[0], () => {
+            // upload-success
+        })
+        // 重置file input控件的值
+        event.target.value = ''
     }
   },
   mounted() {
-    this.getChannelList();
-    this.getCompanyList();
+    this.getHotUpdateList();
   }
 };
 </script>
