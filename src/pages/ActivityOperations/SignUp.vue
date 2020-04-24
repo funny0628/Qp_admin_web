@@ -122,7 +122,7 @@ export default {
       //   console.log(this.keys, this.id, this.allData);
       Object.keys(this.allData).forEach(item => {
         if (this.allData[item].ac_type === "10005") {
-          this.form = this.allData[item];
+          this.form = this.allData[item].ac_content;
         }
       });
     }

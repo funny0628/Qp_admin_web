@@ -53,11 +53,11 @@
       <h2>金币暴风雨-(额外配置)</h2>
 
       <div>
-        <div class="topTitle">
-          <p v-if="form.ac_day_time">
+        <div v-if="form.ac_content" class="topTitle">
+          <p>
             <el-form-item label="活动触发时间点:" prop="ac_day_time">
               <el-time-picker
-                v-model="form.ac_day_time['1']"
+                v-model="form.ac_content.open_time"
                 value-format="HH:mm:ss"
                 format="HH:mm:ss"
                 placeholder="任意时间点"
@@ -69,22 +69,22 @@
             <el-form-item label="每次触发持续时间:" prop="last_time">
               <el-input
                 style="width:150px;"
-                v-model="form.last_time"
+                v-model="form.ac_content.continue"
                 placeholder="每次触发持续时间"
               ></el-input>
             </el-form-item>
           </p>
-          <p v-if="form.get_num">
-            <el-form-item label="每人每次领取红包:" prop="get_num">
+          <p>
+            <el-form-item v-if="form.ac_content.pack_num" label="每人每次领取红包:" prop="get_num">
               <el-input
                 style="width:150px;"
-                v-model="form.get_num.min"
+                v-model="form.ac_content.pack_num[0]"
                 placeholder="每人每次领取红包"
               ></el-input>
               -
               <el-input
                 style="width:150px;"
-                v-model="form.get_num.max"
+                v-model="form.ac_content.pack_num[1]"
                 placeholder="每人每次领取红包"
               ></el-input>
             </el-form-item>
@@ -93,7 +93,7 @@
             <el-form-item label="总发放金额:" prop="all_coin">
               <el-input
                 style="width:150px;"
-                v-model="form.all_coin"
+                v-model="form.ac_content.all_coin"
                 placeholder="总发放金额"
               ></el-input>
             </el-form-item>
@@ -101,39 +101,39 @@
         </div>
 
         <div class="topTitle" style="border-top:none">
-          <el-form-item label="奖励:" prop="level">
+          <el-form-item v-if="form.ac_content.vip_range.length>0" label="奖励:" prop="level">
             <p>
               <el-button type="primary" @click="add">添加</el-button>
             </p>
-            <div v-for="(item, index) in form.level" style="margin-top:20px">
+            <div v-for="(item, index) in form.ac_content.vip_range" style="margin-top:20px">
               VIP等级区间:
               <el-input
                 style="width:150px;"
-                v-model="item.vip_start"
+                v-model="item[0][0]"
                 placeholder="VIP等级区间"
               ></el-input>
               -
               <el-input
                 style="width:150px;"
-                v-model="item.vip_end"
+                v-model="item[0][1]"
                 placeholder="VIP等级区间"
               ></el-input>
               红包数量:
               <el-input
                 style="width:150px;"
-                v-model="item.num"
+                v-model="item[1]"
                 placeholder="红包数量"
               ></el-input>
               红包金额区间:
               <el-input
                 style="width:150px;"
-                v-model="item.min_coin"
+                v-model="item[2][0]"
                 placeholder="红包金额区间"
               ></el-input>
               -
               <el-input
                 style="width:150px;"
-                v-model="item.max_coin"
+                v-model="item[2][1]"
                 placeholder="红包金额区间"
               ></el-input>
 
@@ -182,13 +182,17 @@ export default {
       },
       form: {
         ac_name: "",
+        ac_type: "",
         open_state: "",
         ac_begin_time: "",
         ac_end_time: "",
-        ac_day_time: "",
-        get_num: "",
-        all_coin: "",
-        level: []
+        ac_content:{
+          open_time:'',
+          continue:'',
+          pack_num:[],
+          all_coin:'',
+          vip_range:[],
+        }
       },
       keys: "",
       id: "",
@@ -201,13 +205,15 @@ export default {
   methods: {
     //添加
     add() {
-      this.form.level = Object.values(this.form.level);
-      this.form.level.push({});
+      console.log('add');
+      
+      // this.form.ac_content.vip_range = Object.values(this.form.ac_content.vip_range);
+      this.form.ac_content.vip_range.push([]);
     },
 
     //删除
     del(index) {
-      this.form.level = this.form.level.filter((item, idx) => {
+      this.form.ac_content.vip_range = this.form.ac_content.vip_range.filter((item, idx) => {
         return index !== idx;
       });
     },
@@ -216,12 +222,12 @@ export default {
     async onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let resData = this.form.level;
-          this.form.level = {};
-          // console.log(resData, this.form.level);
-          resData.forEach((item, index) => {
-            this.form.level[index + 1] = item;
-          });
+          // let resData = this.form.ac_content.vip_range;
+          // this.form.ac_content.vip_range = {};
+          // // console.log(resData, this.form.level);
+          // resData.forEach((item, index) => {
+          //   this.form.ac_content.vip_range[index + 1] = item;
+          // });
           if (type === 1) {
             //put
             // console.log(this.allData);
@@ -286,8 +292,8 @@ export default {
           this.form = this.allData[item];
         }
       });
-      this.form.level = Object.values(this.form.level);
-      // console.log(this.form);
+      // this.form.level = Object.values(this.form.level);
+      console.log(this.form,this.allData);
     }
   }
 };
