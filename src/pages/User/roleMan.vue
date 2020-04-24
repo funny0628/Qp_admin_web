@@ -6,7 +6,6 @@
     </input-area>
     <div class="bd">
       <el-table
-        v-has="'roles'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -208,12 +207,15 @@ export default {
       // 获取所有选中的权限id
       const nodes = this.$refs.tree.getCheckedNodes();
       let arr = [];
+      let arrList = []
       nodes.forEach(item => {
         console.log(item);
         // 选中的子权限id
         arr.push(item.id.toString());
+        arrList.push(item.display_name)
       });
       console.log(arr);
+      console.log(arrList)
       const set = new Set(arr);
       const ids = [...set].join(",");
       console.log(ids);
