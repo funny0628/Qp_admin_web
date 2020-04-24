@@ -2,11 +2,12 @@
   <div id="hotUpdate-main">
     <input-area>
       <div style="margin-bottom:10px;">
-        <el-button type="primary" size="medium" @click="openAddDialog">添加</el-button>
+        <el-button v-has="'add_hot_update'" type="primary" size="medium" @click="openAddDialog">添加</el-button>
       </div>
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'hot_update_list'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -30,17 +31,24 @@
         <el-table-column prop="allow_version" label="允许版本" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.allow_version === '*'">所有</span>
+            <span v-else>{{scope.row.allow_version}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="allow_channel" label="允许渠道" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.allow_channel === '*'">所有</span>
+            <span v-else>{{scope.row.allow_channel}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="platform" label="平台" align="center"></el-table-column>
+        <el-table-column prop="platform" label="平台" align="center" width="150">
+          <template slot-scope="scope">
+            <span>{{scope.row.platform | formatPlatform}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="is_public" label="版本公开" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.is_public === '*'">所有</span>
+            <span v-else>{{scope.row.is_public}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
@@ -49,15 +57,15 @@
             <span v-if="scope.row.status === 2">禁止</span>
           </template>
         </el-table-column>
-        <el-table-column prop="modified_time" label="更新时间" align="center">
+        <el-table-column prop="modified_time" label="更新时间" align="center" width="160">
           <template slot-scope="scope">
             <span>{{ scope.row.modified_time | dateFormat }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
+        <el-table-column prop="action" label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-has="'modify_hot_update'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button v-has="'delete_hot_update'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,6 +92,7 @@
             resize="none"
             placeholder="请输入内容"
             v-if="form.versionUpd.radio==='custom'"
+            v-model="form.versionUpdCustom"
           ></el-input>
         </el-form-item>
         <el-form-item label="允许更新渠道" :label-width="formLabelWidth">
@@ -95,6 +104,7 @@
             resize="none"
             placeholder="请输入内容"
             v-if="form.channelUpd.radio==='custom'"
+            v-model="form.channelUpdCustom"
           ></el-input>
         </el-form-item>
         <el-form-item label="不允许更新版本" :label-width="formLabelWidth">
@@ -106,6 +116,7 @@
             resize="none"
             placeholder="请输入内容"
             v-if="form.forbidUpdVersion.radio==='custom'"
+            v-model="form.forbidUpdVersionCustom"
           ></el-input>
         </el-form-item>
         <el-form-item label="不允许更新渠道" :label-width="formLabelWidth">
@@ -117,6 +128,7 @@
             resize="none"
             placeholder="请输入内容"
             v-if="form.forbidUpdChannel.radio==='custom'"
+            v-model="form.forbidUpdChannelCustom"
           ></el-input>
         </el-form-item>
         <el-form-item label="是否公开" :label-width="formLabelWidth">
@@ -128,6 +140,7 @@
             resize="none"
             placeholder="请输入内容"
             v-if="form.isPublic.radio==='custom'"
+            v-model="form.isPublicCustom"
           ></el-input>
         </el-form-item>
         <el-form-item label="更新状态" :label-width="formLabelWidth">
@@ -166,10 +179,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上传资源包" :label-width="formLabelWidth">
-          <!-- <el-upload
+          <el-upload
             class="avatar-uploader"
             action
-            accept="image/jpeg, image/png"
+            accept=".zip"
             :show-file-list="false"
             :on-change="handleChange"
             :before-upload="beforeUpload"
@@ -178,8 +191,8 @@
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>-->
-          <div>
+          </el-upload>
+          <!-- <div>
             <button @click="file"></button>
             <label ref="upload" style="position: relative;">
               <input
@@ -188,7 +201,7 @@
                 style="position: absolute; width: 1px; height: 1px; opacity: 0; z-index: -1;"
               />
             </label>
-          </div>
+          </div>-->
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
           <el-input
@@ -213,6 +226,7 @@
         </el-form-item>
       </el-form>
       <div>{{form}}</div>
+      <div>{{fileData}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addUpdateConf">确 定</el-button>
@@ -241,19 +255,31 @@ export default {
       dialogVisible: false,
       tableData: [],
       form: {
-        versionUpd: { radio: "allVersion" },
-        channelUpd: { radio: "allVersion" },
-        forbidUpdVersion: { radio: "none" },
-        forbidUpdChannel: { radio: "none" },
-        isPublic: { radio: "none" },
-        updStatus: { radio: "none" },
+        versionUpd: { radio: "*" },
+        versionUpdCustom: "",
+        channelUpd: { radio: "*" },
+        channelUpdCustom: "",
+        forbidUpdVersion: { radio: "*" },
+        forbidUpdVersionCustom: "",
+        forbidUpdChannel: { radio: "*" },
+        forbidUpdChannelCustom: "",
+        isPublic: { radio: "*" },
+        isPublicCustom: "",
+        updStatus: { radio: "1" },
         checkList: ["1", "2", "3"],
         updateTime: "",
         version: "",
         update_type: "",
         update_way: ""
       },
-      fileList: [],
+      fileData: {
+        file: {},
+        index: 0,
+        count: 0,
+        total_size: 0,
+        file_name: ""
+      },
+      formData: {},
       imageUrl: "",
       pickerOptions: {
         shortcuts: [
@@ -283,14 +309,46 @@ export default {
       }
     };
   },
+  filters: {
+    formatPlatform: function(val) {
+      let str = "";
+      let arr = val.split(",");
+      if (arr.length == 1) {
+        if (arr[i] == 1) {
+          str += "安卓";
+        } else if (arr[i] == 2) {
+          str += "ios";
+        } else {
+          str += "windows";
+        }
+        return str;
+      } else {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] == 1) {
+            str += "安卓" + ",";
+          } else if (arr[i] == 2) {
+            str += "ios" + ",";
+          } else {
+            str += "windows";
+          }
+        }
+        return str;
+      }
+    }
+  },
   methods: {
     resetForm() {
       this.form = {
         versionUpd: { radio: "*" },
+        versionUpdCustom: "",
         channelUpd: { radio: "*" },
+        channelUpdCustom: "",
         forbidUpdVersion: { radio: "*" },
+        forbidUpdVersionCustom: "",
         forbidUpdChannel: { radio: "*" },
+        forbidUpdChannelCustom: "",
         isPublic: { radio: "*" },
+        isPublicCustom: "",
         updStatus: { radio: "1" },
         checkList: ["1", "2", "3"],
         updateTime: "",
@@ -309,7 +367,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.total;
@@ -323,11 +380,26 @@ export default {
     },
     addUpdateConf() {
       let data = {
-        allow_version: this.form.versionUpd.radio,
-        allow_channel: this.form.channelUpd.radio,
-        deny_version: this.form.forbidUpdVersion.radio,
-        deny_channel: this.form.forbidUpdChannel.radio,
-        is_public: this.form.isPublic.radio,
+        allow_version:
+          this.form.versionUpd.radio === "*"
+            ? this.form.versionUpd.radio
+            : this.form.versionUpdCustom,
+        allow_channel:
+          this.form.channelUpd.radio === "*"
+            ? this.form.channelUpd.radio
+            : this.form.channelUpdCustom,
+        deny_version:
+          this.form.forbidUpdVersion.radio === "*"
+            ? this.form.forbidUpdVersion.radio
+            : this.form.forbidUpdVersionCustom,
+        deny_channel:
+          this.form.forbidUpdChannel.radio === "*"
+            ? this.form.forbidUpdChannel.radio
+            : this.form.forbidUpdChannelCustom,
+        is_public:
+          this.form.isPublic.radio === "*"
+            ? this.form.isPublic.radio
+            : this.form.isPublicCustom,
         status: Number(this.form.updStatus.radio),
         clients: String(this.form.checkList),
         release_time: this.form.updateTime
@@ -340,16 +412,57 @@ export default {
       };
       this.$http.post("v1/backend/sys-conf/hot-update", data).then(res => {
         console.log(res);
+        if (res.data.code === 200) {
+          this.dialogFormVisible = false;
+          this.getHotUpdateList();
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        }
       });
     },
     handleEdit(row) {
-      console.log(index, row);
-      this.dialogTitle = "编辑渠道";
+      console.log(row);
+      this.dialogTitle = "编辑";
       this.dialogFormVisible = true;
       this.form.id = row.id;
-      this.form.channel_name = row.name;
-      this.form.channel_id = row.code;
-      this.form.belong_company = row.cname;
+      if (row.allow_version === "*") {
+        this.form.versionUpd.radio = row.allow_version;
+      } else {
+        this.form.versionUpd.radio = "custom";
+        this.form.versionUpdCustom = row.allow_version;
+      }
+      if (row.allow_channel === "*") {
+        this.form.channelUpd.radio = row.allow_channel;
+      } else {
+        this.form.channelUpd.radio = "custom";
+        this.form.channelUpdCustom = row.allow_version;
+      }
+      if (row.deny_version === "*") {
+        this.form.forbidUpdVersion.radio = row.deny_version;
+      } else {
+        this.form.forbidUpdVersion.radio = "custom";
+        this.form.forbidUpdVersionCustom = row.deny_version;
+      }
+      if (row.deny_channel === "*") {
+        this.form.forbidUpdChannel.radio = row.deny_channel;
+      } else {
+        this.form.forbidUpdChannel.radio = "custom";
+        this.form.forbidUpdChannelCustom = row.deny_channel;
+      }
+      if (row.is_public === "*") {
+        this.form.isPublic.radio = row.is_public;
+      } else {
+        this.form.isPublic.radio = "custom";
+        this.form.isPublicCustom = row.is_public;
+      }
+      (this.form.updStatus.radio = String(row.status)),
+        (this.form.checkList = row.platform.split(",")),
+        (this.form.updateTime = row.release_time),
+        (this.form.version = row.version),
+        (this.form.update_type = String(row.is_force)),
+        (this.form.update_way = String(row.update_type));
     },
     handleDelete(row) {
       console.log(row);
@@ -391,34 +504,75 @@ export default {
       this.currentPage = val;
       this.getHotUpdateList();
     },
-    // handleAvatarSuccess(res, file) {},
-    // handleChange(file, fileList, info) {
-    //   this.fileList[info] = fileList;
-    // },
-    // beforeUpload(file) {},
-    // uploadFile() {
-    //   let formData = new FormData();
-    //   this.fileList.forEach(item => {
-    //     formData.append("filename", item.raw);
-    //     formData.append("types", 1);
-    //   });
-    //   this.$http.post("v1/backend/upload", formData).then(res => {
-    //     if (res.data.code === 1) {
-    //       this.imageUrl = res.data.path;
-    //     }
-    //   });
-    // }
-    file() {
-        // 模拟点击file input触发选择文件，注意：不能在任何方式的回调里面执行此语句
-        this.$refs.upload.click()
+    handleAvatarSuccess(res, file) {},
+    handleChange(file, fileList) {
+      console.log(fileList);
     },
-    selectFile(event) {
-        // 调用上传方法，传入选择的文件对象
-        this.uploadFile(event.target.files[0], () => {
-            // upload-success
-        })
-        // 重置file input控件的值
-        event.target.value = ''
+    // currentChunk为上传文件块的索引
+    uploadChunk(file, currentChunk) {
+      var fileReader = new FileReader(),
+        // 上传文件块的大小，可自定义
+        chunkSize = 200 * 1024 * 1024,
+        // 计算改文件的可分为多少块
+        chunks = Math.ceil(file.size / chunkSize);
+      console.log(chunks);
+      var start = currentChunk * chunkSize;
+      var end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+      this.fileData.file = file.slice(start, end);
+      this.fileData.index = currentChunk;
+      this.fileData.count = chunks;
+      this.fileData.total_size = file.size;
+      this.fileData.file_name = file.name;
+    },
+    //处理单片文件的上传
+    loadNext() {
+      var start = currentChunk * chunkSize,
+        end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+
+      fileReader.readAsBinaryString(file.slice(start, end));
+    },
+    beforeUpload(file) {
+      console.log(file);
+      let currentChunk = 0;
+      this.uploadChunk(file, currentChunk);
+    },
+    uploadFile(f) {
+      console.log(f.file);
+      let that = this;
+      const fileReader = new FileReader();
+      // 文件切割后的回调，this.result为切割的文件块
+      fileReader.onload = (function(e) {
+        // 用FormData传输文件对象
+        let fd = new FormData();
+        // 设置文件上传接口的需要的参数
+        fd.append("file", that.fileData.file);
+        fd.append("index", that.fileData.index);
+        fd.append("count", that.fileData.count);
+        fd.append("total_size", that.fileData.total_size);
+        fd.append("file_name", that.fileData.file_name);
+        // 设置上传的当前的文件块
+        // fd.append("fileObj", new Blob([this.result]));
+        that.$http
+          .post("v1/backend/sys-conf/hot-update/package", fd)
+          .then(res => {
+            console.log(res);
+          });
+      })();
+      // this.$http
+      //   .post("v1/backend/sys-conf/hot-update/package", fd)
+      //   .then(res => {
+      //     console.log(res);
+      //   });
+      // let formData = new FormData();
+      // this.fileList.forEach(item => {
+      //   formData.append("filename", item.raw);
+      //   formData.append("types", 1);
+      // });
+      // this.$http.post("v1/backend/upload", formData).then(res => {
+      //   if (res.data.code === 1) {
+      //     this.imageUrl = res.data.path;
+      //   }
+      // });
     }
   },
   mounted() {

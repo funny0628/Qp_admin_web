@@ -47,7 +47,7 @@
               <span>{{scope.row.all_user_count + "/" + scope.row.true_user_count}}</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <el-button v-has="'play_detail'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+              <el-button v-has="'play_detail'" size="mini" type="primary" @click="handleEdit(scope.row)">详情</el-button>
             </template>
             <template
               v-if="['action','all_user_count','begin_time','end_time'].indexOf(scope.prop) < 0"
@@ -238,7 +238,7 @@ export default {
         }
       });
     },
-    handleEdit(index, row) {
+    handleEdit(row) {
       console.log(index, row);
     },
     handleSizeChange(val) {

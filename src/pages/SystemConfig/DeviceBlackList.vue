@@ -1,7 +1,7 @@
 <template>
   <div id="deviceBlackList-main">
     <input-area>
-      <el-button type="primary" size="medium" @click="openAddDialog" style="background-color:#30a99d;color:#fff;">添加</el-button>
+      <el-button v-has="'add_device_blacklist'" type="primary" size="medium" @click="openAddDialog" style="background-color:#30a99d;color:#fff;">添加</el-button>
       <div>
         <span>设备号</span>
         <el-input v-model="device_id" placeholder="请输入设备号" style="width:20%;margin-top:10px;"></el-input>
@@ -10,6 +10,7 @@
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'device_blacklists'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -34,18 +35,21 @@
         <el-table-column prop="action" label="操作" align="center">
           <template slot-scope="scope">
             <el-button
+              v-has="'forbiden_device_blacklist'"
               style="background-color:#30a99d;color:#fff;"
               size="mini"
               v-if="scope.row.lock_status === 1"
               @click="updateStatus(scope.row)"
             >{{scope.row.lock_status | formatStatus}}</el-button>
             <el-button
+              v-has="'unforbiden_device_blacklist'"
               style="background-color:#fc7658;color:#fff;"
               size="mini"
               v-if="scope.row.lock_status === 0"
               @click="updateStatus(scope.row)"
             >{{scope.row.lock_status | formatStatus}}</el-button>
             <el-button
+              v-has="'modify_device_blacklist'"
               style="background-color:#30a99d;color:#fff;"
               size="mini"
               @click="handleEdit(scope.row);change();"

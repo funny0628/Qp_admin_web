@@ -2,7 +2,7 @@
   <div id="userList—main">
     <input-area>
       <!-- <el-button type="danger">删除</el-button> -->
-      <el-button v-has= "'add_role'" type="primary" @click="addRole">添加</el-button>
+      <el-button v-has="'add_role'" type="primary" @click="addRole">添加</el-button>
     </input-area>
     <div class="bd">
       <el-table
@@ -26,9 +26,19 @@
         </el-table-column>
         <el-table-column prop="action" label="操作" align="center" width="200">
           <template slot-scope="scope">
-            <el-button v-has="'modify_role'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              v-has="'modify_role'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button>
             <el-button size="mini" type="primary" @click="showRightsDialog(scope.row)">权限</el-button>
-            <el-button v-has= "'delete_role'" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button
+              v-has="'delete_role'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,7 +76,6 @@
           :data="rightData"
           ref="tree"
           show-checkbox
-          check-strictly
           node-key="id"
           :default-checked-keys="checkedKeys"
           :props="defaultProps"
@@ -198,28 +207,21 @@ export default {
     async handleRights() {
       // 获取所有选中的权限id
       const nodes = this.$refs.tree.getCheckedNodes();
-      console.log(nodes)
       let arr = [];
-      let arrList = []
       nodes.forEach(item => {
+        console.log(item);
         // 选中的子权限id
         arr.push(item.id.toString());
-        arrList.push(item.display_name)
-        // 子权限的id 对应的父权限的id
-        // if (typeof item.parent_id === "number") {
-        //   arr.push(item.parent_id.toString());
-        // } else {
-        //   arr = arr.concat(item.parent_id.split(","));
-        // }
       });
-      console.log(arr)
-      console.log(arrList)
+      console.log(arr);
       const set = new Set(arr);
       const ids = [...set].join(",");
+      console.log(ids);
       let data = {
         permission_ids: ids,
         role_id: this.currentRole.id
       };
+      console.log(data);
       const res = await this.$http.post(
         "v1/backend/auth/permission-assignment",
         data
@@ -298,13 +300,12 @@ export default {
             if (!item.children) {
               arr.push(item.id);
             } else {
-              arr.push(item.id);
               fn(item.children);
             }
           });
         };
         fn(rightsList);
-        console.log(arr)
+        console.log(arr);
         return arr;
       }
       const result = await this.$http
