@@ -1,5 +1,5 @@
 <template>
-  <div id="CowControl"   v-loading="loading"
+  <div id="BC_Control"   v-loading="loading"
     element-loading-text="正在上传中"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.6)">
@@ -10,10 +10,10 @@
       >
       <el-button type="primary" @click="submit(2)">发送给服务器配置</el-button>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="抢庄牛牛-低倍场" :name="namelist[0]"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-中倍场" :name="namelist[1]"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-高倍场" :name="namelist[2]"></el-tab-pane>
-        <el-tab-pane label="抢庄牛牛-土豪场" :name="namelist[3]"></el-tab-pane>
+        <el-tab-pane label="百家乐-低倍场" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane label="百家乐-中倍场" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane label="百家乐-高倍场" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane label="百家乐-土豪场" :name="namelist[3]"></el-tab-pane>
       </el-tabs>
     </div>
 
@@ -185,7 +185,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-#CowControl {
+#BC_Control {
   background-color: #f2f2f2;
  /deep/.el-loading-spinner {
     top: 20% !important;

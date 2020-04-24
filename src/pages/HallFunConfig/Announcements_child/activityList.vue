@@ -131,13 +131,13 @@
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="活动类型" prop="act_type">
             <el-select v-model="form.act_type" @change="Change">
-              <el-option label="普通" :value="1"></el-option>
-              <el-option label="跳转" :value="2"></el-option>
-              <el-option label="跳转网页" :value="3"></el-option>
-              <el-option label="任务" :value="4"></el-option>
-              <el-option label="首充活动" :value="5"></el-option>
-              <el-option label="排行榜活动" :value="6"></el-option>
-              <el-option label="绑定手机活动" :value="7"></el-option>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="活动名称" prop="act_name">
@@ -173,48 +173,50 @@
 
           <h2>{{ titleConfig }}-(额外配置)</h2>
           <!-- type_id = 1 -->
-          <div v-if="form.act_type === 1">
+          <div v-if="form.act_type === 101">
             背景图片:
             <el-upload
               class="avatar-uploader"
               action=""
               :show-file-list="false"
-              :http-request="upLoad"
-              :before-upload="beforeAvatarUpload"
+              :http-request="upLoad101"
+              :before-upload="beforeAvatarUpload101"
               :limit="1"
             >
               <img
-                v-if="ac_content.bg_url"
-                :src="ac_content.bg_url"
+                v-if="form.act_info.ac_content"
+                :src="form.act_info.ac_content.bg_url"
                 class="avatar"
               />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
           <!-- type_id = 2 -->
-          <div v-if="form.act_type === 2">
+          <div v-if="form.act_type === 102">
             <p>
               跳转地址:
               <el-select
-                v-model="ac_content.jump_position"
+               v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.jump_position"
                 placeholder="请选择"
               >
-                <el-option label="VIP" :value="1"></el-option>
-                <el-option label="全民代理" :value="2"></el-option>
-                <el-option label="客服" :value="3"></el-option>
-                <el-option label="兑换" :value="4"></el-option>
-                <el-option label="充值" :value="5"></el-option>
-                <el-option label="活动" :value="6"></el-option>
-                <el-option label="绑定手机" :value="7"></el-option>
+                <el-option label="VIP" value="1001"></el-option>
+                <el-option label="全民代理" value="1002"></el-option>
+                <el-option label="客服" value="1003"></el-option>
+                <el-option label="兑换" value="1004"></el-option>
+                <el-option label="充值" value="1005"></el-option>
+                <el-option label="活动" value="1006"></el-option>
+                <el-option label="绑定手机" value="1007"></el-option>
               </el-select>
               按钮位置:
               <el-select
-                v-model="ac_content.jump_bt_position"
+               v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.jump_bt_position"
                 placeholder="请选择"
               >
-                <el-option label="左下" :value="1"></el-option>
-                <el-option label="中下" :value="2"></el-option>
-                <el-option label="右下" :value="3"></el-option>
+                <el-option label="左下" value="1"></el-option>
+                <el-option label="中下" value="2"></el-option>
+                <el-option label="右下" value="3"></el-option>
               </el-select>
             </p>
             <p>
@@ -228,8 +230,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.bg_url"
-                  :src="ac_content.bg_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.bg_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -246,8 +248,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.jump_bt_url"
-                  :src="ac_content.jump_bt_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.jump_bt_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -255,21 +257,23 @@
             </p>
           </div>
           <!-- type_id = 3 -->
-          <div v-if="form.act_type === 3">
+          <div v-if="form.act_type === 103">
             <p>
               按钮位置:
               <el-select
-                v-model="ac_content.jump_position"
+               v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.jump_bt_position"
                 placeholder="请选择"
               >
-                <el-option label="左下" :value="1"></el-option>
-                <el-option label="中下" :value="2"></el-option>
-                <el-option label="右下" :value="3"></el-option>
+                <el-option label="左下" value="1"></el-option>
+                <el-option label="中下" value="2"></el-option>
+                <el-option label="右下" value="3"></el-option>
               </el-select>
               URL:
               <el-input
+               v-if="form.act_info.ac_content"
                 style="margin-top:10px;width:200px;"
-                v-model="ac_content.web_url"
+                v-model="form.act_info.ac_content.web_url"
               ></el-input>
             </p>
             <p>
@@ -283,8 +287,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.bg_url"
-                  :src="ac_content.bg_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.bg_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -301,8 +305,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.jump_bt_url"
-                  :src="ac_content.jump_bt_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.jump_bt_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -310,12 +314,13 @@
             </p>
           </div>
           <!-- type_id = 4 -->
-          <div v-if="form.act_type === 4">
+          <div v-if="form.act_type === 104">
             <div class="topTitle">
               活动介绍:
               <el-input
                 style="width:200px;"
-                v-model="ac_content.ac_dest"
+                 v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.ac_desc"
                 placeholder="活动介绍"
               ></el-input>
             </div>
@@ -323,8 +328,9 @@
               任务:
               <el-button type="primary" @click="addConent">添加</el-button>
             </p>
+            <div v-if="form.act_info.ac_content">
             <div
-              v-for="(itemConent, indexConent) in ac_content.task_list"
+              v-for="(itemConent, indexConent) in form.act_info.ac_content.task_list"
               class="item"
             >
               <p style="margin-top:10px;">
@@ -350,9 +356,9 @@
                 ></el-input
                 >&nbsp;&nbsp;&nbsp;类型:
                 <el-select v-model="itemConent.task_type">
-                  <el-option label="在线时长" :value="1"></el-option>
-                  <el-option label="玩牌局数" :value="2"></el-option>
-                  <el-option label="玩牌局数" :value="3"></el-option>
+                  <el-option label="在线时长" value="1"></el-option>
+                  <el-option label="玩牌局数" value="2"></el-option>
+                  <el-option label="玩牌局数" value="3"></el-option>
                 </el-select>
                 &nbsp;&nbsp;<el-button
                   type="danger"
@@ -361,9 +367,10 @@
                 >
               </p>
             </div>
+            </div>
           </div>
           <!-- type_id = 5 -->
-          <div v-if="form.act_type === 5">
+          <div v-if="form.act_type === 105">
             <p>
               背景图片:
               <el-upload
@@ -375,8 +382,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.bg_url"
-                  :src="ac_content.bg_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.bg_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -385,8 +392,9 @@
             <p>
               描述:
               <el-input
-                style="width:200px;"
-                v-model="ac_content.ac_desc"
+                style="width:280px;"
+                 v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.ac_desc"
                 placeholder="描述"
               ></el-input>
             </p>
@@ -394,7 +402,8 @@
               累积金币:
               <el-input
                 style="width:200px;"
-                v-model="ac_content.earn_coins"
+                 v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.earn_coins"
                 placeholder="累积金币"
               ></el-input>
             </p>
@@ -402,7 +411,8 @@
               首充金额:
               <el-input
                 style="width:200px;"
-                v-model="ac_content.charge_target"
+                 v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.charge_target"
                 placeholder="首充金额"
               ></el-input>
             </p>
@@ -410,13 +420,14 @@
               返回金币:
               <el-input
                 style="width:200px;"
-                v-model="ac_content.back_coins"
+                 v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.back_coins"
                 placeholder="返回金币"
               ></el-input>
             </p>
           </div>
           <!-- type_id = 6 -->
-          <div v-if="form.act_type === 6">
+          <div v-if="form.act_type === 106">
             <div class="topTitle">
               <p>
                 弹窗宣传图:
@@ -429,8 +440,8 @@
                   :limit="1"
                 >
                   <img
-                    v-if="ac_content.advertise_url"
-                    :src="ac_content.advertise_url"
+                    v-if="form.act_info.ac_content"
+                    :src="form.act_info.ac_content.advertise_url"
                     class="avatar"
                   />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -439,38 +450,43 @@
               <p>
                 宣传结束时间:
                 <el-date-picker
-                  v-model="ac_content.advertise_end_time"
+                  v-if="form.act_info.ac_content"
+                  v-model="form.act_info.ac_content.advertise_end_time"
                   type="date"
                   placeholder="选择日期"
                   format="yyyy-MM-dd HH:mm:ss"
-                  value-format="timestamp"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
               </p>
             </div>
 
-            <div class="topTitle" style="border-top:none">
+            <div v-if="form.act_info.ac_content" class="topTitle" style="border-top:none">
               <p>
                 奖励:
                 <el-button type="primary" @click="addAward">添加</el-button>
               </p>
-              <div v-for="(itemAward, indexAward) in ac_content.award_list">
+              <div
+                
+                v-for="(itemAward, indexAward) in form.act_info.ac_content.award_list"
+                style="margin-top:10px"
+              >
                 最小值:
                 <el-input
                   style="width:200px;"
-                  v-model="itemAward.task_desc"
+                  v-model="itemAward.rank_min"
                   placeholder="最小值"
                 ></el-input>
                 最大值:
                 <el-input
                   style="width:200px;"
-                  v-model="itemAward.task_desc"
+                  v-model="itemAward.rank_max"
                   placeholder="最大值"
                 ></el-input>
                 奖励:
                 <el-input
                   style="width:200px;"
-                  v-model="itemAward.task_desc"
+                  v-model="itemAward.award_coins"
                   placeholder="奖励"
                 ></el-input>
 
@@ -483,52 +499,58 @@
             <p>
               机器人刷新数值时间(秒):
               <el-input
+                v-if="form.act_info.ac_content"
                 style="width:200px;"
-                v-model="ac_content.ac_desc"
+                v-model="form.act_info.ac_content.robot_update_time"
                 placeholder="机器人刷新数值时间(秒)"
               ></el-input>
             </p>
             <p>
               机器人刷新数值概率(百分比):
               <el-input
+                v-if="form.act_info.ac_content"
                 style="width:200px;"
-                v-model="ac_content.earn_coins"
+                v-model="form.act_info.ac_content.robot_update_rate"
                 placeholder="机器人刷新数值概率(百分比)"
               ></el-input>
             </p>
             <p>
               机器人刷新数值范围:
               <el-input
+                v-if="form.act_info.ac_content"
                 style="width:200px;"
-                v-model="ac_content.charge_target"
+                v-model="form.act_info.ac_content.robot_update_range[0]"
                 placeholder="机器人刷新范围最小值"
               ></el-input
               >&nbsp;&nbsp;&nbsp;
               <el-input
+                v-if="form.act_info.ac_content"
                 style="width:200px;"
-                v-model="ac_content.charge_target"
+                v-model="form.act_info.ac_content.robot_update_range[1]"
                 placeholder="机器人刷新范围最大值"
               ></el-input>
             </p>
           </div>
           <!-- type_id = 7 -->
-          <div v-if="form.act_type === 7">
+          <div v-if="form.act_type === 107">
             <p>
               按钮位置:
               <el-select
-                v-model="ac_content.jump_bt_position"
+                v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.jump_bt_position"
                 placeholder="请选择"
               >
-                <el-option label="左下" :value="1"></el-option>
-                <el-option label="中下" :value="2"></el-option>
-                <el-option label="右下" :value="3"></el-option>
+                <el-option label="左下" value="1"></el-option>
+                <el-option label="中下" value="2"></el-option>
+                <el-option label="右下" value="3"></el-option>
               </el-select>
             </p>
             <p>
               描述:
               <el-input
                 style="width:200px;"
-                v-model="ac_content.ac_desc"
+                  v-if="form.act_info.ac_content"
+                v-model="form.act_info.ac_content.ac_desc"
                 placeholder="描述"
               ></el-input>
             </p>
@@ -543,8 +565,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.bg_url"
-                  :src="ac_content.bg_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.bg_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -561,8 +583,8 @@
                 :limit="1"
               >
                 <img
-                  v-if="ac_content.jump_bt_url"
-                  :src="ac_content.jump_bt_url"
+                  v-if="form.act_info.ac_content"
+                  :src="form.act_info.ac_content.jump_bt_url"
                   class="avatar"
                 />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -571,7 +593,7 @@
           </div>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit(form)">保 存</el-button>
+          <el-button type="primary" @click="onSubmit('form',title)">保 存</el-button>
           <el-button type="primary" @click="back()">返 回</el-button>
         </div>
       </el-dialog>
@@ -611,12 +633,51 @@ export default {
       form: {
         id: "",
         act_name: "",
-        act_type: 1,
+        act_type: 101,
         act_status: 1,
         act_info: {},
         start_time: "",
         end_time: "",
-        auth: "root"
+        auth: "root",
+        act_info: {
+          ac_content: {
+            //type_id = 1
+            bg_url: "ddd",
+            //type_id = 2
+            jump_position: "2",
+            jump_bt_url: "3",
+            jump_bt_position: "4",
+            //type_id = 3
+            web_url: "5",
+            //type_id = 4
+            ac_desc: "6",
+            task_list: [
+              {
+                task_type: "7",
+                task_desc: "8",
+                task_target: "9",
+                task_awards: "10"
+              }
+            ],
+            //type_id = 5
+            earn_coins: "12",
+            charge_target: "13",
+            back_coins: "14",
+            //type_id = 6
+            advertise_url: "15",
+            advertise_end_time: "2019-08-08 23:59:59 ",
+            award_list: [
+              {
+                rank_min: "17",
+                rank_max: "18",
+                award_coins: "19"
+              }
+            ],
+            robot_update_time: "20",
+            robot_update_rate: "21",
+            robot_update_range: ["22", "23"]
+          }
+        }
       },
       currentPage: 1,
       limit: 10,
@@ -625,63 +686,47 @@ export default {
       selectList: [],
       loading: false,
       titleConfig: "普通",
-      ac_content: {
-        //type_id = 1
-        bg_url: "1",
-        //type_id = 2
-        jump_position: "2",
-        jump_bt_url: "3",
-        jump_bt_position: "4",
-        //type_id = 3
-        web_url: "5",
-        //type_id = 4
-        ac_desc: "6",
-        task_list: [
-          {
-            task_type: "7",
-            task_desc: "8",
-            task_target: "9",
-            task_awards: "10"
-          }
-        ],
-        //type_id = 5
-        earn_coins: "12",
-        charge_target: "13",
-        back_coins: "14",
-        //type_id = 6
-        advertise_url: "15",
-        advertise_end_time: "16",
-        award_list: [
-          {
-            rank_min: "17",
-            rank_max: "18",
-            award_coins: "19"
-          }
-        ],
-        robot_update_time: "20",
-        robot_update_rate: "21",
-        robot_update_range: ["22", "23"]
-        //type_id = 7
-      },
+      servebg_url:'',
+    
       titleList: {
-        1: "普通",
-        2: "跳转",
-        3: "跳转页面",
-        4: "任务",
-        5: "首冲活动",
-        6: "排行榜活动",
-        7: "绑定手机活动"
+        101: "普通",
+        102: "跳转",
+        103: "跳转页面",
+        104: "任务",
+        105: "首冲活动",
+        106: "排行榜活动",
+        107: "绑定手机活动"
       },
-      initForm: {
-        id: "",
-        act_name: "",
-        act_type: 1,
-        act_status: 1,
-        act_info: "",
-        start_time: "",
-        end_time: "",
-        auth: "root"
-      }
+      options: [
+        {
+          value: 101,
+          label: "普通"
+        },
+        {
+          value: 102,
+          label: "跳转"
+        },
+        {
+          value: 103,
+          label: "跳转页面"
+        },
+        {
+          value: 104,
+          label: "任务"
+        },
+        {
+          value: 105,
+          label: "首冲活动"
+        },
+        {
+          value: 106,
+          label: "排行榜活动"
+        },
+        {
+          value: 107,
+          label: "绑定手机活动"
+        }
+      ],
     };
   },
   created() {
@@ -734,7 +779,7 @@ export default {
 
     //添加
     add() {
-      this.editForm("添加活动", true, DeepData(this.initForm), "普通");
+      this.editForm("添加活动", true, DeepData(this.form), "普通");
     },
 
     //发送到服务器配置
@@ -802,18 +847,37 @@ export default {
       });
     },
 
-    upLoad() {},
-    beforeAvatarUpload() {},
+    upLoad101(file) {
+       console.log(file);
+      
+      const formData = new FormData();
+      formData.append("filename", file.file);
+      formData.append("types", 1);
+      this.$http.post("v1/backend/upload", formData).then(data => {
+        console.log(data);
+        if (data.data.code === 1 && data.data.msg === "ok") {
+          this.servebg_url = data.data.path;
+        }
+      });
+    },
+    beforeAvatarUpload101(file) {
+       if (file) {
+        this.form.act_info.ac_content.bg_url = URL.createObjectURL(file);
+      }
+     
+    },
+    upLoad(){},
+    beforeAvatarUpload(){},
     Change(val) {
-      Object.keys(this.titleList).forEach(item => {
-        if (parseInt(item) === val) {
+      this.options.forEach(item => {
+        if (val === item.value) {
           this.titleConfig = this.titleList[val];
         }
       });
     },
     //type_id = 4的添加
     addConent() {
-      this.ac_content.task_list.push({});
+      this.form.act_info.ac_content.task_list.push({});
     },
     //type_id = 4的删除
     delConent(index) {
@@ -822,7 +886,7 @@ export default {
         cancelButtonText: "取消"
       })
         .then(async () => {
-          this.ac_content.task_list.splice(index, 1);
+          this.form.act_info.ac_content.task_list.splice(index, 1);
 
           this.$message({
             type: "success",
@@ -839,7 +903,7 @@ export default {
 
     //type_id = 6的添加
     addAward() {
-      this.ac_content.award_list.push({});
+      this.form.act_info.ac_content.award_list.push({});
     },
     //type_id = 6的删除
     delAward(index) {
@@ -848,7 +912,7 @@ export default {
         cancelButtonText: "取消"
       })
         .then(async () => {
-          this.ac_content.award_list.splice(index, 1);
+          this.form.act_info.ac_content.award_list.splice(index, 1);
 
           this.$message({
             type: "success",
@@ -867,18 +931,16 @@ export default {
     handleEdit(row) {
       console.log(row);
       let editForm = DeepData(row);
-      Object.keys(this.titleList).forEach(item => {
-        if (this.titleList[item] === editForm.act_type) {
+      this.options.forEach(item => {
+        if (item.label === editForm.act_type) {
+          console.log(editForm.act_type);
+
           this.titleConfig = editForm.act_type;
-          editForm.act_type = parseInt(item);
+          editForm.act_type = item.value;
         }
         editForm.act_status = editForm.act_status === "待上线" ? 1 : 2;
       });
-      editForm.act_info = JSON.parse(editForm.act_info);
-      this.ac_content = {...editForm.act_info}
-      console.log(this.ac_content);
-      console.log(editForm);
-      
+
       this.editForm("更新活动", true, editForm, this.titleConfig);
     },
 
@@ -917,24 +979,45 @@ export default {
     },
 
     //表单提交
-    onSubmit() {
+    onSubmit(form,type) {
       //表单验证
-      this.$refs.form.validate(async valid => {
+      this.$refs[form].validate(async valid => {
         if (valid) {
           //1.将form数据传递到paylist,新增到table中先显示一个dom
           console.log(this.form);
-          // this.form.act_info =
+           this.form.act_info.ac_content.bg_url = this.servebg_url;
+          this.form.act_info = JSON.stringify(this.form.act_info);
+          console.log(this.form);
+          this.form.start_time = this.data(this.form.start_time);
+          this.form.end_time = this.data(this.form.end_time);
+          console.log(this.form);
+          let resData = {
+            act_name: this.form.act_name,
+            act_type: this.form.act_type,
+            act_status: this.form.act_status,
+            act_info: this.form.act_info,
+            start_time: this.form.start_time,
+            end_time: this.form.end_time
+          };
+          console.log(resData);
+
           let { data } = await this.$http.HallFunConfig.PostActivityList(
-            this.form
+            resData
           );
           console.log(data);
+
+           this.initdata({
+      page: this.currentPage,
+      limit: this.limit,
+      title: this.searchinput
+    });
 
           //2.发送请求追加数据到后台-------------------------------------------------------------
 
           // console.log("发送请求");
 
           //3.关闭新增的弹框
-          this.editForm("添加活动", false, DeepData(this.initForm), "普通");
+          this.editForm("添加活动", false, DeepData(this.form), "普通");
         } else {
           console.log("error submit!!");
           return false;
@@ -944,7 +1027,7 @@ export default {
 
     //表单返回
     back() {
-      this.editForm("添加活动", false, DeepData(this.initForm), "普通");
+      this.editForm("添加活动", false, DeepData(this.form), "普通");
     },
 
     editForm(title, visible, form, titleConfig) {
@@ -957,50 +1040,27 @@ export default {
     formateData(res) {
       res.forEach(item => {
         item.act_status = item.act_status === 1 ? "待上线" : "生效中";
-
-        switch (item.act_type) {
-          case 1:
-            item.act_type = "普通";
-            break;
-          case 2:
-            item.act_type = "跳转";
-            break;
-          case 3:
-            item.act_type = "跳转网页";
-            break;
-          case 4:
-            item.act_type = "任务";
-            break;
-          case 5:
-            item.act_type = "首充活动";
-            break;
-          case 6:
-            item.act_type = "排行榜活动";
-            break;
-          case 7:
-            item.act_type = "绑定手机活动";
-            break;
-
-          default:
-            break;
-        }
+        item.act_type = Object.keys(this.titleList).includes(item.act_type + "")
+          ? this.titleList[item.act_type]
+          : "";
+        item.act_info = JSON.parse(item.act_info);
       });
       return res;
     },
 
-    // data(time) {
-    //   let long1 = Date.parse(time);
-    //   let long2 = new Date(long1).getTime();
-    //   return long2;
-    // },
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
+    },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetActivityList(params);
-      // console.log(data);
+      console.log(data);
       let localdata = this.formateData(DeepData(data.data));
       this.tableData = localdata;
       this.total = data.total;
-      // console.log(localdata);
+      console.log(localdata);
       // console.log(data);
     }
   }

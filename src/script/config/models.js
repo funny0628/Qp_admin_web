@@ -28,8 +28,30 @@ const models = {
       },
     ]
   },
-  game_config:{
-    name: "game_config",
+  allAgency: {
+    name: 'allAgency',
+    vue: null,
+    text: '全民代理',
+    children: [
+      {
+        name: 'AgencyConfig',
+        text: '全民代理配置',
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyConfig')), 'AgencyConfig'),
+      },
+      {
+        name: 'Agency',
+        text: '全民代理',
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/Agency')), 'Agency'),
+      },
+      // {
+      //   name: 'AgencyTop',
+      //   text: '全民代理top100',
+      //   vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyTop')), 'AgencyTop'),
+      // },
+    ]
+  },
+  gameMan:{
+    name:'SubGameConfig',
     vue:null,
     text:'子游戏配置',
     children:[
@@ -485,30 +507,30 @@ const models = {
           },
         ]
       },
-      // {
-      //   name: "Landlords",
-      //   text: "斗地主",
-      //   children: [
-      //     {
-      //       name: "LandDrawWaterDate",
-      //       text: "斗地主-抽水数据",
-      //       vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWaterDate')), 'LandDrawWaterDate')
-      //     }
-      //   ]
-      // },
+      {
+        name: "Landlords",
+        text: "斗地主",
+        children: [
+          {
+            name: "LandDrawWater",
+            text: "斗地主-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Landlords_child/LandDrawWater')), 'LandDrawWater')
+          }
+        ]
+      },
       {
         name: "BombFlower",
         text: "炸金花",
         children: [
           {
-            name: "RepeControl",
+            name: "GFlowerControl",
             text: "炸金花-库存控制",
-            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/RepeControl')), 'RepeControl')
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/GFlowerControl')), 'GFlowerControl')
           },
           {
-            name: "DrawWaterDate",
+            name: "GFlowerWater",
             text: "炸金花-抽水数据",
-            // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/DrawWaterDate')), 'DrawWaterDate')
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BombFlower_child/GFlowerWater')), 'GFlowerWater')
           }
         ]
       },
@@ -518,16 +540,144 @@ const models = {
         children: [
           {
             name: "CowControl",
-            text: "牛牛-抢庄控制",
+            text: "抢庄牛牛-抢庄控制",
             vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/CowControl')), 'CowControl')
           },
           {
-            name: "DrawWaterDate",
-            text: "牛牛-抽水数据",
-            // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/DrawWaterDate')), 'DrawWaterDate')
+            name: "CowWater",
+            text: "抢庄牛牛-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HogCow_child/CowWater')), 'CowWater')
           }
         ]
-      }
+      },
+      {
+        name: "HundredNiu",
+        text: "百人牛牛",
+        children: [
+          {
+            name: "HNControl",
+            text: "百人牛牛-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HundredNiu/HNControl')), 'HNControl')
+          },
+          {
+            name: "HNWater",
+            text: "百人牛牛-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HundredNiu/HNWater')), 'HNWater')
+          }
+        ]
+      },
+      {
+        name: "RedBlackWar",
+        text: "红黑大战",
+        children: [
+          {
+            name: "RBControl",
+            text: "红黑-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/RedBlackWar/RBControl')), 'RBControl')
+          },
+          {
+            name: "RBWater",
+            text: "红黑-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/RedBlackWar/RBWater')), 'RBWater')
+          }
+        ]
+      },
+      {
+        name: "ChineseWar",
+        text: "龙虎斗",
+        children: [
+          {
+            name: "C_Control",
+            text: "龙虎斗-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/ChineseWar/C_Control')), 'C_Control')
+          },
+          {
+            name: "C_Water",
+            text: "龙虎斗-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/ChineseWar/C_Water')), 'C_Water')
+          }
+        ]
+      },
+      {
+        name: "HappyFishing",
+        text: "欢乐捕鱼",
+        children: [
+          {
+            name: "H_Control",
+            text: "欢乐捕鱼-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HappyFishing/H_Control')), 'H_Control')
+          },
+          {
+            name: "H_Water",
+            text: "欢乐捕鱼-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HappyFishing/H_Water')), 'H_Water')
+          }
+        ]
+      },
+      {
+        name: "FruitMachine",
+        text: "水果机",
+        children: [
+          {
+            name: "F_Control",
+            text: "水果机-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/FruitMachine/F_Control')), 'F_Control')
+          },
+          {
+            name: "F_Water",
+            text: "水果机-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/FruitMachine/F_Water')), 'F_Water')
+          }
+        ]
+      },
+      {
+        name: "Mammon",
+        text: "财神驾到",
+        children: [
+          {
+            name: "M_Control",
+            text: "财神驾到-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Mammon/M_Control')), 'M_Control')
+          },
+          {
+            name: "M_Water",
+            text: "财神驾到-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/Mammon/M_Water')), 'M_Water')
+          }
+        ]
+      },
+      {
+        name: "HundredHappy",
+        text: "百家乐",
+        children: [
+          {
+            name: "Happy_Control",
+            text: "百家乐-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HundredHappy/Happy_Control')), 'Happy_Control')
+          },
+          {
+            name: "Happy_Water",
+            text: "百家乐-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/HundredHappy/Happy_Water')), 'Happy_Water')
+          }
+        ]
+      },
+      {
+        name: "BCBM",
+        text: "百家乐",
+        children: [
+          {
+            name: "BC_Control",
+            text: "百家乐-抢庄控制",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BCBM/BC_Control')), 'BC_Control')
+          },
+          {
+            name: "BC_Water",
+            text: "百家乐-抽水数据",
+            vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/BCBM/BC_Water')), 'BC_Water')
+          }
+        ]
+      },
     ]
   },
   sys_config:{
@@ -554,6 +704,107 @@ const models = {
         name:'device_blacklist',
         text:'设备黑名单',
         vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/DeviceBlackList')), 'device_blacklist')
+      },
+    ]
+  },
+  DataAnalysis:{
+    name:'DataAnalysis',
+    vue: null,
+    text:'数据分析',
+    children:[
+      {
+        name:'ChannelsReport',
+        text:'渠道报表日',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'ChannelsReport')
+      },
+      {
+        name:'Channels',
+        text:'渠道报表',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Channels')), 'Channels')
+      },
+      {
+        name:'LTVReport',
+        text:'LTV报表',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LTVReport')), 'LTVReport')
+      },
+      {
+        name:'lastAnalysis',
+        text:'留存分析',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/lastAnalysis')), 'lastAnalysis')
+      },
+      {
+        name:'NewPlayerChange',
+        text:'新玩家付费转换',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/NewPlayerChange')), 'NewPlayerChange')
+      },
+      {
+        name:'Statistics',
+        text:'台费统计',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Statistics')), 'Statistics')
+      },
+      {
+        name:'CardpPandect',
+        text:'牌局总览',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/CardpPandect')), 'CardpPandect')
+      },
+      {
+        name:'AddUser',
+        text:'新增用户',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/AddUser')), 'AddUser')
+      },
+      {
+        name:'FlyBack',
+        text:'流失与回归',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/FlyBack')), 'FlyBack')
+      },
+    ]
+  },
+  ActivityOperations:{
+    name:'ActivityOperations',
+    vue: null,
+    text:'活动运营',
+    children:[
+      {
+        name:'FirstConfig',
+        text:'首充配置',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/FirstConfig')), 'FirstConfig')
+      },
+      {
+        name:'SignUp',
+        text:'每日签到',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SignUp')), 'SignUp')
+      },
+      {
+        name:'SaveMoney',
+        text:'每日救赎金',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SaveMoney')), 'SaveMoney')
+      },
+      {
+        name:'Rainstorm',
+        text:'每日暴风雨',
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/Rainstorm')), 'Rainstorm')
+      },
+      {
+        name:'MoneyTree',
+        text:'摇钱树活动',
+        vue: null,
+        children:[
+          {
+            name:'MT_Config',
+            text:'摇钱树配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_Config')), 'MT_Config'),
+          },
+          {
+            name:'MT_TaskConfig',
+            text:'摇钱树任务配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_TaskConfig')), 'MT_TaskConfig'),
+          },
+          {
+            name:'MT_OtherConfig',
+            text:'其他配置',
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_OtherConfig')), 'MT_OtherConfig'),
+          },
+        ]
       },
     ]
   },

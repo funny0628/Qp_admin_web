@@ -18,8 +18,16 @@ import HallFunConfig from './assets/js/HallFunConfig.js'
 import uploadFile from './assets/js/uploadFile'
 // 把封装好的文件下载挂载到vue上
 Vue.use(uploadFile)
+import OperationMan from './assets/js/OperationMan.js'
+import allAgency from './assets/js/allAgency.js'
+import DataAnalysis from './assets/js/DataAnalysis.js'
 // import http from './assets/js/http';
 axios.HallFunConfig = HallFunConfig;
+axios.OperationMan = OperationMan;
+//全民代理配置
+axios.allAgency = allAgency;
+//数据分析
+axios.DataAnalysis = DataAnalysis;
 Vue.prototype.$http = axios;
 Vue.prototype.$echarts = echarts;
 
