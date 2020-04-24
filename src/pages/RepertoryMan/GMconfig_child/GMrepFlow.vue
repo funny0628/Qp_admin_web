@@ -1,8 +1,9 @@
 <template>
   <div id="GMrepFlow-main">
-    <input-area>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.order_status" placeholder="房间选择" clearable size="medium">
+<!-- title -->
+<div class="title">
+      <el-input v-model="user_id" placeholder="请输入用户id" style="width:200px" size="medium" clearable></el-input>
+      <el-select v-model="room_status" placeholder="房间选择" clearable size="medium">
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -18,54 +19,77 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        value-format="timestamp"
       ></el-date-picker>
-      <el-button type="primary">搜索</el-button>
-      <el-button type="primary" @click="dialogFormVisible=true">导出excel</el-button>
-    </input-area>
-    <div class="bd">
-      <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
+      <el-button type="primary" @click="search">搜索</el-button>
+</div>
+
+    <!-- table -->
+    <div class="table">
+       <el-table
+        border
+        highlight-current-row
+        ref="multipleTable"
+        :data="tableData"
+        tooltip-effect="dark"
+        style="width: 100%"
       >
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
-            </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
-          </template>
-        </info-table-item>
-      </info-table>
+        <el-table-column  prop="uid" label="uid" align="center">
+        </el-table-column>
+        <el-table-column prop="table_type" label="房间类型" align="center">
+        </el-table-column>
+        <el-table-column
+          prop="add_coins"
+          label="金币变化值"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="by_web" 
+          label="是否后台添加"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="gm_add_coins"
+          label="后台添加GM总值"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          
+          prop="date"
+          label="时间"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+      </el-table>
+       <!-- 分页 -->
+      <el-pagination
+        v-if="total > 5"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
          
 
 <script>
-import InfoTable from "../../../plugin/components/InfoTable";
-import PageInfo from "../../../plugin/script/common/PageInfo";
-import InputArea from "../../../plugin/components/InputArea";
-import InfoTableItem from "../../../plugin/components/InfoTableItem";
 
 export default {
   name: "GMrepFlow",
-  components: {
-    InfoTableItem,
-    InputArea,
-    InfoTable,
-  },
+
   data() {
     return {
       pickerOptions: {
@@ -99,146 +123,93 @@ export default {
           }
         ]
       },
-      value2: "",
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" },
-      ],
-      format: {
-        user_id: "",
-        order_status: ""
-      },
-      tableStyle: [
-        { label: "UID", prop: "order_id", width: "" },
-        { label: "房间类型", prop: "channel_name", width: "" },
-        { label: "金币变化值", prop: "channel_name", width: "" },
-        { label: "是否后台添加", prop: "fun_1", width: "" },
-        { label: "实时库存", prop: "fun_2", width: "" },
-        { label: "后台添加GM总值", prop: "fun_3", width: "" },
-        { label: "时间", prop: "fun_4", width: "" },
-      ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
-      dialogAddVisible: false,
-      form: {
-        checkList: ["0902代理01", "0902代理02"],
-        function: "1",
-        agent: 100,
-        nickname: "",
-        password: "",
-        money_password: "",
-        phone: "",
-        user_type: "1"
-      }
+      value2: [],
+      tableData:[],
+      platforms: [],
+      user_id: "",
+      room_status: "",
+      currentPage:1,
+      limit:10,
+      total:'',
+    
     };
+  },
+  created() {
+    let today = new Date().getTime();
+    
+    this.value2[this.value2.length] = today - 60 * 60 * 24 * 7 * 1000;
+    this.value2[this.value2.length] = today
+    // console.log(this.value2);    
+    this.initGame()
+    this.getData()
   },
   methods: {
     /**搜索*/
     search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
+
+      this.getData()
     },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
+
+
+    //页容量变化
+    handleSizeChange(num){
+      this.limit = num
+      this.currentPage = 1
+      this.getData()
     },
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
+
+    //页码变化
+    handleCurrentChange(pagenum){
+      this.currentPage = pagenum
+      this.getData()
     },
-    /**获取用户列表接口 */
-    userList(data, user_id) {
-      UserHandler.list(data, user_id).promise.then(res => {
-        if (Number(res.code) === 200) {
-          this.records = res.data.list;
-          /**数据处理*/
-          let goldArr = [];
-          let top_up_amount = "";
-          let change_amount = "";
-          let alipay_account = [];
-          let personArr = [];
-          this.records.map(item => {
-            goldArr.push("总金额：" + item.money);
-            goldArr.push("理财：" + item.fanancial);
-            top_up_amount = item.pay_sum + "/" + item.pay_count;
-            change_amount = item.draw_sum + "/" + item.draw_count;
-            if (item.bank_info.length > 0) {
-              item.bank_info.map(bank => {
-                if (Number(bank.bank_id) !== 1) {
-                  /** 支付宝 **/
-                  personArr.push("开户人：" + bank.bank_user);
-                  personArr.push("卡号：" + bank.bank_card);
-                  personArr.push("开户行：" + bank.subbranch);
-                } else {
-                  alipay_account.push("账号：" + bank.bank_card);
-                  alipay_account.push("名称：" + bank.bank_name);
-                }
-              });
-            }
-            item.action = [
-              {
-                label: "修改",
-                type: "edit"
-              },
-              {
-                label: "冻结",
-                type: "freeze"
-              },
-              {
-                label: "强制下线",
-                type: "light"
-              }
-            ];
-            item.user_gold = goldArr;
-            item.top_up_amount = top_up_amount;
-            item.change_amount = change_amount;
-            item.alipay_account = alipay_account;
-            item.account_person = personArr;
-          });
-        }
+
+
+     getData() {
+      this.initData({
+        page: this.currentPage,
+        limit: this.limit,
+        start_time:  Math.ceil(this.value2[0] / 1000),
+        end_time: Math.ceil(this.value2[1] / 1000),
+        uid:this.user_id === '' ? 0 : +this.user_id,
+        table_type: this.room_status === "" ? 0 : this.room_status
       });
-    }
+    },
+
+
+    //获取表格和数据
+     async initData(params){
+      let {data} = await this.$http.OperationMan.GetGameWater(params)
+      // console.log(data);
+      this.total = data.total
+      data.data.forEach((item)=>{
+        item.by_web = item.by_web === 1 ? '是' : '不是'
+      })
+      this.tableData = data.data
+    },
+
+    //获取素有子游戏
+     async initGame(params){
+      let {data} = await this.$http.OperationMan.GetSonGame({type_id:5})
+      // console.log(data);
+      data.data.forEach((item)=>{
+        this.platforms.push({value:item.game_id,label:item.game_name})
+      })
+      this.platforms.unshift({value:'',label:'房间选择'})
+      // console.log(this.platforms);
+    },
+
+
   },
-  mounted() {}
 };
 </script>
 
-<style scoped>
-#GMrepFlow-main .bd {
-  padding-left: 20px;
+<style scoped lang="less">
+#GMrepFlow-main  {
+  .table {
+    margin-top: 20px;
+  }
 }
-#GMrepFlow-main .bd p {
-  margin: 0;
-}
-#GMrepFlow-main >>> .el-date-editor .el-range-separator {
-  width: 10%;
-}
-#home .main-box .input-area >>> .el-date-editor {
-  width: auto;
-}
-table {
-  border-collapse: collapse;
-}
+
+
 </style>

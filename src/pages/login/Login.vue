@@ -87,7 +87,7 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 11, message: "长度在 6 到 11 个字符", trigger: "blur" }
         ]
-      }
+      },
     };
   },
   methods: {
@@ -101,19 +101,22 @@ export default {
       if (res.data.code === 200) {
         this.$message({
           type: "success",
-          message: "登录成功!"
+          message: res.data.msg
         });
-        // localStorage.setItem("token", res.data.data.token);
         this.$router.push({
-          name: "home"
+          name: "home",
+          // params: {
+          //   userRightsData: res.data.data
+          // }
         });
+        localStorage.setItem('user_info', JSON.stringify(res.data.data));
       } else {
         this.$message({
           type: "error",
-          message: data.meta.msg
+          message: res.data.msg
         });
       }
-    },
+    }
   }
 };
 </script>

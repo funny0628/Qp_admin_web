@@ -64,7 +64,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "BankOrder",
+  name: "bank_card",
   extends: BaseIframe,
   components: {
     InfoTableItem,

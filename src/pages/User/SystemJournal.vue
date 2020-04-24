@@ -20,7 +20,6 @@
         end-placeholder="结束日期"
         align="right"
         :clearable="false"
-        disabled
       ></el-date-picker>
       <el-button type="primary" size="medium" @click="search">搜索</el-button>
     </input-area>
@@ -32,7 +31,11 @@
         <el-table-column prop="req_path" label="请求路由" align="center"></el-table-column>
         <el-table-column prop="req_params" label="请求参数" align="center"></el-table-column>
         <el-table-column prop="req_ip" label="请求ip" align="center"></el-table-column>
-        <el-table-column prop="create_time" label="请求时间" align="center"></el-table-column>
+        <el-table-column prop="create_time" label="请求时间" align="center">
+          <template slot-scope="scope">
+            {{scope.row.create_time | dateFormat}}
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -50,7 +53,7 @@
 <script>
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "SystemJournal",
+  name: "operation_logs",
   components: {
     InputArea
   },
@@ -121,7 +124,7 @@ export default {
       console.log(res);
       if (res.data.code === 200) {
         this.tableData = res.data.data;
-        this.total = res.data.data.total;
+        this.total = res.data.total;
       }
       console.log(res);
     },

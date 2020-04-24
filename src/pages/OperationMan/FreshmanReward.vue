@@ -84,7 +84,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "FreshmanReward",
+  name: "fresher_awards",
   extends: BaseIframe,
   components: {
     InfoTableItem,

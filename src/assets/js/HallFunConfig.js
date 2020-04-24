@@ -156,6 +156,13 @@ let PostServerConfig = (params) => { //get / search
   return axios.post('v1/backend/lobby/server_config', params)
 }
 
+//获取游戏类型
+let GetAllGameList = (params) => { 
+  return axios.get('v1/backend/lobby/all_game_list', {
+    params
+  })
+}
+
 //将表格数据提交到服务器
 let GetTableConfig = (params) => { //仅限于查看type_id
   return axios.get('v1/backend/lobby/server_config_two')
@@ -172,6 +179,7 @@ export default {
   PostServerConfig,
   GetTableConfig,
   PostTableConfig,
+  GetAllGameList,
   //支付配置-------------------------
   GetPaylist,
   PostPaylist,

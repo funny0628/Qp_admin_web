@@ -16,6 +16,15 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop === 'pic_one_url'">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+            </template>
+            <template v-if="scope.prop === 'pic_two_url'">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+            </template>
+            <template v-if="scope.prop === 'pic_three_url'">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+            </template>
             <template v-if="scope.prop === 'action'">
               <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -77,6 +86,7 @@
             <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+          <div>{{this.imageUrl.imgList1}}</div>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">

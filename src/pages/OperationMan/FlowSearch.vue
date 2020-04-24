@@ -3,51 +3,62 @@
     <input-area>
       <el-select v-model="format.change_reason" placeholder="变化原因选择" clearable size="medium">
         <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
+          v-for="(val,num) in changeReason"
+          :key="num"
+          :label="val"
+          :value="num"
+        >{{val}}</el-option>
       </el-select>
       <el-select v-model="format.room" placeholder="房间选择" clearable size="medium">
         <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in allGameType"
+          :key="item.game_id"
+          :label="item.game_name"
+          :value="item.game_id"
         ></el-option>
       </el-select>
       <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
       <span>日期</span>
       <el-date-picker
-        v-model="format.time_range"
+        v-model="format.dateArr"
         type="datetimerange"
         :picker-options="pickerOptions"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" size="medium">搜索</el-button>
+      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
       <el-button type="primary" size="medium">导出excel</el-button>
     </input-area>
     <div class="bd">
       <info-table
-        :search="search"
+        v-has="'flow_list'"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <template v-if="'time'.indexOf(scope.prop) >= 0">
+              <span>{{scope.row.time | dateFormat}}</span>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="['time'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!-- 渠道添加 -->
     <el-dialog title="渠道添加" :visible.sync="dialogFormVisible" width="30%">
@@ -97,7 +108,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "FlowSearch",
+  name: "cash_flows",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -108,6 +119,9 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
       formLabelWidth: "120px",
       pickerOptions: {
         shortcuts: [
@@ -140,47 +154,24 @@ export default {
           }
         ]
       },
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" }
-      ],
+      changeReason: {},//变化原因
+      allGameType: [],//所有游戏
       format: {
         change_reason: "",
         room: "",
         user_id: "",
-        time_range: ""
+        dateArr: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()]
       },
       tableStyle: [
-        { label: "UID", prop: "order_id", width: "" },
-        { label: "变化后数量", prop: "channel_name", width: "" },
-        { label: "变化数量", prop: "channel_name", width: "" },
-        { label: "变化原因", prop: "fun_1", width: "" },
-        { label: "房间类型", prop: "fun_2", width: "" },
-        { label: "渠道号", prop: "fun_5", width: "" },
-        { label: "操作时间", prop: "fun_6", width: "" },
-        { label: "操作", prop: "action", width: "150" }
+        { label: "UID", prop: "uid", width: "" },
+        { label: "变化后数量", prop: "curr", width: "" },
+        { label: "变化数量", prop: "value", width: "" },
+        { label: "变化原因", prop: "reason", width: "" },
+        { label: "房间类型", prop: "game_type", width: "" },
+        { label: "渠道号", prop: "channel", width: "" },
+        { label: "操作时间", prop: "time", width: "" },
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogFormVisible: false,
       dialogVisible: false,
@@ -194,40 +185,73 @@ export default {
     };
   },
   methods: {
+    getFlowWaterList() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize
+      };
+      this.$http.get("v1/backend/operation/flows",{
+        params
+      }).then(res => {
+        console.log(res);
+        if(res.data.code === 200) {
+          this.records = res.data.data
+          this.total = res.data.total
+        }
+      });
+    },
     /**搜索*/
-    search() {},
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
+    searchData() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize,
+        reason: Number(this.format.change_reason),
+        game_type: Number(this.format.room),
+        user_id: Number(this.format.user_id),
+        start_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[0])).getTime()/1000) : 0,
+        end_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[1])).getTime()/1000) : 0,
+      };
+      this.$http.get("v1/backend/operation/flows",{
+        params
+      }).then(res => {
+        console.log(res);
+        if(res.data.code === 200) {
+          this.records = res.data.data
+          this.total = res.data.total
+        }
+      });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(row);
-      const ids = row.id.toString();
-      console.log(ids);
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    getModReason() {
+      this.$http.get('v1/backend/operation/gold-modify-reason').then(res=>{
+        console.log(res)
+        if(res.data.code === 200) {
+          this.changeReason = res.data.data
+        }
       })
-        .then(
-          this.$message({
-            type: "success",
-            message: res.data.msg
-          })
-        )
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: res.data.msg
-          });
-        });
+    },
+    //获取所有游戏类型
+    getAllGameType() {
+      this.$http.get("v1/backend/operation/game-type").then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.allGameType = res.data.data;
+        }
+      });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getFlowWaterList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getFlowWaterList();
     }
   },
-  mounted() {}
+  mounted() {
+    this.getFlowWaterList()
+    this.getModReason()
+    this.getAllGameType()
+  }
 };
 </script>
 

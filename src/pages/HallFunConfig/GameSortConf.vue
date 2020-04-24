@@ -8,7 +8,7 @@
       </div>
       <el-select v-model="searchChannel" placeholder="请选择渠道" style="margin-top:10px;">
         <el-option
-          v-for="(item) in channelOpts"
+          v-for="(item) in allChannelOpts"
           :key="item.id"
           :label="item.channel_name"
           :value="item.channel_name"
@@ -22,7 +22,7 @@
         <el-table-column label="渠道KEY" prop="channel_code" align="center"></el-table-column>
         <el-table-column label="游戏1" align="center">
           <template slot-scope="scope">
-            <span>{{JSON.parse(scope.row.game_list)}}</span>
+            <!-- <span>{{JSON.parse(scope.row.game_list)}}</span> -->
           </template>
         </el-table-column>
         <!-- <el-table-column label="游戏2" prop="game_list" align="center"></el-table-column>
@@ -69,10 +69,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -112,10 +112,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -166,10 +166,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -220,10 +220,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -274,10 +274,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -328,10 +328,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -382,10 +382,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -436,10 +436,10 @@
               <el-col :span="20">
                 <el-select v-model="form.function" placeholder="请选择活动区域">
                   <el-option
-                    v-for="(item,index) in funOpts"
+                    v-for="(item,index) in gameOpts"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.game_name"
+                    :value="item.game_id"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -531,6 +531,7 @@ export default {
         { value: "7", label: "广播" },
         { value: "8", label: "财神" }
       ],
+      gameOpts: [],
       tableData: [],
       form: {
         checkList: [],
@@ -545,7 +546,8 @@ export default {
         phone: "",
         user_type: "1"
       },
-      channelOpts: []
+      channelOpts: [],
+      allChannelOpts: []
     };
   },
   methods: {
@@ -578,28 +580,57 @@ export default {
           }
         });
     },
-    getChannelList() {
+    getGameList() {
       this.$http
-        .get("v1/backend/no_channel", {
+        .get("/v1/backend/lobby/game_list", {
           params: {
-            type_id: 2
+            page: this.currentPage,
+            limit: this.pagesize,
+            parent_id: this.form.parent_id
           }
         })
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            this.channelOpts = res.data.data;
+            this.gameOpts = res.data.data.slice(1);
           }
         });
     },
+    //获取新增页面的渠道列表
+    getAddChannelList() {
+      let data = {
+        type_id: 2,
+        add_id: 1
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
+    },
+    //获取列表页的所有渠道
+    getAllChannelList() {
+      let data = {
+        type_id: 2,
+        add_id: 2
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.allChannelOpts = res.data.data;
+        }
+      });
+    },
     openAddDialog() {
       this.dialogFormVisible = true;
-      this.getChannelList();
+      this.getAddChannelList();
+      this.getGameList();
     }
   },
   mounted() {
     this.getGameSortList();
-    this.getChannelList()
+    this.getAllChannelList();
   }
 };
 </script>
@@ -611,20 +642,8 @@ export default {
 #GameSortConf-main .bd p {
   margin: 0;
 }
-
-.platformchoice {
-  cursor: pointer;
-  color: #409eff;
-  text-decoration: underline;
-}
-
-.bankCard {
-  width: 100%;
-}
-table {
-  border-collapse: collapse;
-}
-.itemClass {
-  width: 45%;
+#GameSortConf-main .bd >>> .el-button {
+  margin-left: 0px;
+  min-width: 30px;
 }
 </style>

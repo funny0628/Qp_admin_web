@@ -5,12 +5,18 @@
         type="danger"
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="dialogFormVisible=true"
-      >删除</el-button> -->
-      <el-button type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="openAdd">添加</el-button>
+      >删除</el-button>-->
+      <el-button v-has="'add_exchange_config'" type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="openAdd">添加</el-button>
       <el-button type="primary" @click="dialogVisible=true">保留金额设置</el-button>
     </input-area>
     <div class="bd">
-      <info-table :table-style="tableStyle" :records="records" :page-info="pageInfo" :hide-page="true">
+      <info-table
+        v-has="'exchange_config_list'"
+        :table-style="tableStyle"
+        :records="records"
+        :page-info="pageInfo"
+        :hide-page="true"
+      >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'method'.indexOf(scope.prop) >= 0">
@@ -21,14 +27,19 @@
               <span v-if="scope.row[scope.prop]  === 1">上线</span>
               <span v-if="scope.row[scope.prop]  === 2">下线</span>
             </template>
+            <template v-if="'thumb'.indexOf(scope.prop) >= 0">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+            </template>
             <template v-if="scope.prop === 'action'">
               <el-button
+                v-has="'modify_exchange_config'"
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="handleEdit(scope.row)"
               >编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button v-has="'delete_exchange_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
               <el-button
+                v-has="'offline_exchange_config'"
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="updateStatus(scope.row)"
@@ -40,12 +51,12 @@
           </template>
         </info-table-item>
       </info-table>
-       <el-pagination
+      <el-pagination
         style="margin-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -73,7 +84,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="角标" :label-width="formLabelWidth">
-           <el-upload
+          <el-upload
             class="avatar-uploader"
             action
             :fileList="fileList"
@@ -115,7 +126,7 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "PayOrderRecord",
+  name: "exchange_config",
   components: {
     InfoTableItem,
     InfoTable,
@@ -123,7 +134,7 @@ export default {
   },
   data() {
     return {
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       imageUrl: "",
@@ -173,8 +184,8 @@ export default {
       };
     },
     async getExchangeList() {
-      const res = await this.$http.get("v1/backend/lobby/conversion",{
-        params:  {
+      const res = await this.$http.get("v1/backend/lobby/conversion", {
+        params: {
           page: this.currentPage,
           limit: this.pagesize
         }
@@ -182,7 +193,7 @@ export default {
       console.log(res);
       if (res.data.code === 1) {
         this.records = res.data.data;
-        this.total = res.data.total
+        this.total = res.data.total;
       }
     },
     async addConfig() {
@@ -228,8 +239,7 @@ export default {
       this.dialogFormVisible = true;
       this.dialogTitle = "添加配置信息";
       this.resetForm();
-      this.imageUrl = "",
-      this.fileList = []
+      (this.imageUrl = ""), (this.fileList = []);
     },
     handleEdit(row) {
       console.log(row);
@@ -240,7 +250,7 @@ export default {
       this.form.exchange_min = row.min_money;
       this.form.exchange_max = row.max_money;
       this.form.status = String(row.status);
-      this.imageUrl = row.thumb
+      this.imageUrl = row.thumb;
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -308,7 +318,7 @@ export default {
         formData.append("types", 1);
       });
       this.$http.post("v1/backend/upload", formData).then(res => {
-        console.log(res)
+        console.log(res);
         if (res.data.code === 1) {
           this.imageUrl = res.data.path;
         }
@@ -345,7 +355,7 @@ export default {
             message: "取消输入"
           });
         });
-    },
+    }
   },
   mounted() {
     this.getExchangeList();
