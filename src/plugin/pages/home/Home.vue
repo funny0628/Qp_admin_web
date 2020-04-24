@@ -279,6 +279,7 @@ export default {
   },
   mounted() {
     $this.init();
+    $this.$forceUpdate()
     let clientWidth = document.body.offsetWidth;
     /** 判断宽度 **/
     $this.$store.commit(SIZE_CHANGE, clientWidth <= 780);
