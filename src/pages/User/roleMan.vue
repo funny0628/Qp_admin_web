@@ -205,7 +205,7 @@ export default {
     },
     async handleRights() {
       // 获取所有选中的权限id
-      const nodes = this.$refs.tree.getHalfCheckedNodes();
+      const nodes = this.$refs.tree.getCheckedNodes();
       let arr = [];
       let arrList = []
       nodes.forEach(item => {
