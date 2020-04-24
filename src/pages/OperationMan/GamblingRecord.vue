@@ -4,44 +4,67 @@
       <span>场次</span>
       <el-select v-model="format.session" placeholder="请选择" clearable size="medium">
         <el-option
-          v-for="item in platforms"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in allGameType"
+          :key="item.game_id"
+          :label="item.game_name"
+          :value="item.game_id"
         ></el-option>
       </el-select>
       <span>账号ID</span>
       <el-input v-model="format.id" placeholder="请输入账号id" style="width:20%;"></el-input>
       <span>时间范围</span>
       <el-date-picker
-        v-model="format.time_range"
+        v-model="format.dateArr"
         type="datetimerange"
         :picker-options="pickerOptions"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         align="right"
+        :clearable="false"
       ></el-date-picker>
-      <el-button type="primary">查找</el-button>
+      <el-button type="primary" @click="searchData">查找</el-button>
       <el-button type="primary">导出excel</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'play_lists'"
         :search="search"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <template v-if="'begin_time'.indexOf(scope.prop) >= 0">
+              <span>{{scope.row.begin_time | dateFormat}}</span>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="'end_time'.indexOf(scope.prop) >= 0">
+              <span>{{scope.row.end_time | dateFormat}}</span>
+            </template>
+            <template v-if="'all_user_count'.indexOf(scope.prop) >= 0">
+              <span>{{scope.row.all_user_count + "/" + scope.row.true_user_count}}</span>
+            </template>
+            <template v-if="scope.prop === 'action'">
+              <el-button v-has="'play_detail'" size="mini" type="primary" @click="handleEdit(scope.row)">详情</el-button>
+            </template>
+            <template
+              v-if="['action','all_user_count','begin_time','end_time'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <el-dialog title="添加人工订单" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
@@ -84,7 +107,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "GamblingRecord",
+  name: "play_records",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -95,6 +118,9 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
       formLabelWidth: "120px",
       pickerOptions: {
         shortcuts: [
@@ -127,47 +153,27 @@ export default {
           }
         ]
       },
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" }
-      ],
+      allGameType: [],
       format: {
         session: "",
         id: "",
-        time_range: ""
+        dateArr: [
+          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
+          new Date()
+        ]
       },
       tableStyle: [
-        { label: "牌局号", prop: "order_id", width: "" },
-        { label: "房间类型", prop: "channel_name", width: "" },
-        { label: "游戏时间(开始)", prop: "channel_name", width: "" },
-        { label: "游戏时间(结束)", prop: "channel_name", width: "" },
-        { label: "参与人数/机器人", prop: "fun_1", width: "" },
-        { label: "玩家总输赢", prop: "fun_2", width: "" },
-        { label: "台费", prop: "fun_5", width: "" },
-        { label: "玩家id", prop: "fun_6", width: "" },
+        { label: "牌局号", prop: "table_gid", width: "" },
+        { label: "房间类型", prop: "table_name", width: "" },
+        { label: "游戏时间(开始)", prop: "begin_time", width: "" },
+        { label: "游戏时间(结束)", prop: "end_time", width: "" },
+        { label: "参与人数/机器人", prop: "all_user_count", width: "" },
+        { label: "玩家总输赢", prop: "total_win", width: "" },
+        { label: "台费", prop: "total_fee", width: "" },
+        { label: "玩家id", prop: "true_user", width: "" },
         { label: "操作", prop: "action", width: "150" }
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
+      records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogFormVisible: false,
       form: {
@@ -180,40 +186,74 @@ export default {
     };
   },
   methods: {
+    getPlayList() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize
+      };
+      this.$http
+        .get("v1/backend/operation/play/records", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
+        });
+    },
     /**搜索*/
     search() {},
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
-      }
+    searchData() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize,
+        table_type: Number(this.format.session),
+        user_id: Number(this.format.id),
+        start_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[0])).getTime() / 1000)
+          : 0,
+        end_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[1])).getTime() / 1000)
+          : 0
+      };
+      this.$http
+        .get("v1/backend/operation/play/records", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
+        });
     },
-    handleEdit(index, row) {
+    getAllGameType() {
+      this.$http.get("v1/backend/operation/game-type").then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.allGameType = res.data.data;
+        }
+      });
+    },
+    handleEdit(row) {
       console.log(index, row);
     },
-    handleDelete(index, row) {
-      console.log(row);
-      const ids = row.id.toString();
-      console.log(ids);
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(
-          this.$message({
-            type: "success",
-            message: res.data.msg
-          })
-        )
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: res.data.msg
-          });
-        });
-    }
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getPlayList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getPlayList();
+    },
   },
-  mounted() {}
+  mounted() {
+    this.getPlayList();
+    this.getAllGameType();
+  }
 };
 </script>
 

@@ -378,7 +378,7 @@
 import BaseIframe from "../../plugin/script/common/BaseIframe";
 import DeepData from "../../assets/js/formate.js";
 export default {
-  name: "UserList",
+  name: "users",
   extends: BaseIframe,
 
   data() {

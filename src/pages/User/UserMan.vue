@@ -2,10 +2,11 @@
   <div id="userMan—main">
     <input-area>
       <!-- <el-button type="danger">删除</el-button> -->
-      <el-button type="primary" @click="addUser">添加</el-button>
+      <el-button v-has="'add_user'" type="primary" @click="addUser">添加</el-button>
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'users'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -25,11 +26,26 @@
         <el-table-column prop="update_time" label="更新时间" align="center">
           <template slot-scope="scope">{{scope.row.update_time | dateFormat}}</template>
         </el-table-column>
-        <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
+        <el-table-column fixed="right" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="primary" @click="handleRole(scope.$index, scope.row)">角色</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button
+              v-has="'modify_user'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button>
+            <el-button
+              v-has="'role_assign'"
+              size="mini"
+              type="primary"
+              @click="handleRole(scope.$index, scope.row)"
+            >角色</el-button>
+            <el-button
+              v-has="'delete_user'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -105,11 +121,20 @@
 <script>
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "userList",
+  name: "user_manage",
   components: {
     InputArea
   },
   data() {
+    let checkUsername = (rule,value,callback) => {
+      if(!value) {
+        return callback(new Error('用户名不能为空'))
+      }else {
+        if(this.form.username.length < 6) {
+          return callback(new Error('长度在 6 到 8 个字符'))
+        }
+      }
+    }
     /*校验手机号*/
     let checkPhone = (rule, value, callback) => {
       if (!value) {
@@ -179,6 +204,7 @@ export default {
         role: ""
       },
       rules: {
+        username: [{ validator: checkUsername, trigger: "blur" }],
         phone: [{ validator: checkPhone, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }],
         password2: [{ validator: validatePass2, trigger: "blur" }],
@@ -294,13 +320,13 @@ export default {
       if (this.$refs.form) {
         this.$refs.form.resetFields();
       }
-      this.getChannelList()
+      this.getChannelList();
       this.form.username = row.username;
       this.form.nick_name = row.username;
       this.form.email = row.email;
       this.form.phone = row.phone;
       this.form.uid = row.id;
-      this.form.channel = JSON.parse(row.channel)
+      this.form.channel = JSON.parse(row.channel);
     },
     // async updateUser() {
     //   console.log(this.form);
@@ -322,7 +348,10 @@ export default {
         role_id: this.form2.role,
         user_id: this.form.uid
       };
-      const res = await this.$http.post(`v1/backend/auth/role-assignment`, data);
+      const res = await this.$http.post(
+        `v1/backend/auth/role-assignment`,
+        data
+      );
       console.log(res);
       if (res.data.code === 200) {
         this.dialogRoleAssign = false;
