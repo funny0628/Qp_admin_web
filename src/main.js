@@ -91,6 +91,7 @@ Vue.directive('has', {
         })
       }
       fn(rightArr)
+      console.log(arr)
       return arr;
     }
     function permissionJudge(value) {
