@@ -1,3 +1,0 @@
-[submodule "src/plugin"]
-	path = src/plugin
-	url = ssh://git@cd.gogs.com:3623/laowang/admin_plugin.git

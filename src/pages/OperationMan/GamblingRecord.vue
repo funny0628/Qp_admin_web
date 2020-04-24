@@ -239,7 +239,7 @@ export default {
       });
     },
     handleEdit(row) {
-      console.log(index, row);
+      console.log(row);
     },
     handleSizeChange(val) {
       this.pagesize = val;

@@ -1,0 +1,15 @@
+html,body {padding:0;margin:0;height:100%;width:100%;}
+body {font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif}
+*,::after,::before {box-sizing: border-box}
+body {background-color: #fff;font-size: 14px}
+ul,li,ol {list-style: none;padding:0;margin:0}
+
+#app {height:100%;width:100%}
+.content-100 {width:100%;height:100%}
+.content {height:100%;width:100%}
+.height-100 {height:100%}
+.width-100 {width: 100%}
+
+.f-l {float: left}
+.f-r {float: right}
+.rel {position: relative}
