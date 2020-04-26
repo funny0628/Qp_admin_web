@@ -271,7 +271,7 @@ export default {
       });
       this.currentData.ac_content.task = postData;
       // console.log(this.currentData,this.allData);
-      let { data } = await this.$http.HallFunConfig.PostServerConfig({
+      let { data } = await this.$http.HallFunConfig.PostActivityNew5({
         keys: this.keys,
         values: JSON.stringify(this.allData),
         id: this.id
@@ -339,7 +339,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew5({
         key: "activity_new.lua"
       });
       //   console.log(data);

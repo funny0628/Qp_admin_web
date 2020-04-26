@@ -149,7 +149,7 @@ export default {
   },
 
   async created() {
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Gethhdz_robot_control({
       key: "hhdz_robot_control.lua"
     });
     // console.log(data);
@@ -178,7 +178,7 @@ export default {
           // console.log(this.currentlist);
           if (type === 1) {
             //put
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.Puthhdz_robot_control({
               keys: this.keys,
               values: JSON.stringify({
                 hhdz_normal: { robot_type_list: this.currentlist }
@@ -191,12 +191,17 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
-            }
+            }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
           } else if (type === 2) {
             //post
             this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.Posthhdz_robot_control({
               keys: this.keys,
               values: JSON.stringify({
                 hhdz_normal: { robot_type_list: this.currentlist }
@@ -209,6 +214,12 @@ export default {
               this.$message({
                 type: "success",
                 message: "发送服务器配置成功!"
+              });
+            }else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
               });
             }
           }

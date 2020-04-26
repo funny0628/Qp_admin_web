@@ -44,18 +44,6 @@
         >
         </el-table-column>
       </el-table>
-      <!-- 分页 -->
-      <!-- <el-pagination
-        v-if="total > 5"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination> -->
     </div>
   </div>
 </template>
@@ -67,9 +55,6 @@ export default {
     return {
       end_time: "",
       start_time: "",
-      // currentPage: 1,
-      // limit: 10,
-      // total: "",
       tableData: [],
       titleData:[]
     };
@@ -78,7 +63,7 @@ export default {
     let today = new Date().getTime();
     this.start_time = this.initTime(today);
     this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
-    console.log(this.start_time, this.end_time);
+    // console.log(this.start_time, this.end_time);
 
     this.getData();
   },
@@ -87,20 +72,6 @@ export default {
         this.getData();
     },
 
-    // //页容量变化
-    // handleSizeChange(num) {
-    //   console.log(num);
-      
-    //   this.limit = num
-    //   this.currentPage = 1
-    //   this.getData()
-    // },
-
-    // //页码变化
-    // handleCurrentChange(pagenum) {
-    //   this.currentPage = pagenum
-    //   this.getData()
-    // },
 
     //获取时间格式
     initTime(today) {
@@ -118,8 +89,6 @@ export default {
       this.endDate = DeepData(this.endDate).replace(/[-]/g, "");
 
       this.initData({
-        // page: this.currentPage,
-        // limit: this.limit,
         start_date:+this.endDate,
         end_data: +this.startDate, 
       });
@@ -127,8 +96,7 @@ export default {
 
     async initData(params) {
       let {data} = await this.$http.DataAnalysis.GetStatistical(params);
-      console.log(data);
-      // this.total = data.total
+      // console.log(data);
       this.tableData = data.data.list1
       this.titleData = data.data.list2
     }

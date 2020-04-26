@@ -314,11 +314,11 @@ const models = {
             text: '系统广播',
             vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/systemBroadcast')), 'systemBroadcast')
           },
-          {
-            name: 'activityList',
-            text: '活动列表',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/activityList')), 'activityList')
-          },
+          // {
+          //   name: 'activityList',
+          //   text: '活动列表',
+          //   vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements_child/activityList')), 'activityList')
+          // },
           {
             name: 'stopNotice',
             text: '停服公告',

@@ -121,7 +121,7 @@ export default {
   },
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getfishing_robot({
       key: "fishing_robot.lua"
     });
     console.log(data);
@@ -138,22 +138,27 @@ export default {
     //保存和服务器配置
     async submit(type){
       if(type === 1){
-          let { data } = await this.$http.HallFunConfig.PutServerConfig({
-         keys:this.keys,
-         values:JSON.stringify(this.resData),
-         id:this.id,
-       });
-    // console.log(data);
-    if(data.code === 1 && data.msg === 'ok'){
-      this.$message({
-        type: "success",
-        message: "保存成功!"
-      });
-    }
+          let { data } = await this.$http.HallFunConfig.Putfishing_robot({
+              keys:this.keys,
+              values:JSON.stringify(this.resData),
+              id:this.id,
+          });
+          // console.log(data);
+          if(data.code === 1 && data.msg === 'ok'){
+            this.$message({
+              type: "success",
+              message: "保存成功!"
+            });
+          }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
       }else if(type === 2){
         this.loading = true
      
-       let { data } = await this.$http.HallFunConfig.PostServerConfig({
+       let { data } = await this.$http.HallFunConfig.Postfishing_robot({
          keys:this.keys,
          values:JSON.stringify(this.resData),
          id:this.id,
@@ -161,11 +166,17 @@ export default {
       // console.log(data);
       if(data.code === 1 && data.msg === 'ok'){
         this.loading = false
-      this.$message({
-        type: "success",
-        message: "发送服务器配置成功!"
-      });
-    }
+        this.$message({
+          type: "success",
+          message: "发送服务器配置成功!"
+        });
+      }else {
+          this.loading = false
+          this.$message({
+            type: "warning",
+            message: "发送服务器配置失败!"
+          });
+      }
 
       }
     },

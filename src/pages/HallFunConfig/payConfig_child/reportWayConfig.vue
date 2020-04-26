@@ -45,38 +45,43 @@ export default {
     };
   },
   async created() {
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.GetComplaintConfig({
       key: "complaint_config.lua"
     });
     // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.form.wx = res.wx;
     this.form.money = res.money;
   },
   methods: {
     async save() {
       // console.log(this.form);
-      if(this.form.wx === '' || this.form.money === ''){
-         this.$message({
+      if (this.form.wx === "" || this.form.money === "") {
+        this.$message({
           type: "warning",
           message: "请完整填写信息!"
         });
         return false;
       }
-      
-      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+
+      let { data } = await this.$http.HallFunConfig.PutComplaintConfig({
         keys: this.keys,
         id: this.id,
         values: JSON.stringify(this.form)
       });
       // console.log(data);
-      if(data.code === 1 && data.msg === "ok"){
-         this.$message({
+      if (data.code === 1 && data.msg === "ok") {
+        this.$message({
           type: "success",
           message: "保存成功!"
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "保存失败"
         });
       }
     }

@@ -205,9 +205,7 @@ export default {
   methods: {
     //添加
     add() {
-      console.log('add');
-      
-      // this.form.ac_content.vip_range = Object.values(this.form.ac_content.vip_range);
+      // console.log('add');
       this.form.ac_content.vip_range.push([]);
     },
 
@@ -222,16 +220,10 @@ export default {
     async onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          // let resData = this.form.ac_content.vip_range;
-          // this.form.ac_content.vip_range = {};
-          // // console.log(resData, this.form.level);
-          // resData.forEach((item, index) => {
-          //   this.form.ac_content.vip_range[index + 1] = item;
-          // });
           if (type === 1) {
             //put
             // console.log(this.allData);
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.PutActivityNew4({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -242,11 +234,16 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "保存失败"
+              });
             }
           } else if (type === 2) {
             //post
             this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.PostActivityNew4({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -278,7 +275,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew4({
         key: "activity_new.lua"
       });
       // console.log(data);
@@ -292,8 +289,7 @@ export default {
           this.form = this.allData[item];
         }
       });
-      // this.form.level = Object.values(this.form.level);
-      console.log(this.form,this.allData);
+      // console.log(this.form,this.allData);
     }
   }
 };

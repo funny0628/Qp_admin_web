@@ -96,7 +96,7 @@
       </el-table>
       <!-- 分页 -->
       <el-pagination
-       v-if="total > 5"
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -109,7 +109,11 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
+      <el-dialog
+        :title="title"
+        :visible.sync="visible"
+        :destroy-on-close="true"
+      >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
             <el-input
@@ -293,9 +297,8 @@ export default {
 
     //表格编辑
     handleEdit(row) {
-      // console.log(row);
+      console.log(row);
       let formData = DeepData(row);
-      // this.form = this.formateNum(row)
       formData.start_time = this.data(row.start_time);
       formData.end_time = this.data(row.end_time);
       formData.notice_time = this.data(row.notice_time);
@@ -342,8 +345,12 @@ export default {
       //表单验证
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          this.form.start_time = Math.ceil(this.form.start_time / 1000);
+          this.form.end_time = Math.ceil(this.form.end_time / 1000);
+          this.form.notice_time = Math.ceil(this.form.notice_time / 1000);
           if (type === "添加停服公告") {
-            // console.log(this.form);
+            console.log(this.form);
+
             this.form.redactor = "redactor";
             let { data } = await this.$http.HallFunConfig.PostStopNotice(
               this.form
@@ -351,6 +358,15 @@ export default {
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({ page: this.currentPage, limit: this.limit });
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "保存失败"
+              });
             }
           } else if (type === "更新停服公告") {
             console.log(this.form);
@@ -361,6 +377,18 @@ export default {
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({ page: this.currentPage, limit: this.limit });
+  
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "编辑成功!"
+              });
+            } else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "编辑失败"
+              });
             }
           }
 
@@ -383,18 +411,46 @@ export default {
       this.form = form;
     },
 
-     data(time) {
-        let long1 = Date.parse(time);
-        let long2 = new Date(long1).getTime();
-        return long2;
-      },
+    //获取时间格式
+    initTime(today) {
+      let myDate = new Date(today);
+      let year = myDate.getFullYear();
+      let month =
+        myDate.getMonth() + 1 < 10
+          ? "0" + (myDate.getMonth() + 1)
+          : myDate.getMonth() + 1;
+      let day =
+        myDate.getDate() < 10 ? "0" + myDate.getDate() : myDate.getDate();
+      let hours =
+        myDate.getHours() < 10 ? "0" + myDate.getHours() : myDate.getHours();
+      let minutes =
+        myDate.getMinutes() < 10
+          ? "0" + myDate.getMinutes()
+          : myDate.getMinutes();
+      let seconds =
+        myDate.getSeconds() < 10
+          ? "0" + myDate.getSeconds()
+          : myDate.getSeconds();
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
+
+    data(time) {
+      let long1 = Date.parse(time);
+      let long2 = new Date(long1).getTime();
+      return long2;
+    },
 
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetStopNotice(params);
       this.tableData = data.data;
       this.total = data.total;
+      this.tableData.forEach(item => {
+        item.start_time = this.initTime(item.start_time * 1000);
+        item.end_time = this.initTime(item.end_time * 1000);
+        item.notice_time = this.initTime(item.notice_time * 1000);
+      });
       // console.log(localdata);
-      // console.log(data);
+      console.log(data.data);
     }
   }
 };

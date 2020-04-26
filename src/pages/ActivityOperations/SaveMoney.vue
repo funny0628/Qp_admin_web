@@ -140,7 +140,7 @@ export default {
           // console.log(resData, this.form.level,this.allData);
           if (type === 1) {
             //put
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.PutActivityNew2({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -151,11 +151,16 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
             }
           } else if (type === 2) {
             //post
             this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.PostActivityNew2({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -187,7 +192,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew2({
         key: "activity_new.lua"
       });
       // console.log(data);

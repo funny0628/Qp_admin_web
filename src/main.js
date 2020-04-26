@@ -40,10 +40,8 @@ import VueCookie from 'vue-cookie';
 Vue.use(VueCookie);
 
 Vue.use(VueQuillEditor, /* { default global options } */ )
-// Vue.use(http);
+Vue.prototype.$baseUrl = `${window.location.protocol}//${window.location.hostname}/${window.location.port}/`
 
-// axios.HallFunConfig = HallFunConfig;
-// Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false;
 Vue.filter('dateFormat', (originVal) => {

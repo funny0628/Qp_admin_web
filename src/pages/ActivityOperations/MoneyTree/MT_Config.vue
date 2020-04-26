@@ -38,10 +38,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <img
-              src="https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3675415932,4054970339&fm=26&gp=0.jpg"
-              alt=""
-            />
+            <img :src="$baseUrl + scope.row.icon_cash_cow_url" />
           </template>
         </el-table-column>
         <el-table-column
@@ -152,6 +149,7 @@
 </template>
 
 <script>
+import DeepData from "../../../assets/js/formate.js";
 export default {
   data() {
     return {
@@ -199,10 +197,10 @@ export default {
     add() {
       this.editForm(true, "新增", {});
     },
-    send() {
+    async send() {
       //发送post
-      this.tableData.forEach(item => {
-        // let formData = { ...this.form };
+      let resTable = DeepData(this.tableData);
+      resTable.forEach(item => {
         let formInfo = item.weight_info;
         let formWeight = [];
         let formObj = {};
@@ -214,7 +212,7 @@ export default {
             item = item.split("=");
             obj[index + 1] = { coin: item[0], weight: item[1] };
           });
-          console.log(obj);
+          // console.log(obj);
           formObj = obj;
         } else {
           //没有 ,
@@ -225,41 +223,48 @@ export default {
             coin: formWeight[0],
             weight: formWeight[1]
           };
-
           formObj = obj1;
         }
-        item.weight_info = formObj
+        item.weight_info = formObj;
       });
-
-      // formData.weight_info = formObj;
-      console.log( this.tableData);
+      let objData = {};
+      resTable.forEach((item, index) => {
+        objData[index + 1] = item;
+      });
+      Object.keys(this.allData).forEach(item => {
+        if (this.allData[item].ac_type === "10003") {
+          this.allData[item].ac_content.cash_cow = objData;
+        }
+      });
+      let { data } = await this.$http.HallFunConfig.PostActivityNew5({
+        keys: this.keys,
+        values: JSON.stringify(this.allData),
+        id: this.id
+      });
+      console.log(data);
+      if(data.code === 1){
+        this.initData()
+      }
     },
 
     upLoad(file) {
-      console.log("----");
       const formData = new FormData();
       formData.append("filename", file.file);
       formData.append("types", 1);
       this.$http.post("v1/backend/upload", formData).then(data => {
-        console.log(data);
         if (data.data.code === 1 && data.data.msg === "ok") {
           this.servebg_url = data.data.path;
-          // this.form.icon_cash_cow_url = data.data.path
+          this.form.icon_cash_cow_url = URL.createObjectURL(file);
         }
       });
     },
     beforeAvatarUpload(file) {
-      console.log("--------");
       if (file) {
         this.form.icon_cash_cow_url = URL.createObjectURL(file);
       }
     },
     onSubmit() {
-      console.log(this.form);
-      // this.form.icon_cash_cow_url = this.servebg_url
-      this.form.icon_cash_cow_url =
-        "http://img4.imgtn.bdimg.com/it/u=1713396441,1487163637&fm=26&gp=0.jpg";
-      console.log(this.form);
+      this.form.icon_cash_cow_url = this.servebg_url;
       this.tableData.push(this.form);
       this.editForm(false, "新增", {});
     },
@@ -273,7 +278,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew5({
         key: "activity_new.lua"
       });
       //   console.log(data);
@@ -292,9 +297,13 @@ export default {
       this.tableData.forEach(item => {
         Object.values(item.weight_info).forEach(it => {
           item.weight_info = weight += `${it.coin}=${it.weight},`;
+          item.weight_info = item.weight_info.substring(
+            0,
+            item.weight_info.lastIndexOf(",")
+          );
         });
       });
-      console.log(this.tableData, this.allData);
+      // console.log(this.tableData, this.allData);
     }
   }
 };
@@ -302,6 +311,9 @@ export default {
 
 <style lang="less" scoped>
 #MoneyTree {
+  .title {
+    margin-top: 20px;
+  }
   .table {
     margin-top: 20px;
     img {

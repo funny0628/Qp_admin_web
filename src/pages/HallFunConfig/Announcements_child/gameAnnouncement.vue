@@ -278,7 +278,7 @@ export default {
     beforeAvatarUpload(file) {
       // console.log(file);
       if (file) {
-        // this.form.image_url = URL.createObjectURL(file);
+        this.form.image_url = URL.createObjectURL(file);
       }
     },
     upLoad(file) {
@@ -290,7 +290,7 @@ export default {
         // console.log(data);
         if (data.data.code === 1 && data.data.msg === "ok") {
           this.serveUrl = data.data.path;
-        //  this.form.image_url ='http://192.168.1.200:12001/'+ this.serveUrl;
+          this.form.image_url = URL.createObjectURL(file);
         }
       });
     },

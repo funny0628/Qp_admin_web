@@ -49,7 +49,7 @@ export default {
   },
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.GetRechargeConfig({
       key: "recharge_config"
     });
     // console.log(data);
@@ -78,12 +78,23 @@ export default {
       });
       // console.log(this.list);
 
-      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+      let { data } = await this.$http.HallFunConfig.PutRechargeConfig({
         keys: this.keys,
         id: this.id,
         values: JSON.stringify(this.list)
       });
       // console.log(data);
+      if (data.code === 1 && data.msg === "ok") {
+        this.$message({
+          type: "success",
+          message: "保存成功!"
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "保存失败"
+        });
+      }
     },
 
     //删除
