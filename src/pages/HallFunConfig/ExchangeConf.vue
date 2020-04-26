@@ -6,11 +6,12 @@
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="dialogFormVisible=true"
       >删除</el-button>-->
-      <el-button type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="openAdd">添加</el-button>
+      <el-button v-has="'add_exchange_config'" type="primary" style="margin-top: 10px;margin-bottom: 10px;" @click="openAdd">添加</el-button>
       <el-button type="primary" @click="dialogVisible=true">保留金额设置</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'exchange_config_list'"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
@@ -31,12 +32,14 @@
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button
+                v-has="'modify_exchange_config'"
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="handleEdit(scope.row)"
               >编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button v-has="'delete_exchange_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
               <el-button
+                v-has="'offline_exchange_config'"
                 style="background-color:#30a99d;color:#fff;"
                 size="mini"
                 @click="updateStatus(scope.row)"
@@ -123,7 +126,7 @@ import PageInfo from "../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import InputArea from "../../plugin/components/InputArea";
 export default {
-  name: "PayOrderRecord",
+  name: "exchange_config",
   components: {
     InfoTableItem,
     InfoTable,

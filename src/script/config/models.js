@@ -376,9 +376,9 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BroadcastConf')), 'BroadcastConf')
       },
       {
-        name:'ExchangeConf',
+        name:'exchange_config',
         text:'兑换配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'ExchangeConf')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'exchange_config')
       },
       {
         name:'HallAdvertiseConf',

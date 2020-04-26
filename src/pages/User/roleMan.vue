@@ -6,7 +6,6 @@
     </input-area>
     <div class="bd">
       <el-table
-        v-has="'roles'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -161,7 +160,7 @@ export default {
     },
     async getRigthList() {
       const res = await this.$http.get("v1/backend/auth/permissions");
-      console.log(res);
+      console.log("getRightList" , res);
     },
     async addRoleFn() {
       if (!this.form.role_id) {
@@ -206,14 +205,17 @@ export default {
     },
     async handleRights() {
       // 获取所有选中的权限id
-      const nodes = this.$refs.tree.getCheckedNodes();
-      let arr = [];
-      nodes.forEach(item => {
-        console.log(item);
-        // 选中的子权限id
-        arr.push(item.id.toString());
-      });
-      console.log(arr);
+      const parentIdArr = this.$refs.tree.getHalfCheckedKeys();
+      console.log(parentIdArr)
+      const childrenIdArr = this.$refs.tree.getCheckedKeys();
+      console.log(childrenIdArr)
+      let arr = [...parentIdArr,...childrenIdArr]
+      console.log(arr)
+      // nodes.forEach(item => {
+      //   // 选中的子权限id
+      //   arrid.push(item.id.toString());
+      //   arrList.push(item.display_name)
+      // });
       const set = new Set(arr);
       const ids = [...set].join(",");
       console.log(ids);
@@ -221,7 +223,6 @@ export default {
         permission_ids: ids,
         role_id: this.currentRole.id
       };
-      console.log(data);
       const res = await this.$http.post(
         "v1/backend/auth/permission-assignment",
         data
@@ -287,6 +288,7 @@ export default {
       console.log(res);
       if (res.data.code === 200) {
         this.rightData = res.data.data;
+        console.log("this.rightData", this.rightData)
       }
       //获取当前角色具有的权限
       function getCurrentRoleRights(rightsList) {
@@ -296,7 +298,6 @@ export default {
             return undefined;
           }
           list.forEach(item => {
-            // arr.push(item.id)
             if (!item.children) {
               arr.push(item.id);
             } else {
@@ -308,6 +309,29 @@ export default {
         console.log(arr);
         return arr;
       }
+      function getR(r) {
+        let arr = getCurrentRoleRights(r);
+        let dict = {};
+        for (let i = 0; i < r.length; i ++) {
+          let item = r[i];
+          if (item.parent_id === 0) {
+            dict[item.id] = []
+          } else {
+            if (!dict[item.parent_id]) dict[item.parent_id] = []
+            dict[item.parent_id].push(item.id)
+          }
+        }
+        console.log('dict', dict)
+        for (let a = arr.length - 1; a >= 0; a--) {
+          if (dict[arr[a]]) {
+            console.log("delete key", arr[a]);
+            console.log()
+            arr.splice(arr.indexOf(arr[a]), 1)
+          } 
+        }
+        console.log('---', arr)
+        return arr
+      }
       const result = await this.$http
         .get("v1/backend/auth/permission-assignment", {
           params: {
@@ -315,8 +339,11 @@ export default {
           }
         })
         .then(res => {
+          console.log(res)
           if (res.data.code === 200) {
-            this.checkedKeys = getCurrentRoleRights(res.data.data);
+            this.check_strictly = false;
+            getR(res.data.data)
+            this.checkedKeys = getR(res.data.data);
             // this.getRoleList()
           }
         });
