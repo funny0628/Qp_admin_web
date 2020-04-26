@@ -344,7 +344,7 @@ const models = {
         ]
       },
       {
-        name:'VipSystem',
+        name:'vip_system',
         text:'vip系统',
         vue: null,
         children: [
@@ -361,19 +361,19 @@ const models = {
         ]
       },
       {
-        name:'gameList',
+        name:'game_list',
         text:'游戏列表',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameList')), 'gameList')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameList')), 'game_list')
       },
       {
-        name:'GameSortConf',
+        name:'game_sort_config',
         text:'游戏排序配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameSortConf')), 'GameSortConf')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/GameSortConf')), 'game_sort_config')
       },
       {
-        name:'BroadcastConf',
+        name:'broadcast_config',
         text:'对局广播配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BroadcastConf')), 'BroadcastConf')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BroadcastConf')), 'broadcast_config')
       },
       {
         name:'exchange_config',
@@ -381,19 +381,19 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'exchange_config')
       },
       {
-        name:'HallAdvertiseConf',
+        name:'lobby_flyer_config',
         text:'大厅宣传页配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/HallAdvertiseConf')), 'HallAdvertiseConf')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/HallAdvertiseConf')), 'lobby_flyer_config')
       },
       {
-        name:'BottomMenu',
+        name:'button_menu_config',
         text:'底部菜单',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BottomMenu')), 'BottomMenu')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BottomMenu')), 'button_menu_config')
       },
       {
-        name:'FunSortConf',
+        name:'function_sort_config',
         text:'功能排序配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/FunSortConf')), 'FunSortConf')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/FunSortConf')), 'function_sort_config')
       },
       {
         name:'mail_system',

@@ -30,6 +30,7 @@
                 @click="checkSubGame(scope.row)"
               >子游戏</el-button>
               <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="primary" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
@@ -237,7 +238,7 @@ export default {
       this.dialogFormVisible = true;
       if (row.parent_id === 0) {
         this.form.classOneAddOrEditRemark = 2;
-        this.form.id = row.id;
+        this.form.id = row.game_id;
         this.form.parent_id = row.parent_id;
         this.form.sup_game = "大厅";
         this.form.game_name = row.game_name;
@@ -248,7 +249,7 @@ export default {
         });
       } else {
         this.form.classTwoEditRemark = 2;
-        this.form.id = row.id;
+        this.form.id = row.game_id;
         this.form.parent_id = row.parent_id;
         this.form.sup_game = this.game_name; //保存的上级游戏名
         this.form.game_name = row.game_name;
@@ -259,6 +260,37 @@ export default {
         });
         console.log(this.form);
       }
+    },
+    handleDelete(row) {
+      console.log(row)
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$http
+            .delete("v1/backend/lobby/game_list", {
+              params: {
+                game_id: row.game_id
+              }
+            })
+            .then(res => {
+              if (res.data.code === 1) {
+                this.getGameList();
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     checkSubGame(row) {
       console.log(row);

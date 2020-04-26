@@ -64,8 +64,18 @@
         </el-table-column>
         <el-table-column prop="action" label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
-            <el-button v-has="'modify_hot_update'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button v-has="'delete_hot_update'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button
+              v-has="'modify_hot_update'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+            >编辑</el-button>
+            <el-button
+              v-has="'delete_hot_update'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,7 +91,7 @@
       ></el-pagination>
     </div>
     <!-- 添加热更新信息 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="60%">
       <el-form :model="form">
         <el-form-item label="允许版本更新" :label-width="formLabelWidth">
           <el-radio v-model="form.versionUpd.radio" label="*">所有版本</el-radio>
@@ -180,6 +190,10 @@
         </el-form-item>
         <el-form-item label="上传资源包" :label-width="formLabelWidth">
           <el-upload
+            v-loading.fullscreen="loading"
+            element-loading-text="资源包上传中"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(0, 0, 0, 0.5)"
             class="avatar-uploader"
             action
             accept=".zip"
@@ -192,41 +206,35 @@
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <!-- <div>
-            <button @click="file"></button>
-            <label ref="upload" style="position: relative;">
-              <input
-                type="file"
-                @change="selectFile"
-                style="position: absolute; width: 1px; height: 1px; opacity: 0; z-index: -1;"
-              />
-            </label>
-          </div>-->
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
           <el-input
             type="textarea"
-            :rows="4"
+            autosize
             resize="none"
             placeholder="请输入内容"
-            v-model="form.android"
+            v-model="form.androidConfig"
           ></el-input>
         </el-form-item>
         <el-form-item label="ios配置" :label-width="formLabelWidth">
-          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="form.ios"></el-input>
+          <el-input
+            type="textarea"
+            autosize
+            resize="none"
+            placeholder="请输入内容"
+            v-model="form.iosConfig"
+          ></el-input>
         </el-form-item>
         <el-form-item label="windows配置" :label-width="formLabelWidth">
           <el-input
             type="textarea"
-            :rows="4"
+            autosize
             resize="none"
             placeholder="请输入内容"
-            v-model="form.windows"
+            v-model="form.windowsConfig"
           ></el-input>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
-      <div>{{fileData}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addUpdateConf">确 定</el-button>
@@ -250,7 +258,7 @@ export default {
       pageSize: 10,
       total: 0,
       dialogTitle: "",
-      formLabelWidth: "120px",
+      formLabelWidth: "100px",
       dialogFormVisible: false,
       dialogVisible: false,
       tableData: [],
@@ -306,7 +314,8 @@ export default {
             }
           }
         ]
-      }
+      },
+      loading: false,
     };
   },
   filters: {
@@ -533,12 +542,21 @@ export default {
     },
     beforeUpload(file) {
       console.log(file);
-      let currentChunk = 0;
-      this.uploadChunk(file, currentChunk);
+      if (this.form.version == "") {
+        this.$message({
+          type: "error",
+          message: "请先填写更新资源包版本号"
+        });
+        return false;
+      } else {
+        let currentChunk = 0;
+        this.uploadChunk(file, currentChunk);
+      }
     },
     uploadFile(f) {
       console.log(f.file);
       let that = this;
+      that.loading = true;
       const fileReader = new FileReader();
       // 文件切割后的回调，this.result为切割的文件块
       fileReader.onload = (function(e) {
@@ -546,8 +564,9 @@ export default {
         let fd = new FormData();
         // 设置文件上传接口的需要的参数
         fd.append("file", that.fileData.file);
-        fd.append("index", that.fileData.index);
-        fd.append("count", that.fileData.count);
+        // fd.append("index", that.fileData.index);
+        // fd.append("count", that.fileData.count);
+        fd.append("version", that.form.version);
         fd.append("total_size", that.fileData.total_size);
         fd.append("file_name", that.fileData.file_name);
         // 设置上传的当前的文件块
@@ -556,6 +575,27 @@ export default {
           .post("v1/backend/sys-conf/hot-update/package", fd)
           .then(res => {
             console.log(res);
+            if (res.data.code === 200) {
+              that.form.androidConfig = that.formatResource(
+                res.data.data.list.android
+              );
+              that.form.iosConfig = that.formatResource(
+                res.data.data.list.android
+              );
+              that.form.windowsConfig = that.formatResource(
+                res.data.data.list.android
+              );
+              that.loading = false;
+              that.$message({
+                type: "success",
+                message: "资源包上传成功"
+              });
+            }else {
+              that.$message({
+                type: "error",
+                message: "资源包上传失败"
+              });
+            }
           });
       })();
       // this.$http
@@ -573,10 +613,38 @@ export default {
       //     this.imageUrl = res.data.path;
       //   }
       // });
+    },
+    formatResource(obj) {
+      console.log(obj);
+      var str = "";
+      for (var key in obj) {
+        let item = obj[key];
+        str += key + "项目配置地址:";
+        for (var k in item) {
+          // return Object.values(k);
+          str += item[k];
+        }
+        str += "\n";
+      }
+      return str;
     }
   },
   mounted() {
     this.getHotUpdateList();
+    // var obj = {
+    //   ODMwZGFm: {
+    //     game_code: "ODMwZGFm",
+    //     manifest_res: "/MDRjNDhi/Yjc1ZGI3/Users/macbookpro2/",
+    //     resources_url: "windows1.0.5"
+    //   },
+    //   ZDg3MjVi: {
+    //     game_code: "ZDg3MjVi",
+    //     manifest_res: "/MDRjNDhi/Yjc1ZGI3/Users/macbookpro2/",
+    //     resources_url: "windows1.0.5"
+    //   }
+    // };
+    // const res = this.formatResource(obj);
+    // console.log(res);
   }
 };
 </script>
