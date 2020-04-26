@@ -51,6 +51,7 @@
 <script>
 import DeepData from "../../assets/js/formate.js";
 export default {
+  name:'fee_statistical',
   data() {
     return {
       end_time: "",

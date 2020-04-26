@@ -53,35 +53,35 @@ export default {
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
     console.log(res);
-    this.form.wx = res.wx;
-    this.form.money = res.money;
+    this.form.wx = res[0].wx;
+    this.form.money = res[0].money;
   },
   methods: {
     async save() {
       // console.log(this.form);
-      if (this.form.wx === "" || this.form.money === "") {
-        this.$message({
+      if(this.form.wx === '' || this.form.money === ''){
+         this.$message({
           type: "warning",
           message: "请完整填写信息!"
         });
         return false;
       }
-
+      
       let { data } = await this.$http.HallFunConfig.PutComplaintConfig({
         keys: this.keys,
         id: this.id,
-        values: JSON.stringify(this.form)
+        values: JSON.stringify([this.form])
       });
       // console.log(data);
-      if (data.code === 1 && data.msg === "ok") {
-        this.$message({
+      if(data.code === 1 && data.msg === "ok"){
+         this.$message({
           type: "success",
           message: "保存成功!"
         });
-      } else {
+      }else {
         this.$message({
           type: "warning",
-          message: "保存失败"
+          message: "保存失败!"
         });
       }
     }

@@ -292,6 +292,7 @@
 <script>
 import DeepData from "../../assets/js/formate.js";
 export default {
+  name:'agent',
   data() {
     return {
       orderlist: ["ascending", "descending"],

@@ -253,6 +253,7 @@
 import LoginVue from "../login/Login.vue";
 import DeepData from "../../assets/js/formate.js";
 export default {
+  name:'daily_channel_report',
   data() {
     return {
       start_time: "",

@@ -28,20 +28,20 @@ const models = {
       },
     ]
   },
-  allAgency: {
-    name: 'allAgency',
+  agent: {
+    name: 'agent',
     vue: null,
     text: '全民代理',
     children: [
       {
-        name: 'AgencyConfig',
+        name: 'agent_config',
         text: '全民代理配置',
-        vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyConfig')), 'AgencyConfig'),
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/AgencyConfig')), 'agent_config'),
       },
       {
-        name: 'Agency',
+        name: 'agent',
         text: '全民代理',
-        vue: r => require.ensure([], () => r(require('../../pages/allAgency/Agency')), 'Agency'),
+        vue: r => require.ensure([], () => r(require('../../pages/allAgency/Agency')), 'agent'),
       },
       // {
       //   name: 'AgencyTop',
@@ -396,7 +396,7 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/FunSortConf')), 'FunSortConf')
       },
       {
-        name:'EmailSystem',
+        name:'mail_system',
         text:'邮件管理',
         // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
         children: [
@@ -707,55 +707,55 @@ const models = {
       },
     ]
   },
-  DataAnalysis:{
-    name:'DataAnalysis',
+  data_analysis:{
+    name:'data_analysis',
     vue: null,
     text:'数据分析',
     children:[
       {
-        name:'ChannelsReport',
+        name:'daily_channel_report',
         text:'渠道报表日',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'ChannelsReport')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'daily_channel_report')
       },
       {
-        name:'Channels',
+        name:'channel_report',
         text:'渠道报表',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Channels')), 'Channels')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Channels')), 'channel_report')
       },
       {
-        name:'LTVReport',
+        name:'LTV_report',
         text:'LTV报表',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LTVReport')), 'LTVReport')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LTVReport')), 'LTV_report')
       },
       {
-        name:'lastAnalysis',
+        name:'retained_analysis',
         text:'留存分析',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/lastAnalysis')), 'lastAnalysis')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/lastAnalysis')), 'retained_analysis')
       },
       {
-        name:'NewPlayerChange',
+        name:'pay_switch',
         text:'新玩家付费转换',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/NewPlayerChange')), 'NewPlayerChange')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/NewPlayerChange')), 'pay_switch')
       },
       {
-        name:'Statistics',
+        name:'fee_statistical',
         text:'台费统计',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Statistics')), 'Statistics')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Statistics')), 'fee_statistical')
       },
       {
-        name:'CardpPandect',
+        name:'match_overview',
         text:'牌局总览',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/CardpPandect')), 'CardpPandect')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/CardpPandect')), 'match_overview')
       },
       {
-        name:'AddUser',
+        name:'new_users',
         text:'新增用户',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/AddUser')), 'AddUser')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/AddUser')), 'new_users')
       },
       {
-        name:'FlyBack',
+        name:'loss_regression',
         text:'流失与回归',
-        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/FlyBack')), 'FlyBack')
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/FlyBack')), 'loss_regression')
       },
     ]
   },

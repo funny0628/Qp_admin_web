@@ -213,6 +213,7 @@
 <script>
 import DeepData from "../../assets/js/formate.js";
 export default {
+  name:'LTV_report',
   data() {
     return {
       avator_nameO: "",

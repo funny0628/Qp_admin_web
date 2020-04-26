@@ -270,7 +270,7 @@ export default {
     console.log(userInfo)
     let permission_names = this.get_permission_names(userInfo);
     console.log(permission_names)
-    this.getRightsList(MODEL, permission_names);
+    // this.getRightsList(MODEL, permission_names);
   }
 };
 </script>

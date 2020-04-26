@@ -660,8 +660,14 @@ export default {
         }
         .item {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           align-items: center;
+          .i-f{
+            flex: 1;
+          }
+          .i-r{
+            flex: 1;
+          }
         }
       }
     }
