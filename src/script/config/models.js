@@ -757,6 +757,21 @@ const models = {
         text:'流失与回归',
         vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/FlyBack')), 'loss_regression')
       },
+      {
+        name:'nventory_statistics',
+        text:'库存统计',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/Nventory')), 'nventory_statistics')
+      },
+      // {
+      //   name:'loss_analyze',
+      //   text:'流失分析',
+      //   vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/LossAnalyze')), 'loss_analyze')
+      // },
+      // {
+      //   name:'login_log',
+      //   text:'登陆日志',
+      //   vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/loginLog')), 'login_log')
+      // },
     ]
   },
   ActivityOperations:{

@@ -64,6 +64,12 @@ let GetrLoss = (params) => {
         params
     })
 }
+//数据分析 ->库存统计
+let GetNventory = (params) => {
+    return axios.get('v1/backend/channel/nventory_statistics', {
+        params
+    })
+}
 
 //子游戏 ->斗地主防刷配置
 let GetDdz = (params) => {
@@ -98,4 +104,5 @@ export default {
     PostDdz,
     PutDdz,
     DeleterDdz,
+    GetNventory,
 }
