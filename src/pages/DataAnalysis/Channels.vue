@@ -181,6 +181,7 @@
 
 <script>
 export default {
+  name:'channel_report',
   data() {
     return {
       avator_nameO: "",

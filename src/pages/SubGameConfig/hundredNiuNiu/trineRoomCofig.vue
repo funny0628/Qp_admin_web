@@ -23,9 +23,9 @@
         @click="submit('ruleForm', 2)"
         >发送到服务器配置</el-button
       >
-        <el-button type="primary" @click="submit('ruleForm', 1)"
-            >立即提交</el-button
-          >
+      <el-button type="primary" @click="submit('ruleForm', 1)"
+        >立即提交</el-button
+      >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -39,7 +39,7 @@
             v-model="ruleForm.name"
             placeholder="房间名称"
           ></el-input
-          >房间ID:{{ruleForm.type_id}}
+          >房间ID:{{ ruleForm.type_id }}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -164,7 +164,6 @@
             placeholder="0"
           ></el-input>
         </el-form-item>
-
       </el-form>
     </div>
   </div>
@@ -207,9 +206,7 @@ export default {
         min_banker_coins: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
-        min_bet: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
+        min_bet: [{ required: true, message: "不可以为空", trigger: "blur" }],
         person_limit: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
@@ -237,15 +234,9 @@ export default {
         all_diamond_limit: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
-        name: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-        open_game: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-        open_robot: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ]
+        name: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }]
       },
       activeName: "",
       id: 0,
@@ -262,7 +253,7 @@ export default {
 
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getroomdata2001({
       key: "roomdata.lua"
     });
     // console.log(data);
@@ -322,7 +313,7 @@ export default {
           //判断type类型
           if (type === 1) {
             //发送put
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.Putroomdata2001({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -333,12 +324,17 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
-            }
+            }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
           } else if (type === 2) {
             //发送post
             this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.Postroomdata2001({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -349,6 +345,12 @@ export default {
               this.$message({
                 type: "success",
                 message: "发送服务器配置成功!"
+              });
+            } else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
               });
             }
           }

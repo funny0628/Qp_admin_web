@@ -85,7 +85,7 @@ export default {
   },
 
   async created() {
-       let { data } = await this.$http.HallFunConfig.GetServerConfig({
+       let { data } = await this.$http.HallFunConfig.Getroomdata2004({
       key: "roomdata.lua"
     });
     // console.log(data);
@@ -119,7 +119,7 @@ export default {
           
           if(type === 1){
              //发送put
-                 let { data } = await this.$http.HallFunConfig.PutServerConfig({
+                 let { data } = await this.$http.HallFunConfig.Putroomdata2004({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -130,13 +130,18 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
-            }
+            }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
 
           }else if(type === 2){
 
               this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.Postroomdata2004({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -147,6 +152,12 @@ export default {
               this.$message({
                 type: "success",
                 message: "发送服务器配置成功!"
+              });
+            }else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
               });
             }
 

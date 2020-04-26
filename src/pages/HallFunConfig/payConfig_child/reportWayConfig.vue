@@ -45,16 +45,16 @@ export default {
     };
   },
   async created() {
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.GetComplaintConfig({
       key: "complaint_config.lua"
     });
     // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
-    this.form.wx = res.wx;
-    this.form.money = res.money;
+    console.log(res);
+    this.form.wx = res[0].wx;
+    this.form.money = res[0].money;
   },
   methods: {
     async save() {
@@ -67,16 +67,21 @@ export default {
         return false;
       }
       
-      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+      let { data } = await this.$http.HallFunConfig.PutComplaintConfig({
         keys: this.keys,
         id: this.id,
-        values: JSON.stringify(this.form)
+        values: JSON.stringify([this.form])
       });
       // console.log(data);
       if(data.code === 1 && data.msg === "ok"){
          this.$message({
           type: "success",
           message: "保存成功!"
+        });
+      }else {
+        this.$message({
+          type: "warning",
+          message: "保存失败!"
         });
       }
     }

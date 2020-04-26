@@ -56,7 +56,7 @@ export default {
   },
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getfishing_guns({
       key: "fishing_guns.lua"
     });
     // console.log(data);
@@ -75,7 +75,7 @@ export default {
     //保存和服务器配置
     async submit(type) {
       if (type === 1) {
-        let { data } = await this.$http.HallFunConfig.PutServerConfig({
+        let { data } = await this.$http.HallFunConfig.Putfishing_guns({
           keys: this.keys,
           values: JSON.stringify(this.list),
           id: this.id
@@ -86,12 +86,17 @@ export default {
             type: "success",
             message: "保存成功!"
           });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "保存失败!"
+          });
         }
       } else if (type === 2) {
         this.loading = true;
         // console.log(this.list);
 
-        let { data } = await this.$http.HallFunConfig.PostServerConfig({
+        let { data } = await this.$http.HallFunConfig.Postfishing_guns({
           keys: this.keys,
           values: JSON.stringify(this.list),
           id: this.id
@@ -102,6 +107,12 @@ export default {
           this.$message({
             type: "success",
             message: "发送到服务器配置成功!"
+          });
+        } else {
+          this.loading = false;
+          this.$message({
+            type: "warning",
+            message: "发送服务器配置失败!"
           });
         }
       }

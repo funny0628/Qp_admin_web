@@ -169,6 +169,7 @@
 <script>
 import DeepData from "../../assets/js/formate.js";
 export default {
+  name:'retained_analysis',
   data() {
     return {
       activeName: '1',
@@ -186,7 +187,7 @@ export default {
     let today = new Date().getTime();
     this.start_time = this.initTime(today);
     this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
-    console.log(this.start_time, this.end_time);
+    // console.log(this.start_time, this.end_time);
 
     this.initChannel();
     this.getData();

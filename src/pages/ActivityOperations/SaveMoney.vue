@@ -51,10 +51,10 @@
         >
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="救赎金" prop="level">
+      <el-form-item v-if="form.ac_content" label="救赎金" prop="ac_content">
         <el-button type="primary" @click="add">添加</el-button>
 
-        <div v-for="(item, index) in form.level" class="item">
+        <div v-for="(item, index) in form.ac_content.level" class="item">
           <p style="margin-top:10px;">
             当日亏损金额(递增):
             <el-input
@@ -91,7 +91,10 @@ export default {
         open_state: "",
         ac_begin_time: "",
         ac_end_time: "",
-        level: []
+        ac_content:{
+          level: []
+        }
+        
       },
       rules: {
         ac_name: [{ required: true, message: "不可以为空", trigger: "blur" }],
@@ -104,7 +107,6 @@ export default {
         ac_end_time: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
-        level: [{ required: true, message: "不可以为空", trigger: "blur" }]
       },
       keys: "",
       id: "",
@@ -117,11 +119,11 @@ export default {
   },
   methods: {
     add() {
-      this.form.level = Object.values(this.form.level);
-      this.form.level.push({});
+      this.form.ac_content.level = Object.values(this.form.ac_content.level);
+      this.form.ac_content.level.push({});
     },
     del(index) {
-      this.form.level = this.form.level.filter((item, idx) => {
+      this.form.ac_content.level = this.form.ac_content.level.filter((item, idx) => {
         return index !== idx;
       });
     },
@@ -129,16 +131,16 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           //  console.log(this.form);
-          let resData = this.form.level;
-          this.form.level = {};
+          let resData = this.form.ac_content.level;
+          this.form.ac_content.level = {};
           // console.log(resData, this.form.level);
           resData.forEach((item, index) => {
-            this.form.level[index + 1] = item;
+            this.form.ac_content.level[index + 1] = item;
           });
           // console.log(resData, this.form.level,this.allData);
           if (type === 1) {
             //put
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.PutActivityNew2({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -149,11 +151,16 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
             }
           } else if (type === 2) {
             //post
             this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
+            let { data } = await this.$http.HallFunConfig.PostActivityNew2({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -185,7 +192,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew2({
         key: "activity_new.lua"
       });
       // console.log(data);
@@ -200,8 +207,8 @@ export default {
           this.form = this.allData[item];
         }
       });
-      this.form.level = Object.values(this.form.level);
-      // console.log(this.form);
+      this.form.ac_content.level = Object.values(this.form.ac_content.level);
+      // console.log(this.form,this.allData);
     }
   }
 };
