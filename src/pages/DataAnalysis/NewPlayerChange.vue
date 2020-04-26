@@ -104,6 +104,7 @@
 
 <script>
 export default {
+  name:'pay_switch',
   data() {
     return {
       avator_nameO: "",

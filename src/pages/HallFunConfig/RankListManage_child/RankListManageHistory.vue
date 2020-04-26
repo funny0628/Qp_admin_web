@@ -161,7 +161,7 @@ export default {
       // let fres = this.formateData(data.data);
       this.tableData = data.data;
       this.total = data.total;
-      console.log(data);
+      // console.log(data);
     }
   }
 };

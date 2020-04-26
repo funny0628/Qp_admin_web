@@ -124,7 +124,7 @@ export default {
   },
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getrobot_banker_control({
       key: "robot_banker_control.lua"
     });
     console.log(data);
@@ -218,7 +218,7 @@ export default {
       //判断type
       if (type === 1) {
         //发送put
-        let { data } = await this.$http.HallFunConfig.PutServerConfig({
+        let { data } = await this.$http.HallFunConfig.Putrobot_banker_control({
           keys: this.keys,
           values: JSON.stringify(this.resData),
           id: this.id
@@ -229,12 +229,17 @@ export default {
             type: "success",
             message: "保存成功!"
           });
-        }
+        }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
       } else if (type === 2) {
         //发送post
         this.loading = true;
 
-        let { data } = await this.$http.HallFunConfig.PostServerConfig({
+        let { data } = await this.$http.HallFunConfig.Postrobot_banker_control({
           keys: this.keys,
           values: JSON.stringify(this.allData),
           id: this.id
@@ -246,7 +251,13 @@ export default {
             type: "success",
             message: "发送服务器配置成功!"
           });
-        }
+        }else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
       }
     }
   }

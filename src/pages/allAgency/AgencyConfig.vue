@@ -145,7 +145,7 @@
 import DeepData from "../../assets/js/formate.js";
 
 export default {
-  name: "agent_config",
+  name:'agent_config',
   data() {
     return {
       searchConfig: "",

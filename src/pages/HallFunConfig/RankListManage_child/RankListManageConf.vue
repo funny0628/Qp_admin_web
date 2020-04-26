@@ -1,5 +1,11 @@
 <template>
-  <div id="RankListManageConf">
+  <div
+    id="RankListManageConf"
+    v-loading="loading"
+    element-loading-text="正在发送中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- 头部 -->
     <div class="title">
       排行榜配置
@@ -8,10 +14,6 @@
     <!-- form -->
     <div class="form">
       <el-form
-        v-loading="loading"
-        element-loading-text="正在发送中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(255, 255, 255, 0.6)"
         :model="ruleForm"
         ref="ruleForm"
         label-width="150px"
@@ -117,18 +119,18 @@ export default {
     };
   },
   async created() {
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getrank_control({
       key: "rank_control.lua"
     });
     // console.log(data.data);
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
+    // console.log(res);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     this.ruleForm = res;
 
     Object.keys(res.show).forEach(key => {
-      console.log(key, res.show[key]);
+      // console.log(key, res.show[key]);
       if (res.show[key] === "on") {
         this.showList.push(+key);
       }
@@ -148,7 +150,7 @@ export default {
       this.ruleForm.show = showresl;
       // console.log(this.ruleForm);
 
-      let { data } = await this.$http.HallFunConfig.PostServerConfig({
+      let { data } = await this.$http.HallFunConfig.Postrank_control({
         keys: this.keys,
         id: this.id,
         values: JSON.stringify(this.ruleForm)
@@ -160,6 +162,12 @@ export default {
         this.$message({
           type: "success",
           message: "配置到服务器成功!"
+        });
+      } else {
+        this.loading = false;
+        this.$message({
+          type: "warning",
+          message: "发送服务器配置失败"
         });
       }
     },
@@ -174,7 +182,7 @@ export default {
             showres[item] = "on";
           });
           this.ruleForm.show = showres;
-          let { data } = await this.$http.HallFunConfig.PutServerConfig({
+          let { data } = await this.$http.HallFunConfig.Putrank_control({
             keys: this.keys,
             id: this.id,
             values: JSON.stringify(this.ruleForm)
@@ -184,6 +192,11 @@ export default {
             this.$message({
               type: "success",
               message: "保存成功!"
+            });
+          } else {
+            this.$message({
+              type: "warning",
+              message: "保存失败"
             });
           }
         } else {

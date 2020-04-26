@@ -154,7 +154,7 @@ export default {
   },
 
   async created() {
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    let { data } = await this.$http.HallFunConfig.Getbjl_robot_control({
       key: "bjl_robot_control.lua"
     });
     // console.log(data);
@@ -184,7 +184,7 @@ export default {
           console.log(this.ruleForm, this.currentlist);
           if (type === 1) {
             //put
-            let { data } = await this.$http.HallFunConfig.PutServerConfig({
+            let { data } = await this.$http.HallFunConfig.Putbjl_robot_control({
               keys: this.keys,
               values: JSON.stringify({
                 bjl_normal: { robot_type_list: this.currentlist }
@@ -197,24 +197,37 @@ export default {
                 type: "success",
                 message: "保存成功!"
               });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
             }
           } else if (type === 2) {
             //post
             this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.PostServerConfig({
-              keys: this.keys,
-              values: JSON.stringify({
-                bjl_normal: { robot_type_list: this.currentlist }
-              }),
-              id: this.id
-            });
+            let { data } = await this.$http.HallFunConfig.Postbjl_robot_control(
+              {
+                keys: this.keys,
+                values: JSON.stringify({
+                  bjl_normal: { robot_type_list: this.currentlist }
+                }),
+                id: this.id
+              }
+            );
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
               this.loading = false;
               this.$message({
                 type: "success",
                 message: "发送服务器配置成功!"
+              });
+            } else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
               });
             }
           }
