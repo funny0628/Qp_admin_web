@@ -237,7 +237,6 @@ export function install(vueElement, {
   //     NProgress.done(); // 结束Progress
   //   });
 
-
   new Vue({
     el: el || "#app",
     components: {
