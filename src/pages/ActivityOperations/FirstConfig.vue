@@ -27,10 +27,14 @@
           placeholder="活动名称"
         ></el-input>
       </el-form-item>
-      <el-form-item label="首冲单笔金额" prop="first_charge_coin">
+      <el-form-item
+        v-if="form.ac_content"
+        label="首冲单笔金额"
+        prop="ac_content"
+      >
         <el-input
           style="width:220px"
-          v-model="form.first_charge_coin"
+          v-model="form.ac_content.first_charge_coin"
           placeholder="首冲单笔金额"
         ></el-input>
       </el-form-item>
@@ -57,9 +61,9 @@
         >
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="档次" prop="level">
+      <el-form-item v-if="form.ac_content" label="档次" prop="ac_content">
         <el-button type="primary" @click="add">添加</el-button>
-        <div v-for="(item, index) in form.level" class="item">
+        <div v-for="(item, index) in form.ac_content.level" class="item">
           <p style="margin-top:10px;">
             流水需求(递增):
             <el-input
@@ -93,7 +97,9 @@ export default {
         open_state: "",
         ac_begin_time: "",
         ac_end_time: "",
-        level: []
+        ac_content: {
+          level: []
+        }
       },
       rules: {
         first_charge_coin: [
@@ -108,7 +114,6 @@ export default {
         ac_end_time: [
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
-        level: [{ required: true, message: "不可以为空", trigger: "blur" }]
       },
       keys: "",
       id: "",
@@ -124,10 +129,10 @@ export default {
     send(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let resData = this.form.level;
-          this.form.level = {};
+          let resData = this.form.ac_content.level;
+          this.form.ac_content.level = {};
           resData.forEach((item, index) => {
-            this.form.level[index + 1] = item;
+            this.form.ac_content.level[index + 1] = item;
           });
           //   console.log(resData, this.form.level,this.allData);
           if (type === 1) {
@@ -180,11 +185,11 @@ export default {
 
     //档次新增
     add() {
-      this.form.level = Object.values(this.form.level);
-      this.form.level.push({});
+      this.form.ac_content.level = Object.values(this.form.ac_content.level);
+      this.form.ac_content.level.push({});
     },
     del(index) {
-      this.form.level = this.form.level.filter((it, idx) => {
+      this.form.ac_content.level = this.form.ac_content.level.filter((it, idx) => {
         return idx !== index;
       });
     },
@@ -202,8 +207,8 @@ export default {
           this.form = this.allData[item];
         }
       });
-      this.form.level = Object.values(this.form.level);
-      //   console.log(this.form);
+      this.form.ac_content.level = Object.values(this.form.ac_content.level);
+      // console.log(this.form, this.allData);
     }
   }
 };

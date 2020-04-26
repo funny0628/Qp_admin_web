@@ -15,7 +15,7 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="days"
+          prop="level"
           label="等级"
           align="center"
           width="260"
@@ -23,7 +23,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="user_reg"
+          prop="draw_num"
           label="摇奖次数"
           align="center"
           width="260"
@@ -31,7 +31,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="pay_user_d"
+          prop="icon_cash_cow_url"
           label="摇钱树图标展示"
           align="center"
           width="260"
@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="day_change"
+          prop="award_coin"
           label="全任务金币奖励"
           align="center"
           width="260"
@@ -54,7 +54,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="pay_user_w"
+          prop="growth_value"
           label="升级所属成长值"
           align="center"
           width="260"
@@ -62,45 +62,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="week_change"
+          prop="weight_info"
           label="摇一摇奖励"
           align="center"
           width="260"
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
-          prop="week_change"
-          label="操作"
-          align="center"
-          width="260"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
       </el-table>
-      <!-- 分页 -->
-      <el-pagination
-        v-if="total > 5"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
     </div>
     <!-- form -->
     <div class="form">
@@ -117,28 +86,28 @@
           label-width="150px"
           style="margin-top:20px"
         >
-          <el-form-item label="摇钱树等级" prop="ac_name">
+          <el-form-item label="摇钱树等级" prop="level">
             <el-input
               style="width:220px"
-              v-model="form.ac_name"
+              v-model="form.level"
               placeholder="摇钱树等级"
             ></el-input>
           </el-form-item>
-          <el-form-item label="升级所需成长值" prop="ac_name">
+          <el-form-item label="升级所需成长值" prop="growth_value">
             <el-input
               style="width:220px"
-              v-model="form.ac_name"
+              v-model="form.growth_value"
               placeholder="0"
             ></el-input>
           </el-form-item>
-          <el-form-item label="抽奖次数" prop="ac_name">
+          <el-form-item label="抽奖次数" prop="award_coin">
             <el-input
               style="width:220px"
-              v-model="form.ac_name"
+              v-model="form.award_coin"
               placeholder="0"
             ></el-input>
           </el-form-item>
-          <el-form-item label="摇钱树图展示" prop="ac_name">
+          <el-form-item label="摇钱树图展示" prop="icon_cash_cow_url">
             <el-upload
               class="avatar-uploader"
               action=""
@@ -147,24 +116,28 @@
               :before-upload="beforeAvatarUpload"
               :limit="1"
             >
-              <img v-if="form" :src="form" class="avatar" />
+              <img
+                v-if="form.icon_cash_cow_url"
+                :src="form.icon_cash_cow_url"
+                class="avatar"
+              />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label="全任务金币奖励数量" prop="ac_name">
+          <el-form-item label="全任务金币奖励数量" prop="draw_num">
             <el-input
               style="width:220px"
-              v-model="form.ac_name"
+              v-model="form.draw_num"
               placeholder="0"
             ></el-input>
           </el-form-item>
-          <el-form-item label="摇一摇金币奖励数量" prop="ac_name">
+          <el-form-item label="摇一摇金币奖励数量" prop="weight_info">
             <el-input
               style="width:220px"
-              v-model="form.ac_name"
-              placeholder="1=2"
+              v-model="form.weight_info"
+              placeholder="1=2 ... 以 , 分隔"
             ></el-input>
-            <p>(金额1=权重1,金额2=权重2,...)</p>
+            <p>(金额1=权重1,金额2=权重2,...以 , 分隔)</p>
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
@@ -182,39 +155,147 @@
 export default {
   data() {
     return {
-      tableData: ["", ""],
-      currentPage: 1,
-      limit: 10,
-      total: "",
+      tableData: [],
       visible: false,
-      form: {},
-      rules: {},
-      title: "新增等级"
+      form: {
+        level: "",
+        growth_value: "",
+        award_coin: "",
+        draw_num: "",
+        icon_cash_cow_url: "xxxx",
+        weight_info: ""
+      },
+      rules: {
+        level: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        growth_value: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        award_coin: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        draw_num: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        icon_cash_cow_url: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        weight_info: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ]
+      },
+      title: "新增等级",
+      keys: "",
+      id: "",
+      allData: {},
+      servebg_url: ""
     };
+  },
+  created() {
+    this.initData();
   },
   methods: {
     add() {
-      this.visible = true;
+      this.editForm(true, "新增", {});
     },
-    send() {},
-    //页容量变化
-    handleSizeChange() {},
+    send() {
+      //发送post
+      this.tableData.forEach(item => {
+        // let formData = { ...this.form };
+        let formInfo = item.weight_info;
+        let formWeight = [];
+        let formObj = {};
+        if (formInfo.search(",") !== -1) {
+          //有 , 号
+          formWeight = formInfo.split(",");
+          let obj = {};
+          formWeight.forEach((item, index) => {
+            item = item.split("=");
+            obj[index + 1] = { coin: item[0], weight: item[1] };
+          });
+          console.log(obj);
+          formObj = obj;
+        } else {
+          //没有 ,
+          formWeight = formInfo.split("=");
+          let obj1 = {};
 
-    //页码变化
-    handleCurrentChange() {},
+          obj1[formWeight.length - 1] = {
+            coin: formWeight[0],
+            weight: formWeight[1]
+          };
 
-    handleEdit() {},
-    handleDelete() {},
-    upLoad() {
+          formObj = obj1;
+        }
+        item.weight_info = formObj
+      });
+
+      // formData.weight_info = formObj;
+      console.log( this.tableData);
+    },
+
+    upLoad(file) {
       console.log("----");
+      const formData = new FormData();
+      formData.append("filename", file.file);
+      formData.append("types", 1);
+      this.$http.post("v1/backend/upload", formData).then(data => {
+        console.log(data);
+        if (data.data.code === 1 && data.data.msg === "ok") {
+          this.servebg_url = data.data.path;
+          // this.form.icon_cash_cow_url = data.data.path
+        }
+      });
     },
-    beforeAvatarUpload() {
+    beforeAvatarUpload(file) {
       console.log("--------");
+      if (file) {
+        this.form.icon_cash_cow_url = URL.createObjectURL(file);
+      }
     },
-    onSubmit(){},
-    back(){},
+    onSubmit() {
+      console.log(this.form);
+      // this.form.icon_cash_cow_url = this.servebg_url
+      this.form.icon_cash_cow_url =
+        "http://img4.imgtn.bdimg.com/it/u=1713396441,1487163637&fm=26&gp=0.jpg";
+      console.log(this.form);
+      this.tableData.push(this.form);
+      this.editForm(false, "新增", {});
+    },
+    back() {
+      this.editForm(false, "新增", {});
+    },
+    editForm(visible, title, form) {
+      this.visible = visible;
+      this.title = title;
+      this.form = form;
+    },
 
-    initData() {}
+    async initData() {
+      let { data } = await this.$http.HallFunConfig.GetServerConfig({
+        key: "activity_new.lua"
+      });
+      //   console.log(data);
+      this.keys = data.data[0].sys_key;
+      this.id = data.data[0].id;
+      let res = data.data[0].sys_val;
+      this.allData = JSON.parse(res);
+      Object.keys(this.allData).forEach(item => {
+        if (this.allData[item].ac_type === "10003") {
+          this.tableData = Object.values(
+            this.allData[item].ac_content.cash_cow
+          );
+        }
+      });
+      let weight = "";
+      this.tableData.forEach(item => {
+        Object.values(item.weight_info).forEach(it => {
+          item.weight_info = weight += `${it.coin}=${it.weight},`;
+        });
+      });
+      console.log(this.tableData, this.allData);
+    }
   }
 };
 </script>
