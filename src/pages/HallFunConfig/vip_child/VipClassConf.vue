@@ -21,7 +21,11 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="level" label="VIP等级" align="center"></el-table-column>
-        <el-table-column prop="privilege" label="VIP特权" align="center"></el-table-column>
+        <el-table-column label="VIP特权" align="center">
+          <template slot-scope="scope">
+            <span>{{String(JSON.parse(scope.row.privilege))}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="icon_border_url" label="头像框" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
@@ -35,7 +39,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -51,7 +55,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.name"
+              :label="item.id+','+item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -66,6 +70,14 @@
         </el-form-item>
         <el-form-item label="月俸禄" :label-width="formLabelWidth">
           <el-input v-model="form.month_money" autocomplete="off"></el-input>
+          <span>(单位: 元)</span>
+        </el-form-item>
+        <el-form-item label="月俸禄领取金币" :label-width="formLabelWidth">
+          <el-input v-model="form.salary" autocomplete="off"></el-input>
+          <span>(单位: 元)</span>
+        </el-form-item>
+        <el-form-item label="月俸禄领取所需流水" :label-width="formLabelWidth">
+          <el-input v-model="form.salary_need_coin" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
         </el-form-item>
         <el-form-item label="VIP进场提示语" :label-width="formLabelWidth">
@@ -161,8 +173,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
+        <div>{{form}}</div>
       </el-form>
-      {{form}}
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addNewConf">确认</el-button>
         <el-button @click="dialogFormVisible = false">返回</el-button>
@@ -198,6 +210,8 @@ export default {
         gold_flow: "",
         class_award: "",
         month_money: "",
+        salary: "",
+        salary_need_coin: "",
         vip_tip_text: "",
         probability: "",
         withdraw: "",
@@ -244,6 +258,8 @@ export default {
         gold_flow: "",
         class_award: "",
         month_money: "",
+        salary_need_coin: "",
+        salary: "",
         vip_tip_text: "",
         probability: "",
         withdraw: "",
@@ -314,7 +330,9 @@ export default {
           no_condition: this.form.unlock,
           battery_url: this.imageUrl.imgList2,
           img_url: this.imageUrl.imgList3,
-          video_url: this.videoUrl
+          video_url: this.videoUrl,
+          salary: Number(this.form.salary),
+          salary_need_coin: Number(this.form.salary_need_coin)
         };
         const res = await this.$http.post("v1/backend/lobby/grade", data);
         console.log(res);

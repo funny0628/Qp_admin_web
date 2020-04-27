@@ -1,6 +1,6 @@
 <template>
   <div id="HallAdvertiseConf-main">
-    <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;margin-left:20px;">删除</el-button>
+    <!-- <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;margin-left:20px;">删除</el-button> -->
     <el-button
       type="primary"
       style="margin-top: 10px;margin-bottom: 10px;"
@@ -29,7 +29,7 @@
               <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="['action','pic_one_url','pic_two_url','pic_three_url'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -38,7 +38,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"

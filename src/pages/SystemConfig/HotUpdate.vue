@@ -7,7 +7,7 @@
     </input-area>
     <div class="bd">
       <el-table
-        v-has="'hot_update_list'"
+        v-has="'hot_update_records'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -84,14 +84,14 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </div>
     <!-- 添加热更新信息 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="65%">
       <el-form :model="form">
         <el-form-item label="允许版本更新" :label-width="formLabelWidth">
           <el-radio v-model="form.versionUpd.radio" label="*">所有版本</el-radio>
@@ -278,7 +278,11 @@ export default {
         updateTime: "",
         version: "",
         update_type: "",
-        update_way: ""
+        update_way: "",
+        androidConfig: {},
+        iosConfig: {},
+        windowsConfig: {},
+        game_info: ""
       },
       fileData: {
         file: {},
@@ -417,7 +421,7 @@ export default {
         version_num: this.form.version,
         is_force: Number(this.form.update_type),
         update_type: Number(this.form.update_way),
-        game_info: "我是game_info"
+        game_info: this.form.game_info
       };
       this.$http.post("v1/backend/sys-conf/hot-update", data).then(res => {
         console.log(res);
@@ -576,6 +580,7 @@ export default {
           .then(res => {
             console.log(res);
             if (res.data.code === 200) {
+              that.form.game_info = JSON.stringify(res.data.data.list)
               that.form.androidConfig = that.formatResource(
                 res.data.data.list.android
               );
@@ -591,6 +596,7 @@ export default {
                 message: "资源包上传成功"
               });
             }else {
+              that.loading = false;
               that.$message({
                 type: "error",
                 message: "资源包上传失败"

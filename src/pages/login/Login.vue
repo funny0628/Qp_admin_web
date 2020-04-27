@@ -105,9 +105,6 @@ export default {
         });
         this.$router.push({
           name: "home",
-          // params: {
-          //   userRightsData: res.data.data
-          // }
         });
         localStorage.setItem('user_info', JSON.stringify(res.data.data));
       } else {
