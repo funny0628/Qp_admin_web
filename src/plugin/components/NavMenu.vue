@@ -83,9 +83,6 @@ export default {
         return function() {};
       }
     },
-    userRightsData: {
-      type: Array
-    }
   },
   data() {
     let $this = this;

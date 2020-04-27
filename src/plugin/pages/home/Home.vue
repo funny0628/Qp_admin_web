@@ -138,7 +138,6 @@ export default {
       hideItems: [],
       headerVue: root.headerVue,
       showNavMenu: false,
-      userRightsData: []
     };
   },
   methods: (() => {
@@ -260,6 +259,7 @@ export default {
   },
   created() {
     $this = this;
+    console.log($this,'----------woshihome')
     let active = "";
     let config = $this.$pageInfo.config;
     /** 测试 **/

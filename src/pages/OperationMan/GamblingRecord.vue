@@ -164,7 +164,7 @@
         <div style="width:100%;height:30px;line-height:30px;">{{tableName}}</div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr>
-            <td colspan="5">底注: 1,叫分: 3</td>
+            <td colspan="5">底注: {{exinfo.difen}},叫分: {{exinfo.jiaofen}}</td>
             <td></td>
             <td></td>
           </tr>
@@ -173,9 +173,9 @@
             <td width="100">{{item.jiaofen}}分</td>
             <td width="100" v-if="item.jiabei === true">加倍</td>
             <td width="100" v-else>不加倍</td>
-            <td v-if="item.is_banker === true">我是地主底牌</td>
-            <td v-else></td>
-            <td>{{String(item.cards)}}</td>
+            <td width="100" v-if="item.is_banker === true">{{String(item.dizhu_cards)}}</td>
+            <td width="100" v-else></td>
+            <td width="100">{{String(item.cards)}}</td>
             <td width="100">炸弹数: {{item.zhadan_num}}</td>
             <td width="100">输赢: {{item.add_score}}</td>
           </tr>
@@ -384,9 +384,6 @@ export default {
         }
       });
     },
-    resetEdit() {
-      (this.tableName = ""), (this.exinfo = {});
-    },
     handleEdit(row) {
       console.log(row);
       this.$http
@@ -412,6 +409,7 @@ export default {
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "斗地主") {
               this.dialogLandlordVisible = true;
+              this.exinfo = res.data.data.exinfo
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "捕鱼达人") {
               this.dialogFishVisible = true;
@@ -497,6 +495,5 @@ td {
 }
 tr {
   height: 50px;
-  line-height: 50px;
 }
 </style>

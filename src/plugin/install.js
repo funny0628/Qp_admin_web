@@ -236,6 +236,11 @@ export function install(vueElement, {
   //   router.afterEach(() => {
   //     NProgress.done(); // 结束Progress
   //   });
+  router.afterEach((to,from)=>{
+    if(from.path != '/login' && from.path != '/' && to.path == '/login'){
+        window.location.reload();
+    }
+})
 
   new Vue({
     el: el || "#app",

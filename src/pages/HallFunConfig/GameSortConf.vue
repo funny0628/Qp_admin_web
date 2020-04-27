@@ -41,8 +41,8 @@
       </el-table>
     </div>
     <div>
-      <!-- 添加活动入口配置 -->
-      <el-dialog title="添加活动入口配置" :visible.sync="dialogFormVisible">
+      <!-- 游戏排序配置 -->
+      <el-dialog title="游戏排序配置" :visible.sync="dialogFormVisible">
         <el-form :model="form" label-position="top">
           <el-form-item label="渠道(可多选)">
             <!-- <el-checkbox-group v-model="form.checkList">

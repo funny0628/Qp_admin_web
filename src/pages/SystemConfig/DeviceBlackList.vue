@@ -10,7 +10,7 @@
     </input-area>
     <div class="bd">
       <el-table
-        v-has="'device_blacklists'"
+        v-has="'device_blacklist_records'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -35,14 +35,14 @@
         <el-table-column prop="action" label="操作" align="center">
           <template slot-scope="scope">
             <el-button
-              v-has="'forbiden_device_blacklist'"
+              v-has="'forbidden_device_blacklist'"
               style="background-color:#30a99d;color:#fff;"
               size="mini"
               v-if="scope.row.lock_status === 1"
               @click="updateStatus(scope.row)"
             >{{scope.row.lock_status | formatStatus}}</el-button>
             <el-button
-              v-has="'unforbiden_device_blacklist'"
+              v-has="'unforbidden_device_blacklist'"
               style="background-color:#fc7658;color:#fff;"
               size="mini"
               v-if="scope.row.lock_status === 0"
@@ -62,7 +62,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"

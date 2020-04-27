@@ -45,7 +45,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -147,10 +147,6 @@ export default {
       if (res.data.code === 200) {
         this.tableData = res.data.data;
         this.total = res.data.total;
-        this.$message({
-          type: "success",
-          message: res.data.msg
-        });
       } else {
         this.$message({
           type: "info",

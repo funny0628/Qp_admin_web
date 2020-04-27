@@ -376,9 +376,9 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/BroadcastConf')), 'broadcast_config')
       },
       {
-        name:'exchange_config',
+        name:'withdraw_config',
         text:'兑换配置',
-        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'exchange_config')
+        vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/ExchangeConf')), 'withdraw_config')
       },
       {
         name:'lobby_flyer_config',
