@@ -271,7 +271,7 @@ export default {
       });
       this.currentData.ac_content.task = postData;
       // console.log(this.currentData,this.allData);
-      let { data } = await this.$http.HallFunConfig.PostActivityNew5({
+      let { data } = await this.$http.HallFunConfig.PostActivityNew3({
         keys: this.keys,
         values: JSON.stringify(this.allData),
         id: this.id
@@ -339,7 +339,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetActivityNew5({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew3({
         key: "activity_new.lua"
       });
       //   console.log(data);
@@ -363,6 +363,7 @@ export default {
 
 <style lang="less" scoped>
 #MT_TaskConfig {
+  padding: 20px;
   .table {
     margin-top: 20px;
   }

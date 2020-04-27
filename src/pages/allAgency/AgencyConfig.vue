@@ -145,7 +145,7 @@
 import DeepData from "../../assets/js/formate.js";
 
 export default {
-  name:'agent_config',
+  name: "agent_config",
   data() {
     return {
       searchConfig: "",
@@ -190,8 +190,8 @@ export default {
     },
 
     //表格删除
-    handleDelete(index,row) {
-       this.$confirm("确认删除吗？", "信息", {
+    handleDelete(index, row) {
+      this.$confirm("确认删除吗？", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -203,7 +203,7 @@ export default {
           });
           // console.log(data);
           if (data.code === 1 && data.msg === "ok") {
-           this.initdata({ page: this.currentPage, limit: this.limit });
+            this.initdata({ page: this.currentPage, limit: this.limit });
           }
           this.$message({
             type: "success",
@@ -237,28 +237,34 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           Object.keys(this.form).forEach(item => {
-            this.form[item] = parseInt(this.form[item]);
+            this.form[item] = +(this.form[item]);
           });
-          // console.log(this.form);
-          if(type === '新增'){
-            //发送post
-            let { data } = await this.$http.allAgency.PostAllAgency(this.form);
-            // console.log(data);
-            if(data.code === 1 && data.msg === 'ok'){
-              this.initdata({ page: this.currentPage, limit: this.limit });
+          console.log(this.form);
+          if (this.form.rebate < 250) {
+            if (type === "新增") {
+              //发送post
+              let { data } = await this.$http.allAgency.PostAllAgency(
+                this.form
+              );
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.initdata({ page: this.currentPage, limit: this.limit });
+              }
+            } else if (type === "编辑") {
+              //发送put
+              let { data } = await this.$http.allAgency.PutAllAgency(this.form);
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.initdata({ page: this.currentPage, limit: this.limit });
+              }
             }
-            
-
-          }else if(type === '编辑'){
-            //发送put
-             let { data } = await this.$http.allAgency.PutAllAgency(this.form);
-            // console.log(data);
-            if(data.code === 1 && data.msg === 'ok'){
-              this.initdata({ page: this.currentPage, limit: this.limit });
-            }
-
+            this.editForm("新增", false, {});
+          } else {
+            this.$message({
+              type: "info",
+              message: "大于250"
+            });
           }
-          this.editForm("新增", false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -284,6 +290,7 @@ export default {
 
 <style lang="less" scoped>
 #AgencyConfig {
+  padding: 20px;
   .title {
     width: 100%;
     height: 40px;

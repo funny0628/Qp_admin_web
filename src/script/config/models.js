@@ -714,7 +714,7 @@ const models = {
     children:[
       {
         name:'daily_channel_report',
-        text:'渠道报表日',
+        text:'渠道报表(日)',
         vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/ChannelsReport')), 'daily_channel_report')
       },
       {
