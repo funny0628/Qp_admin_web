@@ -79,15 +79,6 @@
           show-overflow-tooltip
         >
 
-        <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="ToGM(scope.row)"
-              >{{scope.row.uid}}</el-button
-            >
-          </template>
-
         </el-table-column>
         <el-table-column
           prop="nickname"
@@ -114,7 +105,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="buycount"
+          prop="total_deposit"
           label="累计充值"
           align="center"
           width="120"
@@ -205,10 +196,6 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <!-- 正式用户才有 -->
-            <!-- <el-button @click="handleClick(scope.row)" type="text" size="small"
-              >修改登陆密码</el-button
-            > -->
             <el-button
               size="mini"
               type="danger"
@@ -423,22 +410,14 @@ export default {
   },
 
   methods: {
-    ToGM(row){
-      console.log("00000");
-      // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMcontrol')), 'GMcontrol')
-  
-    },
-    
+
     //筛查
     search() {
-      // console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
       if(this.avator_nameO === '所有渠道'){
         this.avator_nameO = ''
       }
-
       this.initdata({ page: this.currentPage, limit: this.limit, uid:this.UID || 0, last_ip:this.IP, phone:this.phone, channel:this.avator_nameO, status:this.value, vip_level:this.level, start_time:this.start_time/1000 || 0, end_time:this.end_time/1000 || 0,});
       this.avator_nameO = '所有渠道'
-      
     },
     //封号
     async handleClick( row,status) {
@@ -447,14 +426,10 @@ export default {
         this.visibleF = true
         this.formF.user_id = row.uid
       }else if(status === '解封'){
-
-        //1,发送解封的请求,2.最新的数据的请求PostUserUnlock
         let { data } = await this.$http.OperationMan.PostUserUnlock({user_id:row.uid});
-        console.log(data);
+        // console.log(data);
          this.initdata({ page: this.currentPage, limit: this.limit });
       }
-
-
     },
 
     //表单确认封号
@@ -480,11 +455,7 @@ export default {
           }
           this.visibleF = false
           this.formF = {}
-        
       }
-           
-        
-      
     },
     //表格详情
     handleEdit(index, row) {
@@ -532,8 +503,8 @@ export default {
             ? item.uid
             : item.nickname;
         item.status = item.status === 1 ? "解封" : "封号";
-        // item.last_deposit_time = this.data(item.last_deposit_time*1000)
-        //处理返回的事件戳为格式时间
+        item.last_deposit_time = item.last_deposit_time === undefined ? "" : this.timestampToTime(item.last_deposit_time);
+    
       });
       return res;
     },
@@ -548,9 +519,10 @@ export default {
       item.status = item.status === 1 ? "解封" : "封号";
       item.sex = item.sex === 1 ? "男" : "女";
       item.nickname =
-        item.nickname === "" || item.nickname === undefined
+      item.nickname === "" || item.nickname === undefined
           ? item.uid
           : item.nickname;
+      item.last_deposit_time = item.last_deposit_time === undefined ? "" : this.timestampToTime(item.last_deposit_time);
 
       return item;
     },
@@ -590,19 +562,18 @@ export default {
       let { data } = await this.$http.OperationMan.GetUserDetail(params);
       // console.log(data.data);
       this.formData = this.formateNum(data.data);
-      this.formData.icon_border = 'http://192.168.1.24:8000/' + this.formData.icon_border
+      this.formData.icon_border = this.$baseUrl + this.formData.icon_border
       // console.log(this.formData);
     },
 
     //获取用户封号信息
     async initUserLock(params) {
       let { data } = await this.$http.OperationMan.GetUserLock(params);
-      console.log(data.data);
+      // console.log(data.data);
       if (Object.keys(data.data || {}).length !== 0) {
-        console.log('--------');
-        console.log(data.data);
+        // console.log(data.data);
         let resData = data.dada;
-        console.log(timestampToTime);
+        // console.log(timestampToTime);
         resData.endtime = this.timestampToTime(resData.endtime)
         resData.op_time = this.timestampToTime(resData.op_time)
         this.visibiTable = true;
@@ -610,7 +581,7 @@ export default {
       } else {
         return false;
       }
-      console.log(this.formTable);
+      // console.log(this.formTable);
     }
   }
 };

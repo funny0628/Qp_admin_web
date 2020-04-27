@@ -268,8 +268,7 @@ export default {
   },
 
   created() {
-     let today = new Date().getTime();
-    this.start_time = this.initTime(today);
+    this.start_time = this.initTime();
     this.initChannel();
     this.getData();
   },
@@ -297,9 +296,11 @@ export default {
     //获取当天是时间
     initTime() {
       let myDate = new Date();
-      let year = myDate.getFullYear();
-      let month = (myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : (myDate.getMonth() + 1);
-      let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
+      let yestoday =  Date.parse(myDate) - 60*60*24*1000;
+      let yesObj = new Date(yestoday);
+      let year = yesObj.getFullYear();
+      let month = (yesObj.getMonth() + 1) < 10 ? '0' + (yesObj.getMonth() + 1) : (yesObj.getMonth() + 1);
+      let day = yesObj.getDate() < 10 ? '0' + yesObj.getDate() : yesObj.getDate();
       return `${year}-${month}-${day}`;
     },
 
@@ -339,6 +340,7 @@ export default {
 
 <style lang="less" scoped>
 #ChannelsReport {
+  padding: 20px;
   .table {
     margin-top: 20px;
   }

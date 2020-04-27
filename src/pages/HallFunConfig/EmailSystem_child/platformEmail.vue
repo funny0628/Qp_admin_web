@@ -44,21 +44,21 @@
         >
         </el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="create_at"
           label="创建时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="send_name"
+          prop="op_user"
           label="发件人"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="uid"
+          prop="range"
           label="收件人"
           align="center"
           show-overflow-tooltip
@@ -79,7 +79,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="send_status"
+          prop="read_state"
           label="邮件状态"
           align="center"
           show-overflow-tooltip
@@ -94,14 +94,14 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini"  @click="handleEdit(scope.row)"
+            <el-button size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
             <el-button
-              v-if="scope.row.send_status === '待发送'"
+              v-if="scope.row.read_state === '待发送'"
               size="mini"
               type="danger"
               @click="send(scope.row)"
@@ -125,7 +125,11 @@
     </div>
     <!-- form表单 -->
     <div class="dialog">
-      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
+      <el-dialog
+        :title="title"
+        :visible.sync="visible"
+        :destroy-on-close="true"
+      >
         <el-form
           :disabled="disabled"
           ref="form"
@@ -133,17 +137,17 @@
           :model="form"
           label-width="120px"
         >
-          <el-form-item label="收件人ID" prop="uid">
+          <el-form-item label="收件人ID" prop="range">
             <el-input
               placeholder="多个以逗号分隔 如: 1,2,3,4"
-              v-model="form.uid"
+              v-model="form.range"
               :disabled="disabledID"
             ></el-input>
           </el-form-item>
-          <el-form-item label="发件人昵称" prop="send_name">
+          <el-form-item label="发件人昵称" prop="op_user">
             <el-input
               placeholder="发件人昵称"
-              v-model="form.send_name"
+              v-model="form.op_user"
             ></el-input>
           </el-form-item>
           <el-form-item label="邮件标题" prop="title">
@@ -199,31 +203,26 @@ export default {
         uid: [{ required: true, message: "必填项不能为空", trigger: "blur" }]
       },
       form: {
-        send_name: "",
+        op_user: "",
         title: "",
         content: "",
         coins: "",
-        uid: []
+        range: []
       },
       title: "新增"
     };
   },
   created() {
-    this.initdata({
-      page: this.currentPage,
-      limit: this.limit,
-      mail_type: 2
-    });
+    this.getData()
   },
   methods: {
     //写邮件
     writeEmail() {
-      this.editForm("新增", true, false,false, {});
+      this.editForm("新增", true, false, false, {});
     },
 
     //按条件搜索
     search() {
-
       if (this.ids === "") {
         this.ids = 0;
       } else if (this.type_id === "") {
@@ -248,9 +247,7 @@ export default {
 
     //表格编辑
     handleEdit(row) {
-      // console.log(row);
-      row.mail_id = row.id;
-      this.editForm("编辑", true, false,true, DeepData(row));
+      this.editForm("编辑", true, false, true, DeepData(row));
     },
 
     //表格详情
@@ -261,20 +258,19 @@ export default {
 
     //表格发送邮件
     async send(row) {
-      // console.log(row);
-
-      let resData = {
-        mail_type: 2,
-        send_status: 2,
+      let { data } = await this.$http.HallFunConfig.patchEmail({
         mail_id: row.id
-      };
-      let { data } = await this.$http.HallFunConfig.patchEmail(resData);
-      // console.log(data);
+      });
       if (data.code === 1 && data.msg === "ok") {
-        this.initdata({
-          page: this.currentPage,
-          limit: this.limit,
-          mail_type: 2
+        this.getData()
+        this.$message({
+          type: "success",
+          message: "邮件已发送!"
+        });
+      } else {
+        this.$message({
+          type: "success",
+          message: "邮件发送失败!"
         });
       }
     },
@@ -283,65 +279,61 @@ export default {
     handleSizeChange(num) {
       this.limit = num;
       this.currentPage = 1;
-      this.initdata({
-        page: this.currentPage,
-        limit: this.limit,
-        mail_type: 2
-      });
+      this.getData()
     },
 
     //页码改变
     handleCurrentChange(pagenum) {
       this.currentPage = pagenum;
-      this.initdata({
-        page: this.currentPage,
-        limit: this.limit,
-        mail_type: 2
-      });
+      this.getData()
     },
+
+    //表单提交
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (type === "新增") {
-            console.log(this.form);
             let resData = DeepData(this.form);
             resData.mail_type = 2;
             let { data } = await this.$http.HallFunConfig.PostEmail(resData);
-            // console.log(data);
-
             if (data.code === 1 && data.msg === "ok") {
-              this.initdata({
-                page: this.currentPage,
-                limit: this.limit,
-                mail_type: 2
+              this.getData()
+              this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "新增失败!"
               });
             }
           } else if (type === "编辑") {
-            // console.log(this.form);
-            // this.form.mail_type = 2;
-
             let res = {
-              send_name: this.form.send_name,
+              op_user: this.form.op_user,
               title: this.form.title,
               content: this.form.content,
               coins: this.form.coins,
-              uid: this.form.uid,
+              range: this.form.range,
               mail_type: 2,
-              mail_id: this.form.mail_id
+              mail_id: this.form.id
             };
             let { data } = await this.$http.HallFunConfig.PutEmail(res);
-            // console.log(data);
-
             if (data.code === 1 && data.msg === "ok") {
-              this.initdata({
-                page: this.currentPage,
-                limit: this.limit,
-                mail_type: 2
+              this.getData()
+              this.$message({
+                type: "success",
+                message: "修改成功!"
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "修改失败!"
               });
             }
           } else if (type === "邮件详情") {
           }
-          this.editForm("新增", false, false,false, {});
+          this.editForm("新增", false, false, false, {});
         } else {
           console.log("error submit!!");
           return false;
@@ -349,24 +341,33 @@ export default {
       });
     },
 
-    editForm(title, visible, disabled,disabledID, form) {
+    editForm(title, visible, disabled, disabledID, form) {
       this.title = title;
       this.visible = visible;
       this.disabled = disabled;
       this.disabledID = disabledID;
       this.form = form;
     },
+
     formateData(res) {
       res.forEach(item => {
-        // item.send_status = item.send_status === 1 ? "待发送" : "已发送";
-        if (item.send_status === 1) {
-          item.send_status = "待发送";
-          this.sendShow = true;
-        } else if (item.send_status === 2) {
-          item.send_status = item.read_status === 1 ? "未读" : "已读";
+        if (item.status === 0) {
+          item.read_state = "待发送";
+        } else if (item.status === 1) {
+          item.read_state = item.read_state === 0 ? "未读" : "已读";
+        } else if (item.status === 2) {
+          item.read_state = "删除";
         }
       });
       return res;
+    },
+
+    getData() {
+      this.initdata({
+        page: this.currentPage,
+        limit: this.limit,
+        mail_type: 2
+      });
     },
 
     async initdata(params) {
@@ -374,8 +375,6 @@ export default {
       let fres = this.formateData(data.data);
       this.tableData = fres;
       this.total = data.total;
-     
-      // console.log(data);
     }
   }
 };

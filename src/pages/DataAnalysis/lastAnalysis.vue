@@ -55,97 +55,11 @@
         style="width: 100%"
       >
         <el-table-column
-          
-          prop="date"
-          label="日期"
+          v-for="(itme,index) in titleData"
+          :key="index"
+          :prop="itme.prop"
+          :label="itme.label"
           align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          
-          prop="add_count"
-          label="新增用户数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          
-          prop="reserved_1"
-          label="次日留存"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="reserved_3"
-          label="3留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="reserved_4"
-          label="4留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="reserved_5"
-          label="5留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="reserved_6"
-          label="6留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-      
-        <el-table-column
-          prop="reserved_7"
-          label="7留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-       
-        <el-table-column
-          prop="reserved_15"
-          label="15留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="reserved_30"
-          label="30留"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="reserved_45"
-          label="45留"
-          align="center"
-          width="120"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -180,7 +94,54 @@ export default {
       start_time: "",
       currentPage: 1,
       limit: 10,
-      total: ""
+      total: "",
+       titleData:[
+        {
+          prop:'date',
+          label:'日期'
+        },
+        {
+          prop:'add_count',
+          label:'新增用户数',
+        },
+        {
+          prop:'reserved_1',
+          label:'次日留存',
+        },
+        {
+          prop:'reserved_3',
+          label:'3留',
+        },
+        {
+          prop:'reserved_4',
+          label:'4留',
+        },
+        {
+          prop:'reserved_5',
+          label:'5留',
+        },
+        {
+          prop:'reserved_6',
+          label:'6留',
+        },
+        {
+          prop:'reserved_7',
+          label:'7留',
+        },
+        {
+          prop:'reserved_15',
+          label:'15留',
+        },
+        {
+          prop:'reserved_30',
+          label:'30留',
+        },
+        {
+          prop:'reserved_45',
+          label:'45留',
+        },
+      
+      ]
     };
   },
   created() {
@@ -273,9 +234,8 @@ export default {
 
 <style lang="less" scoped>
 #lastAnalysis {
-  .title {
-    margin-top: 20px;
-  }
+  padding: 20px;
+
   .table {
     margin-top: 20px;
   }

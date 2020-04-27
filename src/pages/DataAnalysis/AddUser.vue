@@ -50,124 +50,14 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="date"
-          label="新增当日日期"
+        v-for="(item,index) in titleData"
+        :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
           width="120"
           show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="add_count"
-          label="当日新增人数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="game_count"
-          label="新增玩牌人数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="game_count_cost"
-          label="注册玩牌转化率"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="pay_count"
-          label="新增付费用户数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="pay_num"
-          label="新增用户付费次数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="pay_count_cost"
-          label="新增付费率"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="money_into"
-          label="新增用户充值额度"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="money_out"
-          label="新增用户兑换额度"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="game_board_count"
-          label="新增用户牌局数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="system_out"
-          label="新增系统总赢金"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="system_into"
-          label="新增系统总输金"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="system_jxh"
-          label="净消耗"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="bankruptcy_count"
-          label="当日新增用户破产数"
-          align="center"
-          width="120"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="bankruptcy_count_cost"
-          label="当日新增破产率"
-          align="center"
-          width="120"
-          show-overflow-tooltip
+          :fixed="item.label === '新增日' || item.label === '新增用户' ? 'left' : false"
         >
         </el-table-column>
      
@@ -200,7 +90,70 @@ export default {
       tableData: [],
       currentPage: 1,
       limit: 10,
-      total: ""
+      total: "",
+      titleData:[
+        {
+          prop:"date",
+          label:"新增日"
+        },
+        {
+          prop:"add_count",
+          label:"新增用户"
+        },
+        {
+          prop:"game_count",
+          label:"新增玩牌人数"
+        },
+        {
+          prop:"game_count_cost",
+          label:"注册玩牌转化率"
+        },
+        {
+          prop:"pay_count",
+          label:"新增付费用户数"
+        },
+        {
+          prop:"pay_num",
+          label:"新增用户付费次数"
+        },
+        {
+          prop:"pay_count_cost",
+          label:"新增付费率"
+        },
+        {
+          prop:"money_into",
+          label:"新增用户充值额度"
+        },
+        {
+          prop:"money_out",
+          label:"新增用户兑换额度"
+        },
+        {
+          prop:"game_board_count",
+          label:"新增用户牌局数"
+        },
+        {
+          prop:"system_out",
+          label:"新增系统总赢金"
+        },
+        {
+          prop:"system_into",
+          label:"新增系统总输金"
+        },
+        {
+          prop:"system_jxh",
+          label:"净消耗"
+        },
+        {
+          prop:"bankruptcy_count",
+          label:"当日新增用户破产数"
+        },
+        {
+          prop:"bankruptcy_count_cost",
+          label:"当日新增破产率"
+        },
+       
+      ]
     };
   },
   created() {
@@ -279,6 +232,7 @@ export default {
 
 <style lang="less" scoped>
 #AddUser {
+  padding: 20px;
   .top {
     width: 100%;
     height: 40px;

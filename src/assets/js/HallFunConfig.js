@@ -241,6 +241,9 @@ let GetActivityNew5 = (params) => { //get / search
 let PostActivityNew5 = (params) => { //get / search
   return axios.post('v1/backend/lobby/server_config/activity_new5', params)
 }
+let PutActivityNew5 = (params) => { //get / search
+  return axios.put('v1/backend/lobby/server_config/activity_new5', params)
+}
 
 
 //大厅功能配置 ->充值配置--vip充值配置----------------------------------------
@@ -683,6 +686,7 @@ export default {
   PostActivityNew4,
   GetActivityNew5,
   PostActivityNew5,
+  PutActivityNew5,
   //大厅功能配置-------------------
   GetRechargeConfig,
   PutRechargeConfig,

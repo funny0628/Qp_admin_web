@@ -1,7 +1,10 @@
 <template>
-  <div id="Statistics">
+  <div id="Nventory">
+   
     <!-- title -->
     <div class="title">
+      
+
       <el-date-picker
         style="margin-top:10px;width:200px"
         v-model="end_time"
@@ -23,8 +26,9 @@
       </el-date-picker>
       <el-button type="primary" @click="search">查找</el-button>
     </div>
+
     <!-- table -->
-    <div class="table">
+     <div class="table">
       <el-table
         :data="tableData"
         highlight-current-row
@@ -49,15 +53,14 @@
 </template>
 
 <script>
-import DeepData from "../../assets/js/formate.js";
 export default {
-  name:'fee_statistical',
   data() {
     return {
       end_time: "",
       start_time: "",
       tableData: [],
-      titleData:[]
+      titleData:[],
+
     };
   },
   created() {
@@ -72,30 +75,35 @@ export default {
     },
 
 
+
     //获取时间格式
     initTime(today) {
       let myDate = new Date(today);
       let year = myDate.getFullYear();
-      let month = myDate.getMonth() + 1;
-      let day = myDate.getDate();
+      let month =
+        myDate.getMonth() + 1 < 10
+          ? "0" + (myDate.getMonth() + 1)
+          : myDate.getMonth() + 1;
+      let day =
+        myDate.getDate() < 10 ? "0" + myDate.getDate() : myDate.getDate();
       return `${year}-${month}-${day}`;
     },
 
     getData() {
-      this.startDate = this.start_time;
-      this.startDate = DeepData(this.startDate).replace(/[-]/g, "");
-      this.endDate = this.end_time;
-      this.endDate = DeepData(this.endDate).replace(/[-]/g, "");
-
+      this.startDate = this.start_time.replace(/[-]/g, "");
+      this.endDate = this.end_time.replace(/[-]/g, "");
       this.initData({
-        start_date:+this.endDate,
-        end_data: +this.startDate, 
+        start_date: +this.endDate,
+        end_data: +this.startDate,
       });
     },
 
+
+    //获取表格数据
     async initData(params) {
-      let {data} = await this.$http.DataAnalysis.GetStatistical(params);
-      this.tableData = data.data.list1
+      let { data } = await this.$http.DataAnalysis.GetNventory(params);
+      console.log(data.data);
+       this.tableData = data.data.list1
       this.titleData = data.data.list2
     }
   }
@@ -103,8 +111,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-#Statistics {
-  padding: 20px;
+#Nventory {
+    padding: 20px;
+  .title {
+    margin-top: 20px;
+  }
   .table {
     margin-top: 20px;
   }

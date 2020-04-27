@@ -220,6 +220,9 @@ export default {
   background-color: #f2f2f2;
   border: 1px solid #efefef;
   box-shadow: 1px 1px 2px #efefef;
+  h2 {
+    margin-left: 20px;
+  }
   .item {
     margin-top: 30px;
   }
