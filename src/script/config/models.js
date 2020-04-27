@@ -774,33 +774,33 @@ const models = {
       // },
     ]
   },
-  ActivityOperations:{
-    name:'ActivityOperations',
+  activity:{
+    name:'activity',
     vue: null,
     text:'活动运营',
     children:[
       {
-        name:'FirstConfig',
+        name:'fresher_deposit',
         text:'首充配置',
-        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/FirstConfig')), 'FirstConfig')
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/FirstConfig')), 'fresher_deposit')
       },
       {
-        name:'SignUp',
+        name:'daily_sign',
         text:'每日签到',
-        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SignUp')), 'SignUp')
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SignUp')), 'daily_sign')
       },
       {
-        name:'SaveMoney',
+        name:'daily_rescue',
         text:'每日救赎金',
-        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SaveMoney')), 'SaveMoney')
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/SaveMoney')), 'daily_rescue')
       },
       {
-        name:'Rainstorm',
+        name:'daily_storm',
         text:'每日暴风雨',
-        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/Rainstorm')), 'Rainstorm')
+        vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/Rainstorm')), 'daily_storm')
       },
       {
-        name:'MoneyTree',
+        name:'rainmaker',
         text:'摇钱树活动',
         vue: null,
         children:[

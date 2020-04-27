@@ -90,6 +90,7 @@
 
 <script>
 export default {
+  name:'fresher_deposit',
   data() {
     return {
       form: {
