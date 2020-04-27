@@ -209,6 +209,7 @@
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
           <el-input
+            disabled
             type="textarea"
             autosize
             resize="none"
@@ -218,6 +219,7 @@
         </el-form-item>
         <el-form-item label="ios配置" :label-width="formLabelWidth">
           <el-input
+            disabled
             type="textarea"
             autosize
             resize="none"
@@ -227,6 +229,7 @@
         </el-form-item>
         <el-form-item label="windows配置" :label-width="formLabelWidth">
           <el-input
+            disabled
             type="textarea"
             autosize
             resize="none"
@@ -319,7 +322,7 @@ export default {
           }
         ]
       },
-      loading: false,
+      loading: false
     };
   },
   filters: {
@@ -580,7 +583,7 @@ export default {
           .then(res => {
             console.log(res);
             if (res.data.code === 200) {
-              that.form.game_info = JSON.stringify(res.data.data.list)
+              that.form.game_info = JSON.stringify(res.data.data.list);
               that.form.androidConfig = that.formatResource(
                 res.data.data.list.android
               );
@@ -595,7 +598,7 @@ export default {
                 type: "success",
                 message: "资源包上传成功"
               });
-            }else {
+            } else {
               that.loading = false;
               that.$message({
                 type: "error",

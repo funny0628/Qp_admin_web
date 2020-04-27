@@ -79,15 +79,6 @@
           :default-checked-keys="checkedKeys"
           :props="defaultProps"
         ></el-tree>
-        <!-- <el-tree
-        :data="rightsData"
-        ref="tree"
-        default-expand-all
-        :default-checked-keys="checkedKeys"
-        show-checkbox
-        node-key="id"
-        :props="defaultProps">
-        </el-tree>-->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRightAssign = false">取 消</el-button>
@@ -284,7 +275,6 @@ export default {
       console.log(res);
       if (res.data.code === 200) {
         this.rightData = res.data.data;
-        console.log("this.rightData", this.rightData)
       }
       //获取当前角色具有的权限
       function getCurrentRoleRights(rightsList) {
@@ -317,15 +307,11 @@ export default {
             dict[item.parent_id].push(item.id)
           }
         }
-        console.log('dict', dict)
         for (let a = arr.length - 1; a >= 0; a--) {
           if (dict[arr[a]]) {
-            console.log("delete key", arr[a]);
-            console.log()
             arr.splice(arr.indexOf(arr[a]), 1)
           } 
         }
-        console.log('---', arr)
         return arr
       }
       const result = await this.$http
