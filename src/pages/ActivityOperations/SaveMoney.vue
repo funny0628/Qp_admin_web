@@ -84,6 +84,7 @@
 
 <script>
 export default {
+  name:'daily_rescue',
   data() {
     return {
       form: {
