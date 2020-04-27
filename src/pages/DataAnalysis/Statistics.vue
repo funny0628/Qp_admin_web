@@ -64,13 +64,11 @@ export default {
     let today = new Date().getTime();
     this.start_time = this.initTime(today);
     this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
-    // console.log(this.start_time, this.end_time);
-
     this.getData();
   },
   methods: {
     search() {
-        this.getData();
+      this.getData();
     },
 
 
@@ -97,7 +95,6 @@ export default {
 
     async initData(params) {
       let {data} = await this.$http.DataAnalysis.GetStatistical(params);
-      // console.log(data);
       this.tableData = data.data.list1
       this.titleData = data.data.list2
     }
@@ -107,9 +104,7 @@ export default {
 
 <style lang="less" scoped>
 #Statistics {
-  .title {
-    margin-top: 20px;
-  }
+  padding: 20px;
   .table {
     margin-top: 20px;
   }

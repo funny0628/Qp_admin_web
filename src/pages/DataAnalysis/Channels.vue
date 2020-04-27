@@ -48,120 +48,16 @@
         style="width: 100%"
       >
         <el-table-column
-          fixed
-          prop="channel"
-          label="渠道"
+          :fixed="item.label === '渠道' ? 'left' : false"
+          v-for="(item,index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
           width="150"
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
-          sortable
-          prop="new_user"
-          label="新增用户"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          sortable
-          prop="new_bind_user"
-          label="新增绑卡用户"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-       
-        <el-table-column
-          sortable
-          prop="recharge_money"
-          label="充值金额"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          sortable
-          prop="recharge_user"
-          label="充值人数"
-          align="center"
-         width="150"
-        >
-        </el-table-column>
-        
-        <el-table-column
-          sortable
-          prop="withdraw_money"
-          label="兑换金额"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-         <el-table-column
-          sortable
-          prop="new_user_recharge_money"
-          label="新用户充值金额"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-       
-        <el-table-column
-          sortable
-          prop="agent_withdraw_money"
-          label="代理提现金额"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-         <el-table-column
-          prop="recharge_arpu"
-          label="付费ARPU值"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          sortable
-          prop="day_recover"
-          label="当日回收"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-       
-        <el-table-column
-          sortable
-          prop="new_user_recharge_counts"
-          label="新用户充值人数"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-      
-       
-        <el-table-column
-          sortable
-          prop="new_user_recharge_rate"
-          label="新用户付费率"
-          align="center"
-         width="150"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-       
-
       </el-table>
       <!-- 分页 -->
       <el-pagination
@@ -180,6 +76,7 @@
 </template>
 
 <script>
+import LoginVue from '../login/Login.vue';
 export default {
   name:'channel_report',
   data() {
@@ -191,7 +88,57 @@ export default {
       currentPage: 1,
       limit: 10,
       total: "",
-      tableData: []
+      tableData: [],
+      titleData:[
+        {
+          label:'渠道',
+          prop:'channel'
+        },
+        {
+          label:'新增用户',
+          prop:'new_user',
+        },
+        {
+          label:'新增绑卡用户',
+          prop:'new_bind_user',
+        },
+        {
+          label:'充值金额',
+          prop:'recharge_money',
+        },
+        {
+          prop:'recharge_user',
+          label:'充值人数',
+        },
+        {
+          prop:'withdraw_money',
+          label:'兑换金额',
+        },
+        {
+          prop:'new_user_recharge_money',
+          label:'新用户充值金额',
+        },
+        {
+          prop:'agent_withdraw_money',
+          label:'代理提现金额',
+        },
+        {
+          prop:'recharge_arpu',
+          label:'付费ARPU值',
+        },
+        {
+          prop:'day_recover',
+          label:'当日回收',
+        },
+        {
+          prop:'new_user_recharge_counts',
+          label:'新用户充值人数',
+        },
+        {
+          prop:'new_user_recharge_rate',
+          label:'新用户付费率',
+        },
+      ]
     };
   },
   created() {
@@ -266,6 +213,7 @@ export default {
 
 <style scoped lang="less">
 #Channels {
+  padding: 20px;
   .table {
     margin-top: 20px;
   }

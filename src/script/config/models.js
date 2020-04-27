@@ -405,11 +405,11 @@ const models = {
             text:'平台邮件',
             vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/platformEmail')), 'platformEmail')
           },
-          {
-            name:'allServersEmail',
-            text:'全服邮件',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/allServersEmail')), 'allServersEmail')
-          },
+          // {
+          //   name:'allServersEmail',
+          //   text:'全服邮件',
+          //   vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/allServersEmail')), 'allServersEmail')
+          // },
         ]
       },
     ]

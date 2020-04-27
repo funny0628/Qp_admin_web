@@ -53,137 +53,22 @@
       >
         <p v-if="activeName === '1'">
           <el-table-column
-            fixed="left"
-            prop="date"
-            label="日期"
+            v-for="(item, index) in titleData1"
+            :key="index"
+            :prop="item.prop"
+            :label="item.label"
             align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_lost"
-            label="流失用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_lost_bingding"
-            label="流失绑卡用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_lost_ay"
-            label="付费流失用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="user_lost_rate"
-            label="用户流失率"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="user_lost_bingding_rate"
-            label="绑定流失率"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_lost_pay_rate"
-            label="付费流失率"
-            align="center"
-            width="200"
             show-overflow-tooltip
           >
           </el-table-column>
         </p>
         <p v-if="activeName === '2'">
           <el-table-column
-            fixed="left"
-            prop="date"
-            label="日期"
+            v-for="(item, index) in titleData2"
+            :key="index"
+            :prop="item.prop"
+            :label="item.label"
             align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_return"
-            label="回归用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_natural_return"
-            label="自然回归用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_activity_return"
-            label="主动招回用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_return_bingding"
-            label="回归绑卡用户"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_natural_return_bingding"
-            label="自然回归绑卡"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="user_activity_return_bingding"
-            label="主动招回绑卡"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_return_rate"
-            label="用户回率"
-            align="center"
-            width="200"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_return_bingding_rate"
-            label="绑卡回率"
-            align="center"
-            width="200"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -217,7 +102,75 @@ export default {
       limit: 10,
       currentPage: 1,
       total: "",
-      activeName: '1'
+      activeName: "1",
+      titleData1: [
+        {
+          prop: "date",
+          label: "日期"
+        },
+        {
+          prop: "user_lost",
+          label: "流失用户"
+        },
+        {
+          prop: "user_lost_bingding",
+          label: "流失绑卡用户"
+        },
+        {
+          prop: "user_lost_ay",
+          label: "付费流失用户"
+        },
+        {
+          prop: "user_lost_rate",
+          label: "用户流失率"
+        },
+        {
+          prop: "user_lost_bingding_rate",
+          label: "绑定流失率"
+        },
+        {
+          prop: "user_lost_pay_rate",
+          label: "付费流失率"
+        }
+      ],
+      titleData2: [
+        {
+          prop: "date",
+          label: "日期"
+        },
+        {
+          prop: "user_return",
+          label: "回归用户"
+        },
+        {
+          prop: "user_natural_return",
+          label: "自然回归用户"
+        },
+        {
+          prop: "user_activity_return",
+          label: "主动招回用户"
+        },
+        {
+          prop: "user_return_bingding",
+          label: "回归绑卡用户"
+        },
+        {
+          prop: "user_natural_return_bingding",
+          label: "自然回归绑卡"
+        },
+        {
+          prop: "user_activity_return_bingding",
+          label: "主动招回绑卡"
+        },
+        {
+          prop: "user_return_rate",
+          label: "用户回率"
+        },
+        {
+          prop: "user_return_bingding_rate",
+          label: "绑卡回率"
+        }
+      ]
     };
   },
   created() {
@@ -236,7 +189,6 @@ export default {
     handleClick(tab) {
       this.getData();
     },
-
 
     //页容量变化
     handleSizeChange(num) {
@@ -293,7 +245,6 @@ export default {
     //获取表格数据
     async initData(params) {
       let { data } = await this.$http.DataAnalysis.GetrLoss(params);
-    //   console.log(data);
       this.tableData = data.data;
       this.total = data.total;
     }
@@ -303,6 +254,7 @@ export default {
 
 <style lang="less" scoped>
 #FlyBack {
+  padding: 20px;
   .title {
     margin-top: 20px;
   }

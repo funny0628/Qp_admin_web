@@ -340,6 +340,7 @@ export default {
 
 <style lang="less" scoped>
 #ChannelsReport {
+  padding: 20px;
   .table {
     margin-top: 20px;
   }
