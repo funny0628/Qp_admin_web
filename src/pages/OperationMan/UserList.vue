@@ -79,15 +79,6 @@
           show-overflow-tooltip
         >
 
-        <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="ToGM(scope.row)"
-              >{{scope.row.uid}}</el-button
-            >
-          </template>
-
         </el-table-column>
         <el-table-column
           prop="nickname"
@@ -114,7 +105,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="buycount"
+          prop="total_deposit"
           label="累计充值"
           align="center"
           width="120"
@@ -423,12 +414,7 @@ export default {
   },
 
   methods: {
-    ToGM(row){
-      console.log("00000");
-      // vue: r => require.ensure([], () => r(require('../../pages/RepertoryMan/GMconfig_child/GMcontrol')), 'GMcontrol')
-  
-    },
-    
+
     //筛查
     search() {
       // console.log(this.value,this.level,this.avator_nameO,this.phone,this.UID,this.IP,this.start_time,this.end_time,);
@@ -532,8 +518,7 @@ export default {
             ? item.uid
             : item.nickname;
         item.status = item.status === 1 ? "解封" : "封号";
-        // item.last_deposit_time = this.data(item.last_deposit_time*1000)
-        //处理返回的事件戳为格式时间
+    
       });
       return res;
     },
@@ -562,7 +547,7 @@ export default {
       // console.log(fres);
       this.tableData = fres;
       this.total = data.total;
-      console.log(data);
+      // console.log(data);
     },
     //VIP记录列表 / 渠道列表
     async initVIP(params) {
@@ -590,19 +575,18 @@ export default {
       let { data } = await this.$http.OperationMan.GetUserDetail(params);
       // console.log(data.data);
       this.formData = this.formateNum(data.data);
-      this.formData.icon_border = 'http://192.168.1.24:8000/' + this.formData.icon_border
+      this.formData.icon_border = this.$baseUrl + this.formData.icon_border
       // console.log(this.formData);
     },
 
     //获取用户封号信息
     async initUserLock(params) {
       let { data } = await this.$http.OperationMan.GetUserLock(params);
-      console.log(data.data);
+      // console.log(data.data);
       if (Object.keys(data.data || {}).length !== 0) {
-        console.log('--------');
-        console.log(data.data);
+        // console.log(data.data);
         let resData = data.dada;
-        console.log(timestampToTime);
+        // console.log(timestampToTime);
         resData.endtime = this.timestampToTime(resData.endtime)
         resData.op_time = this.timestampToTime(resData.op_time)
         this.visibiTable = true;
@@ -610,7 +594,7 @@ export default {
       } else {
         return false;
       }
-      console.log(this.formTable);
+      // console.log(this.formTable);
     }
   }
 };

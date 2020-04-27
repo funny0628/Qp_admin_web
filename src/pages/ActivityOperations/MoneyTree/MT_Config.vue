@@ -1,9 +1,15 @@
 <template>
-  <div id="MoneyTree">
+  <div
+    id="MoneyTree"
+    v-loading="loading"
+    element-loading-text="正在上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.6)"
+  >
     <!-- title -->
     <div class="title">
       <el-button type="primary" @click="add">添加</el-button>
-      <el-button type="primary" @click="send">发送服务器配置</el-button>
+      <el-button type="primary" @click="send(2)">发送服务器配置</el-button>
     </div>
     <!-- table -->
     <div class="table">
@@ -187,7 +193,8 @@ export default {
       keys: "",
       id: "",
       allData: {},
-      servebg_url: ""
+      servebg_url: "",
+      loading: false
     };
   },
   created() {
@@ -197,7 +204,7 @@ export default {
     add() {
       this.editForm(true, "新增", {});
     },
-    async send() {
+    async send(type) {
       //发送post
       let resTable = DeepData(this.tableData);
       resTable.forEach(item => {
@@ -236,14 +243,44 @@ export default {
           this.allData[item].ac_content.cash_cow = objData;
         }
       });
-      let { data } = await this.$http.HallFunConfig.PostActivityNew5({
+      console.log(this.allData);
+
+      let { data } = await this.$http.HallFunConfig.PostActivityNew3({
         keys: this.keys,
         values: JSON.stringify(this.allData),
         id: this.id
       });
       console.log(data);
-      if(data.code === 1){
-        this.initData()
+      if (data.code === 1 && data.msg === "ok") {
+        if (type === 1) {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: "保存成功!"
+          });
+        } else {
+          // this.initData();
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: "发送服务器配置成功!"
+          });
+        }
+      } else {
+        if (type === 1) {
+          this.loading = false;
+          this.$message({
+            type: "success",
+            message: "保存失败!"
+          });
+        } else {
+          this.loading = false;
+          this.$message({
+            type: "warning",
+            message: "发送服务器配置失败!"
+          });
+        }
+        
       }
     },
 
@@ -266,6 +303,7 @@ export default {
     onSubmit() {
       this.form.icon_cash_cow_url = this.servebg_url;
       this.tableData.push(this.form);
+      this.send(1);
       this.editForm(false, "新增", {});
     },
     back() {
@@ -278,14 +316,15 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetActivityNew5({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew3({
         key: "activity_new.lua"
       });
-      //   console.log(data);
+      console.log(data);
       this.keys = data.data[0].sys_key;
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      console.log(this.allData);
       Object.keys(this.allData).forEach(item => {
         if (this.allData[item].ac_type === "10003") {
           this.tableData = Object.values(
@@ -293,8 +332,9 @@ export default {
           );
         }
       });
-      let weight = "";
+
       this.tableData.forEach(item => {
+        let weight = "";
         Object.values(item.weight_info).forEach(it => {
           item.weight_info = weight += `${it.coin}=${it.weight},`;
           item.weight_info = item.weight_info.substring(
@@ -303,7 +343,7 @@ export default {
           );
         });
       });
-      // console.log(this.tableData, this.allData);
+      console.log(this.tableData, this.allData);
     }
   }
 };
@@ -315,7 +355,7 @@ export default {
     margin-top: 20px;
   }
   .table {
-    margin-top: 20px;
+    margin: 20px;
     img {
       width: 100%;
       object-fit: scale-down;

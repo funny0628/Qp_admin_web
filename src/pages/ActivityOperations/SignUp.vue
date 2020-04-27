@@ -66,45 +66,61 @@ export default {
       // console.log(this.allData);
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          if (type === 1) {
-            let { data } = await this.$http.HallFunConfig.PutActivityNew5({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
-              });
-            }else{
-               this.$message({
-                type: "warning",
-                message: "保存失败!"
-              });
-            }
-          } else if (type === 2) {
-            this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostActivityNew5({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
+          let all = true; //quanbu shi shuzi
+          Object.values(this.form).forEach(item => {
+            if (!isNaN(item)) {
+              all = true;
             } else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
+              all = false;
             }
+          });
+          if (all) {
+            if (type === 1) {
+              let { data } = await this.$http.HallFunConfig.PutActivityNew5({
+                keys: this.keys,
+                values: JSON.stringify(this.allData),
+                id: this.id
+              });
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.$message({
+                  type: "success",
+                  message: "保存成功!"
+                });
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "保存失败!"
+                });
+              }
+            } else if (type === 2) {
+              this.loading = true;
+              let { data } = await this.$http.HallFunConfig.PostActivityNew5({
+                keys: this.keys,
+                values: JSON.stringify(this.allData),
+                id: this.id
+              });
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.loading = false;
+                this.$message({
+                  type: "success",
+                  message: "发送服务器配置成功!"
+                });
+              } else {
+                this.loading = false;
+                this.$message({
+                  type: "warning",
+                  message: "发送服务器配置失败!"
+                });
+              }
+            }
+          } else {
+            this.$message({
+              type: "warning",
+              message: "所有项都必须是数字!"
+            });
+            return false;
           }
         } else {
           this.$message({
