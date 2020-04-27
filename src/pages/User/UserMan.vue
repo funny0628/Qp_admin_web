@@ -19,7 +19,11 @@
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
         <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
         <el-table-column prop="phone" label="电话" align="center"></el-table-column>
-        <el-table-column prop="channel" label="渠道" align="center"></el-table-column>
+        <el-table-column prop="channel" label="渠道" align="center">
+          <template slot-scope="scope">
+            <span>{{String(JSON.parse(scope.row.channel))}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="create_time" label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
@@ -338,6 +342,7 @@ export default {
     //   }
     // },
     handleRole(index, row) {
+      console.log(row)
       this.dialogRoleAssign = true;
       this.form.uid = row.id;
       this.form2.role = ""

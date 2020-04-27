@@ -48,6 +48,10 @@
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button
+                v-loading.fullscreen="loading"
+                element-loading-text="加载中..."
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.1)"
                 v-has="'play_detail'"
                 size="mini"
                 type="primary"
@@ -198,15 +202,34 @@
     <!-- 游戏详情  百家乐-传奇 -->
     <el-dialog title="详情" :visible.sync="dialogBaihapVisible" width="70%">
       <el-form :model="form" style="background-color:#f2f2f2;">
-        <div style="width:100%;height:30px;line-height:30px;">{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
             <td width="150">{{item.side}}</td>
-            <td width="150" v-if="item.cards">{{String(item.cards)}} <span v-if="item.win===true" style="font-size:20px;color:#ff6746;">赢</span><span v-else style="font-size:20px;color:#55b97b;">输</span></td>
-            <td width="150" v-else><span>否</span></td>
-            <td width="200" style="color:#129e90;">总输赢: {{item.total_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;总下注:{{item.bet_coins}}</td>
-            <td width="200" style="color:#129e90;">玩家输赢: {{item.player_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;玩家下注:{{item.player_bet_coins}}</td>
-            <td width="150">非免佣: {{item.bet_coins_not_commission}}&nbsp;&nbsp;&nbsp;&nbsp;免佣:{{item.bet_coins_commission}}</td>
+            <td width="150" v-if="item.cards">
+              {{String(item.cards)}}
+              <span
+                v-if="item.win===true"
+                style="font-size:20px;color:#ff6746;"
+              >赢</span>
+              <span v-else style="font-size:20px;color:#55b97b;">输</span>
+            </td>
+            <td width="150" v-else>
+              <span>否</span>
+            </td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >总输赢: {{item.total_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;总下注:{{item.bet_coins}}</td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >玩家输赢: {{item.player_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;玩家下注:{{item.player_bet_coins}}</td>
+            <td
+              width="150"
+            >非免佣: {{item.bet_coins_not_commission}}&nbsp;&nbsp;&nbsp;&nbsp;免佣:{{item.bet_coins_commission}}</td>
           </tr>
         </table>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
@@ -221,8 +244,215 @@
             <th>输赢金额</th>
             <th>台费</th>
           </tr>
+          <tr></tr>
+        </table>
+      </el-form>
+    </el-dialog>
+    <!-- 游戏详情  红黑大战-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogRedBlackVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <div style="text-align:center;height:50px;line-height:50px;">
+          <span v-for="(item,index) in tableData" :key="index">
+            {{item.side + ":"+String(item.cards)+ `(${item.card_type})`+";"}}
+            <span
+              v-if="item.win===true"
+            >结果:{{item.side + '赢'}}</span>
+          </span>
+        </div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.side}}</td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >总下注:{{item.bet_coins}}&nbsp;&nbsp;&nbsp;&nbsp;玩家下注: {{item.player_bet_coins}}</td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >玩家输赢: {{item.player_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          </tr>
+        </table>
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
           <tr>
-            
+            <th>玩家id</th>
+            <th>红</th>
+            <th>黑</th>
+            <th>特殊牌型</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr v-for="(item,index) in player_win_list" :key="index">
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.win_coins}}</td>
+            <td>{{item.uid}}</td>
+          </tr>
+        </table>
+      </el-form>
+    </el-dialog>
+    <!-- 游戏详情  炸金花-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogGoldFlowVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}</div>
+        <div style="text-align:center;height:50px;line-height:50px;">
+          底注: {{exinfo.dizhu}}&nbsp;&nbsp;&nbsp;&nbsp;
+          轮数: {{exinfo.round}}&nbsp;&nbsp;&nbsp;&nbsp;
+          所有下注:{{exinfo.total_score}}&nbsp;&nbsp;&nbsp;&nbsp;
+          结束原因: {{exinfo.end_type}}
+        </div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.uid}}</td>
+            <td width="150">{{item.card_type}}</td>
+            <td width="150">下注:{{item.bet_coins}}</td>
+            <td width="150">输赢:{{item.add_score}}</td>
+            <td width="150">{{String(item.cards)}}</td>
+            <td width="150" v-if="item.win===true">赢</td>
+            <td width="150" v-else>输</td>
+          </tr>
+        </table>
+      </el-form>
+    </el-dialog>
+    <!-- 游戏详情  龙虎斗-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogDragonVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <div style="text-align:center;height:50px;line-height:50px;">
+          <span
+            v-for="(item,index) in tableData"
+            :key="index"
+          >{{item.side + ":"+String(item.cards) + ','}}</span>
+          <span
+            v-for="(item,index) in tableData"
+            :key="index"
+            v-if="item.win===true"
+          >结果:{{item.side + '赢'}}</span>
+        </div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.side}}</td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >总下注:{{item.bet_coins}}&nbsp;&nbsp;&nbsp;&nbsp;玩家下注: {{item.player_bet_coins}}</td>
+            <td
+              width="200"
+              style="color:#129e90;"
+            >玩家输赢: {{item.player_side_win}}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          </tr>
+        </table>
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
+          <tr>
+            <th>玩家id</th>
+            <th>龙</th>
+            <th>虎</th>
+            <th>和</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr v-for="(item,index) in player_win_list" :key="index">
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.win_coins}}</td>
+            <td>{{item.uid}}</td>
+          </tr>
+        </table>
+      </el-form>
+    </el-dialog>
+    <!-- 游戏详情  百人牛牛-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogBaiNiuNiuVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.side}}</td>
+            <td width="150">{{item.card_type}}</td>
+            <td width="150">{{String(item.cards)}}</td>
+            <td width="150">总下注:{{item.bet_coins}}</td>
+            <td width="150">总输赢:{{item.total_side_win}}</td>
+          </tr>
+        </table>
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
+          <tr>
+            <th>玩家id</th>
+            <th>庄家</th>
+            <th>黑</th>
+            <th>红</th>
+            <th>梅</th>
+            <th>方</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr v-for="(item,index) in player_win_list" :key="index">
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.uid}}</td>
+            <td>{{item.win_coins}}</td>
+            <td>{{item.uid}}</td>
+          </tr>
+        </table>
+      </el-form>
+    </el-dialog>
+    <!-- 游戏详情  奔驰宝马-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogCarVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <div style="text-align:center;height:50px;line-height:50px;">
+          开奖: {{exinfo.win_side}}&nbsp;&nbsp;&nbsp;&nbsp;
+          玩家下注:{{exinfo.total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;
+          玩家总输赢: {{exinfo.total_win}}
+        </div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.side}}</td>
+            <td width="150">下注:{{item.bet_coins}}</td>
+            <td width="150" v-if="item.is_winner===true">赢</td>
+            <td width="150" v-else>输</td>
+          </tr>
+        </table>
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
+          <tr>
+            <th>玩家id</th>
+            <th v-for="(item,index) in tableData" :key="index">{{item.side}}</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr>
+            <td></td>
           </tr>
         </table>
       </el-form>
@@ -253,6 +483,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -326,9 +557,16 @@ export default {
       dialogCowVisible: false, //抢牛庄主
       system_result: "",
       err_result: "",
+      game_name: "",
       dialogLandlordVisible: false, //斗地主
-      dialogFishVisible: false,//捕鱼达人
-      dialogBaihapVisible:false,//百家乐
+      dialogFishVisible: false, //捕鱼达人
+      dialogBaihapVisible: false, //百家乐
+      dialogRedBlackVisible: false, //红黑大战
+      player_win_list: [],
+      dialogGoldFlowVisible: false, //炸金花
+      dialogDragonVisible: false, //龙虎斗
+      dialogBaiNiuNiuVisible: false, //百人牛牛
+      dialogCarVisible: false //奔驰宝马
     };
   },
   methods: {
@@ -385,6 +623,7 @@ export default {
       });
     },
     handleEdit(row) {
+      this.loading = true;
       console.log(row);
       this.$http
         .get("v1/backend/operation/play/detail", {
@@ -395,6 +634,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.loading = false;
             this.tableName = res.data.data.table_name;
             if (res.data.data.game_name == "水果机") {
               this.dialogFruitVisible = true;
@@ -409,15 +649,55 @@ export default {
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "斗地主") {
               this.dialogLandlordVisible = true;
-              this.exinfo = res.data.data.exinfo
+              this.exinfo = res.data.data.exinfo;
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "捕鱼达人") {
               this.dialogFishVisible = true;
-            }else if(res.data.data.game_name == "百家乐") {
-              this.dialogBaihapVisible = true
+            } else if (res.data.data.game_name == "百家乐") {
+              this.dialogBaihapVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
               this.err_result = res.data.data.exinfo.err_result;
-              this.tableData = res.data.data.side_list
+              this.game_name = res.data.data.game_name;
+              this.tableData = res.data.data.side_list;
+            } else if (res.data.data.game_name == "红黑大战") {
+              this.dialogRedBlackVisible = true;
+              this.system_result = res.data.data.exinfo.system_result;
+              this.err_result = res.data.data.exinfo.err_result;
+              this.game_name = res.data.data.game_name;
+              this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.filter(item => {
+                return item;
+              })[0].player_win_list;
+            } else if (res.data.data.game_name == "炸金花") {
+              this.dialogGoldFlowVisible = true;
+              this.system_result = res.data.data.exinfo.system_result;
+              this.exinfo = res.data.data.exinfo;
+              this.tableData = res.data.data.side_list;
+            } else if (res.data.data.game_name == "龙虎斗") {
+              this.dialogDragonVisible = true;
+              this.system_result = res.data.data.exinfo.system_result;
+              this.err_result = res.data.data.exinfo.err_result;
+              this.game_name = res.data.data.game_name;
+              this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.filter(item => {
+                return item;
+              })[0].player_win_list;
+            } else if (res.data.data.game_name == "三倍场百人牛牛") {
+              this.dialogBaiNiuNiuVisible = true;
+              this.system_result = res.data.data.exinfo.system_result;
+              this.err_result = res.data.data.exinfo.err_result;
+              this.game_name = res.data.data.game_name;
+              this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.filter(item => {
+                return item;
+              })[0].player_win_list;
+            } else if (res.data.data.game_name == "奔驰宝马") {
+              this.dialogCarVisible = true;
+              this.system_result = res.data.data.exinfo.system_result;
+              this.err_result = res.data.data.exinfo.err_result;
+              this.game_name = res.data.data.game_name;
+              this.exinfo = res.data.data.exinfo;
+              this.tableData = res.data.data.side_list;
             }
           }
         });
@@ -429,30 +709,6 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getPlayList();
-    },
-    Change() {
-      var myTable;
-      myTable = document.getElementById("tbltest");
-      var TDcount = myTable.firstChild.children[0].children.length;
-
-      for (i = 0; i < TDcount; i++) {
-        //添加转换后的tbody内的子元素
-        myTable.firstChild.appendChild(
-          creatTR(myTable.firstChild.children[0].children[i].innerHTML)
-        );
-      }
-
-      //删除原始的tbody内的子元素
-      myTable.firstChild.removeChild(myTable.firstChild.children[0]);
-    },
-
-    //根据传进来的内如形成一行
-    creatTR(innetHTML) {
-      var newTD = document.createElement("TD");
-      newTD.innerText = innetHTML;
-      var newTR = document.createElement("TR");
-      newTR.appendChild(newTD);
-      return newTR;
     }
   },
   mounted() {

@@ -24,7 +24,6 @@
        <!-- table -->
     <div class="table">
       <el-table
-
         :data="tableData"
         highlight-current-row
         tooltip-effect="dark"
@@ -32,59 +31,14 @@
         style="width: 100%"
       >
         <el-table-column
-          
-          prop="days"
-          label="日期"
+          v-for="(item,index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
-          width="260"
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
-          
-          prop="user_reg"
-          label="新增账号个数"
-          align="center"
-         width="260"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          
-          prop="pay_user_d"
-          label="首日付费账号个数"
-          align="center"
-         width="260"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="day_change"
-          label="首日付费率"
-          align="center"
-         width="260"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-
-        <el-table-column
-          prop="pay_user_w"
-          label="首周付费账号个数"
-          align="center"
-         width="260"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="week_change"
-          label="首周付费率"
-          align="center"
-         width="260"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
       </el-table>
       <!-- 分页 -->
       <el-pagination
@@ -113,6 +67,32 @@ export default {
       currentPage:1,
       limit:10,
       total:'',
+      titleData:[
+        {
+           prop:"days",
+          label:"日期"
+        },
+        {
+           prop:"user_reg",
+          label:"新增账号个数"
+        },
+        {
+           prop:"pay_user_d",
+          label:"首日付费账号个数"
+        },
+        {
+           prop:"day_change",
+          label:"首日付费率"
+        },
+        {
+           prop:"pay_user_w",
+          label:"首周付费账号个数"
+        },
+        {
+           prop:"week_change",
+          label:"首周付费率"
+        },
+      ]
     };
   },
   created() {
@@ -164,10 +144,8 @@ export default {
     //获取表格数据
     async initData(params) {
       let { data } = await this.$http.DataAnalysis.GetrPaySwitch(params);
-    //   let resData = data.data;
-    //   resData.forEach(item => {
-    //     item.days = this.initTime(item.days * 1000);
-    //   });
+      console.log(data);
+      
       this.tableData = data.data;
       this.total = data.total;
     }
@@ -177,6 +155,7 @@ export default {
 
 <style lang="less" scoped>
 #NewPlayerChange {
+  padding: 20px;
   .top {
     width: 100%;
     height: 40px;

@@ -55,7 +55,7 @@
       <div>
         <div v-if="form.ac_content" class="topTitle">
           <p>
-            <el-form-item label="活动触发时间点:" prop="ac_day_time">
+            <el-form-item label="活动触发时间点:" prop="ac_content">
               <el-time-picker
                 v-model="form.ac_content.open_time"
                 value-format="HH:mm:ss"
@@ -66,7 +66,7 @@
             </el-form-item>
           </p>
           <p>
-            <el-form-item label="每次触发持续时间:" prop="last_time">
+            <el-form-item label="每次触发持续时间:" prop="ac_content">
               <el-input
                 style="width:150px;"
                 v-model="form.ac_content.continue"
@@ -75,7 +75,7 @@
             </el-form-item>
           </p>
           <p>
-            <el-form-item v-if="form.ac_content.pack_num" label="每人每次领取红包:" prop="get_num">
+            <el-form-item v-if="form.ac_content.pack_num" label="每人每次领取红包:" prop="ac_content">
               <el-input
                 style="width:150px;"
                 v-model="form.ac_content.pack_num[0]"
@@ -90,7 +90,7 @@
             </el-form-item>
           </p>
           <p>
-            <el-form-item label="总发放金额:" prop="all_coin">
+            <el-form-item label="总发放金额:" prop="ac_content">
               <el-input
                 style="width:150px;"
                 v-model="form.ac_content.all_coin"
@@ -101,10 +101,11 @@
         </div>
 
         <div class="topTitle" style="border-top:none">
-          <el-form-item v-if="form.ac_content.vip_range.length>0" label="奖励:" prop="level">
             <p>
               <el-button type="primary" @click="add">添加</el-button>
             </p>
+          <el-form-item v-if="form.ac_content.vip_range !== undefined && form.ac_content.vip_range.length>0" label="奖励:" prop="ac_content">
+          
             <div v-for="(item, index) in form.ac_content.vip_range" style="margin-top:20px">
               VIP等级区间:
               <el-input
@@ -167,18 +168,9 @@ export default {
         ac_end_time: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        ac_day_time: [
+        ac_content: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        get_num: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        all_coin: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        level: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ]
       },
       form: {
         ac_name: "",
@@ -206,7 +198,9 @@ export default {
     //添加
     add() {
       // console.log('add');
-      this.form.ac_content.vip_range.push([]);
+      console.log(this.form);
+      
+      this.form.ac_content.vip_range.push([[],'',[]]);
     },
 
     //删除
@@ -220,50 +214,60 @@ export default {
     async onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          if (type === 1) {
-            //put
-            // console.log(this.allData);
-            let { data } = await this.$http.HallFunConfig.PutActivityNew4({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
+          let all = Object.values(this.form.ac_content).some((item)=>{
+            return item === '' || item === []
+          })
+          if(!all){
+            if (type === 1) {
+              //put
+              // console.log(this.allData);
+              let { data } = await this.$http.HallFunConfig.PutActivityNew4({
+                keys: this.keys,
+                values: JSON.stringify(this.allData),
+                id: this.id
               });
-            }else{
-               this.$message({
-                type: "warning",
-                message: "保存失败"
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.$message({
+                  type: "success",
+                  message: "保存成功!"
+                });
+              }else{
+                this.$message({
+                  type: "warning",
+                  message: "保存失败"
+                });
+              }
+            } else if (type === 2) {
+              //post
+              this.loading = true;
+              let { data } = await this.$http.HallFunConfig.PostActivityNew4({
+                keys: this.keys,
+                values: JSON.stringify(this.allData),
+                id: this.id
               });
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.loading = false;
+                this.$message({
+                  type: "success",
+                  message: "发送服务器配置成功!"
+                });
+              } else {
+                this.loading = false;
+                this.$message({
+                  type: "warning",
+                  message: "发送服务器配置失败"
+                });
+              }
             }
-          } else if (type === 2) {
-            //post
-            this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostActivityNew4({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
-            } else {
-              this.loading = false;
+            this.initData();
+           }else{
               this.$message({
                 type: "warning",
-                message: "发送服务器配置失败"
+                message: "必填的项不可以为空!"
               });
-            }
-          }
-          this.initData();
+           }
         } else {
           this.$message({
             type: "warning",
@@ -298,7 +302,7 @@ export default {
 <style lang="less" scoped>
 #Rainstorm {
   // background-color: #f2f2f2;
-
+  padding: 20px;
   p {
     margin-top: 20px;
   }

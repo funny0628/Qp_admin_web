@@ -20,35 +20,35 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="id"
+          prop="AnnouncementId"
           label="ID"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="title"
+          prop="Title"
           label="公告标题"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="tag"
+          prop="Tag"
           label="标签"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="start_time"
+          prop="StartTime"
           label="公告开始时间"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="end_time"
+          prop="EndTime"
           label="公告结束时间"
           align="center"
           show-overflow-tooltip
@@ -62,14 +62,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="sort"
+          prop="Sort"
           label="排序"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="show_status"
+          prop="Status"
           label="状态"
           align="center"
           show-overflow-tooltip
@@ -117,7 +117,7 @@
       >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
           <el-form-item label="公告标题" prop="title">
-            <el-input placeholder="邮件标题" v-model="form.title"></el-input>
+            <el-input placeholder="邮件标题" v-model="form.Title"></el-input>
           </el-form-item>
           <el-form-item label="公告类型" prop="type_id">
             <el-select v-model="form.type_id">
@@ -128,25 +128,25 @@
           <el-form-item
             v-if="form.type_id === 1"
             label="公告简介"
-            prop="description"
+            prop="Description"
           >
             <el-input
               type="textarea"
               placeholder="请输入内容"
-              v-model="form.description"
+              v-model="form.Description"
             ></el-input>
           </el-form-item>
-          <el-form-item label="标签" prop="tag">
-            <el-select v-model="form.tag">
+          <el-form-item label="标签" prop="Tag">
+            <el-select v-model="form.Tag">
               <el-option label="没有标签" :value="1"></el-option>
               <el-option label="新" :value="2"></el-option>
               <el-option label="热门" :value="3"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="开始时间" prop="start_time">
+          <el-form-item label="开始时间" prop="StartTime">
             <el-date-picker
-              v-model="form.start_time"
+              v-model="form.StartTime"
               type="date"
               placeholder="选择日期"
               format="yyyy-MM-dd HH:mm:ss"
@@ -155,9 +155,9 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="结束时间" prop="end_time">
+          <el-form-item label="结束时间" prop="EndTime">
             <el-date-picker
-              v-model="form.end_time"
+              v-model="form.EndTime"
               type="date"
               placeholder="选择日期"
               format="yyyy-MM-dd HH:mm:ss"
@@ -166,12 +166,12 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model="form.sort"></el-input>
+          <el-form-item label="排序" prop="Sort">
+            <el-input v-model="form.Sort"></el-input>
             <span>排序只可以为数字</span>
           </el-form-item>
-          <el-form-item label="状态" prop="show_status">
-            <el-select v-model="form.show_status">
+          <el-form-item label="状态" prop="Status">
+            <el-select v-model="form.Status">
               <el-option label="展示" :value="1"></el-option>
               <el-option label="隐藏" :value="2"></el-option>
             </el-select>
@@ -185,7 +185,7 @@
               :before-upload="beforeAvatarUpload"
               :limit="1"
             >
-              <img v-if="form.image_url" :src="form.image_url" class="avatar" />
+              <img v-if="form.ImageUrl" :src="form.ImageUrl" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -215,53 +215,53 @@ export default {
       serveUrl: "",
       tableData: [],
       form: {
-        title: "",
+        Title: "",
         type_id: 1,
-        description: "",
-        image_url: "",
-        tag: 1,
-        start_time: "",
-        end_time: "",
-        sort: "",
-        show_status: 1
+        Description: "",
+        ImageUrl: "",
+        Tag: 1,
+        StartTime: "",
+        EndTime: "",
+        Sort: "",
+        Status: 1
       },
       rules: {
-        title: [
+        Title: [
+          { required: true, message: "必填项不可以为空", trigger: "blur" }
+        ],
+        Description: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
         type_id: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
-        description: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        start_time: [
+        StartTime: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
         ],
-        end_time: [
+        EndTime: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
         ],
-        sort: [
+        Sort: [
           {
             required: true,
             message: "必填项不能为空,只能输入数字",
             trigger: "blur"
           }
         ],
-        show_status: [
+        Status: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
         ]
       },
       initForm: {
-        title: "",
+        Title: "",
+        Description: '',
         type_id: 1,
-        description: "",
-        image_url: "",
-        tag: 1,
-        start_time: "",
-        end_time: "",
-        sort: "",
-        show_status: 1
+        ImageUrl: "",
+        Tag: 1,
+        StartTime: "",
+        EndTime: "",
+        Sort: "",
+        Status: 1
       }
     };
   },
@@ -278,7 +278,7 @@ export default {
     beforeAvatarUpload(file) {
       // console.log(file);
       if (file) {
-        this.form.image_url = URL.createObjectURL(file);
+        this.form.ImageUrl = URL.createObjectURL(file);
       }
     },
     upLoad(file) {
@@ -290,7 +290,7 @@ export default {
         // console.log(data);
         if (data.data.code === 1 && data.data.msg === "ok") {
           this.serveUrl = data.data.path;
-          this.form.image_url = URL.createObjectURL(file);
+          this.form.ImageUrl = URL.createObjectURL(file);
         }
       });
     },
@@ -345,8 +345,8 @@ export default {
       // console.log(row);
       this.form = this.formateNum(DeepData(row));
 
-      this.form.start_time = this.data(row.start_time);
-      this.form.end_time = this.data(row.end_time);
+      this.form.StartTime = this.data(row.StartTime);
+      this.form.EndTime = this.data(row.EndTime);
       // console.log(this.form);
       this.editForm("编辑", true, this.form);
     },
@@ -362,7 +362,7 @@ export default {
         .then(async () => {
           //2.发送请求在后台删除数据
           let { data } = await this.$http.HallFunConfig.DeleteGameNotice({
-            id: row.id
+            id: row.AnnouncementId
           });
           // console.log(data);
           if (data.code === 1 && data.msg === "ok") {
@@ -389,7 +389,7 @@ export default {
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.form.image_url = this.serveUrl;
+          this.form.ImageUrl = this.serveUrl;
           // console.log(this.form);
 
           if (type === "新增") {
@@ -408,8 +408,8 @@ export default {
             }
           } else if (type === "编辑") {
             // console.log(this.form);
-            if (this.form.image_url === "") {
-              this.form.image_url = "image_url";
+            if (this.form.ImageUrl === "") {
+              this.form.ImageUrl = "ImageUrl";
             }
             let { data } = await this.$http.HallFunConfig.PutGameNotice(
               this.form
@@ -436,19 +436,19 @@ export default {
       this.title = title;
       this.visible = visible;
       this.form = form;
-      console.log(this.form);
+      // console.log(this.form);
     },
 
     formateData(res) {
       res.forEach(item => {
-        item.type_id = item.type_id === 1 ? "文字" : "图片";
-        item.show_status = item.show_status === 1 ? "展示" : "隐藏";
-        if (item.tag === 1) {
-          item.tag = "没有标签";
-        } else if (item.tag === 2) {
-          item.tag = "新";
+        item.type_id = item.Description  ? "文字" : "图片";
+        item.Status = item.Status === 1 ? "展示" : "隐藏";
+        if (item.Tag === 1) {
+          item.Tag = "没有标签";
+        } else if (item.Tag === 2) {
+          item.Tag = "新";
         } else {
-          item.tag = "热门";
+          item.Tag = "热门";
         }
       });
       return res;
@@ -457,19 +457,19 @@ export default {
     formateNum(item) {
       if (
         typeof item.type_id === "number" &&
-        typeof item.tag === "number" &&
-        typeof item.show_status === "number"
+        typeof item.Tag === "number" &&
+        typeof item.Status === "number"
       )
         return;
 
       item.type_id = item.type_id === "文字" ? 1 : 2;
-      item.show_status = item.show_status === "展示" ? 1 : 2;
-      if (item.tag === "没有标签") {
-        item.tag = 1;
-      } else if (item.tag === "新") {
-        item.tag = 2;
+      item.Status = item.Status === "展示" ? 1 : 2;
+      if (item.Tag === "没有标签") {
+        item.Tag = 1;
+      } else if (item.Tag === "新") {
+        item.Tag = 2;
       } else {
-        item.tag = 3;
+        item.Tag = 3;
       }
 
       return item;
