@@ -82,12 +82,12 @@ export default {
       default() {
         return function() {};
       }
-    },
+    }
   },
   data() {
     let $this = this;
     return {
-      MODEL: MODEL,
+      MODEL: MODEL
       // models: (function () {
       //     let ls = [];
       //     for (let k in $this.$pageInfo.models) {
@@ -187,26 +187,23 @@ export default {
     clickItem(item) {
       this.$emit("clickItem", item);
     },
-    close() {
-    },
-    open() {
-    },
+    close() {},
+    open() {},
     //获取侧边栏权限列表
     getRightsList(dict, names) {
-
-      if (Object.prototype.toString.call(dict) !== '[object Array]') {
+      if (Object.prototype.toString.call(dict) !== "[object Array]") {
         for (let key in dict) {
           let item = dict[key];
           if (names.indexOf(key) < 0) {
             delete dict[key];
-            continue
+            continue;
           }
           if (item.children && item.children.length > 0) {
             this.getRightsList(item.children, names);
           }
         }
       } else {
-        for (let i = dict.length - 1; i >= 0 ; i --) {
+        for (let i = dict.length - 1; i >= 0; i--) {
           let item2 = dict[i];
           if (names.indexOf(item2.name) < 0) {
             dict.splice(i, 1);
@@ -225,22 +222,21 @@ export default {
     },
     get_permission_names(rightArr) {
       let arr = [];
-      let nameList = []
+      let nameList = [];
       const fn = function(list) {
-        // if(list.length === 0) {
-        //   return undefined
-        // }
-        list.forEach(item => {
-          if(!item.children) {
-            arr.push(item.name)
-            nameList.push(item.display_name)
-          }else {
-            arr.push(item.name)
-            nameList.push(item.display_name)
-            fn(item.children)
-          }
-        })
-      }
+        if (list.length > 0) {
+          list.forEach(item => {
+            if (!item.children) {
+              arr.push(item.name);
+              nameList.push(item.display_name);
+            } else {
+              arr.push(item.name);
+              nameList.push(item.display_name);
+              fn(item.children);
+            }
+          });
+        }
+      };
       // for (let i = 0; i < list.length; i++) {
       //   let item = list[i];
       //   console.log(item)
@@ -257,16 +253,16 @@ export default {
       //   //   arr = [...arr, ...self.get_permission_names(item.children)];
       //   // }
       // }
-      fn(rightArr)
-      console.log(nameList)
+      fn(rightArr);
+      console.log(nameList);
       return arr;
-    },
+    }
   },
   created() {
-    let userInfo = JSON.parse(localStorage.getItem('user_info'));
-    console.log(userInfo)
+    let userInfo = JSON.parse(localStorage.getItem("user_info"));
+    console.log(userInfo);
     let permission_names = this.get_permission_names(userInfo);
-    console.log(permission_names)
+    console.log(permission_names);
     this.getRightsList(MODEL, permission_names);
   }
 };
@@ -275,11 +271,11 @@ export default {
 <style>
 #navMenu {
   height: 100%;
-  background: #262e3f;
+  background: #1f232a;
 }
 #navMenu .logo {
   width: 100%;
-  min-height: 56px;
+  min-height: 60px;
 }
 #navMenu .el-menu {
   border: none;
@@ -287,14 +283,14 @@ export default {
   user-select: none;
 }
 #navMenu .el-menu .single .el-menu-item {
-  background: #262e3f;
+  background: #0f1212;
   color: #8e8e8e;
-  height: 40px;
-  line-height: 40px;
+  height: 56px;
+  line-height: 56px;
 }
 #navMenu .el-menu .single .el-menu-item:hover,
 #navMenu .el-menu .single .el-menu-item.is-active {
-  background: #262e3f;
+  background: #01c8ae;
   color: #fff;
 }
 #navMenu .el-submenu {
@@ -328,8 +324,8 @@ export default {
   overflow: hidden;
 }
 #navMenu .el-submenu .el-menu-item {
-  height: 36px;
-  line-height: 36px;
+  height: 50px;
+  line-height: 50px;
 }
 #navMenu .el-menu-item-group > ul {
   background: #1a1f2b;
@@ -337,8 +333,8 @@ export default {
 }
 #navMenu .el-submenu .el-menu-item:hover,
 #navMenu .el-submenu .el-menu-item.is-active {
+  background: #01c8ae;
   color: #fff;
-  background: #1a1f2b;
 }
 #navMenu .el-menu-item:hover span::selection,
 #navMenu .el-menu-item.is-active span::selection,

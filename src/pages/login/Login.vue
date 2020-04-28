@@ -107,6 +107,7 @@ export default {
           name: "home",
         });
         localStorage.setItem('user_info', JSON.stringify(res.data.data));
+        localStorage.setItem('user', JSON.stringify(this.formData.username));
       } else {
         this.$message({
           type: "error",
