@@ -33,7 +33,12 @@
             name: 'withdraw',
             count: 0,
             label: '兑换',
-          }  // 兑换
+          }, // 兑换
+          recharge: {
+            name: 'recharge',
+            count: 0,
+            label: '充值'
+          }
         }
       }
     },
@@ -50,7 +55,7 @@
 
 <style>
   #header-menu {display: flex;align-items: center;justify-content: center;height: 100%;margin-right:10px}
-  #header-menu ul {display:flex;align-items: center;justify-content: space-between;width: 140px}
+  #header-menu ul {display:flex;align-items: center;justify-content: space-between;width: 300px}
   #header-menu ul li {display:inline-block;cursor: pointer}
   #header-menu ul li .el-badge sup {border: none}
 </style>

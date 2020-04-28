@@ -235,8 +235,8 @@ export default {
       this.initData({
         page: this.currentPage,
         limit: this.limit,
-        start_date: +this.startDate,
-        end_data: +this.endDate,
+        start_date: +this.endDate,
+        end_data: +this.startDate,
         channel_name: this.avator_nameO === "所有渠道" ? "" : this.avator_nameO
       });
     },

@@ -27,11 +27,11 @@
               <a class="btn-menu" @click="showNavMenu = !showNavMenu"></a>
             </el-col>
             <el-col class="header-row hidden-xs-only" :sm="12" :md="12" :lg="12" v-if="!isPhone">
-              <span>本次登陆IP: 192.168.1.1</span>
+              <span>欢迎登录</span>
             </el-col>
             <el-col
               class="header-row"
-              :xs="14"
+              :xs="10"
               :sm="10"
               :md="10"
               :lg="10"
@@ -60,11 +60,16 @@
                 </div>
               </template>
             </el-col>
-            <el-col :xs="4" :sm="2" :md="2" :lg="2">
+            <el-col :xs="8" :sm="2" :md="2" :lg="2">
+              <div style="position:relative;cursor: pointer;">
+                {{loginUser}}
+              <i class="el-icon-caret-bottom" @click="showLoginoutFn"></i>
               <div
-                style="width:50px;height:20px;background-color:#00ff00;text-align:center;cursor:pointer;"
+                class="loginout"
+                v-if="showLoginout"
                 @click="logout"
               >退出</div>
+              </div>
             </el-col>
           </el-row>
           <div class="nav-menu rel" ref="quickMenu">
@@ -138,6 +143,8 @@ export default {
       hideItems: [],
       headerVue: root.headerVue,
       showNavMenu: false,
+      loginUser: "",
+      showLoginout: false
     };
   },
   methods: (() => {
@@ -152,7 +159,8 @@ export default {
       },
       add(name) {
         let item = $this.$pageInfo.pageList[name];
-
+        console.log($this.$pageInfo.pageList)
+console.log(item)
         let ls = $this.items.filter(data => name === data.name);
         if (ls.length <= 0) {
           $this.showItems.unshift(item);
@@ -208,6 +216,7 @@ export default {
         });
       },
       defaultShow() {
+        console.log($this.showItems,'home--------showitmes')
         if ($this.showItems.length === 0) {
           $this.showItems.push($this.$pageInfo.pageList[$this.defaultActive]);
         }
@@ -233,8 +242,8 @@ export default {
           console.log(res);
           if (res.data.code === 200) {
             this.$router.push({
-              name: 'login'
-            })
+              name: "login"
+            });
             this.$message({
               type: "success",
               message: res.data.msg
@@ -242,6 +251,13 @@ export default {
           }
         });
       },
+      showLoginoutFn() {
+        if (this.showLoginout == true) {
+          this.showLoginout = false;
+        } else {
+          this.showLoginout = true;
+        }
+      }
     };
   })(),
   computed: {
@@ -259,7 +275,7 @@ export default {
   },
   created() {
     $this = this;
-    console.log($this,'----------woshihome')
+    console.log($this, "----------woshihome");
     let active = "";
     let config = $this.$pageInfo.config;
     /** 测试 **/
@@ -278,8 +294,9 @@ export default {
     $this.activeName = active;
   },
   mounted() {
+    this.loginUser = JSON.parse(localStorage.getItem("user"));
     $this.init();
-    $this.$forceUpdate()
+    $this.$forceUpdate();
     let clientWidth = document.body.offsetWidth;
     /** 判断宽度 **/
     $this.$store.commit(SIZE_CHANGE, clientWidth <= 780);
@@ -296,6 +313,18 @@ export default {
 </script>
 
 <style scoped>
+.loginout {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background-color: #f2f2f2;
+  color: #000;
+  width: 50px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
 #home {
   height: 100%;
   width: 100%;
@@ -382,6 +411,7 @@ export default {
   width: 100%;
   height: 36px;
   line-height: 34px;
+  text-align: center;
   -webkit-user-select: none;
   user-select: none;
   border-top: 1px solid #e4e4e4;
@@ -402,13 +432,15 @@ export default {
   background: #f2f2f2;
 }
 #home .header-box .nav-menu .btn-nav {
+  text-align: center;
   line-height: 34px;
   float: left;
   color: #515a6e;
   cursor: pointer;
   position: relative;
   height: 100%;
-  padding: 0 20px;
+  width: 140px;
+  padding: 0 12px;
   font-size: 12px;
   background: #fff;
   border-right: 1px solid #e4e4e4;
@@ -424,7 +456,7 @@ export default {
   width: 6px;
   background: #a1a1a1;
   position: absolute;
-  left: 4px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
 }

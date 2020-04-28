@@ -187,7 +187,7 @@ export default {
     };
     return {
       dialogFormVisible: false,
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       dialogAddUser: false,

@@ -2,10 +2,11 @@
   <div id="FunSortConf-main">
     <input-area>
       <!-- <el-button type="danger">删除</el-button> -->
-      <el-button type="primary" @click="openAddDialog">添加</el-button>
+      <el-button v-has="'add_function_sort_config'" type="primary" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'function_sort_config_list'"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -15,8 +16,8 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button v-has="'modify_function_sort_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button v-has="'delete_function_sort_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             <template
               v-if="['action','func_list'].indexOf(scope.prop) < 0"
@@ -161,7 +162,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "FunSortConf",
+  name: "function_sort_config",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -172,7 +173,7 @@ export default {
   },
   data() {
     return {
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       dialogTitle: "",

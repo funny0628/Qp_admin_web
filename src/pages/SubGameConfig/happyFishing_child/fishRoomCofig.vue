@@ -85,6 +85,7 @@
 
 <script>
 export default {
+  name:'hl_fish_room_config',
   data() {
     return {
       ruleForm: {
