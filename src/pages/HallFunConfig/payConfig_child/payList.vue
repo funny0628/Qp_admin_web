@@ -27,95 +27,17 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" align="center"> </el-table-column>
-        <el-table-column sortable prop="id" label="ID" align="center">
-        </el-table-column>
-        <el-table-column prop="sort_id" label="排序" align="center">
-        </el-table-column>
+      
         <el-table-column
-          prop="pay_name"
-          label="支付名称"
+          v-for="(item,index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
           show-overflow-tooltip
+          :sortable="item.label === 'ID' ? true : false"
         >
         </el-table-column>
-        <el-table-column
-          prop="pay_channel"
-          label="支付渠道"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="pay_way"
-          label="支付方式"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="money_list"
-          label="固定充值金额"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="is_diy"
-          label="充值类型"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="diy_max"
-          label="自定义最大金额"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="diy_min"
-          label="可自定义最小金额"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="pay_desc"
-          label="支付备注"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="o_status"
-          label="是否生效"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="o_activity"
-          label="是否推荐"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="op_name"
-          label="操作者"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="created_at"
-          label="操作时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
         <el-table-column
           prop="change"
           label=""
@@ -151,10 +73,10 @@
     </div>
     <!-- form -->
     <div class="form">
-      <el-dialog :title="title" :visible.sync="visible">
+      <el-dialog :title="title" :visible.sync="visible" :destroy-on-close="true">
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
-          <el-form-item label="显示排序" prop="sort_num">
-            <el-input placeholder="显示排序" v-model="form.sort_num"></el-input>
+          <el-form-item label="显示排序" prop="sort_id">
+            <el-input placeholder="显示排序" v-model="form.sort_id"></el-input>
             <span>排序只可以为数字</span>
           </el-form-item>
           <el-form-item label="支付名称" prop="pay_name">
@@ -167,14 +89,67 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="支付方式(大类)" prop="pay_way">
-            <el-select v-model="form.pay_way">
-              <el-option label="支付宝" :value="1"></el-option>
-              <el-option label="微信" :value="2"></el-option>
-              <el-option label="银联" :value="3"></el-option>
-              <el-option label="银行卡转账" :value="4"></el-option>
-              <el-option label="VIP充值" :value="5"1</el-option>
+            <el-select v-model="form.pay_way" @change="Change">
+               <el-option
+                  v-for="item in opaObj"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
             </el-select>
           </el-form-item>
+           <el-form-item v-if="form.pay_way === 'unioncard'" label="转账银行卡配置" prop="">
+                <el-row>
+                  <el-col :span="12"> 
+                    收款人: <el-input
+                              style="width:200px;margin-top:20px"
+                              v-model="pay_info.rece_name"
+                              placeholder="收款人"
+                              class="el_input"
+                            ></el-input>
+                  </el-col>
+                  <el-col :span="12"> 
+                    卡号: <el-input
+                            style="width:200px;margin-top:20px"
+                            v-model="pay_info.rece_card_id"
+                            placeholder="卡号"
+                            class="el_input"
+                          ></el-input>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12"> 
+                     银行名称: <el-input
+                                style="width:200px;margin-top:20px"
+                                v-model="pay_info.rece_bank_name"
+                                placeholder="银行名称"
+                                class="el_input"
+                              ></el-input>
+                  </el-col>
+                  <el-col :span="12"> 
+                     银行支行: <el-input
+                                style="width:200px;margin-top:20px"
+                                v-model="pay_info.rece_bank_subname"
+                                placeholder="银行支行"
+                                class="el_input"
+                              ></el-input>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12"> 
+                     付款时限: <el-input
+                                style="width:200px;margin-top:20px"
+                                v-model="pay_info.rece_time_limit"
+                                placeholder="付款时限"
+                                class="el_input"
+                              ></el-input>
+                  </el-col>
+                  <el-col :span="12"> 
+                  </el-col>
+                </el-row>
+          </el-form-item>
+
           <el-form-item label="自定义金额" prop="is_diy">
 
              <el-radio-group v-model="form.is_diy">
@@ -202,10 +177,10 @@
           </el-form-item>
           </p>
      
-          <el-form-item label="常用充值金额" prop="money_num">
+          <el-form-item label="常用充值金额" prop="money_list">
             <el-input
               placeholder="请输入充值金额"
-              v-model="form.money_num"
+              v-model="form.money_list"
             ></el-input>
              <span>金额只可以为数字</span>
           </el-form-item>
@@ -239,8 +214,7 @@
 <script>
 import DeepData from '../../../assets/js/formate.js'
 export default {
-  name: "payList",
-
+  name: "pay_list",
   data() {
     return {
       orderlist: ["ascending", "descending"],
@@ -258,17 +232,18 @@ export default {
         pay_channel: "",
         pay_way: '',
         is_diy: '',
-        money_num: '',
+        money_list: '',
         diy_max: '',
         diy_min: '',
-        sort_num: '',
+        sort_id: '',
         pay_desc: "",
         o_status: '',
         o_activity: '',
         op_name: "op_name",
+        pay_info:{},
       },
       rules: {
-        sort_num: [
+        sort_id: [
           { required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }
         ],
         pay_name: [
@@ -278,15 +253,82 @@ export default {
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
         pay_way: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
+        pay_info: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
         is_diy: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
         diy_max: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
         diy_min: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
-        money_num: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
+        money_list: [{ required: true, message: "必填项不可以为空,只能输入数字", trigger: "blur" }],
         pay_desc: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
         o_activity: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
         o_status: [{ required: true, message: "必填项不可以为空", trigger: "blur" }],
      
-      }
+      },
+      opaObj:[],
+      pay_info:{
+        rece_name:'',
+        rece_card_id:'',
+        rece_bank_name:'',
+        rece_bank_subname:'',
+        rece_time_limit:'',
+      },
+      titleData:[
+        {
+          prop:"id",
+          label:"ID",
+        },
+        {
+          prop:"sort_id",
+          label:"排序",
+        },
+        {
+          prop:"pay_name",
+          label:"支付名称",
+        },
+        {
+          prop:"pay_channel",
+          label:"支付渠道",
+        },
+        {
+          prop:"pay_way",
+          label:"支付方式",
+        },
+        {
+          prop:"money_list",
+          label:"固定充值金额",
+        },
+        {
+          prop:"is_diy",
+          label:"充值类型",
+        },
+        {
+          prop:"diy_max",
+          label:"自定义最大金额",
+        },
+        {
+          prop:"diy_min",
+          label:"可自定义最小金额",
+        },
+        {
+          prop:"pay_desc",
+          label:"支付备注",
+        },
+        {
+          prop:"o_status",
+          label:"是否生效",
+        },
+        {
+          prop:"o_activity",
+          label:"是否推荐",
+        },
+        {
+          prop:"op_name",
+          label:"操作者",
+        },
+        {
+          prop:"created_at",
+          label:"操作时间",
+        },
+      ]
     };
   },
   created() {
@@ -303,7 +345,9 @@ export default {
     // 表格编辑
     handleEdit(row,formName) {
       this.editForm("更新", true,this.formateNum(DeepData(row)));
-      this.$refs[formName].resetFields();
+      if(row.pay_way === 'unioncard'){
+        this.pay_info = JSON.parse(row.pay_info)
+      }
     },
 
     //表格删除
@@ -317,11 +361,15 @@ export default {
           let { data } = await this.$http.HallFunConfig.DeletePaylist({
             id: row.id
           });
-          this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+          if(data.code === 1){
+            this.currentPage = 1;
+            this.limit = 10
+            this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          }
         })
         .catch(() => {
           this.$message({
@@ -344,40 +392,61 @@ export default {
       this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
     },
 
+    
+    Change(val){
+    },
+
     //表单提交
     onSubmit(formName, type) {
       this.$refs[formName].validate(async (valid, x) => {
         if (valid) {
-          if (type === "添加") {
-            // console.log(this.form);
             this.form.op_name = "op_name"
-            // console.log(this.form);
-             let { data } = await this.$http.HallFunConfig.PostPaylist(
+            this.form.pay_info = JSON.stringify(this.pay_info)
+          if (type === "添加") {
+            let { data } = await this.$http.HallFunConfig.PostPaylist(
               this.form
             );
-            // console.log(data);
-              if(data.code === 1 && data.msg === 'ok'){
-               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
-            }
+            console.log(data);
             
-            //  let fres = this.formateData(data.data);
-            // this.tableData = this.tableData.concat(fres);
-
+            if(data.code === 1 && data.msg === 'ok'){
+              this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+              this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "新增失败!"
+              });
+            }
           } else if (type === "更新") {
-            // console.log(this.form);
-
+            delete this.form.created_at
+            delete this.form.updated_at
              //发送请求到后台-------------------------------------------------------
               let { data } = await this.$http.HallFunConfig.PutPaylist(
               this.form
             );
-            // console.log(data);
-
-              if(data.code === 1 && data.msg === 'ok'){
-               this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+            if(data.code === 1 && data.msg === 'ok'){
+              this.initdata({ page: this.currentPage, limit: this.limit, title: this.searchinput });
+               this.$message({
+                type: "success",
+                message: "更新成功!"
+              });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "更新失败!"
+              });
             }
           }
-
-          //3.关闭新增的弹框
+           this.pay_info = {
+              rece_name:'',
+              rece_card_id:'',
+              rece_bank_name:'',
+              rece_bank_subname:'',
+              rece_time_limit:'',
+           }
           this.editForm("添加", false, {});
         } else {
           console.log("error submit!!");
@@ -393,24 +462,35 @@ export default {
 
     //添加
     add(formName) {
-      
       this.editForm("添加", true, {});
-      this.$refs[formName].resetFields();
     },
 
     //表格批量删除
     async del() {
       //勾选需要删除的项目批量删除
       if (this.selectList.length != 0) {
-        //###1.删除dom的数据
-        let str = this.selectList.join();
-        // console.log(str);
-        let { data } = await this.$http.HallFunConfig.DeletePaylist({id_list:`(${str})`});
-        // console.log(data);
-        if(data.code === 1 && data.msg === 'ok'){
-          this.initdata({ page: this.currentPage, limit: this.limit , title:this.searchinput});
-        }
-
+         let str = this.selectList.join();
+         this.$confirm("确认删除吗？", "信息", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(async () => {
+          let { data } = await this.$http.HallFunConfig.DeletePaylist({id_list:`(${str})`});
+          if(data.code === 1 && data.msg === 'ok'){
+            this.initdata({ page: this.currentPage, limit: this.limit , title:this.searchinput});
+          }
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
       } else {
         this.$message("请选择需要删除的数据");
       }
@@ -435,6 +515,7 @@ export default {
       this.visible = visible;
       this.form = form;
     },
+
     formateData(res) {
       if(Array.isArray(res)){
         res.forEach(item => {
@@ -476,49 +557,27 @@ export default {
         typeof item.pay_way === "number"
       )
         return;
-
-      item.is_diy = item.is_diy === "固定金额" ? 1 : 2;
+      item.is_diy = item.is_diy === "固定" ? 1 : 2;
       item.o_status = item.o_status === "不生效" ? 1 : 2;
       item.o_activity = item.o_activity === "不推荐" ? 1 : 2;
-      switch (item.pay_way) {
-        case "支付宝":
-          item.pay_way = 1;
-          break;
-        case "微信":
-          item.pay_way = 2;
-          break;
-        case "银联":
-          item.pay_way = 3;
-          break;
-        case "银行转账":
-          item.pay_way = 4;
-          break;
-        case "VIP充值":
-          item.pay_way = 5;
-          break;
-        default:
-          break;
-      }
       return item;
     },
 
     async initdata(params) {
+      //列表数据
       let { data } = await this.$http.HallFunConfig.GetPaylist(params);
       let localdata = this.formateData(DeepData(data.data));
       this.tableData = localdata;
       this.total = data.total;
-      console.log(data);
+      //支付方式数据
       let resdata = await this.$http.HallFunConfig.GetNameLiat({type_id:2});
-      console.log(resdata);
       let opation = resdata.data.data[0]
-      console.log(opation);
       let opaObj =[]
-      // Object.keys(opation).forEach((item)=>{
-      //   opaObj.push()
-      // })
-
+      Object.keys(opation).forEach((item)=>{
+        opaObj.push({label:opation[item],value:item})
+      })
+      this.opaObj = opaObj
     },
-  
   }
 };
 </script>
