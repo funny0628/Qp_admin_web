@@ -60,7 +60,7 @@
         <el-form-item label="KEY" :label-width="formLabelWidth">
           <el-input v-model="form.channel_key" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="文字一" :label-width="formLabelWidth">
+        <el-form-item label="图片一" :label-width="formLabelWidth">
           <!-- <el-input
             type="textarea"
             show-word-limit
@@ -90,7 +90,7 @@
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="文字一类型" :label-width="formLabelWidth">
+            <el-form-item label="图片一类型" :label-width="formLabelWidth">
               <el-select v-model="form.word1_type" placeholder="请选择文字一类型">
                 <el-option
                   v-for="(item,index) in wordTypeOpts"
@@ -117,7 +117,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="文字二" :label-width="formLabelWidth">
+        <el-form-item label="图片二" :label-width="formLabelWidth">
           <!-- <el-input
             type="textarea"
             v-model="form.name"
@@ -144,7 +144,7 @@
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="文字二类型" :label-width="formLabelWidth">
+            <el-form-item label="图片二类型" :label-width="formLabelWidth">
               <el-select v-model="form.word2_type">
                 <el-option
                   v-for="(item,index) in wordTypeOpts"
@@ -171,7 +171,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="文字三" :label-width="formLabelWidth">
+        <el-form-item label="图片三" :label-width="formLabelWidth">
           <!-- <el-input type="textarea" maxlength="30" placeholder="请输入内容;最多只能写30个字;最多三行!"></el-input> -->
           <el-upload
             class="avatar-uploader"
@@ -191,7 +191,7 @@
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="文字三类型" :label-width="formLabelWidth">
+            <el-form-item label="图片三类型" :label-width="formLabelWidth">
               <el-select v-model="form.word3_type">
                 <el-option
                   v-for="(item,index) in wordTypeOpts"
@@ -384,9 +384,9 @@ export default {
       tableStyle: [
         { label: "渠道名称", prop: "channel", width: "" },
         { label: "KEY", prop: "channel_key", width: "" },
-        { label: "文字一", prop: "pic_one_url", width: "" },
-        { label: "文字二", prop: "pic_two_url", width: "" },
-        { label: "文字三", prop: "pic_three_url", width: "" },
+        { label: "图片一", prop: "pic_one_url", width: "" },
+        { label: "图片二", prop: "pic_two_url", width: "" },
+        { label: "图片三", prop: "pic_three_url", width: "" },
         { label: "操作时间", prop: "create_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],

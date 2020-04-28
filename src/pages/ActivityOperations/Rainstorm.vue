@@ -152,6 +152,7 @@
 
 <script>
 export default {
+  name:'daily_storm',
   data() {
     return {
       loading: false,
