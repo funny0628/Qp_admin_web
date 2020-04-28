@@ -50,30 +50,30 @@ const models = {
       // },
     ]
   },
-  gameMan:{
-    name:'SubGameConfig',
+  game_config:{
+    name:'game_config',
     vue:null,
     text:'子游戏配置',
     children:[
       {
-        name:'happyFishing',
+        name:'hl_fish',
         text:'欢乐捕鱼',
         vue: null,
         children: [
           {
-            name: 'fishRoomCofig',
+            name: 'hl_fish_room_config',
             text: '捕鱼-房间配置',
-            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishRoomCofig')), 'fishRoomCofig')
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishRoomCofig')), 'hl_fish_room_config')
           },
           {
-            name: 'fishControl',
+            name: 'hl_fish_robot_config',
             text: '捕鱼-机器人控制',
-            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishControl')), 'fishControl')
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/fishControl')), 'hl_fish_robot_config')
           },
           {
-            name: 'batteryConfig',
+            name: 'hl_fish_fire_config',
             text: '炮台配置',
-            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/batteryConfig')), 'batteryConfig')
+            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/happyFishing_child/batteryConfig')), 'hl_fish_fire_config')
           },
         ]
       },
@@ -278,7 +278,7 @@ const models = {
     vue:null,
     children:[
       {
-        name:'payConfig',
+        name:'exchange_config',
         text:'支付配置',
         // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig')), 'payConfig'),
         children: [
@@ -288,9 +288,9 @@ const models = {
             vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/VIPpayConfig')), 'VIPpayConfig')
           },
           {
-            name: 'payList',
+            name: 'pay_list',
             text: '支付列表',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/payList')), 'payList')
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/PayConfig_child/payList')), 'pay_list')
           },
           {
             name: 'reportWayConfig',

@@ -46,6 +46,7 @@
 
 <script>
 export default {
+  name:'hl_fish_fire_config',
   data() {
     return {
       list: [],

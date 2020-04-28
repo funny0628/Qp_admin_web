@@ -7,12 +7,6 @@
     <!-- search -->
     <div class="search">
       <h3>统一配置</h3>
-      <!-- 推广链接域名配置:<el-input
-        placeholder="推广链接域名配置"
-        v-model="searchConfig"
-        style="margin-top:10px;width:200px"
-      ></el-input>
-      <el-button type="primary" @click="save">保存</el-button> -->
       <p><el-button type="primary" @click="add">新增</el-button></p>
     </div>
     <div class="table">
@@ -175,9 +169,6 @@ export default {
     this.initdata({ page: this.currentPage, limit: this.limit });
   },
   methods: {
-    //保存
-    // save() {},
-
     //添加
     add() {
       this.editForm("新增", true, {});
@@ -185,7 +176,6 @@ export default {
 
     //表格编辑
     handleEdit(row) {
-      // console.log("编辑", row);
       this.editForm("编辑", true, DeepData(row));
     },
 
@@ -197,11 +187,9 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          //2.发送请求在后台删除数据
           let { data } = await this.$http.allAgency.DeleteAllAgency({
             id: row.id
           });
-          // console.log(data);
           if (data.code === 1 && data.msg === "ok") {
             this.initdata({ page: this.currentPage, limit: this.limit });
           }
@@ -233,36 +221,57 @@ export default {
 
     //提交
     onSubmit(formName, type) {
-      // console.log(formName, type, this.form);
       this.$refs[formName].validate(async valid => {
         if (valid) {
           Object.keys(this.form).forEach(item => {
             this.form[item] = +(this.form[item]);
           });
-          console.log(this.form);
+          if(this.form.min > this.form.max){
+             this.$message({
+              type: "info",
+              message: "流水区间下限不可以超过流水区间上限!!"
+            });
+            return false
+          }
           if (this.form.rebate < 250) {
             if (type === "新增") {
               //发送post
               let { data } = await this.$http.allAgency.PostAllAgency(
                 this.form
               );
-              // console.log(data);
               if (data.code === 1 && data.msg === "ok") {
                 this.initdata({ page: this.currentPage, limit: this.limit });
+                this.$message({
+                  type: "success",
+                  message: "添加成功!!"
+                });
+              }else{
+                this.$message({
+                  type: "warning",
+                  message: "添加失败!!"
+                });
               }
             } else if (type === "编辑") {
               //发送put
               let { data } = await this.$http.allAgency.PutAllAgency(this.form);
-              // console.log(data);
               if (data.code === 1 && data.msg === "ok") {
                 this.initdata({ page: this.currentPage, limit: this.limit });
+                this.$message({
+                  type: "success",
+                  message: "编辑成功!!"
+                });
+              }else{
+                this.$message({
+                  type: "warning",
+                  message: "编辑失败!!"
+                });
               }
             }
             this.editForm("新增", false, {});
           } else {
             this.$message({
               type: "info",
-              message: "大于250"
+              message: "每万返佣额度输入最大值不超过250"
             });
           }
         } else {
@@ -282,7 +291,6 @@ export default {
       let { data } = await this.$http.allAgency.GetAllAgency(params);
       this.tableData = DeepData(data.data);
       this.total = data.total;
-      // console.log(data);
     }
   }
 };

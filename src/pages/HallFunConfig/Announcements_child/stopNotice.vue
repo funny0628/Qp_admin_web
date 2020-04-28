@@ -20,60 +20,16 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" align="center"> </el-table-column>
-        <el-table-column sortable prop="id" label="ID" align="center">
-        </el-table-column>
-
         <el-table-column
-          prop="title"
-          label="公告标题"
+          v-for="(item,index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
           show-overflow-tooltip
+          :sortable="item.label === 'ID' ? true : false"
         >
         </el-table-column>
-        <el-table-column
-          prop="info"
-          label="公告内容"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="inscribe"
-          label="	公告落款"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="notice_time"
-          label="通知时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="start_time"
-          label="公示开始时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="end_time"
-          label="公示结束时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="redactor"
-          label="操作者"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
         <el-table-column
           prop="change"
           label=""
@@ -139,8 +95,8 @@
               v-model="form.notice_time"
               type="date"
               placeholder="请输入通知时间"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="timestamp"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
             >
             </el-date-picker>
           </el-form-item>
@@ -220,7 +176,41 @@ export default {
       limit: 10,
       visible: false,
       title: "添加停服公告",
-      selectList: []
+      selectList: [],
+      titleData:[
+        {
+          prop:"id",
+          label:"ID",
+        },
+        {
+          prop:"title",
+          label:"公告标题",
+        },
+        {
+          prop:"info",
+          label:"公告内容",
+        },
+        {
+          prop:"inscribe",
+          label:"公告落款",
+        },
+        {
+          prop:"notice_time",
+          label:"通知时间",
+        },
+        {
+          prop:"start_time",
+          label:"公示开始时间",
+        },
+        {
+          prop:"end_time",
+          label:"公示结束时间",
+        },
+        {
+          prop:"redactor",
+          label:"操作者",
+        },
+      ]
     };
   },
   created() {
@@ -277,8 +267,6 @@ export default {
     //表格选中
     handleSelectionChange(sel) {
       let idList = sel.map(item => item.id);
-      // console.log(idList);
-
       this.selectList = idList;
     },
 
@@ -301,8 +289,8 @@ export default {
       let formData = DeepData(row);
       formData.start_time = this.data(row.start_time);
       formData.end_time = this.data(row.end_time);
-      formData.notice_time = this.data(row.notice_time);
-
+      let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+      formData.notice_time = formData.notice_time.replace(reg,"-")
       this.editForm("更新停服公告", true, formData);
     },
 
@@ -347,7 +335,23 @@ export default {
         if (valid) {
           this.form.start_time = Math.ceil(this.form.start_time / 1000);
           this.form.end_time = Math.ceil(this.form.end_time / 1000);
-          this.form.notice_time = Math.ceil(this.form.notice_time / 1000);
+          if(this.form.notice_time[this.form.notice_time.length-1] !== '-'){
+            this.form.notice_time += '-'
+          }
+          let arr = this.form.notice_time.split('')
+          let arrl = []
+          arr.forEach((item,index)=>{
+            if(item === '-'){
+              arrl.push(index)
+            }
+          })
+          arr[arrl[0]] = '年'
+          arr[arrl[1]] = '月'
+          arr[arrl[2]] = '日'
+          this.form.notice_time = arr.join('')
+          console.log(this.form);
+        
+
           if (type === "添加停服公告") {
             console.log(this.form);
 
@@ -447,7 +451,6 @@ export default {
       this.tableData.forEach(item => {
         item.start_time = this.initTime(item.start_time * 1000);
         item.end_time = this.initTime(item.end_time * 1000);
-        item.notice_time = this.initTime(item.notice_time * 1000);
       });
       // console.log(localdata);
       console.log(data.data);
