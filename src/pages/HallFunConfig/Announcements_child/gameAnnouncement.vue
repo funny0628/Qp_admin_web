@@ -20,57 +20,10 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="AnnouncementId"
-          label="ID"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Title"
-          label="公告标题"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Tag"
-          label="标签"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="StartTime"
-          label="公告开始时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="EndTime"
-          label="公告结束时间"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="type_id"
-          label="公告类型"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Sort"
-          label="排序"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Status"
-          label="状态"
+          v-for="(item,index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
           align="center"
           show-overflow-tooltip
         >
@@ -262,7 +215,41 @@ export default {
         EndTime: "",
         Sort: "",
         Status: 1
-      }
+      },
+      titleData:[
+        {
+          prop:"AnnouncementId",
+          label:"ID",
+        },
+        {
+          prop:"Title",
+          label:"公告标题",
+        },
+        {
+          prop:"Tag",
+          label:"标签",
+        },
+        {
+          prop:"StartTime",
+          label:"公告开始时间",
+        },
+        {
+          prop:"EndTime",
+          label:"公告结束时间",
+        },
+        {
+          prop:"type_id",
+          label:"公告类型",
+        },
+        {
+          prop:"Sort",
+          label:"排序",
+        },
+        {
+          prop:"Status",
+          label:"状态",
+        },
+      ]
     };
   },
   created() {
