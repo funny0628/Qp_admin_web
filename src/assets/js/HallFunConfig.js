@@ -163,6 +163,13 @@ let GetAllGameList = (params) => {
   })
 }
 
+//获取get获取类型id对应的name
+let GetNameLiat = (params) => {
+  return axios.get('v1/backend/lobby/name_type', {
+    params
+  })
+}
+
 //将表格数据提交到服务器
 let GetTableConfig = (params) => { //仅限于查看type_id
   return axios.get('v1/backend/lobby/server_config_two')
@@ -638,6 +645,7 @@ export default {
   GetServerConfig,
   PutServerConfig,
   PostServerConfig,
+  GetNameLiat,
   GetTableConfig,
   PostTableConfig,
   GetAllGameList,
