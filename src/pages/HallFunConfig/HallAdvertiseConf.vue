@@ -19,19 +19,31 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'pic_one_url'">
-              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
             <template v-if="scope.prop === 'pic_two_url'">
-              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
             <template v-if="scope.prop === 'pic_three_url'">
-              <img :src="scope.row[scope.prop]" width="50" height="50" alt="">
+              <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
             <template v-if="scope.prop === 'action'">
-              <el-button v-has="'modify_lobby_flyer'" type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button v-has="'delete_lobby_flyer'" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button
+                v-has="'modify_lobby_flyer'"
+                type="primary"
+                size="mini"
+                @click="handleEdit(scope.row)"
+              >编辑</el-button>
+              <el-button
+                v-has="'delete_lobby_flyer'"
+                type="danger"
+                size="mini"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
             </template>
-            <template v-if="['action','pic_one_url','pic_two_url','pic_three_url'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','pic_one_url','pic_two_url','pic_three_url'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -104,7 +116,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.word1_type!=='704'" label="URL" :label-width="formLabelWidth">
+            <el-form-item v-if="form.word1_type!=='4'" label="URL" :label-width="formLabelWidth">
               <el-input v-model="form.word1_url" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
@@ -158,7 +170,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.word2_type!=='704'" label="URL" :label-width="formLabelWidth">
+            <el-form-item v-if="form.word2_type!=='4'" label="URL" :label-width="formLabelWidth">
               <el-input v-model="form.word2_url" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
@@ -205,7 +217,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.word3_type!=='704'" label="URL" :label-width="formLabelWidth">
+            <el-form-item v-if="form.word3_type!=='4'" label="URL" :label-width="formLabelWidth">
               <el-input v-model="form.word3_url" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item v-else label="跳转位置" :label-width="formLabelWidth">
@@ -378,7 +390,7 @@ export default {
     };
     return {
       dialogTitle: "",
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       formLabelWidth: "120px",
@@ -399,15 +411,15 @@ export default {
         channel_name: "",
         channel_key: "",
         word1: "",
-        word1_type: "701",
+        word1_type: "",
         word1_url: "",
         word1_jump_position: "",
         word2: "",
-        word2_type: "701",
+        word2_type: "",
         word2_url: "",
         word2_jump_position: "",
         word3: "",
-        word3_type: "701",
+        word3_type: "",
         word3_url: "",
         word3_jump_position: ""
       },
@@ -439,33 +451,31 @@ export default {
         channel_name: "",
         channel_key: "",
         word1: "",
-        word1_type: "701",
+        word1_type: "",
         word1_url: "",
         word1_jump_position: "",
         word2: "",
-        word2_type: "701",
+        word2_type: "",
         word2_url: "",
         word2_jump_position: "",
         word3: "",
-        word3_type: "701",
+        word3_type: "",
         word3_url: "",
         word3_jump_position: ""
       };
     },
     //获取渠道列表
     getChannelList() {
-      this.$http
-        .get("v1/backend/no_channel", {
-          params: {
-            type_id: 2
-          }
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 1) {
-            this.channelOpts = res.data.data;
-          }
-        });
+      let data = {
+        type_id: 1,
+        add_id: 4
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
     },
     //获取图片类型列表
     getPicTypeList() {
@@ -653,10 +663,10 @@ export default {
   watch: {
     "form.word1_type": function(newVal, oldVal) {
       console.log(newVal);
-      if (newVal === "704") {
+      if (newVal === "4") {
         this.getJumpPathList();
       }
-      if (newVal === "702" || ("703" && newVal !== "701")) {
+      if (newVal === "2" || ("3" && newVal !== "1")) {
         this.$nextTick(() => {
           this.form.word1_url = this.form.word1;
         });

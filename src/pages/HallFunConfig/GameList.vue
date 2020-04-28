@@ -110,7 +110,7 @@ export default {
       tableStyle: [
         { label: "游戏名称", prop: "game_name", width: "" },
         { label: "游戏类型", prop: "game_id", width: "" },
-        { label: "创建时间", prop: "create_time", width: "" },
+        { label: "创建时间", prop: "created_at", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
       records: [],

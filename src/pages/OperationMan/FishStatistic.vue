@@ -26,11 +26,7 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="'payment'.indexOf(scope.prop) >= 0">
-              <span>{{ Math.round(Number(scope.row.fish_value)) - Math.round(Number(scope.row.bullet_value)) }}</span>
-              <div>
-                <span>{{ Math.round(Number(scope.row.fish_value)) + '---fish_value'}}</span>
-              <span>{{ Math.round(Number(scope.row.bullet_value)) + '---bullet_value'}}</span>
-              </div>
+              <span>{{Number(Number(scope.row.fish_value) - Number(scope.row.bullet_value)).toFixed(2)}}</span>
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button size="mini" type="primary" @click="handleRecord(scope.row)">记录</el-button>
@@ -52,8 +48,7 @@
     </div>
     <el-dialog title="捕鱼记录" :visible.sync="dialogFormVisible">
       <el-table :data="recordTableData" style="width: 100%" border>
-        <el-table-column prop="create_date" label="时间" width="180" align="center">
-        </el-table-column>
+        <el-table-column prop="create_date" label="时间" width="180" align="center"></el-table-column>
         <el-table-column prop="bullet_value" label="子弹总价值" width="180" align="center"></el-table-column>
         <el-table-column prop="fish_value" label="鱼价值" align="center"></el-table-column>
         <el-table-column label="收支" align="center">
@@ -196,8 +191,8 @@ export default {
         })
         .then(res => {
           console.log(res);
-          if(res.data.code === 200) {
-            this.recordTableData = res.data.data
+          if (res.data.code === 200) {
+            this.recordTableData = res.data.data;
           }
         });
     },

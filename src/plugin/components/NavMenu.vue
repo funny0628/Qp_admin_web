@@ -271,11 +271,11 @@ export default {
 <style>
 #navMenu {
   height: 100%;
-  background: #262e3f;
+  background: #1f232a;
 }
 #navMenu .logo {
   width: 100%;
-  min-height: 56px;
+  min-height: 60px;
 }
 #navMenu .el-menu {
   border: none;
@@ -283,14 +283,14 @@ export default {
   user-select: none;
 }
 #navMenu .el-menu .single .el-menu-item {
-  background: #262e3f;
+  background: #0f1212;
   color: #8e8e8e;
-  height: 40px;
-  line-height: 40px;
+  height: 56px;
+  line-height: 56px;
 }
 #navMenu .el-menu .single .el-menu-item:hover,
 #navMenu .el-menu .single .el-menu-item.is-active {
-  background: #262e3f;
+  background: #01c8ae;
   color: #fff;
 }
 #navMenu .el-submenu {
@@ -324,8 +324,8 @@ export default {
   overflow: hidden;
 }
 #navMenu .el-submenu .el-menu-item {
-  height: 36px;
-  line-height: 36px;
+  height: 50px;
+  line-height: 50px;
 }
 #navMenu .el-menu-item-group > ul {
   background: #1a1f2b;
@@ -333,8 +333,8 @@ export default {
 }
 #navMenu .el-submenu .el-menu-item:hover,
 #navMenu .el-submenu .el-menu-item.is-active {
+  background: #01c8ae;
   color: #fff;
-  background: #1a1f2b;
 }
 #navMenu .el-menu-item:hover span::selection,
 #navMenu .el-menu-item.is-active span::selection,

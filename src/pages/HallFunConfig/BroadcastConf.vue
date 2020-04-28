@@ -146,7 +146,7 @@ export default {
       }
     };
     return {
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       formLabelWidth: "120px",
