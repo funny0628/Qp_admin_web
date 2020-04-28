@@ -27,6 +27,10 @@
           <template slot-scope="scope">
             <template v-if="'payment'.indexOf(scope.prop) >= 0">
               <span>{{ Math.round(Number(scope.row.fish_value)) - Math.round(Number(scope.row.bullet_value)) }}</span>
+              <div>
+                <span>{{ Math.round(Number(scope.row.fish_value)) + '---fish_value'}}</span>
+              <span>{{ Math.round(Number(scope.row.bullet_value)) + '---bullet_value'}}</span>
+              </div>
             </template>
             <template v-if="scope.prop === 'action'">
               <el-button size="mini" type="primary" @click="handleRecord(scope.row)">记录</el-button>

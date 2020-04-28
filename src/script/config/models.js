@@ -349,14 +349,14 @@ const models = {
         vue: null,
         children: [
           {
-            name:'vipClassConf',
+            name:'vip_rank_config',
             text:'VIP等级配置',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipClassConf')), 'vipClassConf')
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipClassConf')), 'vip_rank_config')
           },
           {
-            name:'vipRobotConf',
+            name:'vip_robot_config',
             text:'VIP机器人配置',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipRobotConf')), 'vipRobotConf')
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/vip_child/VipRobotConf')), 'vip_robot_config')
           },
         ]
       },

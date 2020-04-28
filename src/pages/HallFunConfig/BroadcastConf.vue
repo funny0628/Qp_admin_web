@@ -3,12 +3,13 @@
     <input-area>
       <div>
         <!-- <el-button type="danger">删除</el-button> -->
-        <el-button type="primary" @click="openAdd">添加</el-button>
+        <el-button v-has="'add_broadcast_config'" type="primary" @click="openAdd">添加</el-button>
         <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
     </input-area>
     <div class="bd">
       <info-table
+        v-has="'broadcast_config_list'"
         :search="search"
         :table-style="tableStyle"
         :records="records"
@@ -23,8 +24,8 @@
               <span v-if="scope.row[scope.prop]  === 3">引导弹窗广播</span>
             </template>
             <template v-if="scope.prop === 'action'">
-              <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button v-has="'modify_broadcast_config'" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button v-has="'delete_broadcast_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             <template v-if="['action','type'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
@@ -122,7 +123,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 import Qs from "qs";
 export default {
-  name: "BroadcastConf",
+  name: "broadcast_config",
   extends: BaseIframe,
   components: {
     InfoTableItem,

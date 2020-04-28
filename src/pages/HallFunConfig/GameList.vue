@@ -1,6 +1,7 @@
 <template>
   <div id="GameList-main">
     <el-button
+      v-has="'add_game'"
       v-if="!showReturn"
       type="primary"
       @click="openAdd"
@@ -14,6 +15,7 @@
     >返回</el-button>
     <div class="bd">
       <info-table
+        v-has="'game_records'"
         :search="search"
         :table-style="tableStyle"
         :records="tableData"
@@ -29,7 +31,7 @@
                 type="primary"
                 @click="checkSubGame(scope.row)"
               >子游戏</el-button>
-              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button v-has="'modify_game'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button size="mini" type="primary" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
@@ -87,7 +89,7 @@ import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 export default {
-  name: "GameList",
+  name: "game_list",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -98,7 +100,7 @@ export default {
   },
   data() {
     return {
-      pagesize: 5,
+      pagesize: 10,
       currentPage: 1,
       total: 0,
       formLabelWidth: "120px",

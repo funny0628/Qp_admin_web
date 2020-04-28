@@ -3,6 +3,7 @@
     <input-area>
       <!-- <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button> -->
       <el-button
+        v-has="'add_vip_rank_config'"
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="openAddDialog"
@@ -11,6 +12,7 @@
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'vip_rank_config_records'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -30,8 +32,8 @@
         <el-table-column label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
             <!-- <el-button size="mini" type="primary" @click="handleOffline">下线</el-button> -->
-            <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button v-has="'modify_vip_rank_config'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button v-has="'delete_vip_rank_config'" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -189,7 +191,7 @@ import PageInfo from "../../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../../plugin/components/InfoTableItem";
 import InputArea from "../../../plugin/components/InputArea";
 export default {
-  name: "PayOrderRecord",
+  name: "vip_rank_config",
   components: {
     InfoTableItem,
     InfoTable,

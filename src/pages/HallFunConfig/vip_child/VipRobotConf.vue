@@ -3,12 +3,14 @@
     <input-area>
       <!-- <el-button type="danger" style="margin-top: 10px;margin-bottom: 10px;">删除</el-button> -->
       <el-button
+        v-has="'add_vip_robot_config'"
         type="primary"
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="openAddDialog"
       >添加</el-button>
       <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       <el-button
+        v-has="'robot_random_probability'"
         type="danger"
         size="medium"
         style="margin-top: 10px;margin-bottom: 10px;"
@@ -17,6 +19,7 @@
     </input-area>
     <div class="bd">
       <el-table
+        v-has="'vip_robot_config_records'"
         border
         ref="multipleTable"
         :data="tableData"
@@ -40,8 +43,8 @@
         </el-table-column>
         <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-has="'modify_vip_robot_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button v-has="'delete_vip_robot_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -139,7 +142,7 @@ import PageInfo from "../../../plugin/script/common/PageInfo";
 import InfoTableItem from "../../../plugin/components/InfoTableItem";
 import InputArea from "../../../plugin/components/InputArea";
 export default {
-  name: "PayOrderRecord",
+  name: "vip_robot_config",
   components: {
     InfoTableItem,
     InfoTable,
