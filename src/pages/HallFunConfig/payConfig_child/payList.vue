@@ -29,7 +29,7 @@
         <el-table-column type="selection" align="center"> </el-table-column>
         <el-table-column sortable prop="id" label="ID" align="center">
         </el-table-column>
-        <el-table-column prop="sort_num" label="排序" align="center">
+        <el-table-column prop="sort_id" label="排序" align="center">
         </el-table-column>
         <el-table-column
           prop="pay_name"
@@ -53,8 +53,8 @@
         >
         </el-table-column>
         <el-table-column
-          prop="money_num"
-          label="固定金额"
+          prop="money_list"
+          label="固定充值金额"
           align="center"
           show-overflow-tooltip
         >
@@ -109,7 +109,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="update_time"
+          prop="created_at"
           label="操作时间"
           align="center"
           show-overflow-tooltip
@@ -266,7 +266,6 @@ export default {
         o_status: '',
         o_activity: '',
         op_name: "op_name",
-
       },
       rules: {
         sort_num: [
@@ -295,42 +294,29 @@ export default {
   },
 
   methods: {
-
     //表格选中项
     handleSelectionChange(sel) {
-      // console.log(sel);
       let idList = sel.map(item => item.id)
-      // console.log(idList);
-      
       this.selectList = idList;
-      
     },
 
     // 表格编辑
     handleEdit(row,formName) {
-      // console.log(row);
-      // row = this.formateNum(DeepData(row))
-      // console.log(row);
-      
       this.editForm("更新", true,this.formateNum(DeepData(row)));
       this.$refs[formName].resetFields();
     },
 
     //表格删除
     handleDelete(x,row) {
-      console.log(x,row.id);
-      
      this.$confirm("确认删除吗？", "信息", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(async () => {
-          //2.发送请求在后台删除数据
           let { data } = await this.$http.HallFunConfig.DeletePaylist({
             id: row.id
           });
-          // console.log(data);
           this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
           this.$message({
             type: "success",
@@ -459,30 +445,29 @@ export default {
       }
       return res;
     },
+
+    //十位时间戳转格式事件
+    timestampToTime(timestamp) {
+      var date = new Date(timestamp * 1000);
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D = date.getDate() + " ";
+      var h = date.getHours() + ":";
+      var m = date.getMinutes() + ":";
+      var s = date.getSeconds();
+      return Y + M + D + h + m + s;
+    },
+
     formate(item){
-        item.is_diy = item.is_diy === 1 ? "固定金额" : "自定义金额";
+        item.is_diy = item.is_diy === 0 ? "固定" : "可自定义";
         item.o_status = item.o_status === 1 ? "不生效" : "生效";
         item.o_activity = item.o_activity === 1 ? "不推荐" : "推荐";
-        switch (item.pay_way) {
-          case 1:
-            item.pay_way = "支付宝";
-            break;
-          case 2:
-            item.pay_way = "微信";
-            break;
-          case 3:
-            item.pay_way = "银联";
-            break;
-          case 4:
-            item.pay_way = "银行转账";
-            break;
-          case 5:
-            item.pay_way = "VIP充值";
-            break;
-          default:
-            break;
-        }
+        item.created_at  = this.timestampToTime(item.created_at)
     },
+
     formateNum(item) {
       if (
         typeof item.is_diy === "number" &&
@@ -516,14 +501,22 @@ export default {
       }
       return item;
     },
+
     async initdata(params) {
       let { data } = await this.$http.HallFunConfig.GetPaylist(params);
-      // let deepData = DeepData(data.data)
       let localdata = this.formateData(DeepData(data.data));
       this.tableData = localdata;
       this.total = data.total;
-      // console.log(localdata);
-      // console.log(data);
+      console.log(data);
+      let resdata = await this.$http.HallFunConfig.GetNameLiat({type_id:2});
+      console.log(resdata);
+      let opation = resdata.data.data[0]
+      console.log(opation);
+      let opaObj =[]
+      // Object.keys(opation).forEach((item)=>{
+      //   opaObj.push()
+      // })
+
     },
   
   }
