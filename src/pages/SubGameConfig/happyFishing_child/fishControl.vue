@@ -106,6 +106,7 @@
 
 <script>
 export default {
+  name:'hl_fish_robot_config',
   data() {
     return {
       namelist:[],
@@ -172,10 +173,10 @@ export default {
         });
       }else {
           this.loading = false
-          this.$message({
-            type: "warning",
-            message: "发送服务器配置失败!"
-          });
+        this.$message({
+          type: "warning",
+          message: "发送服务器配置失败!"
+        });
       }
 
       }
