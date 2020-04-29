@@ -8,11 +8,11 @@
   >
     <div class="title">
       <h2>其他配置</h2>
-      <el-button type="primary" @click="send('form', 2)"
+      <el-button v-has="'rainmaker_other_config_send'" type="primary" @click="send('form', 2)"
         >发送服务器配置</el-button
       >
     </div>
-    <div class="form">
+    <div class="form" v-has="'rainmaker_other_config_detail'">
       <el-form
         ref="form"
         :rules="rules"
@@ -42,7 +42,7 @@
             placeholder="请输入内容"
           ></el-input>
         </el-form-item>
-        <el-button type="primary" @click="send('form', 1)">保存</el-button>
+        <el-button v-has="'rainmaker_other_config_save'" type="primary" @click="send('form', 1)">保存</el-button>
       </el-form>
     </div>
   </div>
@@ -50,6 +50,7 @@
 
 <script>
 export default {
+  name:'rainmaker_other_config',
   data() {
     return {
       form: {
@@ -84,7 +85,7 @@ export default {
           if (type === 1) {
             // console.log(this.form,this.allData);
 
-            let { data } = await this.$http.HallFunConfig.PutActivityNew3({
+            let { data } = await this.$http.HallFunConfig.PutActivityNew31({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -103,7 +104,7 @@ export default {
             }
           } else if (type === 2) {
             this.loading = true;
-            let { data } = await this.$http.HallFunConfig.PostActivityNew3({
+            let { data } = await this.$http.HallFunConfig.PostActivityNew31({
               keys: this.keys,
               values: JSON.stringify(this.allData),
               id: this.id
@@ -134,7 +135,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetActivityNew3({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew31({
         key: "activity_new.lua"
       });
       //   console.log(data);

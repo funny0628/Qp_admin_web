@@ -209,18 +209,44 @@ let PostActivityNew2 = (params) => { //get / search
   return axios.post('v1/backend/lobby/server_config/activity_new2', params)
 }
 
-//活动运营 ->摇钱树------------------------------------------
-let GetActivityNew3 = (params) => { //get / search
-  return axios.get('v1/backend/lobby/server_config/activity_new3', {
+//活动运营 ->摇钱树---其他配置--------------------------------------
+let GetActivityNew31 = (params) => { //get / search
+  return axios.get('v1/backend/lobby/server_config/activity_new31', {
     params
   })
 }
 
-let PutActivityNew3 = (params) => { //get / search
-  return axios.put('v1/backend/lobby/server_config/activity_new3', params)
+let PutActivityNew31 = (params) => { //get / search
+  return axios.put('v1/backend/lobby/server_config/activity_new31', params)
 }
-let PostActivityNew3 = (params) => { //get / search
-  return axios.post('v1/backend/lobby/server_config/activity_new3', params)
+let PostActivityNew31 = (params) => { //get / search
+  return axios.post('v1/backend/lobby/server_config/activity_new31', params)
+}
+//活动运营 ->摇钱树---摇钱树任务配置--------------------------------------
+let GetActivityNew32 = (params) => { //get / search
+  return axios.get('v1/backend/lobby/server_config/activity_new32', {
+    params
+  })
+}
+
+let PutActivityNew32 = (params) => { //get / search
+  return axios.put('v1/backend/lobby/server_config/activity_new32', params)
+}
+let PostActivityNew32 = (params) => { //get / search
+  return axios.post('v1/backend/lobby/server_config/activity_new32', params)
+}
+//活动运营 ->摇钱树---摇钱树配置--------------------------------------
+let GetActivityNew33 = (params) => { //get / search
+  return axios.get('v1/backend/lobby/server_config/activity_new33', {
+    params
+  })
+}
+
+let PutActivityNew33 = (params) => { //get / search
+  return axios.put('v1/backend/lobby/server_config/activity_new33', params)
+}
+let PostActivityNew33 = (params) => { //get / search
+  return axios.post('v1/backend/lobby/server_config/activity_new33', params)
 }
 
 //活动运营 ->每日暴风雨------------------------------------------
@@ -686,9 +712,15 @@ export default {
   GetActivityNew2,
   PutActivityNew2,
   PostActivityNew2,
-  GetActivityNew3,
-  PutActivityNew3,
-  PostActivityNew3,
+  GetActivityNew31,
+  PutActivityNew31,
+  PostActivityNew31,
+  GetActivityNew32,
+  PutActivityNew32,
+  PostActivityNew32,
+  GetActivityNew33,
+  PutActivityNew33,
+  PostActivityNew33,
   GetActivityNew4,
   PutActivityNew4,
   PostActivityNew4,
