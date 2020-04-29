@@ -9,10 +9,10 @@
     <!-- title -->
     <div class="title">
       <el-button type="primary" @click="add">添加</el-button>
-      <el-button type="primary" @click="send(2)">发送服务器配置</el-button>
+      <el-button v-has="'rainmaker_config_send'" type="primary" @click="send(2)">发送服务器配置</el-button>
     </div>
     <!-- table -->
-    <div class="table">
+    <div class="table" v-has="'rainmaker_config_detail'">
       <el-table
         :data="tableData"
         highlight-current-row
@@ -144,7 +144,7 @@
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form', title)"
+          <el-button v-has="'rainmaker_config_save'" type="primary" @click="onSubmit('form', title)"
             >保 存</el-button
           >
           <el-button type="primary" @click="back()">返 回</el-button>
@@ -157,6 +157,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'rainmaker_config',
   data() {
     return {
       tableData: [],
@@ -245,7 +246,7 @@ export default {
       });
       console.log(this.allData);
 
-      let { data } = await this.$http.HallFunConfig.PostActivityNew3({
+      let { data } = await this.$http.HallFunConfig.PostActivityNew33({
         keys: this.keys,
         values: JSON.stringify(this.allData),
         id: this.id
@@ -316,7 +317,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetActivityNew3({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew33({
         key: "activity_new.lua"
       });
       console.log(data);

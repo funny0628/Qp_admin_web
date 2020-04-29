@@ -805,19 +805,19 @@ const models = {
         vue: null,
         children:[
           {
-            name:'MT_Config',
+            name:'rainmaker_config',
             text:'摇钱树配置',
-            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_Config')), 'MT_Config'),
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_Config')), 'rainmaker_config'),
           },
           {
-            name:'MT_TaskConfig',
+            name:'rainmaker_job_config',
             text:'摇钱树任务配置',
-            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_TaskConfig')), 'MT_TaskConfig'),
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_TaskConfig')), 'rainmaker_job_config'),
           },
           {
-            name:'MT_OtherConfig',
+            name:'rainmaker_other_config',
             text:'其他配置',
-            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_OtherConfig')), 'MT_OtherConfig'),
+            vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/MoneyTree/MT_OtherConfig')), 'rainmaker_other_config'),
           },
         ]
       },
