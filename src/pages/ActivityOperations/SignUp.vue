@@ -9,8 +9,8 @@
     <div class="title">
       <div class="VIP">签到配置</div>
     </div>
-    <el-button type="primary" @click="send('form', 1)">保存</el-button>
-    <el-button type="primary" @click="send('form', 2)">发送到服务器</el-button>
+    <el-button v-has="'daily_sign_save'" type="primary" @click="send('form', 1)">保存</el-button>
+    <el-button v-has="'daily_sign_send'" type="primary" @click="send('form', 2)">发送到服务器</el-button>
     <div class="contain">
       <el-form
         ref="form"

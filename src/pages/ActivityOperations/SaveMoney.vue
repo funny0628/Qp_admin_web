@@ -8,7 +8,7 @@
   >
     <div>
       <h2>每日救赎金</h2>
-      <el-button type="primary" @click="send('form', 2)"
+      <el-button v-has="'daily_rescue_send'" type="primary" @click="send('form', 2)"
         >发送到服务器配置</el-button
       >
     </div>
@@ -77,7 +77,7 @@
           </p>
         </div>
       </el-form-item>
-      <el-button type="primary" @click="send('form', 1)">保存</el-button>
+      <el-button v-has="'daily_rescue_save'" type="primary" @click="send('form', 1)">保存</el-button>
     </el-form>
   </div>
 </template>

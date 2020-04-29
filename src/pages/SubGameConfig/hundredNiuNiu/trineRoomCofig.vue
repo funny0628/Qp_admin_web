@@ -18,15 +18,17 @@
 
     <div class="form">
       <el-button
+       v-has="'three_room_config_send'"
         style="margin-bottom:10px"
         type="primary"
         @click="submit('ruleForm', 2)"
         >发送到服务器配置</el-button
       >
-      <el-button type="primary" @click="submit('ruleForm', 1)"
+      <el-button v-has="'three_room_config_save'" type="primary" @click="submit('ruleForm', 1)"
         >立即提交</el-button
       >
       <el-form
+        v-has="'three_room_config_detail'"
         :model="ruleForm"
         :rules="rules"
         ref="ruleForm"
@@ -171,6 +173,7 @@
 
 <script>
 export default {
+  name:'three_room_config',
   data() {
     return {
       ruleForm: {

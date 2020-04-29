@@ -4,7 +4,7 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add('form')">添加</el-button>
+        <el-button v-has="'add_pay_record'" type="primary" @click="add('form')">添加</el-button>
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
       <el-input
@@ -15,7 +15,7 @@
       ></el-input>
     </div>
     <!-- table -->
-    <div class="table">
+    <div class="table" v-has="'pay_records'">
       <el-table
         border
         highlight-current-row
@@ -46,10 +46,11 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row,'form')"
+            <el-button v-has="'modify_pay_record'" size="mini" @click="handleEdit(scope.row,'form')"
               >编辑</el-button
             >
             <el-button
+            v-has="'delete_pay_record'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
