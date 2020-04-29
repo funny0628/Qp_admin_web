@@ -20,7 +20,7 @@
         align="right"
       ></el-date-picker>
       <el-button type="primary">搜索</el-button>
-      <el-button type="primary" @click="dialogFormVisible=true">导出excel</el-button>
+      <!-- <el-button type="primary" @click="dialogFormVisible=true">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table
@@ -48,6 +48,16 @@
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -75,6 +85,9 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
       pickerOptions: {
         shortcuts: [
           {
@@ -152,7 +165,6 @@ export default {
           action: ""
         }
       ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
       form: {
         checkList: ["0902代理01", "0902代理02"],
@@ -167,6 +179,17 @@ export default {
     };
   },
   methods: {
+    getBankOrderList() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize
+      }
+      this.$http.get('v1/backend/operation/credit-order',{
+        params
+      }).then(res => {
+        console.log(res)
+      })
+    },
     /**搜索*/
     search() {
       let data = this.format,
@@ -182,57 +205,13 @@ export default {
         this.dialogFormVisible = true;
       }
     },
-    /**获取用户列表接口 */
-    userList(data, user_id) {
-      UserHandler.list(data, user_id).promise.then(res => {
-        if (Number(res.code) === 200) {
-          this.records = res.data.list;
-          /**数据处理*/
-          let goldArr = [];
-          let top_up_amount = "";
-          let change_amount = "";
-          let alipay_account = [];
-          let personArr = [];
-          this.records.map(item => {
-            goldArr.push("总金额：" + item.money);
-            goldArr.push("理财：" + item.fanancial);
-            top_up_amount = item.pay_sum + "/" + item.pay_count;
-            change_amount = item.draw_sum + "/" + item.draw_count;
-            if (item.bank_info.length > 0) {
-              item.bank_info.map(bank => {
-                if (Number(bank.bank_id) !== 1) {
-                  /** 支付宝 **/
-                  personArr.push("开户人：" + bank.bank_user);
-                  personArr.push("卡号：" + bank.bank_card);
-                  personArr.push("开户行：" + bank.subbranch);
-                } else {
-                  alipay_account.push("账号：" + bank.bank_card);
-                  alipay_account.push("名称：" + bank.bank_name);
-                }
-              });
-            }
-            item.action = [
-              {
-                label: "修改",
-                type: "edit"
-              },
-              {
-                label: "冻结",
-                type: "freeze"
-              },
-              {
-                label: "强制下线",
-                type: "light"
-              }
-            ];
-            item.user_gold = goldArr;
-            item.top_up_amount = top_up_amount;
-            item.change_amount = change_amount;
-            item.alipay_account = alipay_account;
-            item.account_person = personArr;
-          });
-        }
-      });
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getPlayList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getPlayList();
     }
   },
   mounted() {}

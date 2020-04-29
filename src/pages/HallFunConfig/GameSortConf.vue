@@ -617,7 +617,6 @@
               </el-col>
             </el-row>
           </el-form-item>-->
-          <div>{{form}}</div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -862,8 +861,21 @@ export default {
     //获取新增页面的渠道列表
     getAddChannelList() {
       let data = {
+        type_id: 1,
+        add_id: 2
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
+    },
+    //获取编辑页面的渠道列表
+    getEditChannelList() {
+      let data = {
         type_id: 2,
-        add_id: 1
+        add_id: 2
       };
       this.$http.post("v1/backend/no_channel", data).then(res => {
         console.log(res);
@@ -1087,7 +1099,7 @@ export default {
     },
     handleEdit(row) {
       console.log(row);
-      this.getAddChannelList();
+      this.getEditChannelList();
       this.getGameList();
       this.dialogFormVisible = true;
       this.form.id = row.id;

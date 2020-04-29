@@ -523,6 +523,11 @@ export default {
     },
     openAddDialog() {
       this.dialogFormVisible = true;
+      this.imageUrl = {
+        imgList1: "",
+        imgList2: "",
+        imgList3: ""
+      };
       this.getPicTypeList();
       this.resetForm();
       this.getChannelList();
@@ -584,7 +589,7 @@ export default {
       this.getPicTypeList();
       this.getJumpPathList();
       this.dialogFormVisible = true;
-      this.dialogTitle = "更新渠道信息";
+      this.dialogTitle = "更新大厅宣传页配置信息";
       this.form.id = row.id;
       this.form.channel_name = row.channel;
       this.form.channel_key = row.channel_key;
