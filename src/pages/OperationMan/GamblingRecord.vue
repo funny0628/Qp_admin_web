@@ -24,7 +24,7 @@
         :clearable="false"
       ></el-date-picker>
       <el-button type="primary" @click="searchData">查找</el-button>
-      <el-button type="primary">导出excel</el-button>
+      <!-- <el-button type="primary">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table

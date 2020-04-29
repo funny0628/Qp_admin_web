@@ -73,24 +73,25 @@ Vue.directive('has', {
     if (!permissionJudge(binding.value)) {
       el.parentNode.removeChild(el);
     }
+
     function get_permission_names(rightArr) {
       let arr = [];
       const fn = function (list) {
-        if (list.length === 0) {
-          return undefined
+        if (list.length > 0) {
+          list.forEach(item => {
+            if (!item.children) {
+              arr.push(item.name)
+            } else {
+              arr.push(item.name)
+              fn(item.children)
+            }
+          })
         }
-        list.forEach(item => {
-          if (!item.children) {
-            arr.push(item.name)
-          } else {
-            arr.push(item.name)
-            fn(item.children)
-          }
-        })
       }
       fn(rightArr)
       return arr;
     }
+
     function permissionJudge(value) {
       let userInfo = JSON.parse(localStorage.getItem('user_info'));
       let permission_names = get_permission_names(userInfo);

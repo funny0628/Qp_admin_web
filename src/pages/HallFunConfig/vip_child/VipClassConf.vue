@@ -25,7 +25,7 @@
         <el-table-column prop="level" label="VIP等级" align="center"></el-table-column>
         <el-table-column label="VIP特权" align="center">
           <template slot-scope="scope">
-            <span>{{String(JSON.parse(scope.row.privilege))}}</span>
+            <span>{{JSON.parse(scope.row.privilege) | formatPrivilege}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="icon_border_url" label="头像框" align="center">
@@ -189,7 +189,6 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <div>{{form}}</div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addNewConf">确认</el-button>
@@ -251,6 +250,15 @@ export default {
       videoUrl: "",
       privilegeOpts: [] //特权列表项
     };
+  },
+  filters: {
+    formatPrivilege: function(obj) {
+      var rantStr = "";
+      for (var key in obj) {
+        rantStr += key + "," + obj[key] + " ";
+      }
+      return rantStr;
+    }
   },
   methods: {
     sendTabelData() {
@@ -347,6 +355,7 @@ export default {
           battery_url: this.imageUrl.imgList2,
           img_url: this.imageUrl.imgList3,
           video_url: this.videoUrl,
+          award: Number(this.form.class_award),
           salary: Number(this.form.salary),
           salary_need_coin: Number(this.form.salary_need_coin)
         };

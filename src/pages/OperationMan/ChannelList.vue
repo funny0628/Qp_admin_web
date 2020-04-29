@@ -3,7 +3,7 @@
     <input-area>
       <div style="margin-bottom:10px;">
         <el-button v-has="'add_channel'" type="primary" size="medium" @click="openAddDialog">添加</el-button>
-        <el-button type="primary" size="medium" @click="dialogVisible=true">添加公司</el-button>
+        <el-button type="primary" size="medium" @click="openAddComDialog">添加公司</el-button>
       </div>
       <span>公司</span>
       <el-select v-model="format.company" placeholder="请选择公司" size="medium">
@@ -40,7 +40,7 @@
         @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[10, 15, 20]"
-        :page-size="pageSize"
+        :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
@@ -155,7 +155,7 @@ export default {
         .get("v1/backend/operation/channels", {
           params: {
             page: this.currentPage,
-            limit: this.pageSize,
+            limit: this.pagesize,
             company: "",
             channel_name: ""
           }
@@ -182,6 +182,10 @@ export default {
       this.dialogTitle = "添加渠道";
       this.dialogFormVisible = true;
     },
+    openAddComDialog() {
+      this.dialogVisible = true
+      this.form1.company_name = ""
+    },
     addCompany() {
       let data = {
         name: this.form1.company_name
@@ -190,6 +194,7 @@ export default {
         console.log(res)
         if(res.data.code === 200) {
           this.dialogVisible = false
+          this.getCompanyList()
           this.$message({
             type: 'success',
             message: res.data.msg
@@ -281,7 +286,7 @@ export default {
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
-      this.pageSize = val;
+      this.pagesize = val;
       this.getChannelList();
     },
     handleCurrentChange(val) {

@@ -29,7 +29,6 @@
         <el-table-column prop="user_id" label="操作者" align="center"></el-table-column>
         <el-table-column prop="req_method" label="请求方法" align="center"></el-table-column>
         <el-table-column prop="req_path" label="请求路由" align="center"></el-table-column>
-        <el-table-column prop="req_params" label="请求参数" align="center"></el-table-column>
         <el-table-column prop="req_ip" label="请求ip" align="center"></el-table-column>
         <el-table-column prop="create_time" label="请求时间" align="center">
           <template slot-scope="scope">
