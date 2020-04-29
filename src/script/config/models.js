@@ -401,9 +401,9 @@ const models = {
         // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem')), 'EmailSystem'),
         children: [
           {
-            name:'platformEmail',
+            name:'platform_mail_system',
             text:'平台邮件',
-            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/platformEmail')), 'platformEmail')
+            vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/EmailSystem_child/platformEmail')), 'platform_mail_system')
           },
           // {
           //   name:'allServersEmail',
