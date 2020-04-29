@@ -147,6 +147,7 @@
     <!-- dialog -->
     <div class="dialog">
       <el-dialog
+      @closed="Closed"
         :title="title"
         :visible.sync="visible"
         :destroy-on-close="true"
@@ -292,7 +293,7 @@
 <script>
 import DeepData from "../../assets/js/formate.js";
 export default {
-  name:'agent',
+  name: "agent",
   data() {
     return {
       orderlist: ["ascending", "descending"],
@@ -320,21 +321,24 @@ export default {
     };
   },
   created() {
+    this.start_time = (new Date(), new Date().getTime()) - 60 * 60 * 24 * 7 * 1000;
+    this.end_time = new Date().getTime();
     this.initdata({ page: this.currentPage, limit: this.limit });
   },
   methods: {
+    Closed(){
+      this.DuserID = '';
+      this.title = '详情'
+    },
     //查找
     search() {
       this.initdata({
         page: this.currentPage,
         limit: this.limit,
         uid: parseInt(this.userID) || 0,
-        start_time: this.start_time / 1000 || 0,
-        end_time: this.end_time / 1000 || 0
+        start_time: Math.ceil(this.start_time / 1000) || 0,
+        end_time:  Math.ceil(this.end_time / 1000) || 0
       });
-      this.userID = "";
-      this.start_time = "";
-      this.end_time = "";
     },
 
     //详情 / 下级 搜索
@@ -344,45 +348,39 @@ export default {
           page: this.DcurrentPage,
           limit: this.Dlimit,
           pid: this.Pid,
-          start_data: this.Dstart_time / 1000 || 0,
-          end_data: this.Dend_time / 1000 || 0,
+          start_data: Math.ceil(this.Dstart_time / 1000) || 0,
+          end_data: Math.ceil(this.Dend_time / 1000) || 0,
           uid: parseInt(this.DuserID) || 0
         });
       } else if (type === "下级") {
         this.initLevel({
           uid: parseInt(this.DuserID) || 0,
           pid: this.Pid,
-          start_data: this.Dstart_time / 1000 || 0,
-          end_data: this.Dend_time / 1000 || 0
+          start_data: Math.ceil(this.Dstart_time / 1000) || 0,
+          end_data: Math.ceil(this.Dend_time / 1000) || 0
         });
       }
-      this.DuserID = "";
-      this.Dstart_time = "";
-      this.Dend_time = "";
     },
 
     //表格详情
     async handleDetail(row) {
-      console.log(row);
-      this.Pid = row.uid;
-      this.visible = true;
-      this.title = "详情";
+      this.DetailCheck(row, true, "详情", this.DcurrentPage, this.Dlimit);
       this.initDetail({
         page: this.DcurrentPage,
         limit: this.Dlimit,
-        pid: row.uid
+        pid: row.uid,
+        start_data: Math.ceil(this.Dend_time / 1000),
+        end_data: Math.ceil(this.Dstart_time / 1000)
       });
     },
 
     //表格查看下级
     nextLevel(index, row) {
-      this.Pid = row.uid;
-      this.visible = true;
-      this.title = "下级";
+      this.DetailCheck(row, true, "下级", this.LcurrentPage, this.Llimit);
       this.initLevel({
-        page: this.LcurrentPage,
-        limit: this.Llimit,
-        pid: row.uid
+        pid: row.uid,
+        start_data: Math.ceil(this.Dend_time / 1000),
+        end_data: Math.ceil(this.Dstart_time / 1000)
       });
     },
 
@@ -420,7 +418,6 @@ export default {
       });
     },
 
-    
     formateData(res) {
       res.forEach(item => {
         // register_time / cash_time
@@ -447,13 +444,20 @@ export default {
       return Y + M + D + h + m + s;
     },
 
+    DetailCheck(row, visible, title) {
+      this.Dstart_time = new Date().getTime() - 60 * 60 * 24 * 1 * 1000;
+      this.Dend_time = new Date().getTime();
+      this.Pid = row.uid;
+      this.visible = visible;
+      this.title = title;
+    },
+
     //下级数据获取
     async initLevel(params) {
       let { data } = await this.$http.allAgency.GetAgencyLevel(params);
       let fres = DeepData(data.data);
       this.DtableData = this.formateData(fres);
       this.Dtotal = data.total;
-    //   console.log(data);
     },
 
     //详情数据获取
@@ -462,7 +466,6 @@ export default {
       let fres = DeepData(data.data);
       this.DtableData = this.formateData(fres);
       this.Dtotal = data.total;
-    //   console.log(data);
     },
 
     //所有玩家数据获取
@@ -471,7 +474,6 @@ export default {
       let fres = DeepData(data.data);
       this.tableData = this.formateData(fres);
       this.total = data.total;
-    //   console.log(data);
     }
   }
 };
