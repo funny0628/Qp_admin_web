@@ -5,10 +5,10 @@
     element-loading-background="rgba(255, 255, 255, 0.6)">
     <!-- 头部 -->
     <div class="title">
-      <el-button style="margin:0px 10px 10px 0px" type="primary" @click="submit(1)"
+      <el-button v-has="'hl_fish_robot_config_save'" style="margin:0px 10px 10px 0px" type="primary" @click="submit(1)"
         >保存</el-button
       >
-      <el-button type="primary" @click="submit(2)">发送给服务器配置</el-button>
+      <el-button v-has="'hl_fish_robot_config_send'" type="primary" @click="submit(2)">发送给服务器配置</el-button>
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="捕鱼-低倍场" :name="namelist[0]"></el-tab-pane>
         <el-tab-pane label="捕鱼-中倍场" :name="namelist[1]"></el-tab-pane>
@@ -17,7 +17,7 @@
     </div>
 
     <!-- tabale -->
-    <div class="table">
+    <div class="table" v-has="'hl_fish_robot_config_detail'">
       <div class="item">
         <div class="item_div left">
           机器人命中系数

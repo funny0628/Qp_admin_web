@@ -58,8 +58,8 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
-                  ></el-option>
+                    :value="String(item.id)"
+                  >{{item.name}}</el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -73,7 +73,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -88,7 +88,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -103,7 +103,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -118,7 +118,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -133,7 +133,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -148,7 +148,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -163,7 +163,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -240,12 +240,12 @@ export default {
       form: {
         id: null,
         checkList: [],
-        function1: "留空",
-        function2: "留空",
-        function3: "留空",
-        function4: "留空",
-        function5: "留空",
-        function6: "留空"
+        function1: "",
+        function2: "",
+        function3: "",
+        function4: "",
+        function5: "",
+        function6: ""
       }
     };
   },
@@ -280,12 +280,12 @@ export default {
       this.form = {
         id: null,
         checkList: [],
-        function1: "留空",
-        function2: "留空",
-        function3: "留空",
-        function4: "留空",
-        function5: "留空",
-        function6: "留空"
+        function1: "",
+        function2: "",
+        function3: "",
+        function4: "",
+        function5: "",
+        function6: ""
       };
     },
     openAddDialog() {
@@ -306,12 +306,29 @@ export default {
         .then(res => {
           console.log(res);
           this.funOpts = res.data.data;
+          this.form.function1 = String(res.data.data[0].id)
+          this.form.function2 = String(res.data.data[0].id)
+          this.form.function3 = String(res.data.data[0].id)
+          this.form.function4 = String(res.data.data[0].id)
+          this.form.function5 = String(res.data.data[0].id)
+          this.form.function6 = String(res.data.data[0].id)
         });
     },
-    //获取渠道选项列表
+    //获取新增渠道选项列表
     getChannelList() {
       let data = {
         type_id: 1,
+          add_id: 3
+      }
+      this.$http.post("v1/backend/no_channel",data).then(res => {
+        console.log(res);
+        this.ChannelList = res.data.data;
+      });
+    },
+    //获取新增渠道选项列表
+    getAllChannelList() {
+      let data = {
+        type_id: 2,
           add_id: 3
       }
       this.$http.post("v1/backend/no_channel",data).then(res => {
@@ -392,7 +409,7 @@ export default {
     },
     handleEdit(row) {
       console.log(row);
-      this.getChannelList();
+      this.getAllChannelList();
       this.getFunNameList();
       this.dialogFormVisible = true;
       this.dialogTitle = "更新活动入口配置";

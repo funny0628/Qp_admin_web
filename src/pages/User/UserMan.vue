@@ -361,6 +361,16 @@ export default {
       console.log(res);
       if (res.data.code === 200) {
         this.dialogRoleAssign = false;
+        this.$message({
+          type: 'success',
+          message: '分配角色成功'
+        })
+      }else {
+        this.dialogRoleAssign = false;
+        this.$message({
+          type: 'error',
+          message: '分配角色失败'
+        })
       }
     },
     handleDelete(index, row) {

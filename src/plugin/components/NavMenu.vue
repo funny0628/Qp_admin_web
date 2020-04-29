@@ -1,7 +1,10 @@
 <!-- 左侧滚动条 -->
 <template>
   <div id="navMenu">
-    <div class="logo"></div>
+    <div class="logo">
+      <img src="../../assets/img/tubiao.png" alt="" style="vertical-align: middle;margin-left:-10px;margin-right:10px;">
+      <span style="color:#fff;">管理后台</span>
+    </div>
     <el-menu default-active="1" class @open="close" @close="open">
       <!-- <div
         v-for="(item, index) in models"
@@ -275,7 +278,10 @@ export default {
 }
 #navMenu .logo {
   width: 100%;
-  min-height: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  /* vertical-align: middle; */
 }
 #navMenu .el-menu {
   border: none;

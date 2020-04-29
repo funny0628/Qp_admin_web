@@ -10,12 +10,12 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add">添加</el-button>
+        <el-button v-has="'add_sys_broadcast'" type="primary" @click="add">添加</el-button>
         <el-button type="primary" @click="send">发送到服务器配置</el-button>
       </div>
     </div>
     <!-- 表格 -->
-    <div>
+    <div v-has="'sys_broadcast_records'">
       <el-table
         border
         highlight-current-row
@@ -75,10 +75,11 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button v-has="'modify_sys_broadcast'" size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
+              v-has="'delete_sys_broadcast'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
@@ -171,6 +172,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'sys_broadcast',
   data() {
     return {
       orderlist: ["ascending", "descending"],

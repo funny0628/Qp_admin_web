@@ -17,12 +17,14 @@
     <!-- form -->
     <div class="form">
       <el-button
+        v-has="'hl_fish_room_config_send'"
         style="margin-bottom:10px"
         type="primary"
         @click="submit('ruleForm', 2)"
         >发送到服务器配置</el-button
       >
       <el-form
+        v-has="'hl_fish_room_config_detail'"
         :model="ruleForm"
         :rules="rules"
         ref="ruleForm"
@@ -74,7 +76,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submit('ruleForm', 1)"
+          <el-button v-has="'hl_fish_room_config_save'" type="primary" @click="submit('ruleForm', 1)"
             >立即提交</el-button
           >
         </el-form-item>

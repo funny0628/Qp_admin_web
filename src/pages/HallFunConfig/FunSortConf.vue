@@ -16,8 +16,18 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <el-button v-has="'modify_function_sort_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button v-has="'delete_function_sort_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button
+                v-has="'modify_function_sort_config'"
+                size="mini"
+                type="primary"
+                @click="handleEdit(scope.row)"
+              >编辑</el-button>
+              <el-button
+                v-has="'delete_function_sort_config'"
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
             </template>
             <template
               v-if="['action','func_list'].indexOf(scope.prop) < 0"
@@ -48,7 +58,6 @@
                 :label="item.channel_code"
               >{{item.channel_name}}</el-checkbox>
             </el-checkbox-group>
-            <div>{{form.checkList}}</div>
           </el-form-item>
           <el-form-item label="活动1">
             <el-row :gutter="20" style="width:100%;">
@@ -59,7 +68,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -74,7 +83,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -89,7 +98,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -104,7 +113,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -119,7 +128,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -134,7 +143,7 @@
                     v-for="(item,index) in funOpts"
                     :key="index"
                     :label="item.name"
-                    :value="item.name"
+                    :value="String(item.id)"
                   ></el-option>
                 </el-select>
               </el-col>
@@ -208,12 +217,12 @@ export default {
       dialogAddVisible: false,
       form: {
         checkList: [],
-        active_1: "留空",
-        active_2: "留空",
-        active_3: "留空",
-        active_4: "留空",
-        active_5: "留空",
-        active_6: "留空"
+        active_1: "",
+        active_2: "",
+        active_3: "",
+        active_4: "",
+        active_5: "",
+        active_6: ""
       }
     };
   },
@@ -222,17 +231,17 @@ export default {
       this.form = {
         id: null,
         checkList: [],
-        active_1: "留空",
-        active_2: "留空",
-        active_3: "留空",
-        active_4: "留空",
-        active_5: "留空",
-        active_6: "留空"
+        active_1: "",
+        active_2: "",
+        active_3: "",
+        active_4: "",
+        active_5: "",
+        active_6: ""
       };
     },
     getFunSortList() {
       this.$http
-        .get("v1/backend/lobby/bottom", {
+        .get("v1/backend/lobby/top", {
           params: {
             page: this.currentPage,
             limit: this.pagesize,
@@ -290,7 +299,7 @@ export default {
           list_id: JSON.stringify(actArr),
           type: 2
         };
-        this.$http.post("v1/backend/lobby/bottom", data).then(res => {
+        this.$http.post("v1/backend/lobby/top", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -318,7 +327,7 @@ export default {
           type: 2,
           banner_id: this.form.id
         };
-        this.$http.put("v1/backend/lobby/bottom", data).then(res => {
+        this.$http.put("v1/backend/lobby/top", data).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.dialogFormVisible = false;
@@ -334,7 +343,7 @@ export default {
       this.getActiveOpts();
       this.getChannelList();
       this.form.id = row.id;
-      this.form.checkList = [row.channel_name]
+      this.form.checkList = [row.channel_name];
       this.form.active_1 = JSON.parse(row.func_list)[0];
       this.form.active_2 = JSON.parse(row.func_list)[1];
       this.form.active_3 = JSON.parse(row.func_list)[2];
@@ -351,13 +360,13 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("v1/backend/lobby/bottom", {
+            .delete("v1/backend/lobby/top", {
               params: {
                 id: row.id
               }
             })
             .then(res => {
-              console.log(res)
+              console.log(res);
               if (res.data.code === 1) {
                 this.getFunSortList();
                 this.$message({
@@ -375,22 +384,32 @@ export default {
         });
     },
     getChannelList() {
-      console.log('我调用了吗','getChannelList')
-      this.$http
-        .get("v1/backend/no_channel", {
-          params: {
-            type_id: 2
-          }
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 1) {
-            this.channelOpts = res.data.data;
-          }
-        });
+      let data = {
+        type_id: 1,
+        add_id: 1
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
+    },
+    //获取所有的渠道列表
+    getChannelList() {
+      let data = {
+        type_id: 2,
+        add_id: 1
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
+        }
+      });
     },
     getActiveOpts() {
-      console.log('我调用了吗','getActiveOpts')
+      console.log("我调用了吗", "getActiveOpts");
       this.$http
         .get("v1/backend/lobby/name_type", {
           params: {
@@ -401,12 +420,18 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.funOpts = res.data.data;
+            this.form.active_1 = String(res.data.data[0].id)
+            this.form.active_2 = String(res.data.data[0].id)
+            this.form.active_3 = String(res.data.data[0].id)
+            this.form.active_4 = String(res.data.data[0].id)
+            this.form.active_5 = String(res.data.data[0].id)
+            this.form.active_6 = String(res.data.data[0].id)
           }
         });
     },
     handleSizeChange(val) {
       this.pagesize = val;
-      this.currentPage = 1
+      this.currentPage = 1;
       this.getFunSortList();
     },
     handleCurrentChange(val) {

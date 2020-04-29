@@ -6,7 +6,7 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.6)"
   >
-    <el-button type="primary" @click="onSubmit('form', 2)"
+    <el-button v-has="'daily_storm_send'" type="primary" @click="onSubmit('form', 2)"
       >发送到服务器配置</el-button
     >
     <!-- form表单 -->
@@ -145,7 +145,7 @@
       </div>
     </el-form>
     <div style="margin-top:20px" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="onSubmit('form', 1)">保 存</el-button>
+      <el-button v-has="'daily_storm_save'" type="primary" @click="onSubmit('form', 1)">保 存</el-button>
     </div>
   </div>
 </template>
