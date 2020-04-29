@@ -132,6 +132,7 @@
 
 <script>
 export default {
+  name:'ten_robot_config',
   data() {
     return {
       activeName: "1",

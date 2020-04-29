@@ -58,6 +58,7 @@
 
 <script>
 export default {
+  name:'ddz_robot_config',
   data() {
     return {
       activeName: "",

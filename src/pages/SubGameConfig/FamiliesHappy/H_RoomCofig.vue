@@ -105,6 +105,7 @@
 <script>
 import DeepData from '../../../assets/js/formate.js'
 export default {
+  name:'bjl_room_config',
   data() {
     return {
       id:0,

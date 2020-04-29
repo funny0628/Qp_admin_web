@@ -155,6 +155,7 @@
 
 <script>
 export default {
+  name:'qz_robot_config',
   data() {
     return {
       activeName: "",

@@ -101,6 +101,7 @@
 
 <script>
 export default {
+  name:'bcbm_robot_config',
   data() {
     return {
       activeName: "",

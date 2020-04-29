@@ -74,6 +74,7 @@
 
 <script>
 export default {
+  name:'ddz_room_config',
   data() {
     return {
       activeName: "",

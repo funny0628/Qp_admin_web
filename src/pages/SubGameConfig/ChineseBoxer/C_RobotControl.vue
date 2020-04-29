@@ -99,6 +99,7 @@
 
 <script>
 export default {
+  name:'lhd_robot_config',
   data() {
     return {
       activeName: "first",

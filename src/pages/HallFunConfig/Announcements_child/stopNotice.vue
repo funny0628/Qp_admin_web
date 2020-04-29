@@ -137,6 +137,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'stop_notice',
   data() {
     return {
       orderlist: ["ascending", "descending"],

@@ -156,6 +156,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'game_notice',
   data() {
     return {
       title: "新增",

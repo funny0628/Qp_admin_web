@@ -57,6 +57,7 @@
 
 <script>
 export default {
+  name:'sgj_room_config',
   data() {
     return {
       activeName: "first",

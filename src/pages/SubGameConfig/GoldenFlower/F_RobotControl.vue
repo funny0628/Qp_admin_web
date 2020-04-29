@@ -71,6 +71,7 @@
 
 <script>
 export default {
+  name:'zjh_robot_config',
   data() {
     return {
       activeName: "",

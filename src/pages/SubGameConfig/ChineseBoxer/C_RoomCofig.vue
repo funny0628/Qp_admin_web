@@ -98,6 +98,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'lhd_room_config',
   data() {
     return {
       activeName: "first",

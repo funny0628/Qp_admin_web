@@ -173,6 +173,7 @@
 
 <script>
 export default {
+  name:'ten_room_config',
   data() {
     return {
       ruleForm: {

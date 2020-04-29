@@ -171,6 +171,7 @@
 
 <script>
 export default {
+  name:'three_room_config',
   data() {
     return {
       ruleForm: {

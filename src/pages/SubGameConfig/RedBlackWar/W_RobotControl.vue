@@ -99,6 +99,7 @@
 
 <script>
 export default {
+  name:'hhdz_robot_config',
   data() {
     return {
       activeName: "",

@@ -83,6 +83,7 @@
 
 <script>
 export default {
+  name:'zjh_room_config',
   data() {
     return {
       activeName: "",

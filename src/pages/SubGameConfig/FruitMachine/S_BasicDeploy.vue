@@ -65,6 +65,7 @@
 
 <script>
 export default {
+  name:'sgj_base_config',
   data() {
     return {
       ruleForm: {

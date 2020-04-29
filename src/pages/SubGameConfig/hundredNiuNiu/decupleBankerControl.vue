@@ -116,6 +116,7 @@
 
 <script>
 export default {
+  name:'ten_szrobot_config',
   data() {
     return {
       id: 0,

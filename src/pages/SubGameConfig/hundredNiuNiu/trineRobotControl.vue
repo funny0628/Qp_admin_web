@@ -133,6 +133,7 @@
 </template>
 <script>
 export default {
+  name:'three_robot_config',
   data() {
     return {
       namelist:[],

@@ -72,6 +72,7 @@
 
 <script>
 export default {
+  name:'qz_room_config',
   data() {
     return {
       activeName: "",

@@ -104,6 +104,7 @@
 
 <script>
 export default {
+  name:'bjl_robot_config',
   data() {
     return {
       activeName: "first",

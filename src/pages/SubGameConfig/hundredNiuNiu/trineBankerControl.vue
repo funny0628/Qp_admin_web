@@ -114,6 +114,7 @@
 
 <script>
 export default {
+  name:"three_szrobot_config",
   data() {
     return {
       id: 0,

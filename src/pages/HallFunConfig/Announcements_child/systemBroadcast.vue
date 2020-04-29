@@ -171,6 +171,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'sys_broadcast',
   data() {
     return {
       orderlist: ["ascending", "descending"],
