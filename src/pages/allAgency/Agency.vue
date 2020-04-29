@@ -344,16 +344,16 @@ export default {
           page: this.DcurrentPage,
           limit: this.Dlimit,
           pid: this.Pid,
-          start_data: this.Dstart_data / 1000 || 0,
-          end_data: this.Dend_data / 1000 || 0,
+          start_data: this.Dstart_time / 1000 || 0,
+          end_data: this.Dend_time / 1000 || 0,
           uid: parseInt(this.DuserID) || 0
         });
       } else if (type === "下级") {
         this.initLevel({
           uid: parseInt(this.DuserID) || 0,
           pid: this.Pid,
-          start_data: this.Dstart_data / 1000 || 0,
-          end_data: this.Dend_data / 1000 || 0
+          start_data: this.Dstart_time / 1000 || 0,
+          end_data: this.Dend_time / 1000 || 0
         });
       }
       this.DuserID = "";

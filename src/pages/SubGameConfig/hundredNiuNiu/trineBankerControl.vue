@@ -9,11 +9,11 @@
     <!-- title -->
     <div class="title">
       三倍场上庄机器人控制
-      <el-button type="primary" @click="submit(2)">发送到服务器配置</el-button>
-      <el-button type="primary" @click="submit(1)">确定</el-button>
+      <el-button v-has="'three_szrobot_config_send'" type="primary" @click="submit(2)">发送到服务器配置</el-button>
+      <el-button v-has="'three_szrobot_config_save'" type="primary" @click="submit(1)">确定</el-button>
     </div>
     <!-- container -->
-    <div class="conent">
+    <div class="conent" v-has="'three_szrobot_config_detail'">
       <!-- first -->
       <div class="title title-first">
         牌局中的人数对应的概率和上庄人数设置

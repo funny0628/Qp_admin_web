@@ -6,10 +6,11 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.6)"
   >
-    <el-button type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
-    ><el-button type="primary" @click="submitForm('ruleForm', 2)"
+    <el-button v-has="'qz_robot_config_save'" type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
+    ><el-button v-has="'qz_robot_config_send'" type="primary" @click="submitForm('ruleForm', 2)"
       >发送到服务器配置</el-button
     >
+    <div v-has="'qz_robot_config_detail'">
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -149,6 +150,7 @@
           >（格式如：90,10,0,0,0）
         </el-form-item>
       </el-form>
+    </div>
     </div>
   </div>
 </template>

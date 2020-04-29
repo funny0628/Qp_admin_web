@@ -1,7 +1,7 @@
 <template>
   <div id="gameAnnouncement">
     <div class="title">
-      <p><el-button type="primary" @click="add">添加</el-button></p>
+      <p><el-button v-has="'add_game_notice'" type="primary" @click="add">添加</el-button></p>
       标题
       <el-input
         style="margin-top:10px;width:200px"
@@ -10,7 +10,7 @@
       <el-button type="primary" @click="search">查找</el-button>
     </div>
     <!-- 表格 -->
-    <div class="table">
+    <div class="table" v-has="'game_notice_records'">
       <el-table
         border
         highlight-current-row
@@ -36,10 +36,11 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button v-has="'modify_game_notice'" size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
+              v-has="'delete_game_notice'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"

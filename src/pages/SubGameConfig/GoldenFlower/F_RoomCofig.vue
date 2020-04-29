@@ -17,11 +17,12 @@
     <!-- form -->
     
     <div class="form">
-      <el-button style="margin-bottom:10px" type="success" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
-       <el-button type="primary" @click="submitForm('ruleForm',1)"
+      <el-button v-has="'zjh_room_config_send'" style="margin-bottom:10px" type="success" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
+       <el-button v-has="'zjh_room_config_save'" type="primary" @click="submitForm('ruleForm',1)"
             >立即提交</el-button
           >
       <el-form
+        v-has="'zjh_room_config_detail'"
         :model="ruleForm"
         :rules="rules"
         ref="ruleForm"

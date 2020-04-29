@@ -300,7 +300,7 @@ const models = {
         ]
       },
       {
-        name: 'activity_announcement ',
+        name: 'activity_announcement',
         text: '活动和公告',
         // vue: r => require.ensure([], () => r(require('../../pages/HallFunConfig/Announcements')), 'Announcements '),
         children: [
@@ -781,7 +781,7 @@ const models = {
     children:[
       {
         name:'fresher_deposit',
-        text:'首充配置',
+        text:'新人首充',
         vue: r => require.ensure([], () => r(require('../../pages/ActivityOperations/FirstConfig')), 'fresher_deposit')
       },
       {

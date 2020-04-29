@@ -7,12 +7,14 @@
     element-loading-background="rgba(255, 255, 255, 0.6)"
   >
     <el-button
+      v-has="'sgj_base_config_save'"
       style="margin-bottom:10px"
       type="primary"
       @click="submitForm('ruleForm', 1)"
       >保存</el-button
     >
     <el-button
+      v-has="'sgj_base_config_send'"
       style="margin-bottom:10px"
       type="primary"
       @click="submitForm('ruleForm', 2)"
@@ -20,7 +22,7 @@
     >
     <!-- form -->
 
-    <div class="form">
+    <div class="form" v-has="'sgj_base_config_detail'">
       <el-form
         :model="ruleForm"
         ref="ruleForm"
