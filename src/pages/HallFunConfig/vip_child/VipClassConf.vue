@@ -85,10 +85,10 @@
           <el-input v-model="form.class_award" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
         </el-form-item>
-        <el-form-item label="月俸禄" :label-width="formLabelWidth">
+        <!-- <el-form-item label="月俸禄" :label-width="formLabelWidth">
           <el-input v-model="form.month_money" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="月俸禄领取金币" :label-width="formLabelWidth">
           <el-input v-model="form.salary" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
@@ -439,7 +439,7 @@ export default {
       this.form.checkList = JSON.parse(row.privilege);
       this.form.gold_flow = row.charge_coins;
       this.form.class_award = row.award;
-      this.form.month_money = row.consecrate;
+      // this.form.month_money = row.consecrate;
       this.form.vip_tip_text = row.enter_word;
       this.form.probability = row.caishen_base_rate;
       this.form.withdraw = row.speedup_weight;
