@@ -13,8 +13,8 @@
     </div>
     <!-- form -->
     
-    <div class="form">
-      <el-button style="margin-bottom:10px" type="success" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
+    <div class="form" v-has="'sgj_room_config_detail'">
+      <el-button v-has="'sgj_room_config_send'" style="margin-bottom:10px" type="success" @click="submitForm('ruleForm',2)">发送到服务器配置</el-button>
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -46,7 +46,7 @@
 
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm',1)"
+          <el-button v-has="'sgj_room_config_save'" type="primary" @click="submitForm('ruleForm',1)"
             >立即提交</el-button
           >
         </el-form-item>
@@ -57,6 +57,7 @@
 
 <script>
 export default {
+  name:'sgj_room_config',
   data() {
     return {
       activeName: "first",

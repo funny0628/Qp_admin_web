@@ -14,12 +14,12 @@
     <div class="contain">
       <div class="botton">
         <el-button type="primary" @click="add">添加</el-button>
-        <el-button type="primary" @click="submit(1)">保存</el-button>
-        <el-button type="primary" @click="submit(2)"
+        <el-button v-has="'hl_fish_fire_config_save'" type="primary" @click="submit(1)">保存</el-button>
+        <el-button v-has="'hl_fish_fire_config_send'" type="primary" @click="submit(2)"
           >发送给服务器配置</el-button
         >
       </div>
-      <div class="table" v-for="(item, index) in list" :key="index">
+      <div class="table" v-has="'hl_fish_fire_config_detail'" v-for="(item, index) in list" :key="index">
         <el-row :gutter="10">
           <el-col :span="5">
             <el-input v-model="item.id" placeholder="id"></el-input

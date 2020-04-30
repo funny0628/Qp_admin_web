@@ -53,7 +53,7 @@
         <el-table-column prop="fish_value" label="鱼价值" align="center"></el-table-column>
         <el-table-column label="收支" align="center">
           <template slot-scope="scope">
-            <span>{{ Number(scope.row.fish_value) - Number(scope.row.bullet_value) }}</span>
+            <span>{{Number(Number(scope.row.fish_value) - Number(scope.row.bullet_value)).toFixed(2)}}</span>
           </template>
         </el-table-column>
       </el-table>

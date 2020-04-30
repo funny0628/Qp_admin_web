@@ -61,14 +61,12 @@
               </template>
             </el-col>
             <el-col :xs="8" :sm="2" :md="2" :lg="2">
-              <div style="position:relative;cursor: pointer;">
-                {{loginUser}}
-              <i class="el-icon-caret-bottom" @click="showLoginoutFn"></i>
-              <div
-                class="loginout"
-                v-if="showLoginout"
-                @click="logout"
-              >退出</div>
+              <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
+                <div>
+                  {{loginUser}}
+                  <i class="el-icon-caret-bottom"></i>
+                </div>
+                <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
               </div>
             </el-col>
           </el-row>
@@ -159,8 +157,6 @@ export default {
       },
       add(name) {
         let item = $this.$pageInfo.pageList[name];
-        console.log($this.$pageInfo.pageList)
-console.log(item)
         let ls = $this.items.filter(data => name === data.name);
         if (ls.length <= 0) {
           $this.showItems.unshift(item);
@@ -216,7 +212,7 @@ console.log(item)
         });
       },
       defaultShow() {
-        console.log($this.showItems,'home--------showitmes')
+        console.log($this.showItems, "home--------showitmes");
         if ($this.showItems.length === 0) {
           $this.showItems.push($this.$pageInfo.pageList[$this.defaultActive]);
         }

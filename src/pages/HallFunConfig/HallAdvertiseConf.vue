@@ -523,6 +523,11 @@ export default {
     },
     openAddDialog() {
       this.dialogFormVisible = true;
+      this.imageUrl = {
+        imgList1: "",
+        imgList2: "",
+        imgList3: ""
+      };
       this.getPicTypeList();
       this.resetForm();
       this.getChannelList();
@@ -560,15 +565,15 @@ export default {
           name_one: "我是图片一",
           url_one: this.imageUrl.imgList1,
           type_one: JSON.parse(this.form.word1_type),
-          jump_id_one: JSON.parse(this.form.word1_jump_position),
+          // jump_id_one: JSON.parse(this.form.word1_jump_position),
           name_two: "我是图片二",
           url_two: this.imageUrl.imgList2,
           type_two: JSON.parse(this.form.word2_type),
-          jump_id_two: JSON.parse(this.form.word2_jump_position),
+          // jump_id_two: JSON.parse(this.form.word2_jump_position),
           name_three: "我是图片三",
           url_three: this.imageUrl.imgList3,
           type_three: JSON.parse(this.form.word3_type),
-          jump_id_three: JSON.parse(this.form.word3_jump_position)
+          // jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
         this.$http.put("v1/backend/lobby/flyer", data).then(res => {
           console.log(res);
@@ -584,7 +589,7 @@ export default {
       this.getPicTypeList();
       this.getJumpPathList();
       this.dialogFormVisible = true;
-      this.dialogTitle = "更新渠道信息";
+      this.dialogTitle = "更新大厅宣传页配置信息";
       this.form.id = row.id;
       this.form.channel_name = row.channel;
       this.form.channel_key = row.channel_key;
@@ -594,9 +599,9 @@ export default {
       this.form.word2_url = row.pic_two_url;
       this.form.word3_type = JSON.stringify(row.pic_three_type);
       this.form.word3_url = row.pic_three_url;
-      this.form.word1_jump_position = JSON.stringify(row.jump_id_one);
-      this.form.word2_jump_position = JSON.stringify(row.jump_id_two);
-      this.form.word3_jump_position = JSON.stringify(row.jump_id_three);
+      this.form.word1_jump_position = JSON.stringify(row.dump_id1);
+      this.form.word2_jump_position = JSON.stringify(row.dump_id2);
+      this.form.word3_jump_position = JSON.stringify(row.dump_id3);
       this.imageUrl.imgList1 = row.pic_one_url;
       this.imageUrl.imgList2 = row.pic_two_url;
       this.imageUrl.imgList3 = row.pic_three_url;
@@ -662,7 +667,6 @@ export default {
   },
   watch: {
     "form.word1_type": function(newVal, oldVal) {
-      console.log(newVal);
       if (newVal === "4") {
         this.getJumpPathList();
       }

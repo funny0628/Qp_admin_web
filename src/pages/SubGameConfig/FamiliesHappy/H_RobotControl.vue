@@ -6,8 +6,9 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.6)"
   >
-    <el-button type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
-    ><el-button type="primary" @click="submitForm('ruleForm', 2)"
+  <div v-has="'bjl_robot_config_detail'">
+    <el-button v-has="'bjl_robot_config_save'" type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
+    ><el-button v-has="'bjl_robot_config_send'" type="primary" @click="submitForm('ruleForm', 2)"
       >发送到服务器配置</el-button
     >
     <!-- 头部 -->
@@ -99,11 +100,13 @@
         </el-form-item>
       </el-form>
     </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  name:'bjl_robot_config',
   data() {
     return {
       activeName: "first",

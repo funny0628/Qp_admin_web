@@ -1,10 +1,10 @@
 <template>
   <div id="WithdrawRec-main">
     <input-area>
-    <el-button type="primary" size="medium" style="background-color:#ffc75a;border:none;">关闭音乐提醒</el-button>
-    <el-select v-model="format.widthdraw_status" placeholder="请选择" clearable size="medium">
+      <!-- <el-button type="primary" size="medium" style="background-color:#ffc75a;border:none;">关闭音乐提醒</el-button> -->
+      <el-select v-model="format.withdraw_status" placeholder="请选择" clearable size="medium">
         <el-option
-          v-for="item in platforms"
+          v-for="item in orderStatus"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -12,7 +12,7 @@
       </el-select>
       <el-input v-model="format.game_id" placeholder="请输入游戏id" size="medium" clearable></el-input>
       <el-date-picker
-        v-model="format.time_range"
+        v-model="format.dateArr"
         type="datetimerange"
         :picker-options="pickerOptions"
         range-separator="至"
@@ -20,27 +20,82 @@
         end-placeholder="结束日期"
         align="right"
       ></el-date-picker>
-      <el-button type="primary" size="medium">搜索</el-button>
-      <el-button type="primary" size="medium">导出excel</el-button>
+      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
+      <!-- <el-button type="primary" size="medium">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table
-        :search="search"
         :table-style="tableStyle"
         :records="records"
         :page-info="pageInfo"
+        :hide-page="true"
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <template v-if="'WithdrawChannel'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row.WithdrawChannel==0">支付宝</span>
+              <span v-if="scope.row.WithdrawChannel==1">银行卡</span>
+              <span v-if="scope.row.WithdrawChannel==2">微信</span>
             </template>
-            <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="'Status'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row.Status==0">未处理</span>
+              <span v-if="scope.row.Status==1">已处理</span>
+              <span v-if="scope.row.Status==2">已驳回</span>
+            </template>
+            <template v-if="scope.prop === 'action'">
+              <span v-if="scope.row.Status == 0">
+                <el-button size="mini" type="primary" @click="handlePass(scope.row)">通过</el-button>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  style="background-color:#ff5732;"
+                  @click="handleReject(scope.row)"
+                >驳回</el-button>
+              </span>
+              <el-button size="mini" type="primary" @click="handleDetail(scope.row)">详情</el-button>
+            </template>
+            <template
+              v-if="['action',,'WithdrawChannel','Status'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
+      <el-pagination
+        style="margin-top:20px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
+    <el-dialog title="提现账号信息" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="支付宝账号" :label-width="formLabelWidth">
+          <el-input disabled v-model="form.alipay_account" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input disabled v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!-- 订单审核 -->
+    <el-dialog title="订单审核" :visible.sync="dialogVisible">
+      <el-form :model="form2">
+        <el-form-item label="订单id" :label-width="formLabelWidth">
+          <el-input disabled v-model="form2.order_id" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" :label-width="formLabelWidth">
+          <el-input v-model="form2.remark" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="checkOrderStatus">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
          
@@ -67,6 +122,9 @@ export default {
   },
   data() {
     return {
+      pagesize: 10,
+      currentPage: 1,
+      total: 0,
       pickerOptions: {
         shortcuts: [
           {
@@ -98,89 +156,135 @@ export default {
           }
         ]
       },
-      platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" }
+      pageInfo: new PageInfo(0, [5, 10, 15], 5),
+      dialogFormVisible: false,
+      dialogVisible: false,
+      formLabelWidth: "120px",
+      orderStatus: [
+        { value: "0", label: "未处理" },
+        { value: "1", label: "已处理" },
+        { value: "2", label: "已拒绝" }
       ],
       format: {
-        widthdraw_status: "",
+        withdraw_status: "",
         game_id: "",
-        time_range: ""
+        dateArr: [
+          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
+          new Date()
+        ]
       },
       tableStyle: [
-        { label: "编号", prop: "order_id", width: "" },
-        { label: "游戏id", prop: "channel_name", width: "" },
-        { label: "提现金额", prop: "channel_name", width: "" },
-        { label: "余额", prop: "fun_1", width: "" },
-        { label: "需转金额", prop: "fun_2", width: "" },
-        { label: "手续费", prop: "fun_5", width: "" },
-        { label: "兑换方式", prop: "fun_5", width: "" },
-        { label: "申请时间", prop: "fun_5", width: "" },
-        { label: "状态", prop: "fun_5", width: "" },
-        { label: "风控提示", prop: "fun_5", width: "" },
-        { label: "备注", prop: "fun_5", width: "" },
-        { label: "操作", prop: "action", width: "150" }
+        { label: "编号", prop: "WithdrawId", width: "" },
+        { label: "用户id", prop: "uid", width: "" },
+        { label: "提现金额", prop: "Amount", width: "" },
+        { label: "余额", prop: "Balance", width: "" },
+        { label: "需转金额", prop: "transfer_amount", width: "" },
+        { label: "手续费", prop: "fee", width: "" },
+        { label: "兑换方式", prop: "WithdrawChannel", width: "" },
+        { label: "申请时间", prop: "CreateAt", width: "180" },
+        { label: "状态", prop: "Status", width: "" },
+        { label: "风控提示", prop: "warn", width: "" },
+        { label: "操作", prop: "action", width: "300" }
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
-      pageInfo: new PageInfo(0, [5, 10, 15], 5),
+      records: [],
+      form: {
+        alipay_account: "",
+        name: ""
+      },
+      form2: {
+        pass: "",
+        order_id: "",
+        remark: ""
+      }
     };
   },
   methods: {
     getWithdrawRec() {
-      this.$http.get('v1/backend/operation/withdraws').then(res=> {
-        console.log(res)
-      })
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize
+      };
+      this.$http
+        .get("v1/backend/operation/withdraws", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
+        });
     },
     /**搜索*/
-    search() {},
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(row);
-      const ids = row.id.toString();
-      console.log(ids);
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(
-          this.$message({
-            type: "success",
-            message: res.data.msg
-          })
-        )
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: res.data.msg
-          });
+    searchData() {
+      let params = {
+        page: this.currentPage,
+        limit: this.pagesize,
+        status: this.withdraw_status ? Number(this.format.withdraw_status) : -1,
+        user_id: Number(this.format.game_id),
+        start_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[0])).getTime() / 1000)
+          : 0,
+        end_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[1])).getTime() / 1000)
+          : 0
+      };
+      this.$http
+        .get("v1/backend/operation/withdraws", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
         });
+    },
+    handleDetail(row) {
+      console.log(row);
+      this.dialogFormVisible = true;
+      let WithdrawInfo = JSON.parse(row.WithdrawInfo);
+      this.form.alipay_account = WithdrawInfo.account;
+      this.form.name = WithdrawInfo.Name;
+    },
+    handlePass(row) {
+      console.log(row);
+      this.dialogVisible = true;
+      this.form2.pass = "通过";
+      this.form2.order_id = row.WithdrawId;
+    },
+    handleReject(row) {
+      console.log(row);
+      this.dialogVisible = true;
+      this.form2.order_id = row.WithdrawId;
+    },
+    checkOrderStatus() {
+      let data = {
+        order_id: Number(this.form2.order_id),
+        action: this.form2.pass ? 1 : 2,
+        remark: this.form2.remark
+      };
+      this.$http.post("v1/backend/operation/withdraws", data).then(res => {
+        console.log(res);
+        if(res.data.code == 200) {
+          this.dialogVisible = false
+          this.getWithdrawRec()
+        }
+      });
+    },
+    handleSizeChange(val) {
+      this.pagesize = val;
+      this.getWithdrawRec();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getWithdrawRec();
     }
   },
   mounted() {
-    this.getWithdrawRec()
+    this.getWithdrawRec();
   }
 };
 </script>

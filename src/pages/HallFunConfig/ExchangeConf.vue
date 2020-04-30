@@ -46,7 +46,7 @@
               >{{scope.row.online_status | formatStatus}}</el-button>
             </template>
             <template
-              v-if="['action','method','online_status'].indexOf(scope.prop) < 0"
+              v-if="['action','method','thumb','online_status'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>

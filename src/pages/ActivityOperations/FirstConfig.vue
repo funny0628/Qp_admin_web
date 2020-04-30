@@ -8,7 +8,7 @@
   >
     <div>
       <h2>首冲配置</h2>
-      <el-button type="primary" @click="send('form', 2)"
+      <el-button v-has="'fresher_deposit_send'" type="primary" @click="send('form', 2)"
         >发送到服务器配置</el-button
       >
     </div>
@@ -83,7 +83,7 @@
       </el-form-item>
     </el-form>
     <div style="margin-left:20px">
-      <el-button type="primary" @click="send('form', 1)">保存</el-button>
+      <el-button v-has="'fresher_deposit_save'" type="primary" @click="send('form', 1)">保存</el-button>
     </div>
   </div>
 </template>

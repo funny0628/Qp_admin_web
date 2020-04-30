@@ -6,8 +6,8 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.6)"
   >
-    <el-button type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
-    ><el-button type="primary" @click="submitForm('ruleForm', 2)"
+    <el-button v-has="'three_robot_config_save'" type="primary" @click="submitForm('ruleForm', 1)">保存</el-button
+    ><el-button v-has="'three_robot_config_send'" type="primary" @click="submitForm('ruleForm', 2)"
       >发送到服务器配置</el-button
     >
     <!-- 头部 -->
@@ -23,7 +23,7 @@
     </div>
     <!-- form -->
 
-    <div class="form">
+    <div class="form" v-has="'three_robot_config_detail'">
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -133,6 +133,7 @@
 </template>
 <script>
 export default {
+  name:'three_robot_config',
   data() {
     return {
       namelist:[],

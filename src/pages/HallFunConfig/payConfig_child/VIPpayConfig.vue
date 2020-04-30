@@ -6,9 +6,9 @@
     <div class="contain">
       <div class="botton">
         <span class="add" @click="add">添加</span>
-        <span class="save" @click="saveData">保存</span>
+        <span v-has="'vip_deposit_config_save'" class="save" @click="saveData">保存</span>
       </div>
-      <div class="table" v-for="(item, index) in list" :key="index">
+      <div class="table" v-for="(item, index) in list" :key="index" v-has="'vip_deposit_config_detail'">
         <el-row :gutter="10">
           <el-col :span="4">
             <el-select style="width:100%" v-model="item.undefined">
@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: "VIPpayConfig",
+  name: "vip_deposit_config",
   data() {
     return {
       id: 0,

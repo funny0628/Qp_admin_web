@@ -14,7 +14,7 @@
         type="danger"
         size="medium"
         style="margin-top: 10px;margin-bottom: 10px;"
-        @click="dialogVisible=true"
+        @click="openRankDialog"
       >排行榜机器人随机概率</el-button>
     </input-area>
     <div class="bd">
@@ -29,22 +29,28 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column label="机器人携带金币" align="center">
+        <el-table-column label="机器人携带金币" align="center" width="180">
           <template slot-scope="scope">{{[scope.row.min_coins,scope.row.max_coins]}}</template>
         </el-table-column>
-        <el-table-column prop="vip_rate" label="VIP级别+概率" align="center">
-          <template slot-scope="scope">{{JSON.parse(scope.row.vip_rate)}}</template>
+        <el-table-column prop="vip_rate" label="VIP级别+概率" align="center" width="450">
+          <template slot-scope="scope">{{JSON.parse(scope.row.vip_rate) | formatRate}}</template>
         </el-table-column>
-        <el-table-column prop="create_time" label="创建时间" align="center">
-          <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
-        </el-table-column>
-        <el-table-column prop="update_time" label="更新时间" align="center">
-          <template slot-scope="scope">{{scope.row.update_time | dateFormat}}</template>
-        </el-table-column>
+        <el-table-column prop="create_time" label="创建时间" align="center" width="180"></el-table-column>
+        <el-table-column prop="update_time" label="更新时间" align="center" width="180"></el-table-column>
         <el-table-column prop="action" label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
-            <el-button v-has="'modify_vip_robot_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button v-has="'delete_vip_robot_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button
+              v-has="'modify_vip_robot_config'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+            >编辑</el-button>
+            <el-button
+              v-has="'delete_vip_robot_config'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -176,15 +182,32 @@ export default {
   },
   async created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.GetServerConfig({
-      key: "robot_rank_vip.lua"
-    });
+    // let { data } = await this.$http.HallFunConfig.GetServerConfig({
+    //   key: "robot_rank_vip.lua"
+    // });
+    let { data } = await this.$http.get(
+      "v1/backend/lobby/server_config/robot_rank_vip",
+      {
+        params: {
+          key: "robot_rank_vip.lua"
+        }
+      }
+    );
     console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
     console.log(res);
     this.rankRobotProbList = res;
+  },
+  filters: {
+    formatRate: function(obj) {
+      var rantStr = "";
+      for (var key in obj) {
+        rantStr += key + "=" + obj[key] + ",";
+      }
+      return rantStr;
+    }
   },
   methods: {
     sendDataToServer() {
@@ -232,6 +255,10 @@ export default {
       this.dialogFormVisible = true;
       this.dialogTitle = "添加信息";
       this.resetForm();
+    },
+    openRankDialog() {
+      this.dialogVisible = true;
+      this.get();
     },
     addNewRobotConf() {
       if (!this.form.robot_id) {
@@ -330,12 +357,20 @@ export default {
     },
     async send() {
       this.loading = true;
-
-      let { data } = await this.$http.HallFunConfig.PostServerConfig({
+      let params = {
         keys: this.keys,
         values: JSON.stringify(this.rankRobotProbList),
         id: this.id
-      });
+      };
+      // let { data } = await this.$http.HallFunConfig.PostServerConfig({
+      //   keys: this.keys,
+      //   values: JSON.stringify(this.rankRobotProbList),
+      //   id: this.id
+      // });
+      let { data } = await this.$http.post(
+        "/v1/backend/lobby/server_config/robot_rank_vip",
+        params
+      );
       console.log(data);
       if (data.code === 1 && data.msg === "ok") {
         this.loading = false;
@@ -345,12 +380,24 @@ export default {
         });
       }
     },
+    async get() {
+      let { data } = await this.$http.get(
+        "v1/backend/lobby/server_config/robot_rank_vip",
+        {
+          params: {
+            key: "robot_rank_vip.lua"
+          }
+        }
+      );
+      console.log(data);
+    },
     async save() {
-      let { data } = await this.$http.HallFunConfig.PutServerConfig({
+      let params = {
         keys: this.keys,
         values: JSON.stringify(this.rankRobotProbList),
         id: this.id
-      });
+      }
+      let { data } = await this.$http.put('v1/backend/lobby/server_config/robot_rank_vip',params)
       // console.log(data);
       if (data.code === 1 && data.msg === "ok") {
         this.dialogVisible = false;

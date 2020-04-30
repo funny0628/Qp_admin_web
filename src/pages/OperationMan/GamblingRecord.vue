@@ -24,7 +24,7 @@
         :clearable="false"
       ></el-date-picker>
       <el-button type="primary" @click="searchData">查找</el-button>
-      <el-button type="primary">导出excel</el-button>
+      <!-- <el-button type="primary">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table
@@ -457,6 +457,41 @@
         </table>
       </el-form>
     </el-dialog>
+    <!-- 游戏详情  二八杠-传奇 -->
+    <el-dialog title="详情" :visible.sync="dialogErBaGangVisible" width="70%">
+      <el-form :model="form" style="background-color:#f2f2f2;">
+        <div
+          style="width:100%;height:30px;line-height:30px;"
+        >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td width="150">{{item.side}}</td>
+            <td width="150">{{item.card_type}}</td>
+            <td width="150"> {{ String(item.cards) }} </td>
+            <td width="150">总下注:{{ item.bet_coins }} </td>
+            <td width="150">总输赢:{{ item.total_side_win }} </td>
+          </tr>
+        </table>
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
+          <tr>
+            <th>玩家id</th>
+            <th v-for="(item,index) in tableData" :key="index">{{item.side}}</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
          
@@ -566,7 +601,9 @@ export default {
       dialogGoldFlowVisible: false, //炸金花
       dialogDragonVisible: false, //龙虎斗
       dialogBaiNiuNiuVisible: false, //百人牛牛
-      dialogCarVisible: false //奔驰宝马
+      dialogCarVisible: false, //奔驰宝马
+      dialogErBaGangVisible: false,//二八杠
+      uid: null,
     };
   },
   methods: {
@@ -698,6 +735,16 @@ export default {
               this.game_name = res.data.data.game_name;
               this.exinfo = res.data.data.exinfo;
               this.tableData = res.data.data.side_list;
+            } else if (res.data.data.game_name == "二八杠") {
+              this.dialogErBaGangVisible = true
+              this.system_result = res.data.data.exinfo.system_result;
+              this.err_result = res.data.data.exinfo.err_result;
+              this.game_name = res.data.data.game_name;
+              this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list
+              })
+              console.log(this.player_win_list)
             }
           }
         });

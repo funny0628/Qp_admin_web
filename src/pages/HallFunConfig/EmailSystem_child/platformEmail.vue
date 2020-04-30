@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <div class="title">
       <div class="botton">
-        <el-button type="primary" @click="writeEmail">写邮件</el-button>
+        <el-button v-has="'add_mail'" type="primary" @click="writeEmail">写邮件</el-button>
       </div>
       邮件ID
       <el-input style="margin-top:10px;width:200px;" v-model="ids"></el-input>
@@ -27,7 +27,7 @@
       <el-button type="primary" @click="search">查找</el-button>
     </div>
     <!-- table -->
-    <div class="table">
+    <div class="table" v-has="'mail_list'">
       <el-table
         border
         highlight-current-row
@@ -94,13 +94,14 @@
           width="300px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button v-has="'modify_mail'" size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button size="mini" type="danger" @click="detail(scope.row)"
               >详情</el-button
             >
             <el-button
+             v-has="'send_mail'"
               v-if="scope.row.read_state === '待发送'"
               size="mini"
               type="danger"
@@ -177,6 +178,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'platform_mail_system',
   data() {
     return {
       uid: "",

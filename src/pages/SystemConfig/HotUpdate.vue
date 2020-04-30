@@ -213,7 +213,6 @@
             type="textarea"
             autosize
             resize="none"
-            placeholder="请输入内容"
             v-model="form.androidConfig"
           ></el-input>
         </el-form-item>
@@ -223,7 +222,6 @@
             type="textarea"
             autosize
             resize="none"
-            placeholder="请输入内容"
             v-model="form.iosConfig"
           ></el-input>
         </el-form-item>
@@ -233,7 +231,6 @@
             type="textarea"
             autosize
             resize="none"
-            placeholder="请输入内容"
             v-model="form.windowsConfig"
           ></el-input>
         </el-form-item>

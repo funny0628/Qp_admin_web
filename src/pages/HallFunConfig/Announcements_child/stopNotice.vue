@@ -4,11 +4,11 @@
     <div class="title">
       <div class="botton">
         <el-button type="danger" @click="del">删除</el-button>
-        <el-button type="primary" @click="add">添加</el-button>
+        <el-button v-has="'add_stop_notice'" type="primary" @click="add">添加</el-button>
       </div>
     </div>
     <!-- 表格 -->
-    <div>
+    <div v-has="'stop_notice_records'">
       <el-table
         border
         highlight-current-row
@@ -38,10 +38,11 @@
           width="200px"
         >
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button v-has="'modify_stop_notice'" size="mini" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
+              v-has="'delete_stop_notice'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
@@ -137,6 +138,7 @@
 <script>
 import DeepData from "../../../assets/js/formate.js";
 export default {
+  name:'stop_notice',
   data() {
     return {
       orderlist: ["ascending", "descending"],
