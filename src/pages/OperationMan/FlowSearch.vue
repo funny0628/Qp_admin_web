@@ -30,7 +30,7 @@
         :clearable="false"
       ></el-date-picker>
       <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
-      <el-button type="primary" size="medium">导出excel</el-button>
+      <!-- <el-button type="primary" size="medium">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table
@@ -45,7 +45,11 @@
             <template v-if="'time'.indexOf(scope.prop) >= 0">
               <span>{{scope.row.time | dateFormat}}</span>
             </template>
-            <template v-if="['time'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template v-if="'value'.indexOf(scope.prop) >= 0">
+              <span v-if="scope.row.op == 1">{{'+' + scope.row.value}}</span>
+              <span v-if="scope.row.op == 2">{{'-' + scope.row.value}}</span>
+            </template>
+            <template v-if="['time','value'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -188,22 +192,6 @@ export default {
     getFlowWaterList() {
       let params = {
         page: this.currentPage,
-        limit: this.pagesize
-      };
-      this.$http.get("v1/backend/operation/flows",{
-        params
-      }).then(res => {
-        console.log(res);
-        if(res.data.code === 200) {
-          this.records = res.data.data
-          this.total = res.data.total
-        }
-      });
-    },
-    /**搜索*/
-    searchData() {
-      let params = {
-        page: this.currentPage,
         limit: this.pagesize,
         reason: Number(this.format.change_reason),
         game_type: Number(this.format.room),
@@ -220,6 +208,10 @@ export default {
           this.total = res.data.total
         }
       });
+    },
+    /**搜索*/
+    searchData() {
+      this.getFlowWaterList()
     },
     getModReason() {
       this.$http.get('v1/backend/operation/gold-modify-reason').then(res=>{

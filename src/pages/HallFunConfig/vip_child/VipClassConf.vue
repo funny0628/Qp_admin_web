@@ -26,6 +26,7 @@
         <el-table-column label="VIP特权" align="center">
           <template slot-scope="scope">
             <span>{{JSON.parse(scope.row.privilege) | formatPrivilege}}</span>
+            <!-- <span>{{JSON.parse(scope.row.privilege)}}</span> -->
           </template>
         </el-table-column>
         <el-table-column prop="icon_border_url" label="头像框" align="center">
@@ -71,7 +72,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.id+item.name"
+              :label="item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -84,10 +85,10 @@
           <el-input v-model="form.class_award" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
         </el-form-item>
-        <el-form-item label="月俸禄" :label-width="formLabelWidth">
+        <!-- <el-form-item label="月俸禄" :label-width="formLabelWidth">
           <el-input v-model="form.month_money" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="月俸禄领取金币" :label-width="formLabelWidth">
           <el-input v-model="form.salary" autocomplete="off"></el-input>
           <span>(单位: 元)</span>
@@ -257,13 +258,13 @@ export default {
       if (Object.prototype.toString.call(obj) !== "[object Array]") {
         var rantStr = "";
         for (var key in obj) {
-          rantStr += key + "," + obj[key] + " ";
+          rantStr += key + "," + obj[key];
         }
         return rantStr;
       }else {
         var rantStr = "";
         for (var i=0;i<obj.length;i++) {
-          rantStr += obj[i] + " ";
+          rantStr += obj[i] + ','
         }
         return rantStr;
       }
@@ -438,7 +439,7 @@ export default {
       this.form.checkList = JSON.parse(row.privilege);
       this.form.gold_flow = row.charge_coins;
       this.form.class_award = row.award;
-      this.form.month_money = row.consecrate;
+      // this.form.month_money = row.consecrate;
       this.form.vip_tip_text = row.enter_word;
       this.form.probability = row.caishen_base_rate;
       this.form.withdraw = row.speedup_weight;

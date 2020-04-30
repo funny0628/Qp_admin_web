@@ -100,7 +100,6 @@
             <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <div>{{this.imageUrl.imgList1}}</div>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
@@ -125,7 +124,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -179,7 +178,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -226,7 +225,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -537,18 +536,18 @@ export default {
         let data = {
           name: this.form.channel_name,
           key: this.form.channel_key,
-          name_one: "我是图片一",
-          url_one: this.imageUrl.imgList1,
+          name_one: this.imageUrl.imgList1,
+          url_one: this.form.word1_jump_position ? this.form.word1_jump_position : this.form.word1_url,
           type_one: Number(this.form.word1_type),
-          jump_id_one: Number(this.form.word1_jump_position),
-          name_two: "我是图片二",
-          url_two: this.imageUrl.imgList2,
+          // jump_id_one: Number(this.form.word1_jump_position),
+          name_two: this.imageUrl.imgList2,
+          url_two: this.form.word2_jump_position ? this.form.word2_jump_position : this.form.word2_url,
           type_two: Number(this.form.word2_type),
-          jump_id_two: Number(this.form.word2_jump_position),
-          name_three: "我是图片三",
-          url_three: this.imageUrl.imgList3,
+          // jump_id_two: Number(this.form.word2_jump_position),
+          name_three: this.imageUrl.imgList3,
+          url_three: this.form.word3_jump_position ? this.form.word3_jump_position : this.form.word3_url,
           type_three: Number(this.form.word3_type),
-          jump_id_three: Number(this.form.word3_jump_position)
+          // jump_id_three: Number(this.form.word3_jump_position)
         };
         this.$http.post("v1/backend/lobby/flyer", data).then(res => {
           console.log(res);
@@ -562,16 +561,16 @@ export default {
           banner_id: this.form.id,
           name: this.form.channel_name,
           key: this.form.channel_key,
-          name_one: "我是图片一",
-          url_one: this.imageUrl.imgList1,
+          name_one: this.imageUrl.imgList1,
+          url_one: this.form.word1_url,
           type_one: JSON.parse(this.form.word1_type),
           // jump_id_one: JSON.parse(this.form.word1_jump_position),
-          name_two: "我是图片二",
-          url_two: this.imageUrl.imgList2,
+          name_two: this.imageUrl.imgList2,
+          url_two: this.form.word2_url ,
           type_two: JSON.parse(this.form.word2_type),
           // jump_id_two: JSON.parse(this.form.word2_jump_position),
-          name_three: "我是图片三",
-          url_three: this.imageUrl.imgList3,
+          name_three: this.imageUrl.imgList3,
+          url_three: this.form.word3_url,
           type_three: JSON.parse(this.form.word3_type),
           // jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
