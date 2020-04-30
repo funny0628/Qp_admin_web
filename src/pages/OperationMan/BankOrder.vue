@@ -1,8 +1,20 @@
 <template>
   <div id="BankOrder-main">
-    <input-area>
-      <el-input v-model="format.user_id" placeholder="请输入用户id" size="medium" clearable></el-input>
-      <el-select v-model="format.order_status" placeholder="请选择" clearable size="medium">
+    <!-- <input-area> -->
+    <div class="title">
+      <el-input
+      style="width:200px"
+        v-model="format.user_id"
+        placeholder="请输入用户id"
+        size="medium"
+        clearable
+      ></el-input>
+      <el-select
+        v-model="format.order_status"
+        placeholder="请选择"
+        clearable
+        size="medium"
+      >
         <el-option
           v-for="item in platforms"
           :key="item.value"
@@ -11,83 +23,95 @@
         ></el-option>
       </el-select>
       <el-date-picker
-        v-model="value2"
-        type="datetimerange"
-        :picker-options="pickerOptions"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        align="right"
-      ></el-date-picker>
-      <el-button type="primary">搜索</el-button>
+      v-model="start"
+      type="date"
+      placeholder="选择日期"
+      format="yyyy-MM-dd hh:mm:ss"
+      value-format="timestamp">
+    </el-date-picker>
+     <el-date-picker
+      v-model="end"
+      type="date"
+      placeholder="选择日期"
+      format="yyyy-MM-dd hh:mm:ss"
+      value-format="timestamp">
+    </el-date-picker>
+      <el-button type="primary" @click="search">搜索</el-button>
+      </div>
       <!-- <el-button type="primary" @click="dialogFormVisible=true">导出excel</el-button> -->
-    </input-area>
-    <div class="bd">
-      <info-table
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
+    <!-- </input-area> -->
+    <!-- > -->
+    <div class="table">
+      <el-table
+        :data="tableData"
+        highlight-current-row
+        tooltip-effect="dark"
+        border
+        style="width: 100%"
+        :default-sort="{ prop: 'date', order: 'descending' }"
       >
-        <info-table-item :table-style="tableStyle">
+        <el-table-column
+          v-for="(item, index) in titleData"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
+          :sortable="item.label === 'ID' ? true : false"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          show-overflow-tooltip
+          width="250px"
+        >
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'action'">
-              <permission-button
-                :action="btn.type"
-                v-for="(btn,index) in scope.row[scope.prop]"
-                :key="index"
-                @click="handelClick(btn,scope.row)"
-                style="cursor: pointer; padding-left: 5px;"
-              >
-                <span>{{btn.label}}</span>
-              </permission-button>
-            </template>
-            <template
-              v-if="['action', 'user_gold', 'alipay_account', 'account_person','status','user_id'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
+            <el-button v-has="'modify_game_notice'" size="mini" type="primary" v-if="scope.row.o_status === '审核中'"
+            @click="CheckOrder(1,scope.row)"
+              >通过并发货</el-button
+            >
+            <el-button v-has="'delete_game_notice'" size="mini" type="danger" v-if="scope.row.o_status === '审核中'"
+            @click="CheckOrder(2,scope.row)"
+              >拒绝</el-button
+            >
           </template>
-        </info-table-item>
-      </info-table>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
       <el-pagination
-        style="margin-top:20px;"
+        v-if="total > 5"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[10, 15, 20]"
-        :page-size="pagesize"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      ></el-pagination>
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
-         
 
 <script>
-import SelectTime from "../../plugin/components/SelectTime";
-import InfoTable from "../../plugin/components/InfoTable";
-import PageInfo from "../../plugin/script/common/PageInfo";
 import BaseIframe from "../../plugin/script/common/BaseIframe";
-import PermissionButton from "../../plugin/components/PermissionButton";
-import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
-import InfoTableItem from "../../plugin/components/InfoTableItem";
+
 
 export default {
   name: "bank_card",
   extends: BaseIframe,
   components: {
-    InfoTableItem,
-    InputArea,
-    SelectTime,
-    InfoTable,
-    PermissionButton
+    InputArea
   },
   data() {
     return {
-      pagesize: 10,
+      limit: 10,
       currentPage: 1,
       total: 0,
+      start:'',
+      end:'',
       pickerOptions: {
         shortcuts: [
           {
@@ -119,52 +143,32 @@ export default {
           }
         ]
       },
-      value2: "",
       platforms: [
-        { value: 1, label: "全部" },
-        { value: 2, label: "审核中" },
-        { value: 3, label: "已拒绝" },
-        { value: 4, label: "已关闭" },
-        { value: 5, label: "已完成" },
-        { value: 6, label: "申请中" },
+        { value: -1, label: "全部" },
+        { value: 0, label: "审核中" },
+        { value: 1, label: "已拒绝" },
+        { value: 3, label: "已完成" },
       ],
       format: {
         user_id: "",
         order_status: ""
       },
-      tableStyle: [
-        { label: "ID", prop: "order_id", width: "" },
-        { label: "订单号", prop: "channel_name", width: "" },
-        { label: "用户id", prop: "channel_name", width: "" },
-        { label: "转账方式", prop: "fun_1", width: "" },
-        { label: "姓名", prop: "fun_2", width: "" },
-        { label: "账号", prop: "fun_3", width: "" },
-        { label: "金额", prop: "fun_4", width: "" },
-        { label: "赠送金额", prop: "fun_5", width: "" },
-        { label: "状态", prop: "fun_6", width: "" },
-        { label: "内部订单号", prop: "fun_7", width: "" },
-        { label: "备注", prop: "fun_8", width: "" },
-        { label: "操作者", prop: "operator", width: "" },
-        { label: "操作时间", prop: "create_time", width: "160" },
-        { label: "操作", prop: "action", width: "120" }
+      titleData: [
+        { label: "ID", prop: "id", width: "" },
+        { label: "订单号", prop: "order_id", width: "" },
+        { label: "用户id", prop: "uid", width: "" },
+        { label: "转账方式", prop: "way", width: "" },
+        { label: "姓名", prop: "bank_user_name", width: "" },
+        { label: "账号", prop: "bank_account", width: "" },
+        { label: "金额", prop: "money", width: "" },
+        { label: "赠送金额", prop: "give_money", width: "" },
+        { label: "状态", prop: "o_status", width: "" },
+        { label: "内部订单号", prop: "inner_order_id", width: "" },
+        { label: "备注", prop: "o_desc", width: "" },
+        { label: "操作者", prop: "op_name", width: "" },
+        { label: "操作时间", prop: "updated_at", width: "160" }
       ],
-      records: [
-        {
-          order_id: "10012",
-          channel_name: "主包",
-          fun_1: "备份",
-          fun_2: "排行榜",
-          fun_3: "邮箱",
-          fun_4: "客服",
-          fun_5: "未设定",
-          fun_6: "未设定",
-          fun_7: "未设定",
-          fun_8: "设定",
-          operator: "json",
-          create_time: "2020-02-10 12:00:00",
-          action: ""
-        }
-      ],
+
       dialogAddVisible: false,
       form: {
         checkList: ["0902代理01", "0902代理02"],
@@ -175,43 +179,103 @@ export default {
         money_password: "",
         phone: "",
         user_type: "1"
+      },
+      tableData: [],
+      o_status: {
+        0: "审核中",
+        1: "已拒绝",
+        3: "已完成"
       }
     };
   },
+  async created() {
+    let start = new Date().getTime()
+    let end = (new Date().getTime()) - (60 * 60 * 24 * 1000 * 7);
+    this.start = end
+    this.end = start
+    
+    this.initData();
+  },
   methods: {
-    getBankOrderList() {
-      let params = {
-        page: this.currentPage,
-        limit: this.pagesize
-      }
-      this.$http.get('v1/backend/operation/credit-order',{
-        params
-      }).then(res => {
-        console.log(res)
-      })
-    },
+   
     /**搜索*/
     search() {
-      let data = this.format,
-        user_id = 1000;
-      this.userList(data, user_id);
+      this.initData({
+        page: this.currentPage,
+        limit: this.limit,
+        uid:this.format.user_id || -1,
+        status:this.format.order_status || -1,
+        start_time:Math.ceil(this.start / 1000) || 0,
+        end_time:Math.ceil(this.start / 1000) || 0,
+      })
+      
     },
-    /** 添加会员 */
-    addUser() {
-      this.dialogAddVisible = true;
+
+    //页容量变化
+    handleSizeChange(num) {
+      this.currentPage = 1;
+      this.limit = num;
+      this.initData();
     },
-    handelClick(btn, row) {
-      if (btn.type === "edit") {
-        this.dialogFormVisible = true;
+
+    //页码变化
+    handleCurrentChange(pagenum) {
+      this.currentPage = pagenum;
+      this.initData();
+    },
+
+    async CheckOrder(type,row){
+      console.log(type,row.order_id);
+      
+      let {data} = await this.$http.allAgency.PostOrdercheck({
+        order_id:row.order_id,
+        action:type
+      })
+      console.log(data);
+      if(data.code === 200){
+        this.initData()
       }
+      
     },
-    handleSizeChange(val) {
-      this.pagesize = val;
-      this.getPlayList();
+
+       //十位时间戳转格式日期
+    timestampToTime(timestamp) {
+      var date = new Date(timestamp * 1000);
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D = date.getDate() + " ";
+      var h = date.getHours() + ":";
+      var m = date.getMinutes() + ":";
+      var s = date.getSeconds();
+      return Y + M + D + h + m + s;
     },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-      this.getPlayList();
+
+
+
+    formatData(res) {
+      res.forEach(item => {
+        item.way = item.way === 0 ? "银行卡" : "支付宝";
+        item.updated_at = this.timestampToTime(item.updated_at)
+        Object.keys(this.o_status).forEach(it => {
+          if (item.o_status === +it) {
+            item.o_status = this.o_status[it];
+          }
+        });
+      });
+      return res;
+    },
+
+    async initData() {
+      let { data } = await this.$http.allAgency.GetBankOrder({
+        page: this.currentPage,
+        limit: this.limit
+      });
+      console.log(data);
+      this.tableData = this.formatData(data.data);
+      this.total = data.total;
     }
   },
   mounted() {}
@@ -219,6 +283,12 @@ export default {
 </script>
 
 <style scoped>
+#BankOrder-main {
+  padding: 20px;
+}
+#BankOrder-main .table {
+  margin-top: 20px;
+}
 #BankOrder-main .bd {
   padding-left: 20px;
 }

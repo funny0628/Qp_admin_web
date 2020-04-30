@@ -276,7 +276,13 @@ export default {
       this.dialogFormVisible = true;
       this.resetForm();
       this.getActiveOpts();
-      this.getChannelList();
+      this.getAddChannelList();
+      this.form.active_1 = this.funOpts[0];
+      this.form.active_2 = [1].id
+      this.form.active_3 = [2].id
+      this.form.active_4 = [3].id
+      this.form.active_5 = [4].id
+      this.form.active_6 = [5].id
     },
     addFunSortConf() {
       if (!this.form.id) {
@@ -344,12 +350,12 @@ export default {
       this.getChannelList();
       this.form.id = row.id;
       this.form.checkList = [row.channel_name];
-      this.form.active_1 = JSON.parse(row.func_list)[0];
-      this.form.active_2 = JSON.parse(row.func_list)[1];
-      this.form.active_3 = JSON.parse(row.func_list)[2];
-      this.form.active_4 = JSON.parse(row.func_list)[3];
-      this.form.active_5 = JSON.parse(row.func_list)[4];
-      this.form.active_6 = JSON.parse(row.func_list)[5];
+      this.form.active_1 = row.func_1;
+      this.form.active_2 = row.func_2;
+      this.form.active_3 = row.func_3;
+      this.form.active_4 = row.func_4;
+      this.form.active_5 = row.func_5;
+      this.form.active_6 = row.func_6;
     },
     handleDelete(row) {
       console.log(row);
@@ -383,7 +389,7 @@ export default {
           });
         });
     },
-    getChannelList() {
+    getAddChannelList() {
       let data = {
         type_id: 1,
         add_id: 1
@@ -409,7 +415,6 @@ export default {
       });
     },
     getActiveOpts() {
-      console.log("我调用了吗", "getActiveOpts");
       this.$http
         .get("v1/backend/lobby/name_type", {
           params: {
@@ -420,12 +425,12 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.funOpts = res.data.data;
-            this.form.active_1 = String(res.data.data[0].id)
-            this.form.active_2 = String(res.data.data[0].id)
-            this.form.active_3 = String(res.data.data[0].id)
-            this.form.active_4 = String(res.data.data[0].id)
-            this.form.active_5 = String(res.data.data[0].id)
-            this.form.active_6 = String(res.data.data[0].id)
+            // this.form.active_1 = String(res.data.data[0].id)
+            // this.form.active_2 = String(res.data.data[0].id)
+            // this.form.active_3 = String(res.data.data[0].id)
+            // this.form.active_4 = String(res.data.data[0].id)
+            // this.form.active_5 = String(res.data.data[0].id)
+            // this.form.active_6 = String(res.data.data[0].id)
           }
         });
     },

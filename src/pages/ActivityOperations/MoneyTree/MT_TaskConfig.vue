@@ -9,10 +9,10 @@
     <!-- title -->
     <div class="title">
       <el-button type="primary" @click="add">添加</el-button>
-      <el-button type="primary" @click="send">发送服务器配置</el-button>
+      <el-button v-has="'rainmaker_job_config_send'" type="primary" @click="send">发送服务器配置</el-button>
     </div>
     <!-- table -->
-    <div class="table">
+    <div class="table" v-has="'rainmaker_job_config_detail'">
       <el-table
         :data="tableData"
         highlight-current-row
@@ -161,7 +161,7 @@
           </el-form-item>
         </el-form>
         <div style="margin-top:20px" slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="onSubmit('form', title)"
+          <el-button v-has="'rainmaker_job_config_save'" type="primary" @click="onSubmit('form', title)"
             >确认</el-button
           >
           <el-button type="primary" @click="back()">返 回</el-button>
@@ -173,6 +173,7 @@
 
 <script>
 export default {
+  name:'rainmaker_job_config',
   data() {
     return {
       tableData: [],
@@ -271,7 +272,7 @@ export default {
       });
       this.currentData.ac_content.task = postData;
       // console.log(this.currentData,this.allData);
-      let { data } = await this.$http.HallFunConfig.PostActivityNew3({
+      let { data } = await this.$http.HallFunConfig.PostActivityNew32({
         keys: this.keys,
         values: JSON.stringify(this.allData),
         id: this.id
@@ -339,7 +340,7 @@ export default {
     },
 
     async initData() {
-      let { data } = await this.$http.HallFunConfig.GetActivityNew3({
+      let { data } = await this.$http.HallFunConfig.GetActivityNew32({
         key: "activity_new.lua"
       });
       //   console.log(data);
