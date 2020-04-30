@@ -15,6 +15,8 @@
         <el-table-column label="功能4" prop="func_4" align="center"></el-table-column>
         <el-table-column label="功能5" prop="func_5" align="center"></el-table-column>
         <el-table-column label="功能6" prop="func_6" align="center"></el-table-column>
+        <el-table-column label="功能7" prop="func_7" align="center"></el-table-column>
+        <el-table-column label="功能8" prop="func_8" align="center"></el-table-column>
         <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
         <el-table-column label="创建时间" prop="create_time" align="center"></el-table-column>
         <el-table-column label="请求时间" prop="update_time" align="center"></el-table-column>
@@ -149,11 +151,11 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <!-- <el-form-item label="功能7">
+          <el-form-item label="功能7">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
+                <el-select v-model="form.function7">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -163,12 +165,12 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item>-->
-          <!-- <el-form-item label="功能8">
+          </el-form-item>
+          <el-form-item label="功能8">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
+                <el-select v-model="form.function8">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -178,7 +180,7 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item>-->
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -255,7 +257,9 @@ export default {
         function3: "",
         function4: "",
         function5: "",
-        function6: ""
+        function6: "",
+        function7: "",
+        function8: "",
       }
     };
   },
@@ -295,7 +299,9 @@ export default {
         function3: "",
         function4: "",
         function5: "",
-        function6: ""
+        function6: "",
+        function7: "",
+        function8: "",
       };
     },
     openAddDialog() {
@@ -310,6 +316,8 @@ export default {
       this.form.function4 = this.funOpts[3].id
       this.form.function5 = this.funOpts[4].id
       this.form.function6 = this.funOpts[5].id
+      this.form.function7 = this.funOpts[6].id
+      this.form.function8 = this.funOpts[7].id
     },
     //获取功能名字列表
     getFunNameList() {
@@ -374,7 +382,11 @@ export default {
           "," +
           this.form.function5 +
           "," +
-          this.form.function6;
+          this.form.function6 +
+          "," +
+          this.form.function7 +
+          "," +
+          this.form.function8;
         let funArr = funStr.split(",");
         let data = {
           name: this.form.checkList[0],
@@ -402,7 +414,11 @@ export default {
           "," +
           this.form.function5 +
           "," +
-          this.form.function6;
+          this.form.function6 +
+          "," +
+          this.form.function7 +
+          "," +
+          this.form.function8;
         let funArr = funStr.split(",");
         let data = {
           banner_id: this.form.id,
@@ -435,6 +451,8 @@ export default {
       this.form.function4 = row.func_4;
       this.form.function5 = row.func_5;
       this.form.function6 = row.func_6;
+      this.form.function7 = row.func_7;
+      this.form.function8 = row.func_8;
     },
     handleDelete(row) {
       console.log(row);

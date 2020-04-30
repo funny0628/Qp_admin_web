@@ -26,6 +26,7 @@
         <el-table-column label="VIP特权" align="center">
           <template slot-scope="scope">
             <span>{{JSON.parse(scope.row.privilege) | formatPrivilege}}</span>
+            <!-- <span>{{JSON.parse(scope.row.privilege)}}</span> -->
           </template>
         </el-table-column>
         <el-table-column prop="icon_border_url" label="头像框" align="center">
@@ -71,7 +72,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.id+item.name"
+              :label="item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -257,13 +258,13 @@ export default {
       if (Object.prototype.toString.call(obj) !== "[object Array]") {
         var rantStr = "";
         for (var key in obj) {
-          rantStr += key + "," + obj[key] + " ";
+          rantStr += key + "," + obj[key];
         }
         return rantStr;
       }else {
         var rantStr = "";
         for (var i=0;i<obj.length;i++) {
-          rantStr += obj[i] + " ";
+          rantStr += obj[i] + ','
         }
         return rantStr;
       }

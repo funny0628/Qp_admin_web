@@ -293,6 +293,9 @@ export default {
   },
   methods: {
     searchData() {
+      this.getOrderList()
+    },
+    getOrderList() {
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -309,23 +312,6 @@ export default {
           : 0
       };
       console.log(params);
-      this.$http
-        .get("v1/backend/operation/orders", {
-          params
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.records = res.data.data;
-            this.total = res.data.total;
-          }
-        });
-    },
-    getOrderList() {
-      let params = {
-        page: this.currentPage,
-        limit: this.pagesize
-      };
       this.$http
         .get("v1/backend/operation/orders", {
           params

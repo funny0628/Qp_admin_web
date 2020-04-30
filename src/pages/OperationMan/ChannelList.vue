@@ -10,10 +10,8 @@
         <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <span>渠道</span>
-      <el-select v-model="format.channel" placeholder="请选择渠道" clearable size="medium">
-        <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-      <el-button type="primary" size="medium">搜索</el-button>
+        <el-input v-model="format.searchChannel" autocomplete="off" placeholder="请输入渠道名" style="width:20%;"></el-input>
+      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -116,7 +114,7 @@ export default {
       companyList: [],
       format: {
         company: "",
-        channel: ""
+        searchChannel: "",
       },
       tableStyle: [
         { label: "ID", prop: "id", width: "" },
@@ -156,8 +154,8 @@ export default {
           params: {
             page: this.currentPage,
             limit: this.pagesize,
-            company: "",
-            channel_name: ""
+            company: this.format.company,
+            channel_name: this.format.searchChannel
           }
         })
         .then(res => {
@@ -167,6 +165,9 @@ export default {
             this.total = res.data.total;
           }
         });
+    },
+    searchData() {
+      this.getChannelList()
     },
     //获取公司列表
     getCompanyList() {

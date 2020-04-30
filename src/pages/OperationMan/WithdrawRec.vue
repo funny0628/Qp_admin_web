@@ -202,24 +202,6 @@ export default {
     getWithdrawRec() {
       let params = {
         page: this.currentPage,
-        limit: this.pagesize
-      };
-      this.$http
-        .get("v1/backend/operation/withdraws", {
-          params
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code == 200) {
-            this.records = res.data.data;
-            this.total = res.data.total;
-          }
-        });
-    },
-    /**搜索*/
-    searchData() {
-      let params = {
-        page: this.currentPage,
         limit: this.pagesize,
         status: this.withdraw_status ? Number(this.format.withdraw_status) : -1,
         user_id: Number(this.format.game_id),
@@ -241,6 +223,10 @@ export default {
             this.total = res.data.total;
           }
         });
+    },
+    /**搜索*/
+    searchData() {
+      this.getWithdrawRec()
     },
     handleDetail(row) {
       console.log(row);
