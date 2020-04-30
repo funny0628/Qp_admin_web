@@ -44,6 +44,17 @@ let GetAgencyLevel = (params) => { //get / search
     })
 }
 
+//运营管理--银行卡订单-------------
+let GetBankOrder = (params) => { //get / search
+    return axios.get('v1/backend/operation/credit-order', {
+        params
+    })
+}
+//运营管理--银行卡订单审核
+let PostOrdercheck = (params) => { //get / search
+    return axios.post('v1/backend/operation/credit-order', params)
+}
+
 export default {
     GetAllAgency,
     PostAllAgency,
@@ -52,4 +63,6 @@ export default {
     GetAgency,
     GetEarnings,
     GetAgencyLevel,
+    GetBankOrder,
+    PostOrdercheck,
 }

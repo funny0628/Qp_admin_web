@@ -1,10 +1,10 @@
 <template>
   <div id="reportWayConfig">
     <div class="title">
-      <p @click="save">保存</p>
+      <p @click="save" v-has="'inform_config_save'">保存</p>
       <div class="repor">举报功能配置</div>
     </div>
-    <div class="contain">
+    <div class="contain" v-has="'inform_config_detail'">
       <el-form
         :model="form"
         status-icon
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: "reportWayConfig",
+  name: "inform_config",
   data() {
     return {
       wx: "",
