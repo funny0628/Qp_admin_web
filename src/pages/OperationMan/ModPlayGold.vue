@@ -66,7 +66,6 @@
           <el-input v-model="form.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="modPlayGoldFn">确 定</el-button>
