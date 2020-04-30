@@ -75,7 +75,6 @@
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
-          <div>{{form.checkList}}</div>
         </el-form-item>
         <el-form-item label="所需累计金币流水" :label-width="formLabelWidth">
           <el-input v-model="form.gold_flow" autocomplete="off"></el-input>
