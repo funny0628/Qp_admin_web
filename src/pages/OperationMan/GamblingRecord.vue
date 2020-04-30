@@ -485,7 +485,7 @@
           </tr>
           <tr>
             <td></td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
             <td></td>
             <td></td>
           </tr>
@@ -606,27 +606,19 @@ export default {
       uid: null,
     };
   },
+  filters: {
+    formatObj: function(obj) {
+      for(var key in obj) {
+        if(key == 'win_coins') {
+          return obj[key]
+        }else if(key == 'uid') {
+          return obj[key]
+        }
+      }
+    }
+  },
   methods: {
     getPlayList() {
-      let params = {
-        page: this.currentPage,
-        limit: this.pagesize
-      };
-      this.$http
-        .get("v1/backend/operation/play/records", {
-          params
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.records = res.data.data;
-            this.total = res.data.total;
-          }
-        });
-    },
-    /**搜索*/
-    search() {},
-    searchData() {
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -650,6 +642,11 @@ export default {
             this.total = res.data.total;
           }
         });
+    },
+    /**搜索*/
+    search() {},
+    searchData() {
+      this.getPlayList()
     },
     getAllGameType() {
       this.$http.get("v1/backend/operation/game-type").then(res => {

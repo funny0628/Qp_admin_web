@@ -40,6 +40,7 @@
             <span v-if="scope.row[`game_${name}`] == 2004">水果机</span>
             <span v-if="scope.row[`game_${name}`] == 2005">奔驰宝马</span>
             <span v-if="scope.row[`game_${name}`] == 2006">百家乐</span>
+            <span v-if="scope.row[`game_${name}`] == 2007">二八杠</span>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" prop="created_at" align="center" width="180">
@@ -509,11 +510,12 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <!-- <el-form-item label="游戏11">
+          <el-form-item label="游戏11">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">游戏名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.game_11" placeholder="请选择活动区域">
+                <el-select v-model="form.game_11_obj.game_des">
+                  <el-option label="留空" value="0"></el-option>
                   <el-option
                     v-for="(item,index) in gameOpts"
                     :key="index"
@@ -526,39 +528,28 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">角标</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_11_obj.corner_remark">
+                  <el-option label="无" value="0"></el-option>
+                  <el-option label="推荐" value="1"></el-option>
+                  <el-option label="热门" value="2"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">状态</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_11_obj.status">
+                  <el-option label="正常" value="0"></el-option>
+                  <el-option label="敬请期待" value="1"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">是否强引导</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_11_obj.leader">
+                  <el-option label="是" value="2"></el-option>
+                  <el-option label="否" value="1"></el-option>
                 </el-select>
               </el-col>
             </el-row>
@@ -567,7 +558,8 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">游戏名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.game_12" placeholder="请选择活动区域">
+                <el-select v-model="form.game_12_obj.game_des">
+                  <el-option label="留空" value="0"></el-option>
                   <el-option
                     v-for="(item,index) in gameOpts"
                     :key="index"
@@ -580,43 +572,32 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">角标</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_12_obj.corner_remark">
+                  <el-option label="无" value="0"></el-option>
+                  <el-option label="推荐" value="1"></el-option>
+                  <el-option label="热门" value="2"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">状态</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_12_obj.status">
+                  <el-option label="正常" value="0"></el-option>
+                  <el-option label="敬请期待" value="1"></el-option>
                 </el-select>
               </el-col>
             </el-row>
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">是否强引导</el-col>
               <el-col :span="20">
-                <el-select v-model="form.function">
-                  <el-option
-                    v-for="(item,index) in funOpts"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
+                <el-select v-model="form.game_12_obj.leader">
+                  <el-option label="是" value="2"></el-option>
+                  <el-option label="否" value="1"></el-option>
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item>-->
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -728,6 +709,18 @@ export default {
           corner_remark: "0",
           status: "0",
           leader: "1"
+        },
+        game_11_obj: {
+          game_des: "",
+          corner_remark: "0",
+          status: "0",
+          leader: "1"
+        },
+        game_12_obj: {
+          game_des: "",
+          corner_remark: "0",
+          status: "0",
+          leader: "1"
         }
       },
       gameList: {},
@@ -795,6 +788,18 @@ export default {
           leader: "1"
         },
         game_10_obj: {
+          game_des: "",
+          corner_remark: "0",
+          status: "0",
+          leader: "1"
+        },
+        game_11_obj: {
+          game_des: "",
+          corner_remark: "0",
+          status: "0",
+          leader: "1"
+        },
+        game_12_obj: {
           game_des: "",
           corner_remark: "0",
           status: "0",
@@ -957,7 +962,7 @@ export default {
           "7": {
             position: 7,
             game_type: this.form.game_7_obj.game_des,
-            shown_type: 7,
+            shown_type: 1,
             notice_type: this.form.game_7_obj.corner_remark,
             status: this.form.game_7_obj.status,
             guide_status: this.form.game_7_obj.leader
@@ -985,6 +990,22 @@ export default {
             notice_type: this.form.game_10_obj.corner_remark,
             status: this.form.game_10_obj.status,
             guide_status: this.form.game_10_obj.leader
+          },
+          "11": {
+            position: 11,
+            game_type: this.form.game_11_obj.game_des,
+            shown_type: 1,
+            notice_type: this.form.game_11_obj.corner_remark,
+            status: this.form.game_11_obj.status,
+            guide_status: this.form.game_11_obj.leader
+          },
+          "12": {
+            position: 12,
+            game_type: this.form.game_12_obj.game_des,
+            shown_type: 1,
+            notice_type: this.form.game_12_obj.corner_remark,
+            status: this.form.game_12_obj.status,
+            guide_status: this.form.game_12_obj.leader
           }
         };
         let data = {
@@ -1080,6 +1101,22 @@ export default {
             notice_type: this.form.game_10_obj.corner_remark,
             status: this.form.game_10_obj.status,
             guide_status: this.form.game_10_obj.leader
+          },
+          "11": {
+            position: 11,
+            game_type: this.form.game_11_obj.game_des,
+            shown_type: 1,
+            notice_type: this.form.game_11_obj.corner_remark,
+            status: this.form.game_11_obj.status,
+            guide_status: this.form.game_11_obj.leader
+          },
+          "12": {
+            position: 12,
+            game_type: this.form.game_12_obj.game_des,
+            shown_type: 1,
+            notice_type: this.form.game_12_obj.corner_remark,
+            status: this.form.game_12_obj.status,
+            guide_status: this.form.game_12_obj.leader
           }
         };
         let data = {

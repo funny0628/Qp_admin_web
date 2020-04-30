@@ -108,6 +108,9 @@ export default {
       }
     };
   },
+  created() {
+
+  },
   methods: {
     showTab(index) {
       this.currentIndex = index;

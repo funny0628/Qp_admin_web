@@ -142,16 +142,6 @@ export default {
   },
   methods: {
     getFishList() {
-      this.$http.get("v1/backend/operation/fishes").then(res => {
-        console.log(res);
-        if (res.data.code === 200) {
-          this.records = res.data.data;
-          this.total = res.data.total;
-        }
-      });
-    },
-    /**搜索*/
-    searchData() {
       let params = {
         user_id: Number(this.format.play_id),
         start_time: this.format.dateArr
@@ -172,6 +162,10 @@ export default {
             this.total = res.data.total;
           }
         });
+    },
+    /**搜索*/
+    searchData() {
+      this.getFishList()
     },
     handleRecord(row) {
       console.log(row);
