@@ -194,19 +194,24 @@ export default {
     this.start = end
     this.end = start
     
-    this.initData();
+    this.initData({
+        page: this.currentPage,
+        limit: this.limit
+      });
   },
   methods: {
    
     /**搜索*/
     search() {
+      console.log(this.format.user_id,this.format.order_status,this.start,this.end,);
+      
       this.initData({
         page: this.currentPage,
         limit: this.limit,
-        uid:this.format.user_id || -1,
+        uid:+this.format.user_id || 0,
         status:this.format.order_status || -1,
         start_time:Math.ceil(this.start / 1000) || 0,
-        end_time:Math.ceil(this.start / 1000) || 0,
+        end_time:Math.ceil(this.end / 1000) || 0,
       })
       
     },
@@ -215,13 +220,19 @@ export default {
     handleSizeChange(num) {
       this.currentPage = 1;
       this.limit = num;
-      this.initData();
+      this.initData({
+        page: this.currentPage,
+        limit: this.limit
+      });
     },
 
     //页码变化
     handleCurrentChange(pagenum) {
       this.currentPage = pagenum;
-      this.initData();
+      this.initData({
+        page: this.currentPage,
+        limit: this.limit
+      });
     },
 
     async CheckOrder(type,row){
@@ -268,11 +279,8 @@ export default {
       return res;
     },
 
-    async initData() {
-      let { data } = await this.$http.allAgency.GetBankOrder({
-        page: this.currentPage,
-        limit: this.limit
-      });
+    async initData(params) {
+      let { data } = await this.$http.allAgency.GetBankOrder(params);
       console.log(data);
       this.tableData = this.formatData(data.data);
       this.total = data.total;
