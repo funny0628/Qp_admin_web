@@ -18,13 +18,13 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
-            <template v-if="scope.prop === 'pic_one_url'">
+            <template v-if="scope.prop === 'pic_one'">
               <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
-            <template v-if="scope.prop === 'pic_two_url'">
+            <template v-if="scope.prop === 'pic_two'">
               <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
-            <template v-if="scope.prop === 'pic_three_url'">
+            <template v-if="scope.prop === 'pic_three'">
               <img :src="scope.row[scope.prop]" width="50" height="50" alt />
             </template>
             <template v-if="scope.prop === 'action'">
@@ -397,9 +397,9 @@ export default {
       tableStyle: [
         { label: "渠道名称", prop: "channel", width: "" },
         { label: "KEY", prop: "channel_key", width: "" },
-        { label: "图片一", prop: "pic_one_url", width: "" },
-        { label: "图片二", prop: "pic_two_url", width: "" },
-        { label: "图片三", prop: "pic_three_url", width: "" },
+        { label: "图片一", prop: "pic_one", width: "" },
+        { label: "图片二", prop: "pic_two", width: "" },
+        { label: "图片三", prop: "pic_three", width: "" },
         { label: "操作时间", prop: "create_time", width: "" },
         { label: "操作", prop: "action", width: "" }
       ],
