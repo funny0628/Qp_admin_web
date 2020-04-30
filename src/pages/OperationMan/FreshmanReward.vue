@@ -104,11 +104,7 @@ export default {
     };
   },
   created() {
-<<<<<<< HEAD
-
-=======
     this.initData()
->>>>>>> fenni_dev
   },
   methods: {
     showTab(index) {
