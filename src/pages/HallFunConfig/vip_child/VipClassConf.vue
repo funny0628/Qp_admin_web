@@ -71,7 +71,7 @@
             <el-checkbox
               v-for="(item,index) in privilegeOpts"
               :key="index"
-              :label="item.id+','+item.name"
+              :label="item.id+item.name"
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
@@ -190,6 +190,7 @@
           </el-upload>
         </el-form-item>
       </el-form>
+      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addNewConf">确认</el-button>
         <el-button @click="dialogFormVisible = false">返回</el-button>
@@ -253,12 +254,27 @@ export default {
   },
   filters: {
     formatPrivilege: function(obj) {
-      var rantStr = "";
-      for (var key in obj) {
-        rantStr += key + "," + obj[key] + " ";
+      if (Object.prototype.toString.call(obj) !== "[object Array]") {
+        var rantStr = "";
+        for (var key in obj) {
+          rantStr += key + "," + obj[key] + " ";
+        }
+        return rantStr;
+      }else {
+        var rantStr = "";
+        for (var i=0;i<obj.length;i++) {
+          rantStr += obj[i] + " ";
+        }
+        return rantStr;
       }
-      return rantStr;
     }
+    // formatPrivilege: function(obj) {
+    //   var rantStr = "";
+    //   for (var key in obj) {
+    //     rantStr += key + "," + obj[key] + " ";
+    //   }
+    //   return rantStr;
+    // }
   },
   methods: {
     sendTabelData() {
