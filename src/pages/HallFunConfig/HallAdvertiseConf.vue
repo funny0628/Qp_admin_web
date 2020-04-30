@@ -537,16 +537,22 @@ export default {
           name: this.form.channel_name,
           key: this.form.channel_key,
           name_one: this.imageUrl.imgList1,
-          url_one: this.form.word1_jump_position ? this.form.word1_jump_position : this.form.word1_url,
+          url_one: this.form.word1_jump_position
+            ? this.form.word1_jump_position
+            : this.form.word1_url,
           type_one: Number(this.form.word1_type),
           // jump_id_one: Number(this.form.word1_jump_position),
           name_two: this.imageUrl.imgList2,
-          url_two: this.form.word2_jump_position ? this.form.word2_jump_position : this.form.word2_url,
+          url_two: this.form.word2_jump_position
+            ? this.form.word2_jump_position
+            : this.form.word2_url,
           type_two: Number(this.form.word2_type),
           // jump_id_two: Number(this.form.word2_jump_position),
           name_three: this.imageUrl.imgList3,
-          url_three: this.form.word3_jump_position ? this.form.word3_jump_position : this.form.word3_url,
-          type_three: Number(this.form.word3_type),
+          url_three: this.form.word3_jump_position
+            ? this.form.word3_jump_position
+            : this.form.word3_url,
+          type_three: Number(this.form.word3_type)
           // jump_id_three: Number(this.form.word3_jump_position)
         };
         this.$http.post("v1/backend/lobby/flyer", data).then(res => {
@@ -566,12 +572,12 @@ export default {
           type_one: JSON.parse(this.form.word1_type),
           // jump_id_one: JSON.parse(this.form.word1_jump_position),
           name_two: this.imageUrl.imgList2,
-          url_two: this.form.word2_url ,
+          url_two: this.form.word2_url,
           type_two: JSON.parse(this.form.word2_type),
           // jump_id_two: JSON.parse(this.form.word2_jump_position),
           name_three: this.imageUrl.imgList3,
           url_three: this.form.word3_url,
-          type_three: JSON.parse(this.form.word3_type),
+          type_three: JSON.parse(this.form.word3_type)
           // jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
         this.$http.put("v1/backend/lobby/flyer", data).then(res => {
@@ -592,18 +598,33 @@ export default {
       this.form.id = row.id;
       this.form.channel_name = row.channel;
       this.form.channel_key = row.channel_key;
-      this.form.word1_type = JSON.stringify(row.pic_one_type);
+      // this.form.word1_type = JSON.stringify(row.pic_one_type);
       this.form.word1_url = row.pic_one_url;
-      this.form.word2_type = JSON.stringify(row.pic_two_type);
+      // this.form.word2_type = JSON.stringify(row.pic_two_type);
       this.form.word2_url = row.pic_two_url;
-      this.form.word3_type = JSON.stringify(row.pic_three_type);
+      // this.form.word3_type = JSON.stringify(row.pic_three_type);
       this.form.word3_url = row.pic_three_url;
-      this.form.word1_jump_position = JSON.stringify(row.dump_id1);
-      this.form.word2_jump_position = JSON.stringify(row.dump_id2);
-      this.form.word3_jump_position = JSON.stringify(row.dump_id3);
-      this.imageUrl.imgList1 = row.pic_one_url;
-      this.imageUrl.imgList2 = row.pic_two_url;
-      this.imageUrl.imgList3 = row.pic_three_url;
+      if (row.dump_id1 == 0) {
+        this.form.word1_type = JSON.stringify(row.pic_one_type);
+      } else {
+        this.form.word1_jump_position = JSON.stringify(row.dump_id1);
+      }
+      if (row.dump_id2 == 0) {
+        this.form.word2_type = JSON.stringify(row.pic_two_type);
+      } else {
+        this.form.word2_jump_position = JSON.stringify(row.dump_id2);
+      }
+      if (row.dump_id3 == 0) {
+        this.form.word3_type = JSON.stringify(row.pic_three_type);
+      } else {
+        this.form.word3_jump_position = JSON.stringify(row.dump_id3);
+      }
+      // this.form.word1_jump_position = JSON.stringify(row.dump_id1);
+      // this.form.word2_jump_position = JSON.stringify(row.dump_id2);
+      // this.form.word3_jump_position = JSON.stringify(row.dump_id3);
+      this.imageUrl.imgList1 = row.pic_one;
+      this.imageUrl.imgList2 = row.pic_two;
+      this.imageUrl.imgList3 = row.pic_three;
     },
     handleDelete(row) {
       console.log(row);
