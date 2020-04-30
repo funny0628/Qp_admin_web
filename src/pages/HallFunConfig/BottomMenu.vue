@@ -20,8 +20,18 @@
         <el-table-column label="请求时间" prop="update_time" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
-            <el-button v-has="'modify_button_menu_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button v-has="'delete_button_menu_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button
+              v-has="'modify_button_menu_config'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+            >编辑</el-button>
+            <el-button
+              v-has="'delete_button_menu_config'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -153,7 +163,7 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item> -->
+          </el-form-item>-->
           <!-- <el-form-item label="功能8">
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">功能名称</el-col>
@@ -168,7 +178,7 @@
                 </el-select>
               </el-col>
             </el-row>
-          </el-form-item> -->
+          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -263,17 +273,17 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.tableData = res.data.data;
-            this.total = res.data.total
+            this.total = res.data.total;
             this.func_list_index();
-          console.log(this.tableData)
+            console.log(this.tableData);
           }
         });
     },
     func_list_index: function() {
       this.tableData.map((item1, index1) => {
-        JSON.parse(item1.func_list).map((item2,index2) => {
-          item1[`func_${index2+1}`] =  item2
-        })
+        JSON.parse(item1.func_list).map((item2, index2) => {
+          item1[`func_${index2 + 1}`] = item2;
+        });
       });
     },
     resetForm() {
@@ -294,33 +304,39 @@ export default {
       this.resetForm();
       this.getChannelList();
       this.getFunNameList();
+      this.form.function1 = this.funOpts[0].id
+      this.form.function2 = this.funOpts[1].id
+      this.form.function3 = this.funOpts[2].id
+      this.form.function4 = this.funOpts[3].id
+      this.form.function5 = this.funOpts[4].id
+      this.form.function6 = this.funOpts[5].id
     },
     //获取功能名字列表
     getFunNameList() {
       this.$http
         .get("v1/backend/lobby/name_type", {
           params: {
-            type_id: 3
+            type_id: 4
           }
         })
         .then(res => {
           console.log(res);
           this.funOpts = res.data.data;
-          this.form.function1 = String(res.data.data[0].id)
-          this.form.function2 = String(res.data.data[0].id)
-          this.form.function3 = String(res.data.data[0].id)
-          this.form.function4 = String(res.data.data[0].id)
-          this.form.function5 = String(res.data.data[0].id)
-          this.form.function6 = String(res.data.data[0].id)
+          // this.form.function1 = String(res.data.data[0].id)
+          // this.form.function2 = String(res.data.data[0].id)
+          // this.form.function3 = String(res.data.data[0].id)
+          // this.form.function4 = String(res.data.data[0].id)
+          // this.form.function5 = String(res.data.data[0].id)
+          // this.form.function6 = String(res.data.data[0].id)
         });
     },
     //获取新增渠道选项列表
     getChannelList() {
       let data = {
         type_id: 1,
-          add_id: 3
-      }
-      this.$http.post("v1/backend/no_channel",data).then(res => {
+        add_id: 3
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });
@@ -329,9 +345,9 @@ export default {
     getAllChannelList() {
       let data = {
         type_id: 2,
-          add_id: 3
-      }
-      this.$http.post("v1/backend/no_channel",data).then(res => {
+        add_id: 3
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
         console.log(res);
         this.ChannelList = res.data.data;
       });
@@ -339,8 +355,6 @@ export default {
     //得到选中的渠道的channel-code
     getChannleCode() {
       this.ChannelList.forEach((item, index) => {
-        console.log(item);
-        console.log(this.form.checkList);
         if (this.form.checkList[0] === item.channel_name) {
           this.checkChannelCode = item.channel_code;
           console.log(this.checkChannelCode);
@@ -415,12 +429,12 @@ export default {
       this.dialogTitle = "更新活动入口配置";
       this.form.checkList = [row.channel_name];
       this.form.id = row.id;
-      this.form.function1 = JSON.parse(row.func_list)[0];
-      this.form.function2 = JSON.parse(row.func_list)[1];
-      this.form.function3 = JSON.parse(row.func_list)[2];
-      this.form.function4 = JSON.parse(row.func_list)[3];
-      this.form.function5 = JSON.parse(row.func_list)[4];
-      this.form.function6 = JSON.parse(row.func_list)[5];
+      this.form.function1 = row.func_1;
+      this.form.function2 = row.func_2;
+      this.form.function3 = row.func_3;
+      this.form.function4 = row.func_4;
+      this.form.function5 = row.func_5;
+      this.form.function6 = row.func_6;
     },
     handleDelete(row) {
       console.log(row);
@@ -479,7 +493,6 @@ export default {
   },
   watch: {
     "form.checkList": function(newVal, oldVal) {
-      console.log(newVal, oldVal);
       if (newVal) {
         this.getChannleCode();
       }
