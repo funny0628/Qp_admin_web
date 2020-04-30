@@ -23,11 +23,10 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="level" label="VIP等级" align="center"></el-table-column>
-        <el-table-column label="VIP特权" align="center">
-          <template slot-scope="scope">
+        <el-table-column prop="privilege" label="VIP特权" align="center">
+          <!-- <template slot-scope="scope">
             <span>{{JSON.parse(scope.row.privilege) | formatPrivilege}}</span>
-            <!-- <span>{{JSON.parse(scope.row.privilege)}}</span> -->
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column prop="icon_border_url" label="头像框" align="center">
           <template slot-scope="scope">
@@ -76,6 +75,7 @@
               :value="JSON.stringify(item.id)"
             >{{item.name}}</el-checkbox>
           </el-checkbox-group>
+          <div>{{form.checkList}}</div>
         </el-form-item>
         <el-form-item label="所需累计金币流水" :label-width="formLabelWidth">
           <el-input v-model="form.gold_flow" autocomplete="off"></el-input>
@@ -191,7 +191,6 @@
           </el-upload>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="addNewConf">确认</el-button>
         <el-button @click="dialogFormVisible = false">返回</el-button>
@@ -358,8 +357,8 @@ export default {
       if (!this.form.grade_id) {
         let data = {
           level: Number(this.form.vip_class),
-          privilege: JSON.stringify(this.form.checkList),
-          charge_coins: Number(this.form.gold_flow) * 1000,
+          privilege: String(this.form.checkList),
+          charge_coins: Number(this.form.gold_flow),
           enter_word: this.form.vip_tip_text,
           caishen_base_rate: Number(this.form.probability),
           speedup_weight: Number(this.form.withdraw),
@@ -387,7 +386,7 @@ export default {
         let data = {
           level: Number(this.form.vip_class),
           privilege: this.form.checkList,
-          charge_coins: Number(this.form.gold_flow) * 1000,
+          charge_coins: Number(this.form.gold_flow),
           enter_word: this.form.vip_tip_text,
           caishen_base_rate: Number(this.form.probability),
           speedup_weight: Number(this.form.withdraw),
@@ -436,7 +435,8 @@ export default {
       this.getPrivilegeList();
       this.form.grade_id = row.id;
       this.form.vip_class = row.level;
-      this.form.checkList = JSON.parse(row.privilege);
+      let privilege = row.privilege.split(',')
+      this.form.checkList = privilege
       this.form.gold_flow = row.charge_coins;
       this.form.class_award = row.award;
       // this.form.month_money = row.consecrate;

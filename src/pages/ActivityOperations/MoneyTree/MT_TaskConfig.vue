@@ -267,11 +267,14 @@ export default {
     async send() {
       this.loading = true;
       let postData = {};
-      this.tableData.forEach((item, index) => {
+      // let deepTable = this.tableData.concat()
+       this.tableData.forEach((item, index) => {
+      // deepTable.forEach((item, index) => {
+      //   item.is_draw = ""+ item.is_draw  
         postData[index + 1] = item;
       });
       this.currentData.ac_content.task = postData;
-      // console.log(this.currentData,this.allData);
+      // console.log(this.currentData,this.allData);    
       let { data } = await this.$http.HallFunConfig.PostActivityNew32({
         keys: this.keys,
         values: JSON.stringify(this.allData),
@@ -350,8 +353,8 @@ export default {
       this.allData = JSON.parse(res);
       Object.keys(this.allData).forEach(item => {
         if (this.allData[item].ac_type === "10003") {
-          this.currentData = this.allData[item];
-          this.tableData = Object.values(this.allData[item].ac_content.task);
+          this.currentData = this.allData[item]; //所有摇钱树数据
+          this.tableData = Object.values(this.allData[item].ac_content.task);//摇钱树任务数据
           this.total = this.tableData.length;
         }
       });
