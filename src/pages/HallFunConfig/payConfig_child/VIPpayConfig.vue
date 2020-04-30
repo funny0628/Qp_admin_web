@@ -50,7 +50,7 @@ export default {
   async created() {
     //获取数据
     let { data } = await this.$http.HallFunConfig.GetRechargeConfig({
-      key: "recharge_config"
+      key: "recharge_config.lua"
     });
     // console.log(data);
     this.id = data.data[0].id;
