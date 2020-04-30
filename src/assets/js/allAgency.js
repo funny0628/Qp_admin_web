@@ -7,16 +7,16 @@ let GetAllAgency = (params) => { //get / search
     })
 }
 
-let PostAllAgency = (params) => { 
-    return axios.post('v1/backend/agency/config',params)
+let PostAllAgency = (params) => {
+    return axios.post('v1/backend/agency/config', params)
 }
 
-let PutAllAgency = (params) => { 
-    return axios.put('v1/backend/agency/config',params)
+let PutAllAgency = (params) => {
+    return axios.put('v1/backend/agency/config', params)
 }
 
-let DeleteAllAgency = (params) => { 
-    return axios.delete('v1/backend/agency/config',{
+let DeleteAllAgency = (params) => {
+    return axios.delete('v1/backend/agency/config', {
         params
     })
 }
@@ -55,6 +55,21 @@ let PostOrdercheck = (params) => { //get / search
     return axios.post('v1/backend/operation/credit-order', params)
 }
 
+//运营管理--新人奖励-------------
+let GetfresherAward = (params) => { //get / search
+    return axios.get('v1/backend/operation/fresher-award', {
+        params
+    })
+}
+
+let PostfresherAward = (params) => { //get / search
+    return axios.post('v1/backend/operation/fresher-award', params)
+}
+
+// let DeletefresherAward = (params) => { //get / search
+//     return axios.delete('v1/backend/operation/fresher-award', params)
+// }
+
 export default {
     GetAllAgency,
     PostAllAgency,
@@ -65,4 +80,7 @@ export default {
     GetAgencyLevel,
     GetBankOrder,
     PostOrdercheck,
+    GetfresherAward,
+    PostfresherAward,
+    // DeletefresherAward,
 }
