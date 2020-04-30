@@ -14,7 +14,6 @@
         style="width: 100%;"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
         <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
@@ -375,8 +374,6 @@ export default {
     },
     handleDelete(index, row) {
       console.log(row);
-      const ids = row.id.toString();
-      console.log(ids);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -385,7 +382,7 @@ export default {
         .then(async () => {
           const res = await this.$http.delete("v1/backend/auth/users", {
             params: {
-              uids: ids
+              uid: row.id
             }
           });
           console.log(res);

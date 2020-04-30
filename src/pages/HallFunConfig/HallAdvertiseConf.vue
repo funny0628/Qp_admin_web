@@ -100,7 +100,6 @@
             <img v-if="imageUrl.imgList1" :src="imageUrl.imgList1" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-          <div>{{this.imageUrl.imgList1}}</div>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
@@ -125,7 +124,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -179,7 +178,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -226,7 +225,7 @@
                   v-for="(item,index) in jumpPathOpts"
                   :key="index"
                   :label="item.name"
-                  :value="JSON.stringify(item.id)"
+                  :value="item.url"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -537,18 +536,24 @@ export default {
         let data = {
           name: this.form.channel_name,
           key: this.form.channel_key,
-          name_one: "我是图片一",
-          url_one: this.imageUrl.imgList1,
+          name_one: this.imageUrl.imgList1,
+          url_one: this.form.word1_jump_position
+            ? this.form.word1_jump_position
+            : this.form.word1_url,
           type_one: Number(this.form.word1_type),
-          jump_id_one: Number(this.form.word1_jump_position),
-          name_two: "我是图片二",
-          url_two: this.imageUrl.imgList2,
+          // jump_id_one: Number(this.form.word1_jump_position),
+          name_two: this.imageUrl.imgList2,
+          url_two: this.form.word2_jump_position
+            ? this.form.word2_jump_position
+            : this.form.word2_url,
           type_two: Number(this.form.word2_type),
-          jump_id_two: Number(this.form.word2_jump_position),
-          name_three: "我是图片三",
-          url_three: this.imageUrl.imgList3,
-          type_three: Number(this.form.word3_type),
-          jump_id_three: Number(this.form.word3_jump_position)
+          // jump_id_two: Number(this.form.word2_jump_position),
+          name_three: this.imageUrl.imgList3,
+          url_three: this.form.word3_jump_position
+            ? this.form.word3_jump_position
+            : this.form.word3_url,
+          type_three: Number(this.form.word3_type)
+          // jump_id_three: Number(this.form.word3_jump_position)
         };
         this.$http.post("v1/backend/lobby/flyer", data).then(res => {
           console.log(res);
@@ -562,17 +567,17 @@ export default {
           banner_id: this.form.id,
           name: this.form.channel_name,
           key: this.form.channel_key,
-          name_one: "我是图片一",
-          url_one: this.imageUrl.imgList1,
+          name_one: this.imageUrl.imgList1,
+          url_one: this.form.word1_url,
           type_one: JSON.parse(this.form.word1_type),
           // jump_id_one: JSON.parse(this.form.word1_jump_position),
-          name_two: "我是图片二",
-          url_two: this.imageUrl.imgList2,
+          name_two: this.imageUrl.imgList2,
+          url_two: this.form.word2_url,
           type_two: JSON.parse(this.form.word2_type),
           // jump_id_two: JSON.parse(this.form.word2_jump_position),
-          name_three: "我是图片三",
-          url_three: this.imageUrl.imgList3,
-          type_three: JSON.parse(this.form.word3_type),
+          name_three: this.imageUrl.imgList3,
+          url_three: this.form.word3_url,
+          type_three: JSON.parse(this.form.word3_type)
           // jump_id_three: JSON.parse(this.form.word3_jump_position)
         };
         this.$http.put("v1/backend/lobby/flyer", data).then(res => {
@@ -593,18 +598,33 @@ export default {
       this.form.id = row.id;
       this.form.channel_name = row.channel;
       this.form.channel_key = row.channel_key;
-      this.form.word1_type = JSON.stringify(row.pic_one_type);
+      // this.form.word1_type = JSON.stringify(row.pic_one_type);
       this.form.word1_url = row.pic_one_url;
-      this.form.word2_type = JSON.stringify(row.pic_two_type);
+      // this.form.word2_type = JSON.stringify(row.pic_two_type);
       this.form.word2_url = row.pic_two_url;
-      this.form.word3_type = JSON.stringify(row.pic_three_type);
+      // this.form.word3_type = JSON.stringify(row.pic_three_type);
       this.form.word3_url = row.pic_three_url;
-      this.form.word1_jump_position = JSON.stringify(row.dump_id1);
-      this.form.word2_jump_position = JSON.stringify(row.dump_id2);
-      this.form.word3_jump_position = JSON.stringify(row.dump_id3);
-      this.imageUrl.imgList1 = row.pic_one_url;
-      this.imageUrl.imgList2 = row.pic_two_url;
-      this.imageUrl.imgList3 = row.pic_three_url;
+      if (row.dump_id1 == 0) {
+        this.form.word1_type = JSON.stringify(row.pic_one_type);
+      } else {
+        this.form.word1_jump_position = JSON.stringify(row.dump_id1);
+      }
+      if (row.dump_id2 == 0) {
+        this.form.word2_type = JSON.stringify(row.pic_two_type);
+      } else {
+        this.form.word2_jump_position = JSON.stringify(row.dump_id2);
+      }
+      if (row.dump_id3 == 0) {
+        this.form.word3_type = JSON.stringify(row.pic_three_type);
+      } else {
+        this.form.word3_jump_position = JSON.stringify(row.dump_id3);
+      }
+      // this.form.word1_jump_position = JSON.stringify(row.dump_id1);
+      // this.form.word2_jump_position = JSON.stringify(row.dump_id2);
+      // this.form.word3_jump_position = JSON.stringify(row.dump_id3);
+      this.imageUrl.imgList1 = row.pic_one;
+      this.imageUrl.imgList2 = row.pic_two;
+      this.imageUrl.imgList3 = row.pic_three;
     },
     handleDelete(row) {
       console.log(row);

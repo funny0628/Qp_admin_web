@@ -14,31 +14,31 @@
     data() {
       return {
         menu: {
-          userBanker: {
-            name: 'userBanker',
-            count: 0,
-            label: '银商'
-          }, // 银商
+          // userBanker: {
+          //   name: 'userBanker',
+          //   count: 0,
+          //   label: '银商'
+          // }, // 银商
           bank: {
-            name: 'bank',
+            name: 'bank_card',
             count: 0,
             label: '银行卡',
           }, // 银行卡
           thirdPay: {
-            name: 'thirdPay',
+            name: 'order_manage',
             count: 0,
             label: '第三方',
           }, // 第三方
           withdraw: {
-            name: 'withdraw',
+            name: 'withdraw_records',
             count: 0,
             label: '兑换',
           }, // 兑换
-          recharge: {
-            name: 'recharge',
-            count: 0,
-            label: '充值'
-          }
+          // recharge: {
+          //   name: 'recharge',
+          //   count: 0,
+          //   label: '充值'
+          // }
         }
       }
     },

@@ -149,6 +149,36 @@
               </el-col>
             </el-row>
           </el-form-item>
+          <el-form-item label="活动7">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">活动名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.active_7" placeholder="请选择活动区域">
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.name"
+                    :value="String(item.id)"
+                  ></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="活动8">
+            <el-row :gutter="20" style="width:100%;">
+              <el-col :span="4" style="text-align:right;">活动名称</el-col>
+              <el-col :span="20">
+                <el-select v-model="form.active_8" placeholder="请选择活动区域">
+                  <el-option
+                    v-for="(item,index) in funOpts"
+                    :key="index"
+                    :label="item.name"
+                    :value="String(item.id)"
+                  ></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -208,6 +238,8 @@ export default {
         { label: "活动4", prop: "func_4", width: "" },
         { label: "活动5", prop: "func_5", width: "" },
         { label: "活动6", prop: "func_6", width: "" },
+        { label: "活动7", prop: "func_7", width: "" },
+        { label: "活动8", prop: "func_8", width: "" },
         { label: "操作者", prop: "auth", width: "" },
         { label: "创建时间", prop: "create_time", width: "160" },
         { label: "操作", prop: "action", width: "150" }
@@ -222,7 +254,9 @@ export default {
         active_3: "",
         active_4: "",
         active_5: "",
-        active_6: ""
+        active_6: "",
+        active_7: "",
+        active_8: "",
       }
     };
   },
@@ -236,7 +270,9 @@ export default {
         active_3: "",
         active_4: "",
         active_5: "",
-        active_6: ""
+        active_6: "",
+        active_7: "",
+        active_8: ""
       };
     },
     getFunSortList() {
@@ -283,6 +319,8 @@ export default {
       this.form.active_4 = [3].id
       this.form.active_5 = [4].id
       this.form.active_6 = [5].id
+      this.form.active_7 = [6].id
+      this.form.active_8 = [7].id
     },
     addFunSortConf() {
       if (!this.form.id) {
@@ -297,7 +335,11 @@ export default {
           "," +
           this.form.active_5 +
           "," +
-          this.form.active_6;
+          this.form.active_6 +
+          "," +
+          this.form.active_7 + 
+          "," +
+          this.form.active_8;
         let actArr = actStr.split(",");
         let data = {
           name: this.form.checkList[0],
@@ -324,7 +366,11 @@ export default {
           "," +
           this.form.active_5 +
           "," +
-          this.form.active_6;
+          this.form.active_6 +
+          "," +
+          this.form.active_7 + 
+          "," +
+          this.form.active_8;
         let actArr = actStr.split(",");
         let data = {
           name: this.form.checkList[0],
@@ -356,6 +402,8 @@ export default {
       this.form.active_4 = row.func_4;
       this.form.active_5 = row.func_5;
       this.form.active_6 = row.func_6;
+      this.form.active_7 = row.func_7;
+      this.form.active_8 = row.func_8;
     },
     handleDelete(row) {
       console.log(row);

@@ -467,9 +467,9 @@
           <tr v-for="(item,index) in tableData" :key="index">
             <td width="150">{{item.side}}</td>
             <td width="150">{{item.card_type}}</td>
-            <td width="150"> {{ String(item.cards) }} </td>
-            <td width="150">总下注:{{ item.bet_coins }} </td>
-            <td width="150">总输赢:{{ item.total_side_win }} </td>
+            <td width="150">{{ String(item.cards) }}</td>
+            <td width="150">总下注:{{ item.bet_coins }}</td>
+            <td width="150">总输赢:{{ item.total_side_win }}</td>
           </tr>
         </table>
         <table
@@ -484,9 +484,9 @@
             <th>台费</th>
           </tr>
           <tr>
-            <td></td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] }}</td>
-            <td></td>
+            <td>{{uid}}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td>{{win_lost_gold}}</td>
             <td></td>
           </tr>
         </table>
@@ -602,31 +602,22 @@ export default {
       dialogDragonVisible: false, //龙虎斗
       dialogBaiNiuNiuVisible: false, //百人牛牛
       dialogCarVisible: false, //奔驰宝马
-      dialogErBaGangVisible: false,//二八杠
+      dialogErBaGangVisible: false, //二八杠
       uid: null,
+      win_lost_gold: 0
     };
+  },
+  filters: {
+    formatObj: function(obj) {
+      for (var key in obj) {
+        if (key == "win_coins") {
+          return obj[key];
+        }
+      }
+    }
   },
   methods: {
     getPlayList() {
-      let params = {
-        page: this.currentPage,
-        limit: this.pagesize
-      };
-      this.$http
-        .get("v1/backend/operation/play/records", {
-          params
-        })
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.records = res.data.data;
-            this.total = res.data.total;
-          }
-        });
-    },
-    /**搜索*/
-    search() {},
-    searchData() {
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -650,6 +641,11 @@ export default {
             this.total = res.data.total;
           }
         });
+    },
+    /**搜索*/
+    search() {},
+    searchData() {
+      this.getPlayList();
     },
     getAllGameType() {
       this.$http.get("v1/backend/operation/game-type").then(res => {
@@ -736,15 +732,27 @@ export default {
               this.exinfo = res.data.data.exinfo;
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "二八杠") {
-              this.dialogErBaGangVisible = true
+              this.dialogErBaGangVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
               this.err_result = res.data.data.exinfo.err_result;
               this.game_name = res.data.data.game_name;
               this.tableData = res.data.data.side_list;
               this.player_win_list = res.data.data.side_list.map(item => {
-                return item.player_win_list
-              })
-              console.log(this.player_win_list)
+                return item.player_win_list;
+              });
+              console.log(this.player_win_list);
+              this.player_win_list.forEach(item => {
+                console.log(item);
+                if (item.length > 0) {
+                  let sum = 0
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    sum += ele.win_coins
+                    console.log(this.uid);
+                  });
+                  this.win_lost_gold = sum
+                }
+              });
             }
           }
         });
