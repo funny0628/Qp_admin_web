@@ -132,9 +132,13 @@
   </div>
 </template>
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'three_robot_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       namelist:[],
       activeName: "1",
@@ -153,7 +157,7 @@ export default {
       },
       rules: {
         count_range: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false,validator: checkValue, trigger: "blur" }
         ],
         coins_range: [
           { required: true, message: "不可以为空", trigger: "blur" }
@@ -203,7 +207,7 @@ export default {
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.resData = res.brnn_normal.robot_type_list;
     this.card_compare_value = res.brnn_normal.card_compare_value;
     Object.keys(this.resData).forEach((item,index)=>{

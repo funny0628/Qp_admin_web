@@ -28,7 +28,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
+          <el-input disabled style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -72,9 +72,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'qz_room_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "",
       ruleForm: {
@@ -92,15 +96,15 @@ export default {
         is_hundred_game: "",
       },
       rules: {
-         dizhu: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         cost: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         max: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         min: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         grab_banker_times: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         name: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
-         open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
+         dizhu: [{ required: true, validator: checkValue, trigger: "blur" }],
+         cost: [{ required: true, validator: checkValue, trigger: "blur" }],
+         max: [{ required: true, validator: checkValue, trigger: "blur" }],
+         min: [{ required: true, validator: checkValue, trigger: "blur" }],
+         grab_banker_times: [{ required: true, validator: checkValue, trigger: "blur" }],
+        //  name: [{ required: true, validator: checkValue, trigger: "blur" }],
+        //  ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        //  open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        //  open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
       },
       //房间配置的所有数据
       allData:{},
@@ -123,13 +127,13 @@ export default {
      this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.allData = res
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
         if(item === it){
           this.currentlist[item] = res[item]
-          this.currentlist[item].grab_banker_times = res[item].grab_banker_times.join('|')
+          this.currentlist[item].grab_banker_times = Object.values(res[item].grab_banker_times).join('|')
         }
         if(index === 0){
           this.ruleForm = res[item]
@@ -156,14 +160,21 @@ export default {
         if (valid) {
           // console.log(this.ruleForm,this.currentlist,this.allData);
           let all = JSON.parse(JSON.stringify(this.allData))
+          
           this.namelist.forEach((item)=>{
-            Object.keys(all).forEach((it)=>{
+            Object.keys(all).forEach((it,idx)=>{
               if(item === it){
-                all[it].grab_banker_times = all[it].grab_banker_times.split('|')
+                // all[it].grab_banker_times
+                let times = all[it].grab_banker_times.split('|')
+                let obj = {}
+                times.forEach((item,index)=>{
+                  obj[index + 1] = item
+                })
+                all[item].grab_banker_times = obj
               }
             })
           })
-          // console.log(all);
+          console.log(all);
       if(type === 1){
         //发送put
          let { data } = await this.$http.HallFunConfig.Putroomdata2({
@@ -209,7 +220,10 @@ export default {
       }
 
         }else{
-            console.log("error submit!!");
+            this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
         })

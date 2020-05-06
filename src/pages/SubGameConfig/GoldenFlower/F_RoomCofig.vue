@@ -30,7 +30,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
+          <el-input disabled style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -83,9 +83,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'zjh_room_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "",
       ruleForm: {
@@ -106,20 +110,14 @@ export default {
         is_hundred_game:"",
       },
       rules: {
-        dizhu: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        dingzhu: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        cost: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        max: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        min: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        max_look_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        comparable_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        max_bet_round: [{ required: true, message: "不可以为空", trigger: "blur" }],
-
-        name: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        
+        dizhu: [{ required: true, validator: checkValue, trigger: "blur" }],
+        dingzhu: [{ required: true, validator: checkValue, trigger: "blur" }],
+        cost: [{ required: true, validator: checkValue, trigger: "blur" }],
+        max: [{ required: true, validator: checkValue, trigger: "blur" }],
+        min: [{ required: true, validator: checkValue, trigger: "blur" }],
+        max_look_round: [{ required: true, validator: checkValue, trigger: "blur" }],
+        comparable_bet_round: [{ required: true, validator: checkValue, trigger: "blur" }],
+        max_bet_round: [{ required: true, validator: checkValue, trigger: "blur" }],
       },
        //房间配置的所有数据
       allData:{},
@@ -172,51 +170,53 @@ export default {
     submitForm(formName,type) {
        this.$refs[formName].validate(async valid => {
         if (valid) {
+          console.log(this.ruleForm);
+          
           // console.log(this.ruleForm,this.currentlist,this.allData);
           
-          if(type === 1){
-            //发送put
-              let { data } = await this.$http.HallFunConfig.Putroomdata1({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
-              });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-          }else if(type === 2){
-            //发送post
-             this.loading = true;
+          // if(type === 1){
+          //   //发送put
+          //     let { data } = await this.$http.HallFunConfig.Putroomdata1({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.allData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.$message({
+          //       type: "success",
+          //       message: "保存成功!"
+          //     });
+          //   }else{
+          //   this.$message({
+          //     type: "warning",
+          //     message: "保存失败!"
+          //   });
+          // }
+          // }else if(type === 2){
+          //   //发送post
+          //    this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.Postroomdata1({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
-            }else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
-            }
-          }
+          //   let { data } = await this.$http.HallFunConfig.Postroomdata1({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.allData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "success",
+          //       message: "发送服务器配置成功!"
+          //     });
+          //   }else {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "warning",
+          //       message: "发送服务器配置失败!"
+          //     });
+          //   }
+          // }
 
         }else{
           console.log("error submit!!");

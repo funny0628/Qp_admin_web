@@ -23,7 +23,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
+          <el-input disabled style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -56,9 +56,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'sgj_room_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "first",
       ruleForm: {
@@ -70,7 +74,12 @@ export default {
         open_game: "",
         is_hundred_game: "",
       },
-      rules: {},
+      rules: {
+        //validator: checkValue,
+          cost: [{ required: true, validator: checkValue, trigger: "blur" }],
+          max: [{ required: true, validator: checkValue, trigger: "blur" }],
+          min: [{ required: true, validator: checkValue, trigger: "blur" }],
+      },
        //房间配置的所有数据
       allData:{},
       //当前游戏房间的所有数据
