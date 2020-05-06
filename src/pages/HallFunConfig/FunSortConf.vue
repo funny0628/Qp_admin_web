@@ -5,7 +5,7 @@
       <el-button v-has="'add_function_sort_config'" type="primary" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
-      <info-table
+      <!-- <info-table
         v-has="'function_sort_config_list'"
         :search="search"
         :table-style="tableStyle"
@@ -15,6 +15,9 @@
       >
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
+            <template v-if="scope.prop== 'func_list'">
+              <span></span>
+            </template>
             <template v-if="scope.prop === 'action'">
               <el-button
                 v-has="'modify_function_sort_config'"
@@ -34,7 +37,70 @@
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
-      </info-table>
+      </info-table>-->
+      <el-table :data="records" border style="width: 100%" v-has="'button_menu_config_list'">
+        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
+        <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
+        <el-table-column label="活动1" prop="func_1" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_1) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动2" prop="func_2" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动3" prop="func_3" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_3) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动4" prop="func_4" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_4) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动5" prop="func_5" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_5) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动6" prop="func_6" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_6) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动7" prop="func_7" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_7) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动8" prop="func_8" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_8) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
+        <el-table-column label="创建时间" prop="create_time" align="center" width="160"></el-table-column>
+        <el-table-column label="操作" align="center" width="150">
+          <template slot-scope="scope">
+            <el-button
+              v-has="'modify_function_sort_config'"
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+            >编辑</el-button>
+            <el-button
+              v-has="'delete_function_sort_config'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <el-pagination
         style="margin-top:20px;"
         @size-change="handleSizeChange"
@@ -63,7 +129,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_1" placeholder="请选择活动区域">
+                <el-select v-model="form.active_1" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -78,7 +144,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_2" placeholder="请选择活动区域">
+                <el-select v-model="form.active_2" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -93,7 +159,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_3" placeholder="请选择活动区域">
+                <el-select v-model="form.active_3" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -108,7 +174,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_4" placeholder="请选择活动区域">
+                <el-select v-model="form.active_4" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -123,7 +189,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_5" placeholder="请选择活动区域">
+                <el-select v-model="form.active_5" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -138,7 +204,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_6" placeholder="请选择活动区域">
+                <el-select v-model="form.active_6" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -153,7 +219,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_7" placeholder="请选择活动区域">
+                <el-select v-model="form.active_7" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -168,7 +234,7 @@
             <el-row :gutter="20" style="width:100%;">
               <el-col :span="4" style="text-align:right;">活动名称</el-col>
               <el-col :span="20">
-                <el-select v-model="form.active_8" placeholder="请选择活动区域">
+                <el-select v-model="form.active_8" placeholder="请选择活动">
                   <el-option
                     v-for="(item,index) in funOpts"
                     :key="index"
@@ -228,22 +294,6 @@ export default {
       },
       funOpts: [],
       channelOpts: [],
-      tableStyle: [
-        { label: "ID", prop: "id", width: "" },
-        { label: "渠道名称", prop: "channel_name", width: "" },
-        { label: "渠道KEY", prop: "channel_code", width: "" },
-        { label: "活动1", prop: "func_1", width: "" },
-        { label: "活动2", prop: "func_2", width: "" },
-        { label: "活动3", prop: "func_3", width: "" },
-        { label: "活动4", prop: "func_4", width: "" },
-        { label: "活动5", prop: "func_5", width: "" },
-        { label: "活动6", prop: "func_6", width: "" },
-        { label: "活动7", prop: "func_7", width: "" },
-        { label: "活动8", prop: "func_8", width: "" },
-        { label: "操作者", prop: "auth", width: "" },
-        { label: "创建时间", prop: "create_time", width: "160" },
-        { label: "操作", prop: "action", width: "150" }
-      ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
       dialogAddVisible: false,
@@ -256,11 +306,19 @@ export default {
         active_5: "",
         active_6: "",
         active_7: "",
-        active_8: "",
+        active_8: ""
       }
     };
   },
   methods: {
+    formatFuncName(str) {
+      for (var i = 0; i < this.funOpts.length; i++) {
+        var item = this.funOpts[i];
+        if (item.id == str) {
+          return item.name;
+        }
+      }
+    },
     resetForm() {
       this.form = {
         id: null,
@@ -311,16 +369,23 @@ export default {
       this.dialogTitle = "添加活动入口配置";
       this.dialogFormVisible = true;
       this.resetForm();
-      this.getActiveOpts();
+      // this.getActiveOpts();
       this.getAddChannelList();
-      this.form.active_1 = this.funOpts[0];
-      this.form.active_2 = [1].id
-      this.form.active_3 = [2].id
-      this.form.active_4 = [3].id
-      this.form.active_5 = [4].id
-      this.form.active_6 = [5].id
-      this.form.active_7 = [6].id
-      this.form.active_8 = [7].id
+      this.form.active_1 = String(this.funOpts[0].id);
+      this.form.active_2 = String(this.funOpts[0].id);
+      this.form.active_3 = String(this.funOpts[0].id);
+      this.form.active_4 = String(this.funOpts[0].id);
+      this.form.active_5 = String(this.funOpts[0].id);
+      this.form.active_6 = String(this.funOpts[0].id);
+      this.form.active_7 = String(this.funOpts[0].id);
+      this.form.active_8 = String(this.funOpts[0].id);
+      // this.form.active_2 = [1].id
+      // this.form.active_3 = [2].id
+      // this.form.active_4 = [3].id
+      // this.form.active_5 = [4].id
+      // this.form.active_6 = [5].id
+      // this.form.active_7 = [6].id
+      // this.form.active_8 = [7].id
     },
     addFunSortConf() {
       if (!this.form.id) {
@@ -337,7 +402,7 @@ export default {
           "," +
           this.form.active_6 +
           "," +
-          this.form.active_7 + 
+          this.form.active_7 +
           "," +
           this.form.active_8;
         let actArr = actStr.split(",");
@@ -368,7 +433,7 @@ export default {
           "," +
           this.form.active_6 +
           "," +
-          this.form.active_7 + 
+          this.form.active_7 +
           "," +
           this.form.active_8;
         let actArr = actStr.split(",");
@@ -392,7 +457,7 @@ export default {
       console.log(row);
       this.dialogTitle = "更新活动入口配置";
       this.dialogFormVisible = true;
-      this.getActiveOpts();
+      // this.getActiveOpts();
       this.getChannelList();
       this.form.id = row.id;
       this.form.checkList = [row.channel_name];
@@ -494,6 +559,9 @@ export default {
   },
   mounted() {
     this.getFunSortList();
+  },
+  created() {
+    this.getActiveOpts();
   }
 };
 </script>

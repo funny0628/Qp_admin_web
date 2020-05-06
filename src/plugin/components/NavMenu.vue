@@ -5,7 +5,7 @@
       <img src="../../assets/img/tubiao.png" alt="" style="vertical-align: middle;margin-left:-10px;margin-right:10px;">
       <span style="color:#fff;">管理后台</span>
     </div>
-    <el-menu default-active="1" class @open="close" @close="open">
+    <el-menu default-active="1" unique-opened class @open="close" @close="open">
       <!-- <div
         v-for="(item, index) in models"
         :key="index"
