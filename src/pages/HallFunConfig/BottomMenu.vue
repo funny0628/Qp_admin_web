@@ -9,14 +9,46 @@
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
         <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
-        <el-table-column label="功能1" prop="func_1" align="center"></el-table-column>
-        <el-table-column label="功能2" prop="func_2" align="center"></el-table-column>
-        <el-table-column label="功能3" prop="func_3" align="center"></el-table-column>
-        <el-table-column label="功能4" prop="func_4" align="center"></el-table-column>
-        <el-table-column label="功能5" prop="func_5" align="center"></el-table-column>
-        <el-table-column label="功能6" prop="func_6" align="center"></el-table-column>
-        <el-table-column label="功能7" prop="func_7" align="center"></el-table-column>
-        <el-table-column label="功能8" prop="func_8" align="center"></el-table-column>
+        <el-table-column label="功能1" prop="func_1" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_1) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能2" prop="func_2" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_2) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能3" prop="func_3" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_3) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能4" prop="func_4" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_4) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能5" prop="func_5" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_5) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能6" prop="func_6" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_6) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能7" prop="func_7" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_7) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="功能8" prop="func_8" align="center">
+          <template slot-scope="scope">
+            <span>{{ formatFuncName(scope.row.func_8) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作者" prop="auth" align="center"></el-table-column>
         <el-table-column label="创建时间" prop="create_time" align="center"></el-table-column>
         <el-table-column label="请求时间" prop="update_time" align="center"></el-table-column>
@@ -264,6 +296,14 @@ export default {
     };
   },
   methods: {
+    formatFuncName(str) {
+      for(var i =0;i<this.funOpts.length;i++) {
+        var item = this.funOpts[i]
+        if(item.id == str) {
+          return item.name
+        }
+      }
+    },
     getBottomMenuList() {
       this.$http
         .get("v1/backend/lobby/bottom", {
@@ -309,15 +349,22 @@ export default {
       this.dialogTitle = "添加活动入口配置";
       this.resetForm();
       this.getChannelList();
-      this.getFunNameList();
-      this.form.function1 = this.funOpts[0].id
-      this.form.function2 = this.funOpts[1].id
-      this.form.function3 = this.funOpts[2].id
-      this.form.function4 = this.funOpts[3].id
-      this.form.function5 = this.funOpts[4].id
-      this.form.function6 = this.funOpts[5].id
-      this.form.function7 = this.funOpts[6].id
-      this.form.function8 = this.funOpts[7].id
+      // this.getFunNameList();
+      this.form.function1 = String(this.funOpts[0].id)
+      this.form.function2 = String(this.funOpts[0].id)
+      this.form.function3 = String(this.funOpts[0].id)
+      this.form.function4 = String(this.funOpts[0].id)
+      this.form.function5 = String(this.funOpts[0].id)
+      this.form.function6 = String(this.funOpts[0].id)
+      this.form.function7 = String(this.funOpts[0].id)
+      this.form.function8 = String(this.funOpts[0].id)
+      // this.form.function2 = this.funOpts[1].id
+      // this.form.function3 = this.funOpts[2].id
+      // this.form.function4 = this.funOpts[3].id
+      // this.form.function5 = this.funOpts[4].id
+      // this.form.function6 = this.funOpts[5].id
+      // this.form.function7 = this.funOpts[6].id
+      // this.form.function8 = this.funOpts[7].id
     },
     //获取功能名字列表
     getFunNameList() {
@@ -440,7 +487,7 @@ export default {
     handleEdit(row) {
       console.log(row);
       this.getAllChannelList();
-      this.getFunNameList();
+      // this.getFunNameList();
       this.dialogFormVisible = true;
       this.dialogTitle = "更新活动入口配置";
       this.form.checkList = [row.channel_name];
@@ -518,6 +565,10 @@ export default {
   },
   mounted() {
     this.getBottomMenuList();
+    // this.getFunNameList()
+  },
+  created() {
+    this.getFunNameList()
   }
 };
 </script>

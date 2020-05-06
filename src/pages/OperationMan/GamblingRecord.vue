@@ -232,19 +232,31 @@
             >非免佣: {{item.bet_coins_not_commission}}&nbsp;&nbsp;&nbsp;&nbsp;免佣:{{item.bet_coins_commission}}</td>
           </tr>
         </table>
-        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+        <table
+          border="1"
+          width="100%"
+          style="text-align:center;background-color:#fff;margin-top:10px;"
+        >
           <tr>
             <th>玩家id</th>
             <th>下注模式</th>
-            <th>庄家</th>
-            <th>闲家</th>
-            <th>和</th>
-            <th>庄对</th>
-            <th>闲对</th>
+            <th v-for="(item,index) in tableData" :key="index">{{item.side}}</th>
             <th>输赢金额</th>
             <th>台费</th>
           </tr>
-          <tr></tr>
+          <tr>
+            <td rowspan="2">{{uid}}</td>
+            <td>免佣</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatFreeCommission }}</td>
+            <td>{{free_win_lost_gold}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>非免佣</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatCommission }}</td>
+            <td>{{not_free_win_lost_gold}}</td>
+            <td></td>
+          </tr>
         </table>
       </el-form>
     </el-dialog>
@@ -282,19 +294,15 @@
         >
           <tr>
             <th>玩家id</th>
-            <th>红</th>
-            <th>黑</th>
-            <th>特殊牌型</th>
+            <th v-for="(item,index) in tableData" :key="index">{{item.side}}</th>
             <th>输赢金额</th>
             <th>台费</th>
           </tr>
-          <tr v-for="(item,index) in player_win_list" :key="index">
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.win_coins}}</td>
-            <td>{{item.uid}}</td>
+          <tr>
+            <td>{{uid}}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td>{{win_lost_gold}}</td>
+            <td></td>
           </tr>
         </table>
       </el-form>
@@ -334,12 +342,14 @@
           <span
             v-for="(item,index) in tableData"
             :key="index"
-          >{{item.side + ":"+String(item.cards) + ','}}</span>
-          <span
-            v-for="(item,index) in tableData"
-            :key="index"
+          >{{item.side + ":"+String(item.cards) + ','}}<span
             v-if="item.win===true"
-          >结果:{{item.side + '赢'}}</span>
+          >结果:{{item.side + '赢'+','}}</span></span>
+          <!-- <span
+            v-for="(item,ind) in tableData"
+            :key="ind"
+            v-if="item.win===true"
+          >结果:{{item.side + '赢'}}</span> -->
         </div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
@@ -361,19 +371,15 @@
         >
           <tr>
             <th>玩家id</th>
-            <th>龙</th>
-            <th>虎</th>
-            <th>和</th>
+            <th v-for="(item,ind) in tableData" :key="ind">{{item.side}}</th>
             <th>输赢金额</th>
             <th>台费</th>
           </tr>
-          <tr v-for="(item,index) in player_win_list" :key="index">
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.win_coins}}</td>
-            <td>{{item.uid}}</td>
+          <tr>
+            <td>{{uid}}</td>
+            <td v-for="(item,index) in player_win_list.flat(2)" :key="index">{{ item | formatObj }}</td>
+            <td>{{win_lost_gold}}</td>
+            <td></td>
           </tr>
         </table>
       </el-form>
@@ -400,23 +406,15 @@
         >
           <tr>
             <th>玩家id</th>
-            <th>庄家</th>
-            <th>黑</th>
-            <th>红</th>
-            <th>梅</th>
-            <th>方</th>
+            <th v-for="(item,index) in tableData" :key="index">{{item.side}}</th>
             <th>输赢金额</th>
             <th>台费</th>
           </tr>
-          <tr v-for="(item,index) in player_win_list" :key="index">
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.uid}}</td>
-            <td>{{item.win_coins}}</td>
-            <td>{{item.uid}}</td>
+          <tr>
+            <td>{{uid}}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td>{{win_lost_gold}}</td>
+            <td></td>
           </tr>
         </table>
       </el-form>
@@ -452,6 +450,9 @@
             <th>台费</th>
           </tr>
           <tr>
+            <td>{{uid}}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td>{{win_lost_gold}}</td>
             <td></td>
           </tr>
         </table>
@@ -596,6 +597,8 @@ export default {
       dialogLandlordVisible: false, //斗地主
       dialogFishVisible: false, //捕鱼达人
       dialogBaihapVisible: false, //百家乐
+      free_win_lost_gold: 0,
+      not_free_win_lost_gold: 0,
       dialogRedBlackVisible: false, //红黑大战
       player_win_list: [],
       dialogGoldFlowVisible: false, //炸金花
@@ -611,6 +614,20 @@ export default {
     formatObj: function(obj) {
       for (var key in obj) {
         if (key == "win_coins") {
+          return obj[key];
+        }
+      }
+    },
+    formatFreeCommission: function(obj) {
+      for (var key in obj) {
+        if (key == "teefee_commission") {
+          return obj[key];
+        }
+      }
+    },
+    formatCommission: function(obj) {
+      for (var key in obj) {
+        if (key == "win_coins_commission") {
           return obj[key];
         }
       }
@@ -692,15 +709,41 @@ export default {
               this.err_result = res.data.data.exinfo.err_result;
               this.game_name = res.data.data.game_name;
               this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list;
+              });
+              var freeSum = 0;
+              var notFreeSum = 0
+              this.player_win_list.forEach(item => {
+                if (item.length > 0) {
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    freeSum += ele.teefee_commission;
+                    notFreeSum += ele.win_coins_commission
+                  });
+                  this.free_win_lost_gold = freeSum;
+                  this.not_free_win_lost_gold = notFreeSum
+                }
+              });
             } else if (res.data.data.game_name == "红黑大战") {
               this.dialogRedBlackVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
               this.err_result = res.data.data.exinfo.err_result;
               this.game_name = res.data.data.game_name;
               this.tableData = res.data.data.side_list;
-              this.player_win_list = res.data.data.side_list.filter(item => {
-                return item;
-              })[0].player_win_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list;
+              });
+              var sum = 0;
+              this.player_win_list.forEach(item => {
+                if (item.length > 0) {
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    sum += ele.win_coins;
+                  });
+                  this.win_lost_gold = sum;
+                }
+              });
             } else if (res.data.data.game_name == "炸金花") {
               this.dialogGoldFlowVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
@@ -712,18 +755,39 @@ export default {
               this.err_result = res.data.data.exinfo.err_result;
               this.game_name = res.data.data.game_name;
               this.tableData = res.data.data.side_list;
-              this.player_win_list = res.data.data.side_list.filter(item => {
-                return item;
-              })[0].player_win_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list;
+              });
+              var sum = 0;
+              this.player_win_list.forEach(item => {
+                if (item.length > 0) {
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    sum += ele.win_coins;
+                  });
+                  this.win_lost_gold = sum;
+                }
+              });
             } else if (res.data.data.game_name == "三倍场百人牛牛") {
               this.dialogBaiNiuNiuVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
               this.err_result = res.data.data.exinfo.err_result;
               this.game_name = res.data.data.game_name;
               this.tableData = res.data.data.side_list;
-              this.player_win_list = res.data.data.side_list.filter(item => {
-                return item;
-              })[0].player_win_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list;
+              });
+              console.log(this.player_win_list);
+              var sum = 0;
+              this.player_win_list.forEach(item => {
+                if (item.length > 0) {
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    sum += ele.win_coins;
+                  });
+                  this.win_lost_gold = sum;
+                }
+              });
             } else if (res.data.data.game_name == "奔驰宝马") {
               this.dialogCarVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
@@ -731,6 +795,20 @@ export default {
               this.game_name = res.data.data.game_name;
               this.exinfo = res.data.data.exinfo;
               this.tableData = res.data.data.side_list;
+              this.player_win_list = res.data.data.side_list.map(item => {
+                return item.player_win_list;
+              });
+              console.log(this.player_win_list);
+              var sum = 0;
+              this.player_win_list.forEach(item => {
+                if (item.length > 0) {
+                  item.forEach(ele => {
+                    this.uid = ele.uid;
+                    sum += ele.win_coins;
+                  });
+                  this.win_lost_gold = sum;
+                }
+              });
             } else if (res.data.data.game_name == "二八杠") {
               this.dialogErBaGangVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
@@ -741,16 +819,14 @@ export default {
                 return item.player_win_list;
               });
               console.log(this.player_win_list);
+              var sum = 0;
               this.player_win_list.forEach(item => {
-                console.log(item);
                 if (item.length > 0) {
-                  let sum = 0
                   item.forEach(ele => {
                     this.uid = ele.uid;
-                    sum += ele.win_coins
-                    console.log(this.uid);
+                    sum += ele.win_coins;
                   });
-                  this.win_lost_gold = sum
+                  this.win_lost_gold = sum;
                 }
               });
             }
