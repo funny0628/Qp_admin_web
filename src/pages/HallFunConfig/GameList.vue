@@ -53,7 +53,7 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="上级游戏" :label-width="formLabelWidth">
-          <el-select v-model="form.sup_game" ref="supGame">
+          <el-select v-model="form.sup_game" :disabled="disabled">
             <el-option
               v-for="(item,index) in records"
               :key="index"
@@ -100,6 +100,7 @@ export default {
   },
   data() {
     return {
+      disabled: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -246,9 +247,7 @@ export default {
         this.form.game_name = row.game_name;
         this.form.game_id = row.game_id;
         this.form.robot_type = row.robot_type;
-        this.$nextTick(() => {
-          this.$refs.supGame.disabled = true;
-        });
+        this.disabled = true
       } else {
         this.form.classTwoEditRemark = 2;
         this.form.id = row.game_id;
@@ -257,9 +256,7 @@ export default {
         this.form.game_name = row.game_name;
         this.form.game_id = row.game_id;
         this.form.robot_type = row.robot_type;
-        this.$nextTick(() => {
-          this.$refs.supGame.disabled = true;
-        });
+        this.disabled = true
         console.log(this.form);
       }
     },

@@ -208,31 +208,13 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
-          <el-input
-            disabled
-            type="textarea"
-            autosize
-            resize="none"
-            v-model="form.androidConfig"
-          ></el-input>
+          <el-input disabled type="textarea" autosize resize="none" v-model="form.androidConfig"></el-input>
         </el-form-item>
         <el-form-item label="ios配置" :label-width="formLabelWidth">
-          <el-input
-            disabled
-            type="textarea"
-            autosize
-            resize="none"
-            v-model="form.iosConfig"
-          ></el-input>
+          <el-input disabled type="textarea" autosize resize="none" v-model="form.iosConfig"></el-input>
         </el-form-item>
         <el-form-item label="windows配置" :label-width="formLabelWidth">
-          <el-input
-            disabled
-            type="textarea"
-            autosize
-            resize="none"
-            v-model="form.windowsConfig"
-          ></el-input>
+          <el-input disabled type="textarea" autosize resize="none" v-model="form.windowsConfig"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -286,8 +268,9 @@ export default {
       },
       fileData: {
         file: {},
-        index: 0,
+        num: 0,
         count: 0,
+        version: "",
         total_size: 0,
         file_name: ""
       },
@@ -367,7 +350,7 @@ export default {
         updateTime: "",
         version: "",
         update_type: "",
-        update_way: ""
+        update_way: "",
       };
     },
 
@@ -476,6 +459,13 @@ export default {
         (this.form.version = row.version),
         (this.form.update_type = String(row.is_force)),
         (this.form.update_way = String(row.update_type));
+      this.form.androidConfig = this.formatResource(
+        JSON.parse(row.game_info).android
+      );
+      this.form.iosConfig = this.formatResource(JSON.parse(row.game_info).ios);
+      this.form.windowsConfig = this.formatResource(
+        JSON.parse(row.game_info).windows
+      );
     },
     handleDelete(row) {
       console.log(row);
@@ -525,14 +515,15 @@ export default {
     uploadChunk(file, currentChunk) {
       var fileReader = new FileReader(),
         // 上传文件块的大小，可自定义
-        chunkSize = 200 * 1024 * 1024,
+        chunkSize = 100 * 1024 * 1024,
         // 计算改文件的可分为多少块
         chunks = Math.ceil(file.size / chunkSize);
       console.log(chunks);
       var start = currentChunk * chunkSize;
       var end = start + chunkSize >= file.size ? file.size : start + chunkSize;
       this.fileData.file = file.slice(start, end);
-      this.fileData.index = currentChunk;
+      this.fileData.num = currentChunk;
+      this.fileData.version = this.form.version;
       this.fileData.count = chunks;
       this.fileData.total_size = file.size;
       this.fileData.file_name = file.name;
@@ -544,57 +535,65 @@ export default {
 
       fileReader.readAsBinaryString(file.slice(start, end));
     },
-    beforeUpload(file) {
-      console.log(file);
-      if (this.form.version == "") {
-        this.$message({
-          type: "error",
-          message: "请先填写更新资源包版本号"
-        });
-        return false;
-      } else {
-        let currentChunk = 0;
-        this.uploadChunk(file, currentChunk);
-      }
-    },
+    beforeUpload(file) {},
     uploadFile(f) {
       console.log(f.file);
+      var file = f.file;
+      var currentChunk = 0;
       let that = this;
       that.loading = true;
-      const fileReader = new FileReader();
-      // 文件切割后的回调，this.result为切割的文件块
-      fileReader.onload = (function(e) {
+      function sectionUpload() {
+        // 上传文件块的大小，可自定义
+        var chunkSize = 100 * 1024 * 1024;
+        // 计算改文件的可分为多少块
+        var chunks = Math.ceil(file.size / chunkSize);
+        console.log(chunks);
+        var start = currentChunk * chunkSize;
+        var end =
+          start + chunkSize >= file.size ? file.size : start + chunkSize;
+        that.fileData.file = file.slice(start, end);
+        that.fileData.num = currentChunk;
+        that.fileData.version = that.form.version;
+        that.fileData.count = chunks;
+        that.fileData.total_size = file.size;
+        that.fileData.file_name = file.name;
         // 用FormData传输文件对象
         let fd = new FormData();
         // 设置文件上传接口的需要的参数
         fd.append("file", that.fileData.file);
-        // fd.append("index", that.fileData.index);
-        // fd.append("count", that.fileData.count);
+        fd.append("num", that.fileData.num);
+        fd.append("count", that.fileData.count);
         fd.append("version", that.form.version);
         fd.append("total_size", that.fileData.total_size);
         fd.append("file_name", that.fileData.file_name);
-        // 设置上传的当前的文件块
-        // fd.append("fileObj", new Blob([this.result]));
         that.$http
           .post("v1/backend/sys-conf/hot-update/package", fd)
           .then(res => {
             console.log(res);
+            currentChunk += 1;
+            console.log(currentChunk);
             if (res.data.code === 200) {
-              that.form.game_info = JSON.stringify(res.data.data.list);
-              that.form.androidConfig = that.formatResource(
-                res.data.data.list.android
-              );
-              that.form.iosConfig = that.formatResource(
-                res.data.data.list.android
-              );
-              that.form.windowsConfig = that.formatResource(
-                res.data.data.list.android
-              );
-              that.loading = false;
-              that.$message({
-                type: "success",
-                message: "资源包上传成功"
-              });
+              if (currentChunk < chunks) {
+                sectionUpload();
+              }
+              if (res.data.data.list) {
+                that.form.game_info = JSON.stringify(res.data.data.list);
+                // console.log(that.form.game_info)
+                that.form.androidConfig = that.formatResource(
+                  res.data.data.list.android
+                );
+                that.form.iosConfig = that.formatResource(
+                  res.data.data.list.ios
+                );
+                that.form.windowsConfig = that.formatResource(
+                  res.data.data.list.windows
+                );
+                that.loading = false;
+                that.$message({
+                  type: "success",
+                  message: "资源包上传成功"
+                });
+              }
             } else {
               that.loading = false;
               that.$message({
@@ -603,25 +602,10 @@ export default {
               });
             }
           });
-      })();
-      // this.$http
-      //   .post("v1/backend/sys-conf/hot-update/package", fd)
-      //   .then(res => {
-      //     console.log(res);
-      //   });
-      // let formData = new FormData();
-      // this.fileList.forEach(item => {
-      //   formData.append("filename", item.raw);
-      //   formData.append("types", 1);
-      // });
-      // this.$http.post("v1/backend/upload", formData).then(res => {
-      //   if (res.data.code === 1) {
-      //     this.imageUrl = res.data.path;
-      //   }
-      // });
+      }
+      sectionUpload();
     },
     formatResource(obj) {
-      console.log(obj);
       var str = "";
       for (var key in obj) {
         let item = obj[key];

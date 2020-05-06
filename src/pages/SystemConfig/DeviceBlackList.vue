@@ -105,7 +105,7 @@ export default {
       disabled: false,
       device_id: "",
       currentPage: 1,
-      pagesize: 10,
+      pageSize: 10,
       total: 0,
       dialogTitle: "",
       formLabelWidth: "120px",
