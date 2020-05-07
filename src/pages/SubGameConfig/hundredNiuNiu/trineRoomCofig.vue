@@ -314,9 +314,6 @@ export default {
               }
             })
           })
-
-          // console.log(this.allData, this.currentlist);
-
           //判断type类型
           if (type === 1) {
             //发送put

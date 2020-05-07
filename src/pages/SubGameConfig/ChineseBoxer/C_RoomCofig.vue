@@ -215,16 +215,6 @@ export default {
     submitForm(formName,type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          // console.log(this.allData,this.currentlist,this.ruleForm);
-          // let resData = DeepData(this.allData);
-          // this.namelist.forEach((item)=>{
-          //   Object.keys(resData).forEach((it)=>{
-          //     if(item === it){
-          //       resData[it].person_limit = `{${resData[item].person_limit}}`
-          //     }
-          //   })
-          // })
-
            let resData = DeepData(this.allData);
           this.namelist.forEach((item)=>{
             Object.keys(this.allData).forEach((it)=>{
@@ -242,7 +232,7 @@ export default {
           
           if(type === 1){
             //put
-                 let { data } = await this.$http.HallFunConfig.Putroomdata2003({
+            let { data } = await this.$http.HallFunConfig.Putroomdata2003({
               keys: this.keys,
               values: JSON.stringify(resData),
               id: this.id
@@ -284,7 +274,10 @@ export default {
             }
           }
         }else{
-           console.log("error submit!!");
+           this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!!"
+          });
           return false;
         }
       })

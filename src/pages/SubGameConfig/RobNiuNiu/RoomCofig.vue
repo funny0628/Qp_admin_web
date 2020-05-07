@@ -101,10 +101,6 @@ export default {
          max: [{ required: true, validator: checkValue, trigger: "blur" }],
          min: [{ required: true, validator: checkValue, trigger: "blur" }],
          grab_banker_times: [{ required: true, validator: checkValue, trigger: "blur" }],
-        //  name: [{ required: true, validator: checkValue, trigger: "blur" }],
-        //  ip_limit: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        //  open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        //  open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
       },
       //房间配置的所有数据
       allData:{},
@@ -142,10 +138,6 @@ export default {
       })
       this.labellist.push(res[item].name)
     })
-  
-    
-    // console.log(this.currentlist,this.activeName,this.ruleForm,this.labellist,this.allData );
-    
   },
   methods: {
     handleClick(tab) {
