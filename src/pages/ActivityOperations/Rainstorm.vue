@@ -27,7 +27,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="活动状态" prop="open_state">
-        <el-select v-model="form.open_state">
+        <el-select v-model="form.open_state+''">
           <el-option label="待上线" value="true"></el-option>
           <el-option label="生效中" value="false"></el-option>
         </el-select>
@@ -78,13 +78,13 @@
             <el-form-item v-if="form.ac_content.pack_num" label="每人每次领取红包:" prop="ac_content">
               <el-input
                 style="width:150px;"
-                v-model="form.ac_content.pack_num[0]"
+                v-model="form.ac_content.pack_num[1]"
                 placeholder="每人每次领取红包"
               ></el-input>
               -
               <el-input
                 style="width:150px;"
-                v-model="form.ac_content.pack_num[1]"
+                v-model="form.ac_content.pack_num[2]"
                 placeholder="每人每次领取红包"
               ></el-input>
             </el-form-item>
@@ -93,7 +93,7 @@
             <el-form-item label="总发放金额:" prop="ac_content">
               <el-input
                 style="width:150px;"
-                v-model="form.ac_content.all_coin"
+                v-model="form.ac_content.all_coins"
                 placeholder="总发放金额"
               ></el-input>
             </el-form-item>
@@ -288,12 +288,20 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      console.log(this.allData);
+      
       // console.log(this.keys, this.id, this.allData);
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10004") {
+        if (item === "108") {
           this.form = this.allData[item];
         }
+        console.log(item);
+        
       });
+      console.log(this.form);
+      
+      //  this.form.ac_content.vip_range = Object.values(this.form.ac_content.vip_range);
+      
       // console.log(this.form,this.allData);
     }
   }

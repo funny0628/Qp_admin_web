@@ -29,7 +29,7 @@
       </el-form-item>
 
       <el-form-item label="活动状态" prop="open_state">
-        <el-select v-model="form.open_state">
+        <el-select v-model="form.open_state+''">
           <el-option label="开启" value="true"></el-option>
           <el-option label="关闭" value="false"></el-option>
         </el-select>
@@ -204,10 +204,12 @@ export default {
       // console.log(this.keys, this.id, this.allData);
 
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10002") {
+        if (item === "111") {
           this.form = this.allData[item];
         }
       });
+      console.log(this.form);
+      
       this.form.ac_content.level = Object.values(this.form.ac_content.level);
       // console.log(this.form,this.allData);
     }

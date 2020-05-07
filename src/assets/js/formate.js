@@ -28,6 +28,8 @@ export const CheckValue = (ruleForm, rule, theObj, callback) => {
         else callback(new Error("输入正确格式的数字,必填项不能为空"))
     }
 };
+///^0{1,}/g
+
 
 
 
