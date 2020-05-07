@@ -173,7 +173,13 @@
             <td></td>
           </tr>
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="100">id: {{item.uid}}</td>
+            <td width="100">
+              id: {{item.uid}}
+              <span
+                v-if="item.is_banker === true"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#96ce44;margin-left:5px;"
+              >地</span>
+            </td>
             <td width="100">{{item.jiaofen}}分</td>
             <td width="100" v-if="item.jiabei === true">加倍</td>
             <td width="100" v-else>不加倍</td>
@@ -247,13 +253,19 @@
           <tr>
             <td rowspan="2">{{uid}}</td>
             <td>免佣</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatFreeCommission }}</td>
+            <td
+              v-for="(item,index) in player_win_list"
+              :key="index"
+            >{{ item[0] | formatFreeCommission }}</td>
             <td>{{free_win_lost_gold}}</td>
             <td></td>
           </tr>
           <tr>
             <td>非免佣</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatCommission }}</td>
+            <td
+              v-for="(item,index) in player_win_list"
+              :key="index"
+            >{{ item[0] | formatCommission }}</td>
             <td>{{not_free_win_lost_gold}}</td>
             <td></td>
           </tr>
@@ -339,17 +351,17 @@
           style="width:100%;height:30px;line-height:30px;"
         >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
         <div style="text-align:center;height:50px;line-height:50px;">
-          <span
-            v-for="(item,index) in tableData"
-            :key="index"
-          >{{item.side + ":"+String(item.cards) + ','}}<span
-            v-if="item.win===true"
-          >结果:{{item.side + '赢'+','}}</span></span>
+          <span v-for="(item,index) in tableData" :key="index">
+            {{item.side + ":"+String(item.cards) + ','}}
+            <span
+              v-if="item.win===true"
+            >结果:{{item.side + '赢'+','}}</span>
+          </span>
           <!-- <span
             v-for="(item,ind) in tableData"
             :key="ind"
             v-if="item.win===true"
-          >结果:{{item.side + '赢'}}</span> -->
+          >结果:{{item.side + '赢'}}</span>-->
         </div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
@@ -377,7 +389,7 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list.flat(2)" :key="index">{{ item | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
             <td>{{win_lost_gold}}</td>
             <td></td>
           </tr>
@@ -469,7 +481,7 @@
             <td width="150">{{item.side}}</td>
             <td width="150">{{item.card_type}}</td>
             <td width="150">{{ String(item.cards) }}</td>
-            <td width="150">总下注:{{ item.bet_coins }}</td>
+            <td width="150">总下注:{{ item.bet_coins + ',' }}玩家下注: {{ item.player_bet_coins }}</td>
             <td width="150">总输赢:{{ item.total_side_win }}</td>
           </tr>
         </table>
@@ -560,8 +572,16 @@ export default {
         session: "",
         id: "",
         dateArr: [
-          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          new Date()
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
         ]
       },
       tableStyle: [
@@ -713,16 +733,16 @@ export default {
                 return item.player_win_list;
               });
               var freeSum = 0;
-              var notFreeSum = 0
+              var notFreeSum = 0;
               this.player_win_list.forEach(item => {
                 if (item.length > 0) {
                   item.forEach(ele => {
                     this.uid = ele.uid;
                     freeSum += ele.teefee_commission;
-                    notFreeSum += ele.win_coins_commission
+                    notFreeSum += ele.win_coins_commission;
                   });
                   this.free_win_lost_gold = freeSum;
-                  this.not_free_win_lost_gold = notFreeSum
+                  this.not_free_win_lost_gold = notFreeSum;
                 }
               });
             } else if (res.data.data.game_name == "红黑大战") {

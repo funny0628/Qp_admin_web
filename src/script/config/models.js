@@ -691,9 +691,9 @@ const models = {
         vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/HotUpdate')), 'hot_update')
       },
       {
-        name:'version_manage',
+        name:'whole_package_update',
         text:'版本管理(整包)',
-        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/VersionMan')), 'version_manage')
+        vue: r => require.ensure([], () => r(require('../../pages/SystemConfig/VersionMan')), 'whole_package_update')
       },
       {
         name:'ip_blacklist',

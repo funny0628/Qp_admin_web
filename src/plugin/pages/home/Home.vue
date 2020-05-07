@@ -212,7 +212,6 @@ export default {
         });
       },
       defaultShow() {
-        console.log($this.showItems, "home--------showitmes");
         if ($this.showItems.length === 0) {
           $this.showItems.push($this.$pageInfo.pageList[$this.defaultActive]);
         }
@@ -227,6 +226,7 @@ export default {
         }
       },
       forward(data) {
+        console.log(data)
         $this.add(data["name"]);
       },
       back() {},
@@ -271,7 +271,6 @@ export default {
   },
   created() {
     $this = this;
-    console.log($this, "----------woshihome");
     let active = "";
     let config = $this.$pageInfo.config;
     /** 测试 **/

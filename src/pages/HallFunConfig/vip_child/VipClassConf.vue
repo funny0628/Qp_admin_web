@@ -384,7 +384,7 @@ export default {
         console.log(this.form.checkList);
         let data = {
           level: Number(this.form.vip_class),
-          privilege: this.form.checkList,
+          privilege: String(this.form.checkList),
           charge_coins: Number(this.form.gold_flow),
           enter_word: this.form.vip_tip_text,
           caishen_base_rate: Number(this.form.probability),

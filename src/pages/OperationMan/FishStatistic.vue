@@ -123,8 +123,18 @@ export default {
         play_id: "",
         // play_counter: "",
         dateArr: [
-          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          new Date()
+          // new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          // new Date()
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
         ]
       },
       tableStyle: [
@@ -165,7 +175,7 @@ export default {
     },
     /**搜索*/
     searchData() {
-      this.getFishList()
+      this.getFishList();
     },
     handleRecord(row) {
       console.log(row);
@@ -221,6 +231,9 @@ export default {
 }
 #home .main-box .input-area >>> .el-date-editor {
   width: auto;
+}
+#FishStatistic-main >>> .el-range-editor .el-range-input {
+  width: 150px;
 }
 #FishStatistic-main .bd >>> .el-button {
   margin-left: 0px;

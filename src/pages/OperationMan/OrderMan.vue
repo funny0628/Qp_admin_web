@@ -43,7 +43,7 @@
       ></el-date-picker>
       <el-button type="primary" @click="searchData">查找</el-button>
       <el-button v-has="'add_order'" type="primary" @click="openPeopleDialog">添加人工订单</el-button>
-      <el-button type="primary">导出excel</el-button>
+      <!-- <el-button type="primary">导出excel</el-button> -->
     </input-area>
     <div class="bd">
       <info-table
@@ -255,8 +255,16 @@ export default {
         status: "",
         user_id: "",
         dateArr: [
-          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          new Date()
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
         ]
       },
       tableStyle: [
@@ -293,7 +301,7 @@ export default {
   },
   methods: {
     searchData() {
-      this.getOrderList()
+      this.getOrderList();
     },
     getOrderList() {
       let params = {
@@ -404,7 +412,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getOrderList();
-    },
+    }
   },
   mounted() {
     this.getOrderList();

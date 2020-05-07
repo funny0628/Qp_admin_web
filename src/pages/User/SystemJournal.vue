@@ -31,9 +31,7 @@
         <el-table-column prop="req_path" label="请求路由" align="center"></el-table-column>
         <el-table-column prop="req_ip" label="请求ip" align="center"></el-table-column>
         <el-table-column prop="create_time" label="请求时间" align="center">
-          <template slot-scope="scope">
-            {{scope.row.create_time | dateFormat}}
-          </template>
+          <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -102,7 +100,18 @@ export default {
         man_id: "",
         req_way: "",
         router_name: "",
-        dateArr: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()]
+        dateArr: [
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
+        ]
       },
       tableData: []
     };
@@ -114,8 +123,16 @@ export default {
           user_id: Number(this.format.man_id),
           req_method: this.format.req_way,
           req_route: this.format.router_name,
-          start_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[0])).getTime()/1000) : 0,
-          end_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[1])).getTime()/1000) : 0,
+          start_time: this.format.dateArr
+            ? parseInt(
+                new Date(Number(this.format.dateArr[0])).getTime() / 1000
+              )
+            : 0,
+          end_time: this.format.dateArr
+            ? parseInt(
+                new Date(Number(this.format.dateArr[1])).getTime() / 1000
+              )
+            : 0,
           page: this.currentPage,
           limit: this.pagesize
         }
