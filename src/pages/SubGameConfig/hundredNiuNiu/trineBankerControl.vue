@@ -213,53 +213,80 @@ export default {
         });
     },
 
+    set(Data){
+     
+      for(var i = 0; i < Data.length; i++){
+        if( Data[i].constructor === Array){
+          this.set(Data[i])
+        }else if(typeof(Data[i]) === 'string' && Data[i] !== ''){
+
+          //  if(!isNaN(Data[i])){
+          //   ss[obj]= +ss[obj]
+          //   // console.log('++++',obj,index);
+          // }else{
+            Data[i] = Data[i]
+          // }
+
+           
+        }else if(Data[i] === '' && isNaN(Data[i])){
+           this.$message({
+              type: "warning",
+              message: "输入正确格式的数字,必填项不能为空!!"
+            });
+            return false;
+      }
+    }
+  },
+
     async submit(type) {
-      // console.log(this.resData);
+      console.log(this.resData);
+      let redObj = Object.values(this.resData)
+      this.set(redObj)
 
       //判断type
-      if (type === 1) {
-        //发送put
-        let { data } = await this.$http.HallFunConfig.Putrobot_banker_control({
-          keys: this.keys,
-          values: JSON.stringify(this.resData),
-          id: this.id
-        });
-        // console.log(data);
-        if (data.code === 1 && data.msg === "ok") {
-          this.$message({
-            type: "success",
-            message: "保存成功!"
-          });
-        }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-      } else if (type === 2) {
-        //发送post
-        this.loading = true;
+      // if (type === 1) {
+      //   //发送put
+      //   let { data } = await this.$http.HallFunConfig.Putrobot_banker_control({
+      //     keys: this.keys,
+      //     values: JSON.stringify(this.resData),
+      //     id: this.id
+      //   });
+      //   // console.log(data);
+      //   if (data.code === 1 && data.msg === "ok") {
+      //     this.$message({
+      //       type: "success",
+      //       message: "保存成功!"
+      //     });
+      //   }else{
+      //       this.$message({
+      //         type: "warning",
+      //         message: "保存失败!"
+      //       });
+      //     }
+      // } else if (type === 2) {
+      //   //发送post
+      //   this.loading = true;
 
-        let { data } = await this.$http.HallFunConfig.Postrobot_banker_control({
-          keys: this.keys,
-          values: JSON.stringify(this.allData),
-          id: this.id
-        });
-        // console.log(data);
-        if (data.code === 1 && data.msg === "ok") {
-          this.loading = false;
-          this.$message({
-            type: "success",
-            message: "发送服务器配置成功!"
-          });
-        }else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
-            }
-      }
+      //   let { data } = await this.$http.HallFunConfig.Postrobot_banker_control({
+      //     keys: this.keys,
+      //     values: JSON.stringify(this.allData),
+      //     id: this.id
+      //   });
+      //   // console.log(data);
+      //   if (data.code === 1 && data.msg === "ok") {
+      //     this.loading = false;
+      //     this.$message({
+      //       type: "success",
+      //       message: "发送服务器配置成功!"
+      //     });
+      //   }else {
+      //         this.loading = false;
+      //         this.$message({
+      //           type: "warning",
+      //           message: "发送服务器配置失败!"
+      //         });
+      //       }
+      // }
     }
   }
 };

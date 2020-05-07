@@ -156,9 +156,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'qz_robot_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "",
       resData: {},
@@ -180,69 +184,78 @@ export default {
         bet_config_five: ""
       },
       rules: {
-        count: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        num_rate: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        count: [{ required: true, validator: checkValue, trigger: "blur" }],
+        num_rate: [{ required: true, validator: checkValue, trigger: "blur" }],
         coins_range: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         total_coin: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
-        exit_rate: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        exit_rate: [{ required: true, validator: checkValue, trigger: "blur" }],
         rob_config_one: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         rob_config_two: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         rob_config_three: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         rob_config_four: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         rob_config_five: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         bet_config_one: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         bet_config_two: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         bet_config_three: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         bet_config_four: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
         bet_config_five: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ]
       },
       id: 0,
       keys: "",
       loading: false,
-      namelist: []
+      namelist: ['nn_normal','nn_senior','nn_three','nn_four']
     };
   },
 
   async created() {
     //获取数据
     let { data } = await this.$http.HallFunConfig.Getqznn_robot_control({
-      key: "qznn_robot_control.lua"
+      key: "robot.lua"
+      // key: "qznn_robot_control.lua"
     });
     // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
+    //所有机器人数据
+    // this.allData = JSON.parse(JSON.stringify(res))
+    // //当前所有数据
+    // let ResData = {};
+    // this.namelist.forEach((item)=>{
+    //   Object.keys(res).forEach((it)=>{
+    //     if(item === it){
+    //       ResData[it] = res[it]
+    //     }
+    //   })
+    // })
     this.resData = res;
-    this.namelist = Object.keys(res);
     this.activeName = this.namelist[0];
     this.ruleForm = res[this.namelist[0]];
-
-    // console.log(this.resData, this.ruleForm);
   },
 
   methods: {
@@ -260,50 +273,52 @@ export default {
 
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          console.log(this.ruleForm);
+          
           //1.先拿到要发送到后台的数据
           //2.判断类型
-          if (type == 1) {
-            //发送put
-            let { data } = await this.$http.HallFunConfig.Putqznn_robot_control({
-              keys: this.keys,
-              values: JSON.stringify(this.resData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
-              });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-          } else if (type === 2) {
-            this.loading = true;
-            //发送post
-            let { data } = await this.$http.HallFunConfig.Postqznn_robot_control({
-              keys: this.keys,
-              values: JSON.stringify(this.resData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
-            }else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
-            }
-          }
+          // if (type == 1) {
+          //   //发送put
+          //   let { data } = await this.$http.HallFunConfig.Putqznn_robot_control({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.resData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.$message({
+          //       type: "success",
+          //       message: "保存成功!"
+          //     });
+          //   }else{
+          //   this.$message({
+          //     type: "warning",
+          //     message: "保存失败!"
+          //   });
+          // }
+          // } else if (type === 2) {
+          //   this.loading = true;
+          //   //发送post
+          //   let { data } = await this.$http.HallFunConfig.Postqznn_robot_control({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.resData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "success",
+          //       message: "发送服务器配置成功!"
+          //     });
+          //   }else {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "warning",
+          //       message: "发送服务器配置失败!"
+          //     });
+          //   }
+          // }
         } else {
           console.log("error");
           return false;

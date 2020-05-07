@@ -135,7 +135,7 @@ export default {
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.resData = res;
   },
   methods: {
@@ -215,8 +215,36 @@ export default {
         });
     },
 
+     set(ss){
+      let Data;
+      if(ss.constructor === Object){
+        Data = Object.values(ss);
+      }else if(ss.constructor === Array){
+        Data = ss
+      }
+      for(var i = 0; i < Data.length; i++){
+        if(Data[i] === '' || isNaN(Data[i])){
+            this.$message({
+              type: "warning",
+              message: "输入正确格式的数字,必填项不能为空!!"
+            });
+            return false;
+        }else if(Data[i].constructor === Object ){//是不是obj
+            // console.log('是obj|arr');
+            this.set(Data[i])
+        }else if( Data[i].constructor === Array){
+           this.set(Data[i])
+
+        }else if(typeof(Data[i]) === 'string' && !isNaN(Data[i])){
+          // console.log('是str',!isNaN(Data[i]),Data[i])
+            Data[i] = Data[i]
+      }
+    }
+  },
+
     async submit(type) {
       console.log(this.resData);
+       this.set(this.resData)
 
       //判断type
       if (type === 1) {
