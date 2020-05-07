@@ -29,7 +29,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
+          <el-input disabled style="width:200px" v-model="ruleForm.name" placeholder="房间名称"></el-input>房间ID:{{ruleForm.type_id}}
         </el-form-item>
 
         <el-form-item label="场次开关" prop="open_game">
@@ -117,9 +117,13 @@
 
 <script>
 import DeepData from "../../../assets/js/formate.js";
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'bcbm_room_config',
   data() {
+      let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "",
       ruleForm: {
@@ -148,62 +152,53 @@ export default {
 
       },
       rules: {
-         name: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-         open_game: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-         open_robot: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
          cost: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          max: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          min: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          sit_coins_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          min_bet: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          person_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          times_5_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          times_10_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          times_20_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          times_30_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          times_40_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          all_times_5_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          all_times_10_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          all_times_20_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          all_times_30_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
          all_times_40_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkValue, trigger: "blur" }
         ],
 
       },
@@ -229,13 +224,13 @@ export default {
      this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.allData = res;
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
         if(item === it){
           this.currentlist[item] = res[it]
-          this.currentlist[item].person_limit = res[it].person_limit.replace(/\{|}/g,'')
+           this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`
           this.labellist.push(res[it].name)
         }
         if(index === 0){
@@ -263,9 +258,14 @@ export default {
         if (valid) {
           let resData = DeepData(this.allData);
           this.namelist.forEach((item)=>{
-            Object.keys(resData).forEach((it)=>{
+            Object.keys(this.allData).forEach((it)=>{
               if(item === it){
-                resData[it].person_limit = `{${resData[item].person_limit}}`
+                let limit_str = this.allData[it].person_limit.split(',')
+                let obj = {}
+                limit_str.forEach((litem,lindex)=>{
+                  obj[lindex + 1] = +litem
+                })
+               resData[it].person_limit = obj
               }
             })
           })
@@ -315,7 +315,10 @@ export default {
             }
           }
         }else{
-           console.log("error submit!!");
+           this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!!"
+          });
           return false;
         }
       })
