@@ -2,11 +2,6 @@
   <div id="whiteList-main">
     <input-area>
       <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加</el-button>
-      <el-button type="primary" size="medium">添加ip白名单</el-button>
-      <el-button type="primary" size="medium">搜索</el-button>
-      <div>
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-      </div>
     </input-area>
     <div class="bd">
       <el-table
@@ -17,10 +12,20 @@
         style="width: 100%;"
       >
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column prop="username" label="ip地址" align="center"></el-table-column>
-        <el-table-column prop="email" label="备注" align="center"></el-table-column>
-        <el-table-column prop="phone" label="最后修改人" align="center"></el-table-column>
-        <el-table-column prop="channel" label="操作时间" align="center"></el-table-column>
+        <el-table-column prop="version" label="更新版本" align="center"></el-table-column>
+        <el-table-column prop="channel" label="更新渠道" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status == 1">启用</span>
+            <span v-if="scope.row.status == 2">禁用</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="modified_time" label="更新时间" align="center"></el-table-column>
+        <el-table-column align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleHistory(scope.row)">历史版本</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         style="margin-top:20px;"
@@ -33,20 +38,79 @@
         :total="total"
       ></el-pagination>
     </div>
-    <!-- 添加热更新信息 -->
-    <el-dialog title="添加ip白名单" :visible.sync="dialogFormVisible">
+    <!-- 添加版本管理信息 -->
+    <el-dialog title="添加版本管理信息" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="ip地址" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-form-item label="渠道" :label-width="formLabelWidth">
+          <el-select v-model="form.channel" placeholder="请选择渠道">
+            <el-option
+              v-for="(item,index) in channelOpts"
+              :key="index"
+              :label="item.channel_name"
+              :value="item.channel_code"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="备注" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-form-item label="更新状态" :label-width="formLabelWidth">
+          <el-radio v-model="form.radio" label="1">启用</el-radio>
+          <el-radio v-model="form.radio" label="2">禁用</el-radio>
+        </el-form-item>
+        <el-form-item label="文件" :label-width="formLabelWidth">
+          <el-upload
+            v-loading.fullscreen="loading"
+            element-loading-text="资源包上传中"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(0, 0, 0, 0.5)"
+            action
+            accept=".apk"
+            :show-file-list="false"
+            :http-request="uploadFile"
+          >
+            <el-button size="small" type="primary">apk/ipa包上传</el-button>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="更新版本号" :label-width="formLabelWidth">
+          <el-input v-model="form.version" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="包大小(byte)" :label-width="formLabelWidth">
+          <el-input v-model="form.package_size" disabled autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="整包地址" :label-width="formLabelWidth">
+          <el-input v-model="form.package_url" disabled autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
+      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addChannel">确 定</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
+    </el-dialog>
+    <!-- 历史版本 -->
+    <el-dialog title="编辑" :visible.sync="dialogVisible" width="70%">
+      <el-table
+        border
+        ref="multipleTable"
+        :data="records"
+        tooltip-effect="dark"
+        style="width: 100%;"
+      >
+        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="version" label="更新版本" align="center"></el-table-column>
+        <el-table-column prop="channel" label="更新渠道" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status == 1">启用</span>
+            <span v-if="scope.row.status == 2">禁用</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="modified_time" label="更新时间" align="center" width="180"></el-table-column>
+        <el-table-column align="center" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -56,146 +120,74 @@
 import InputArea from "../../plugin/components/InputArea";
 
 export default {
-  name: "whiteList",
+  name: "whole_package_update",
   components: {
-    InputArea,
+    InputArea
   },
   data() {
     return {
+      loading: false,
       currentPage: 1,
-      pagesize: 10,
+      pageSize: 10,
       total: 0,
       dialogTitle: "",
       formLabelWidth: "120px",
       dialogFormVisible: false,
       dialogVisible: false,
       tableData: [],
-      form: {
-        versionUpd: { radio: "allVersion" },
-        channelUpd: { radio: "allVersion" },
-        forbidUpdVersion: { radio: "none" },
-        forbidUpdChannel: { radio: "none" },
-        isPublic: { radio: "none" },
-        updStatus: { radio: "none" },
-        checkList: ["android", "ios", "windows"],
-        updateTime: "",
-        version: "",
-        update_type: "",
-        update_way: ""
-      },
-      fileList: [],
+      records: [],
       imageUrl: "",
+      channelOpts: [],
+      form: {
+        channel: "",
+        radio: "1",
+        version: "",
+        package_size: "",
+        package_url: ""
+      },
+      form2: {
+        name: ""
+      }
     };
   },
   methods: {
-    resetForm() {
-      this.form = {
-        channel_name: "",
-        channel_id: "",
-        belong_company: ""
-      };
-    },
-
-    getChannelList() {
+    getWholePackageList() {
       this.$http
-        .get("v1/backend/operation/channels", {
+        .get("v1/backend/sys-conf/package", {
           params: {
             page: this.currentPage,
-            limit: this.pageSize,
-            company: "",
-            channel_name: ""
+            limit: this.pageSize
           }
         })
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
-            this.records = res.data.data;
+            this.tableData = res.data.data;
             this.total = res.data.total;
           }
         });
     },
-    //获取公司列表
-    getCompanyList() {
-      this.$http.get("v1/backend/operation/channel/company").then(res => {
+    getAllChannelList() {
+      let data = {
+        type_id: 2,
+        add_id: 2
+      };
+      this.$http.post("v1/backend/no_channel", data).then(res => {
         console.log(res);
-        if (res.data.code === 200) {
-          this.companyList = res.data.data;
+        if (res.data.code === 1) {
+          this.channelOpts = res.data.data;
         }
       });
     },
-    openAddDialog() {
-      this.resetForm();
-      this.dialogTitle = "添加渠道";
-      this.dialogFormVisible = true;
+    handleHistory(row) {
+      this.records = [];
+      console.log(row);
+      this.records.push(row);
+      console.log(this.records);
+      this.dialogVisible = true;
     },
-    addCompany() {
-      let data = {
-        name: this.form1.company_name
-      };
-      this.$http
-        .post("v1/backend/operation/channel/company", data)
-        .then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogVisible = false;
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
-    },
-    addChannel() {
-      if (!this.form.id) {
-        let data = {
-          channel_name: this.form.channel_name,
-          channel_num: this.form.channel_id,
-          company: this.form.belong_company
-        };
-        this.$http.post("v1/backend/operation/channels", data).then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogFormVisible = false;
-            this.getChannelList();
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
-      } else {
-        console.log("wojinolei");
-        let data = {
-          channel_name: this.form.channel_name,
-          channel_num: this.form.channel_id,
-          company: this.form.belong_company,
-          channel_id: this.form.id
-        };
-        this.$http.put("v1/backend/operation/channels", data).then(res => {
-          console.log(res);
-          if (res.data.code === 200) {
-            this.dialogFormVisible = false;
-            this.getChannelList();
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        });
-      }
-    },
-    /**搜索*/
-    search() {},
-    handleEdit(index, row) {
-      console.log(index, row);
-      this.dialogTitle = "编辑渠道";
-      this.dialogFormVisible = true;
-      this.form.id = row.id;
-      this.form.channel_name = row.name;
-      this.form.channel_id = row.code;
-      this.form.belong_company = row.cname;
-    },
-    handleDelete(index, row) {
+    handleEdit(row) {},
+    handleDelete(row) {
       console.log(row);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -212,7 +204,7 @@ export default {
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {
-                this.getChannelList();
+                this.getWholePackageList();
                 this.$message({
                   type: "success",
                   message: res.data.msg
@@ -227,37 +219,33 @@ export default {
           });
         });
     },
+    uploadFile(f) {
+      var file = f.file;
+      console.log(file);
+      // 用FormData传输文件对象
+      let fd = new FormData();
+      // 设置文件上传接口的需要的参数
+      fd.append("file", file);
+      fd.append("file_name", file.name);
+      fd.append("package_size", file.size);
+      this.$http.post("v1/backend/sys-conf/package/upload", fd).then(res => {
+        console.log(res);
+      });
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageSize = val;
-      this.getChannelList();
+      this.getWholePackageList();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.getChannelList();
-    },
-    handleAvatarSuccess(res, file) {},
-    handleChange(file, fileList, info) {
-      this.fileList[info] = fileList;
-    },
-    beforeUpload(file) {},
-    uploadFile() {
-      let formData = new FormData();
-      this.fileList.forEach(item => {
-        formData.append("filename", item.raw);
-        formData.append("types", 1);
-      });
-      this.$http.post("v1/backend/upload", formData).then(res => {
-        if (res.data.code === 1) {
-          this.imageUrl = res.data.path;
-        }
-      });
+      this.getWholePackageList();
     }
   },
   mounted() {
-    this.getChannelList();
-    this.getCompanyList();
+    this.getWholePackageList();
+    this.getAllChannelList();
   }
 };
 </script>
@@ -279,8 +267,14 @@ export default {
 #home .main-box .input-area >>> .el-date-editor {
   width: auto;
 }
-#whiteList-main .bd >>> .el-button {
+#whiteList-main .bd >>> .el-button--primary,
+#whiteList-main .bd >>> .el-button--danger {
   margin-left: 0px;
+  min-width: 30px;
+}
+#home .main-box .el-button--primary,
+#home .main-box .el-button--danger,
+#home .el-main .el-button--info {
   min-width: 30px;
 }
 .avatar-uploader .el-upload {

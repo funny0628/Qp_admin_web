@@ -2,12 +2,8 @@
   <div id="FlowSearch-main">
     <input-area>
       <el-select v-model="format.change_reason" placeholder="变化原因选择" clearable size="medium">
-        <el-option
-          v-for="(val,num) in changeReason"
-          :key="num"
-          :label="val"
-          :value="num"
-        >{{val}}</el-option>
+        <el-option label="全部" value=""></el-option>
+        <el-option v-for="(val,num) in changeReason" :key="num" :label="val" :value="num">{{val}}</el-option>
       </el-select>
       <el-select v-model="format.room" placeholder="房间选择" clearable size="medium">
         <el-option
@@ -158,13 +154,24 @@ export default {
           }
         ]
       },
-      changeReason: {},//变化原因
-      allGameType: [],//所有游戏
+      changeReason: {}, //变化原因
+      allGameType: [], //所有游戏
       format: {
         change_reason: "",
         room: "",
         user_id: "",
-        dateArr: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()]
+        dateArr: [
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
+        ]
       },
       tableStyle: [
         { label: "UID", prop: "uid", width: "" },
@@ -173,7 +180,7 @@ export default {
         { label: "变化原因", prop: "reason", width: "" },
         { label: "房间类型", prop: "game_type", width: "" },
         { label: "渠道号", prop: "channel", width: "" },
-        { label: "操作时间", prop: "time", width: "" },
+        { label: "操作时间", prop: "time", width: "" }
       ],
       records: [],
       pageInfo: new PageInfo(0, [5, 10, 15], 5),
@@ -196,30 +203,36 @@ export default {
         reason: Number(this.format.change_reason),
         game_type: Number(this.format.room),
         user_id: Number(this.format.user_id),
-        start_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[0])).getTime()/1000) : 0,
-        end_time: this.format.dateArr ? parseInt(new Date(Number(this.format.dateArr[1])).getTime()/1000) : 0,
+        start_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[0])).getTime() / 1000)
+          : 0,
+        end_time: this.format.dateArr
+          ? parseInt(new Date(Number(this.format.dateArr[1])).getTime() / 1000)
+          : 0
       };
-      this.$http.get("v1/backend/operation/flows",{
-        params
-      }).then(res => {
-        console.log(res);
-        if(res.data.code === 200) {
-          this.records = res.data.data
-          this.total = res.data.total
-        }
-      });
+      this.$http
+        .get("v1/backend/operation/flows", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
+        });
     },
     /**搜索*/
     searchData() {
-      this.getFlowWaterList()
+      this.getFlowWaterList();
     },
     getModReason() {
-      this.$http.get('v1/backend/operation/gold-modify-reason').then(res=>{
-        console.log(res)
-        if(res.data.code === 200) {
-          this.changeReason = res.data.data
+      this.$http.get("v1/backend/operation/gold-modify-reason").then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.changeReason = res.data.data;
         }
-      })
+      });
     },
     //获取所有游戏类型
     getAllGameType() {
@@ -240,9 +253,9 @@ export default {
     }
   },
   mounted() {
-    this.getFlowWaterList()
-    this.getModReason()
-    this.getAllGameType()
+    this.getFlowWaterList();
+    this.getModReason();
+    this.getAllGameType();
   }
 };
 </script>

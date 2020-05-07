@@ -31,7 +31,7 @@
           }, // 第三方
           withdraw: {
             name: 'withdraw_records',
-            count: 0,
+            count: 1,
             label: '兑换',
           }, // 兑换
           // recharge: {
