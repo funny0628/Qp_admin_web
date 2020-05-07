@@ -64,7 +64,7 @@ export default {
   },
   created() {
     this.initData({
-      key: "hundred_config.lua"
+      key: "bet_list.lua"
     });
   },
   methods: {

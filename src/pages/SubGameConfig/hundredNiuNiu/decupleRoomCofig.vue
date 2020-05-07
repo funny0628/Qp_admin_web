@@ -9,9 +9,9 @@
     <!-- 头部 -->
     <div class="title">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="荣耀厅01" :name="namelist[0]"></el-tab-pane>
-        <el-tab-pane label="荣耀厅02" :name="namelist[1]"></el-tab-pane>
-        <el-tab-pane label="荣耀厅03" :name="namelist[2]"></el-tab-pane>
+        <el-tab-pane :label="labellist[0]" :name="namelist[0]"></el-tab-pane>
+        <el-tab-pane :label="labellist[1]" :name="namelist[1]"></el-tab-pane>
+        <el-tab-pane :label="labellist[2]" :name="namelist[2]"></el-tab-pane>
       </el-tabs>
     </div>
     <!-- form -->
@@ -37,6 +37,7 @@
       >
         <el-form-item label="房间名称" prop="name">
           <el-input
+            disabled
             style="width:200px"
             v-model="ruleForm.name"
             placeholder="房间名称"
@@ -174,9 +175,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'ten_room_config',
   data() {
+    let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       ruleForm: {
         cost: "",
@@ -202,54 +207,45 @@ export default {
         is_hundred_game: ""
       },
       rules: {
-        cost: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        max: [{ required: true, message: "不可以为空", trigger: "blur" }],
-        min: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        cost: [{ required: true,validator: checkValue, trigger: "blur" }],
+        max: [{ required: true,validator: checkValue, trigger: "blur" }],
+        min: [{ required: true,validator: checkValue, trigger: "blur" }],
         sit_coins_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         min_banker_coins: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         min_bet: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         person_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         spade_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         heart_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         club_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         diamond_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         all_spade_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         all_heart_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         all_club_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
         all_diamond_limit: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true,validator: checkValue, trigger: "blur" }
         ],
-        name: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-        open_game: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ],
-        open_robot: [
-          { required: true, message: "不可以为空", trigger: "blur" }
-        ]
       },
       activeName: "",
       id: 0,
@@ -260,7 +256,9 @@ export default {
       //匹配当前游戏的条件
       namelist: ["200200", "200201", "200202"],
       //当前游戏的所有数据
-      currentlist: {}
+      currentlist: {},
+      //游戏场次类别
+      labellist:[]
     };
   },
 
@@ -269,17 +267,16 @@ export default {
     let { data } = await this.$http.HallFunConfig.Getroomdata2002({
       key: "roomdata.lua"
     });
-    console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
     this.allData = res;
-
     this.namelist.forEach((it, index) => {
       Object.keys(res).forEach(item => {
         if (item === it) {
           this.currentlist[item] = res[item];
+          this.labellist.push(res[it].name)
+          this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`
         }
         if (index === 0) {
           this.ruleForm = res[it];
@@ -287,7 +284,6 @@ export default {
         }
       });
     });
-    console.log(this.ruleForm, this.currentlist);
   },
 
   methods: {
@@ -304,28 +300,24 @@ export default {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          //准备数据
-          Object.keys(this.currentlist).forEach(item => {
-            if (item === this.ruleForm.type_id) {
-              this.currentlist[item] = this.ruleForm;
-            }
-          });
-          console.log(this.ruleForm, this.currentlist);
-
-          Object.keys(this.currentlist).forEach(item => {
-            Object.keys(this.allData).forEach(it => {
-              if (item === it) {
-                this.allData[it] = this.currentlist[item];
+          let $Data = JSON.parse(JSON.stringify(this.allData))
+          this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
+              if(item === it){
+                let limit_str = this.allData[it].person_limit.split(',')
+                let obj = {}
+                limit_str.forEach((litem,lindex)=>{
+                  obj[lindex + 1] = +litem
+                })
+                $Data[it].person_limit = obj
               }
-            });
-          });
-          console.log(this.allData, this.currentlist);
-
+            })
+          })
           //判断类型
           if (type === 1) {
             let { data } = await this.$http.HallFunConfig.Putroomdata2002({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify($Data),
               id: this.id
             });
             // console.log(data);
@@ -345,7 +337,7 @@ export default {
 
             let { data } = await this.$http.HallFunConfig.Postroomdata2002({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify($Data),
               id: this.id
             });
             // console.log(data);
@@ -364,7 +356,10 @@ export default {
             }
           }
         } else {
-          console.log("error submit!!");
+          this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
       });

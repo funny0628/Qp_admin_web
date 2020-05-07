@@ -45,7 +45,7 @@
         <div class="item_div left">
           机器人退出房间
         </div>
-        <div class="item_div right">
+        <div class="item_div right" v-if="Data.robot_leave">
           <p>
            退出时间（秒）:<el-input style="width:100px" v-model="Data.robot_leave.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_leave.interval_time[1]"></el-input>
           </p>
@@ -58,7 +58,7 @@
         <div class="item_div left">
           机器人加入房间
         </div>
-        <div class="item_div right">
+        <div class="item_div right" v-if="Data.robot_leave">
           <p>
           加入时间（秒):<el-input style="width:100px" v-model="Data.robot_join.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_join.interval_time[1]"></el-input>
           </p>
@@ -74,7 +74,7 @@
         <div class="item_div left">
           子弹切换
         </div>
-        <div class="item_div right">
+        <div class="item_div right" v-if="Data.robot_leave">
           <p>
           切换时间（秒）:<el-input style="width:100px" v-model="Data.fire_change.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.fire_change.interval_time[1]"></el-input>
           </p>
@@ -123,7 +123,7 @@ export default {
   async created() {
     //获取数据
     let { data } = await this.$http.HallFunConfig.Getfishing_robot({
-      key: "fishing_robot.lua"
+      key: "robot.lua"
     });
     console.log(data);
     this.id = data.data[0].id;
@@ -288,15 +288,16 @@ export default {
 }
   .table {
     padding: 10px;
+    
 
     .item {
       border: 1px solid #e6e6e6;
       border-bottom: none;
       border-right: none;
       display: flex;
+     min-height: 100px;
       .item_div {
         box-sizing: border-box;
-
         border: 1px solid #e6e6e6;
         border-top: none;
         border-left: none;
@@ -307,6 +308,7 @@ export default {
           align-items: center;
         }
         &.right {
+          min-height: 100px;
           flex: 5;
           display: flex;
           flex-direction: column;

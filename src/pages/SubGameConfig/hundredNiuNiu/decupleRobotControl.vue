@@ -133,9 +133,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'ten_robot_config',
   data() {
+     let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       activeName: "1",
       ruleForm: {
@@ -153,37 +157,37 @@ export default {
       },
       rules: {
         count_range: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         coins_range: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         leave_rate: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         system_bet_min: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         system_last_bet_rate: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         system_bet_area: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         player_bet_min: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         player_last_bet_rate: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         player_bet_area: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         bet_area_float: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ],
         vip_seat_rate: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: false, validator: checkValue, trigger: "blur" }
         ]
       },
       resData: {},
@@ -230,7 +234,7 @@ export default {
 
     submitForm(formName, type) {
       this.$refs[formName].validate(async valid => {
-        if (valid && this.card_compare_value !== "") {
+        if (valid && this.card_compare_value !== "" && !isNaN(this.card_compare_value)) {
           console.log(this.ruleForm, type);
           let res = {
             brnn_ten_normal: {

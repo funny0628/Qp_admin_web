@@ -32,7 +32,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="房间名称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+          <el-input disabled v-model="ruleForm.name"></el-input>
           <span>房间ID:{{ruleForm.type_id}}</span>
         </el-form-item>
 
@@ -86,9 +86,13 @@
 </template>
 
 <script>
+import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'hl_fish_room_config',
   data() {
+    let checkValue = (rule, theObj, callback) => {
+      CheckValue(this.ruleForm,rule, theObj, callback)
+    };
     return {
       ruleForm: {
         type_id: "",
@@ -103,21 +107,10 @@ export default {
         is_hundred_game: ""
       },
       rules: {
-        name: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
-        ],
-        open_game: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
-        ],
-        open_robot: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
-        ],
-        ip_limit: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
-        ],
-        max: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
+        max: [ { required: true, validator: checkValue, trigger: "blur" }],
+        min: [ {  required: true, validator: checkValue, trigger: "blur" }],
         multiple: [
-          { required: true, message: "请填写活动形式", trigger: "blur" }
+          {  required: true, validator: checkValue, trigger: "blur" }
         ]
       },
       activeName: "",
@@ -167,6 +160,8 @@ export default {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          console.log(this.ruleForm);
+          
           // console.log(this.ruleForm,this.currentlist,this.allData);
 
           if (type === 1) {
@@ -211,7 +206,10 @@ export default {
             }
           }
         } else {
-          console.log("error submit!!");
+           this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
       });
