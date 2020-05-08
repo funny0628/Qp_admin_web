@@ -44,6 +44,7 @@
               @click="handleRole(scope.$index, scope.row)"
             >角色</el-button>
             <el-button
+              v-if="scope.row.username !== 'root'"
               v-has="'delete_user'"
               size="mini"
               type="danger"
@@ -100,7 +101,7 @@
       </div>
     </el-dialog>
     <!-- 分配角色 -->
-    <el-dialog title="用户[root]分配角色" :visible.sync="dialogRoleAssign" width="25%">
+    <el-dialog title="用户分配角色" :visible.sync="dialogRoleAssign" width="25%">
       <el-form :model="form2">
         <el-form-item label="角色" label-width="80px">
           <el-select v-model="form2.role" placeholder="请选择角色">
@@ -132,11 +133,12 @@ export default {
     let checkUsername = (rule,value,callback) => {
       if(!value) {
         return callback(new Error('用户名不能为空'))
-      }else {
-        if(this.form.username.length < 6) {
-          return callback(new Error('长度在 6 到 8 个字符'))
-        }
       }
+      // else {
+      //   if(this.form.username.length < 6) {
+      //     return callback(new Error('长度在 6 到 8 个字符'))
+      //   }
+      // }
     }
     /*校验手机号*/
     let checkPhone = (rule, value, callback) => {
@@ -265,6 +267,10 @@ export default {
         console.log(res);
         if (res.data.code === 200) {
           this.dialogAddUser = false;
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
           this.getUserList();
         }
       } else {
@@ -284,15 +290,6 @@ export default {
           this.dialogAddUser = false;
           this.getUserList();
         }
-      }
-    },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
       }
     },
     handleSelectionChange(val) {

@@ -141,20 +141,32 @@
       </el-form>
     </el-dialog>
     <!-- 游戏详情  抢牛庄庄 -->
-    <el-dialog title="详情" :visible.sync="dialogCowVisible">
+    <el-dialog title="详情" :visible.sync="dialogCowVisible" width="60%">
       <el-form :model="form" style="background-color:#f2f2f2;">
         <div
           style="width:100%;height:30px;line-height:30px;"
         >{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}</div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="100" v-if="item.is_banker===false">闲家,id: {{item.uid}}</td>
-            <td width="100" v-else>庄家,id: {{item.uid}}</td>
+            <td width="100" v-if="item.is_banker===false">
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>闲家,id: {{item.uid}}</div>
+            </td>
+            <td width="100" v-else>
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>庄家,id: {{item.uid}}</div>
+            </td>
             <td width="100">叫庄倍数* {{item.banker_times}}</td>
             <td width="100">叫倍* {{item.bet_times}}</td>
             <td width="100">{{item.card_type}}</td>
             <td width="100">{{String(item.cards)}}</td>
-            <td width="100">{{item.card_times}}</td>
+            <td width="100">开牌倍数:{{item.card_times}}</td>
             <td width="100">{{item.add_score}}</td>
           </tr>
           <tr />
@@ -173,7 +185,17 @@
             <td></td>
           </tr>
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="100">id: {{item.uid}}</td>
+            <td width="100">
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>id: {{item.uid}}</div>
+              <span
+                v-if="item.is_banker === true"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#96ce44;margin-left:-60px;"
+              >地</span>
+            </td>
             <td width="100">{{item.jiaofen}}分</td>
             <td width="100" v-if="item.jiabei === true">加倍</td>
             <td width="100" v-else>不加倍</td>
@@ -247,13 +269,19 @@
           <tr>
             <td rowspan="2">{{uid}}</td>
             <td>免佣</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatFreeCommission }}</td>
+            <td
+              v-for="(item,index) in player_win_list"
+              :key="index"
+            >{{ item[0] | formatFreeCommission }}</td>
             <td>{{free_win_lost_gold}}</td>
             <td></td>
           </tr>
           <tr>
             <td>非免佣</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatCommission }}</td>
+            <td
+              v-for="(item,index) in player_win_list"
+              :key="index"
+            >{{ item[0] | formatCommission }}</td>
             <td>{{not_free_win_lost_gold}}</td>
             <td></td>
           </tr>
@@ -321,7 +349,13 @@
         </div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="150">{{item.uid}}</td>
+            <td width="150">
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>{{item.uid}}</div>
+            </td>
             <td width="150">{{item.card_type}}</td>
             <td width="150">下注:{{item.bet_coins}}</td>
             <td width="150">输赢:{{item.add_score}}</td>
@@ -339,17 +373,17 @@
           style="width:100%;height:30px;line-height:30px;"
         >{{game_name + "-"}}{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}{{"------系统控制结果:"+err_result}}</div>
         <div style="text-align:center;height:50px;line-height:50px;">
-          <span
-            v-for="(item,index) in tableData"
-            :key="index"
-          >{{item.side + ":"+String(item.cards) + ','}}<span
-            v-if="item.win===true"
-          >结果:{{item.side + '赢'+','}}</span></span>
+          <span v-for="(item,index) in tableData" :key="index">
+            {{item.side + ":"+String(item.cards) + ','}}
+            <span
+              v-if="item.win===true"
+            >结果:{{item.side + '赢'+','}}</span>
+          </span>
           <!-- <span
             v-for="(item,ind) in tableData"
             :key="ind"
             v-if="item.win===true"
-          >结果:{{item.side + '赢'}}</span> -->
+          >结果:{{item.side + '赢'}}</span>-->
         </div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
@@ -377,7 +411,7 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list.flat(2)" :key="index">{{ item | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
             <td>{{win_lost_gold}}</td>
             <td></td>
           </tr>
@@ -469,7 +503,7 @@
             <td width="150">{{item.side}}</td>
             <td width="150">{{item.card_type}}</td>
             <td width="150">{{ String(item.cards) }}</td>
-            <td width="150">总下注:{{ item.bet_coins }}</td>
+            <td width="150">总下注:{{ item.bet_coins + ',' }}玩家下注: {{ item.player_bet_coins }}</td>
             <td width="150">总输赢:{{ item.total_side_win }}</td>
           </tr>
         </table>
@@ -560,8 +594,16 @@ export default {
         session: "",
         id: "",
         dateArr: [
-          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          new Date()
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
         ]
       },
       tableStyle: [
@@ -585,6 +627,7 @@ export default {
         money: "",
         check_money: ""
       },
+      true_user: "",
       dialogFruitVisible: false, //水果机
       tableName: "",
       exinfo: {},
@@ -675,6 +718,7 @@ export default {
     handleEdit(row) {
       this.loading = true;
       console.log(row);
+      this.true_user = row.true_user;
       this.$http
         .get("v1/backend/operation/play/detail", {
           params: {
@@ -713,16 +757,16 @@ export default {
                 return item.player_win_list;
               });
               var freeSum = 0;
-              var notFreeSum = 0
+              var notFreeSum = 0;
               this.player_win_list.forEach(item => {
                 if (item.length > 0) {
                   item.forEach(ele => {
                     this.uid = ele.uid;
                     freeSum += ele.teefee_commission;
-                    notFreeSum += ele.win_coins_commission
+                    notFreeSum += ele.win_coins_commission;
                   });
                   this.free_win_lost_gold = freeSum;
-                  this.not_free_win_lost_gold = notFreeSum
+                  this.not_free_win_lost_gold = notFreeSum;
                 }
               });
             } else if (res.data.data.game_name == "红黑大战") {
@@ -869,6 +913,9 @@ export default {
 #GamblingRecord-main .bd >>> .el-button {
   margin-left: 0px;
   min-width: 30px;
+}
+#GamblingRecord-main >>> .el-range-editor .el-range-input {
+  width: 150px;
 }
 table {
   border-collapse: collapse;

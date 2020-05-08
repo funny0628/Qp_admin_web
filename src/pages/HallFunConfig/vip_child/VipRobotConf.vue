@@ -368,9 +368,7 @@ export default {
       //   id: this.id
       // });
       let { data } = await this.$http.post(
-        "/v1/backend/lobby/server_config/robot_rank_vip",
-        params
-      );
+        "/v1/backend/lobby/server_config/robot_rank_vip",params);
       console.log(data);
       if (data.code === 1 && data.msg === "ok") {
         this.loading = false;

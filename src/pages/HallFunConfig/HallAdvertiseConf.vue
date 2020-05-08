@@ -42,7 +42,7 @@
               >删除</el-button>
             </template>
             <template
-              v-if="['action','pic_one_url','pic_two_url','pic_three_url'].indexOf(scope.prop) < 0"
+              v-if="['action','pic_one','pic_two','pic_three'].indexOf(scope.prop) < 0"
             >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>

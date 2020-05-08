@@ -1,5 +1,14 @@
 <template>
   <div id="hotUpdate-main">
+    <div class="mask" v-if="showProgress">
+      <el-progress
+        class="progress"
+        v-if="showProgress"
+        :text-inside="true"
+        :stroke-width="26"
+        :percentage="percentage"
+      ></el-progress>
+    </div>
     <input-area>
       <div style="margin-bottom:10px;">
         <el-button v-has="'add_hot_update'" type="primary" size="medium" @click="openAddDialog">添加</el-button>
@@ -190,9 +199,6 @@
         </el-form-item>
         <el-form-item label="上传资源包" :label-width="formLabelWidth">
           <el-upload
-            v-loading.fullscreen="loading"
-            element-loading-text="资源包上传中"
-            element-loading-spinner="el-icon-loading"
             element-loading-background="rgba(0, 0, 0, 0.5)"
             class="avatar-uploader"
             action
@@ -203,9 +209,11 @@
             :on-success="handleAvatarSuccess"
             :http-request="uploadFile"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+            <el-button size="small" type="primary">选择文件</el-button>
           </el-upload>
+          <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="percentage"></el-progress> -->
         </el-form-item>
         <el-form-item label="安卓配置" :label-width="formLabelWidth">
           <el-input disabled type="textarea" autosize resize="none" v-model="form.androidConfig"></el-input>
@@ -302,7 +310,9 @@ export default {
           }
         ]
       },
-      loading: false
+      loading: false,
+      showProgress: false,
+      percentage: 0
     };
   },
   filters: {
@@ -350,7 +360,7 @@ export default {
         updateTime: "",
         version: "",
         update_type: "",
-        update_way: "",
+        update_way: ""
       };
     },
 
@@ -373,6 +383,7 @@ export default {
       this.resetForm();
       this.dialogTitle = "添加信息";
       this.dialogFormVisible = true;
+      this.percentage = 0;
     },
     addUpdateConf() {
       let data = {
@@ -542,6 +553,8 @@ export default {
       var currentChunk = 0;
       let that = this;
       that.loading = true;
+      that.showProgress = true;
+      that.percentage = 0;
       function sectionUpload() {
         // 上传文件块的大小，可自定义
         var chunkSize = 100 * 1024 * 1024;
@@ -566,17 +579,36 @@ export default {
         fd.append("version", that.form.version);
         fd.append("total_size", that.fileData.total_size);
         fd.append("file_name", that.fileData.file_name);
+        const config = {
+          onUploadProgress: progressEvent => {
+            console.log(progressEvent);
+            // progressEvent.loaded:已上传文件大小
+            // progressEvent.total:被上传文件的总大小
+              that.percentage =
+              Number(
+                (((progressEvent.loaded + currentChunk * chunkSize) / file.size) * 100).toFixed(2)
+              ) || 0;
+          }
+        };
         that.$http
-          .post("v1/backend/sys-conf/hot-update/package", fd)
+          .post("v1/backend/sys-conf/hot-update/package", fd,config)
           .then(res => {
             console.log(res);
-            currentChunk += 1;
-            console.log(currentChunk);
             if (res.data.code === 200) {
+              currentChunk += 1;
+              console.log(currentChunk);
+              // that.percentage = Math.floor(100 / chunks) * currentChunk;
               if (currentChunk < chunks) {
                 sectionUpload();
               }
               if (res.data.data.list) {
+                // if (currentChunk == chunks) {
+                //   that.percentage = 100;
+                //   setTimeout(() => {
+                //     that.showProgress = false;
+                //   }, 1000);
+                // }
+                that.showProgress = false;
                 that.form.game_info = JSON.stringify(res.data.data.list);
                 // console.log(that.form.game_info)
                 that.form.androidConfig = that.formatResource(
@@ -596,6 +628,7 @@ export default {
               }
             } else {
               that.loading = false;
+              this.showProgress = false;
               that.$message({
                 type: "error",
                 message: "资源包上传失败"
@@ -606,6 +639,7 @@ export default {
       sectionUpload();
     },
     formatResource(obj) {
+      console.log(obj)
       var str = "";
       for (var key in obj) {
         let item = obj[key];
@@ -640,6 +674,22 @@ export default {
 </script>
 
 <style scoped>
+#hotUpdate-main .mask {
+  /* width: 100%;
+  height: 100%; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100000000000;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#hotUpdate-main .mask .progress {
+  margin-top: 25%;
+  width: 60%;
+  margin-left: 20%;
+}
 #hotUpdate-main .bd {
   padding-left: 20px;
 }

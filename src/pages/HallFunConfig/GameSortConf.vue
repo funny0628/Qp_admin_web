@@ -3,7 +3,7 @@
     <input-area>
       <div>
         <!-- <el-button type="danger">删除</el-button> -->
-        <el-button type="primary" @click="openAddDialog">添加</el-button>
+        <el-button type="primary" @click="openAddDialog" v-has="'add_game_sort_config'">添加</el-button>
         <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
       </div>
       <el-select v-model="searchChannel" placeholder="请选择渠道" style="margin-top:10px;">
@@ -16,7 +16,7 @@
       </el-select>
     </input-area>
     <div class="bd">
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table :data="tableData" border style="width: 100%" v-has="'game_sort_configs'">
         <el-table-column label="ID" prop="id" align="center" width="100"></el-table-column>
         <el-table-column label="渠道名称" prop="channel_name" align="center" width="100"></el-table-column>
         <el-table-column label="渠道KEY" prop="channel_code" align="center" width="100"></el-table-column>
@@ -30,6 +30,7 @@
         >
           <template slot-scope="scope">
             <span v-if="scope.row[`game_${name}`] == 0">留空</span>
+            <span v-if="scope.row[`game_${name}`] == 1">炸金花</span>
             <span v-if="scope.row[`game_${name}`] == 2">抢庄牛牛</span>
             <span v-if="scope.row[`game_${name}`] == 3">斗地主</span>
             <span v-if="scope.row[`game_${name}`] == 6">捕鱼</span>
@@ -50,8 +51,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-has="'modify_game_sort_config'" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button v-has="'delete_game_sort_config'" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -620,7 +621,7 @@ import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
-  name: "GameSortConf",
+  name: "game_sort_config",
   extends: BaseIframe,
   components: {
     InfoTableItem,
@@ -859,7 +860,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 1) {
-            this.gameOpts = res.data.data.slice(1);
+            this.gameOpts = res.data.data;
           }
         });
     },

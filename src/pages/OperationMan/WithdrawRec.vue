@@ -169,8 +169,16 @@ export default {
         withdraw_status: "",
         game_id: "",
         dateArr: [
-          new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          new Date()
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() -
+              3600 * 1000 * 24 * 7 +
+              24 * 60 * 60 * 1000
+          ),
+          new Date(
+            new Date(new Date().toLocaleDateString()).getTime() +
+              24 * 60 * 60 * 1000 -
+              1
+          )
         ]
       },
       tableStyle: [
@@ -226,7 +234,7 @@ export default {
     },
     /**搜索*/
     searchData() {
-      this.getWithdrawRec()
+      this.getWithdrawRec();
     },
     handleDetail(row) {
       console.log(row);
@@ -254,9 +262,9 @@ export default {
       };
       this.$http.post("v1/backend/operation/withdraws", data).then(res => {
         console.log(res);
-        if(res.data.code == 200) {
-          this.dialogVisible = false
-          this.getWithdrawRec()
+        if (res.data.code == 200) {
+          this.dialogVisible = false;
+          this.getWithdrawRec();
         }
       });
     },
@@ -295,6 +303,9 @@ export default {
 #WithdrawRec-main .bd >>> .el-button {
   margin-left: 0px;
   min-width: 30px;
+}
+#WithdrawRec-main >>> .el-range-editor .el-range-input {
+  width: 150px;
 }
 table {
   border-collapse: collapse;
