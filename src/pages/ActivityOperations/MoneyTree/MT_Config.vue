@@ -24,7 +24,7 @@
           prop="level"
           label="等级"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
         </el-table-column>
@@ -32,7 +32,7 @@
           prop="draw_num"
           label="摇奖次数"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
         </el-table-column>
@@ -40,7 +40,7 @@
           prop="icon_cash_cow_url"
           label="摇钱树图标展示"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
           <template slot-scope="scope">
@@ -51,7 +51,7 @@
           prop="award_coin"
           label="全任务金币奖励"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
         </el-table-column>
@@ -60,7 +60,7 @@
           prop="growth_value"
           label="升级所属成长值"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
         </el-table-column>
@@ -68,9 +68,27 @@
           prop="weight_info"
           label="摇一摇奖励"
           align="center"
-          width="260"
+ 
           show-overflow-tooltip
         >
+        </el-table-column>
+         <el-table-column
+          prop="week_change"
+          label="操作"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -91,6 +109,7 @@
         >
           <el-form-item label="摇钱树等级" prop="level">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.level"
               placeholder="摇钱树等级"
@@ -98,6 +117,7 @@
           </el-form-item>
           <el-form-item label="升级所需成长值" prop="growth_value">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.growth_value"
               placeholder="0"
@@ -105,6 +125,7 @@
           </el-form-item>
           <el-form-item label="抽奖次数" prop="award_coin">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.award_coin"
               placeholder="0"
@@ -117,7 +138,8 @@
               :show-file-list="false"
               :http-request="upLoad"
               :before-upload="beforeAvatarUpload"
-              :limit="1"
+
+              :on-change="fileChange"
             >
               <img
                 v-if="form.icon_cash_cow_url"
@@ -129,6 +151,7 @@
           </el-form-item>
           <el-form-item label="全任务金币奖励数量" prop="draw_num">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.draw_num"
               placeholder="0"
@@ -136,7 +159,7 @@
           </el-form-item>
           <el-form-item label="摇一摇金币奖励数量" prop="weight_info">
             <el-input
-              style="width:220px"
+              style="width:80%"
               v-model="form.weight_info"
               placeholder="1=2 ... 以 , 分隔"
             ></el-input>
@@ -159,6 +182,24 @@ import DeepData from "../../../assets/js/formate.js";
 export default {
   name:'rainmaker_config',
   data() {
+     let checkTime = (rule,value,callback) => {
+       console.log(value);
+       
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
+     let checkImg = (rule,value,callback) => {
+
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
+    
     return {
       tableData: [],
       visible: false,
@@ -167,27 +208,35 @@ export default {
         growth_value: "",
         award_coin: "",
         draw_num: "",
-        icon_cash_cow_url: "xxxx",
+        icon_cash_cow_url: "",
+        weight_info: ""
+      },
+      initform: {
+        level: "",
+        growth_value: "",
+        award_coin: "",
+        draw_num: "",
+        icon_cash_cow_url: "",
         weight_info: ""
       },
       rules: {
         level: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         growth_value: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         award_coin: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         draw_num: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        icon_cash_cow_url: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         weight_info: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
+        ],
+        icon_cash_cow_url: [
+          { required: true, validator: checkImg, trigger: "blur" }
         ]
       },
       title: "新增等级",
@@ -195,7 +244,11 @@ export default {
       id: "",
       allData: {},
       servebg_url: "",
-      loading: false
+      loading: false,
+      ResData:{},
+      //默认没有改过
+      imageChange:false,
+      currentIndex:-1
     };
   },
   created() {
@@ -203,86 +256,37 @@ export default {
   },
   methods: {
     add() {
-      this.editForm(true, "新增", {});
+      this.editForm(true, "新增", this.initform);
+    },
+
+    //编辑
+    handleEdit(index,row){
+      this.currentIndex = index
+      this.editForm(true, "编辑", {...row});
+    },
+
+    //删除
+    handleDelete(index,row){
+      this.$confirm('确认永久删除？')
+          .then(_ => {
+           this.tableData = this.tableData.filter((item, idx) => {
+              return index !== idx;
+            });
+            this.initBackData(this.tableData)
+          })
+          .catch(_ => {
+               this.$message({
+                type: "info",
+                message: "取消删除!"
+              });
+          });
     },
     async send(type) {
       //发送post
-      let resTable = DeepData(this.tableData);
-      resTable.forEach(item => {
-        let formInfo = item.weight_info;
-        let formWeight = [];
-        let formObj = {};
-        if (formInfo.search(",") !== -1) {
-          //有 , 号
-          formWeight = formInfo.split(",");
-          let obj = {};
-          formWeight.forEach((item, index) => {
-            item = item.split("=");
-            obj[index + 1] = { coin: item[0], weight: item[1] };
-          });
-          // console.log(obj);
-          formObj = obj;
-        } else {
-          //没有 ,
-          formWeight = formInfo.split("=");
-          let obj1 = {};
+      this.initBackData(this.tableData,type) 
 
-          obj1[formWeight.length - 1] = {
-            coin: formWeight[0],
-            weight: formWeight[1]
-          };
-          formObj = obj1;
-        }
-        item.weight_info = formObj;
-      });
-      let objData = {};
-      resTable.forEach((item, index) => {
-        objData[index + 1] = item;
-      });
-      Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10003") {
-          this.allData[item].ac_content.cash_cow = objData;
-        }
-      });
-      console.log(this.allData);
+      
 
-      let { data } = await this.$http.HallFunConfig.PostActivityNew33({
-        keys: this.keys,
-        values: JSON.stringify(this.allData),
-        id: this.id
-      });
-      console.log(data);
-      if (data.code === 1 && data.msg === "ok") {
-        if (type === 1) {
-          this.loading = false;
-          this.$message({
-            type: "success",
-            message: "保存成功!"
-          });
-        } else {
-          // this.initData();
-          this.loading = false;
-          this.$message({
-            type: "success",
-            message: "发送服务器配置成功!"
-          });
-        }
-      } else {
-        if (type === 1) {
-          this.loading = false;
-          this.$message({
-            type: "success",
-            message: "保存失败!"
-          });
-        } else {
-          this.loading = false;
-          this.$message({
-            type: "warning",
-            message: "发送服务器配置失败!"
-          });
-        }
-        
-      }
     },
 
     upLoad(file) {
@@ -292,23 +296,164 @@ export default {
       this.$http.post("v1/backend/upload", formData).then(data => {
         if (data.data.code === 1 && data.data.msg === "ok") {
           this.servebg_url = data.data.path;
-          this.form.icon_cash_cow_url = URL.createObjectURL(file);
         }
       });
     },
+
     beforeAvatarUpload(file) {
       if (file) {
-        this.form.icon_cash_cow_url = URL.createObjectURL(file);
+        console.log(file,'文件',URL.createObjectURL(file));
+        this.$set(this.form,'icon_cash_cow_url',URL.createObjectURL(file))
       }
     },
-    onSubmit() {
-      this.form.icon_cash_cow_url = this.servebg_url;
-      this.tableData.push(this.form);
-      this.send(1);
-      this.editForm(false, "新增", {});
+    fileChange(file, fileList){
+      console.log(file, fileList,'文件改变了');
+      if(file){
+        this.imageChange = true
+      }
+    },
+ 
+
+    onSubmit(formName, title) {
+      console.log(this.form);
+      
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          if (title === "新增") {
+            this.form.icon_cash_cow_url = this.servebg_url
+            this.tableData.push(this.form);
+            console.log(this.tableData);
+            
+          } else if (title === "编辑") {
+            console.log(this.form);
+            if(this.imageChange){
+              console.log('图片改过啦');
+              this.form.icon_cash_cow_url = this.servebg_url
+              console.log(this.form);
+              this.imageChange = false
+            }
+            
+            let resTable = [];
+            this.tableData.forEach((item, index) => {
+              resTable.push(item);
+              if (this.currentIndex === index) {
+                resTable[index] = this.form;
+              }
+            });
+            this.tableData = resTable;
+            console.log(this.tableData);
+            
+          }
+          this.initBackData(this.tableData,1)        
+          this.editForm(false, "新增", this.initform);
+
+        } else {
+          this.$message({
+            type: "warning",
+            message: "必填的项不可以为空!"
+          });
+          return false;
+        }
+      })
     },
     back() {
       this.editForm(false, "新增", {});
+    },
+
+    async initBackData(tableData,type){
+        let RestableData = JSON.parse(JSON.stringify(tableData))
+
+          RestableData.forEach((item)=>{
+            item.level = +item.level
+            item.growth_value = +item.growth_value
+            item.award_coin = +item.award_coin
+            item.draw_num = +item.draw_num
+            let infoObj = {}
+            item.weight_info = item.weight_info.split(',')
+           
+          })
+
+           let infoObj = {}
+           RestableData.forEach((item)=>{
+            item.weight_info.forEach((it,idx)=>{
+              infoObj[idx + 1] = it
+            })
+            item.weight_info = infoObj
+           })
+          //  console.log(RestableData);
+            RestableData.forEach((item,index)=>{
+              let weightArr ={}
+              Object.values(item.weight_info).forEach((it,idx)=>{
+                let weightObj = {}
+                weightObj.coin = +it.split('=')['0']
+                weightObj.weight = +it.split('=')['1']
+                it = weightObj
+                // console.log(weightObj,it);
+                weightArr[idx + 1] = weightObj
+
+              })
+              item.weight_info = weightArr
+           })
+          //  console.log(obj);
+           
+          console.log(RestableData);
+          let ObjRes = {}
+          RestableData.forEach((item,index)=>{
+            ObjRes[index + 1] = item
+          })
+          // console.log(ObjRes);
+           Object.keys(this.ResData).forEach((item)=>{
+            if(item === '112'){
+              this.ResData[item].ac_content.cash_cow = ObjRes
+            }
+          })
+          // console.log(this.ResData);
+
+          if(type === 2){
+            let { data } = await this.$http.HallFunConfig.PostActivityNew33({
+              keys: this.keys,
+              values: JSON.stringify(this.ResData),
+              id: this.id
+            });
+            console.log(data);
+             if (data.code === 1 && data.msg === "ok") {
+              this.initData()
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
+          }else{
+              let { data } = await this.$http.HallFunConfig.PutActivityNew33({
+              keys: this.keys,
+              values: JSON.stringify(this.ResData),
+              id: this.id
+            });
+          // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initData()
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
+            }
+          }
+          
+
+
+          
+
+
     },
     editForm(visible, title, form) {
       this.visible = visible;
@@ -326,8 +471,10 @@ export default {
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
       console.log(this.allData);
+       this.ResData = JSON.parse(JSON.stringify(this.allData))
+      console.log(this.ResData);
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10003") {
+        if (item === "112") {
           this.tableData = Object.values(
             this.allData[item].ac_content.cash_cow
           );
