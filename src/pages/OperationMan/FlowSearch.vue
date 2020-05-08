@@ -281,6 +281,9 @@ export default {
   margin-left: 0px;
   min-width: 30px;
 }
+#FlowSearch-main >>> .el-range-editor .el-range-input {
+  width: 150px;
+}
 table {
   border-collapse: collapse;
 }

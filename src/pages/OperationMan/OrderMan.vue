@@ -431,6 +431,9 @@ export default {
   margin-left: 0px;
   min-width: 30px;
 }
+#OrderMan-main >>> .el-range-editor .el-range-input {
+  width: 150px;
+}
 #OrderMan-main >>> .el-date-editor .el-range-separator {
   width: 10%;
 }
