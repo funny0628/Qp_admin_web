@@ -430,10 +430,10 @@ export default {
             }
           }else{
               let { data } = await this.$http.HallFunConfig.PutActivityNew33({
-                keys: this.keys,
-                values: JSON.stringify(this.ResData),
-                id: this.id
-              });
+              keys: this.keys,
+              values: JSON.stringify(this.ResData),
+              id: this.id
+            });
           // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
               this.initData()
