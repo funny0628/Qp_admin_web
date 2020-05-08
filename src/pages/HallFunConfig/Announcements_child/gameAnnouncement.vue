@@ -70,7 +70,7 @@
         :destroy-on-close="true"
       >
         <el-form ref="form" :rules="rules" :model="form" label-width="120px">
-          <el-form-item label="公告标题" prop="title">
+          <el-form-item label="公告标题" prop="Title">
             <el-input placeholder="邮件标题" v-model="form.Title"></el-input>
           </el-form-item>
           <el-form-item label="公告类型" prop="type_id">
@@ -92,9 +92,9 @@
           </el-form-item>
           <el-form-item label="标签" prop="Tag">
             <el-select v-model="form.Tag">
-              <el-option label="没有标签" :value="1"></el-option>
-              <el-option label="新" :value="2"></el-option>
-              <el-option label="热门" :value="3"></el-option>
+              <el-option label="没有标签" :value="0"></el-option>
+              <el-option label="新" :value="1"></el-option>
+              <el-option label="热门" :value="2"></el-option>
             </el-select>
           </el-form-item>
 
@@ -130,14 +130,14 @@
               <el-option label="隐藏" :value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="form.type_id === 2" label="公告图片">
+          <el-form-item v-if="form.type_id === 2" label="公告图片" prop="ImageUrl">
             <el-upload
               class="avatar-uploader"
               action=""
+              accept="image/jpeg, image/png"
               :show-file-list="false"
               :http-request="upLoad"
               :before-upload="beforeAvatarUpload"
-              :limit="1"
             >
               <img v-if="form.ImageUrl" :src="form.ImageUrl" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -168,17 +168,19 @@ export default {
       visible: false,
       imageUrl: "",
       serveUrl: "",
+      imageChange:false,
+      baseimage:'',
       tableData: [],
       form: {
         Title: "",
-        type_id: 1,
+        type_id: '',
         Description: "",
         ImageUrl: "",
-        Tag: 1,
+        Tag: '',
         StartTime: "",
         EndTime: "",
         Sort: "",
-        Status: 1
+        Status: ''
       },
       rules: {
         Title: [
@@ -205,18 +207,32 @@ export default {
         ],
         Status: [
           { required: true, message: "必填项不能为空", trigger: "blur" }
+        ],
+        ImageUrl: [
+          { required: true, message: "必填项不能为空", trigger: "blur" }
         ]
       },
-      initForm: {
+      initform: {
         Title: "",
-        Description: '',
-        type_id: 1,
+        type_id: '',
+        Description: "",
         ImageUrl: "",
-        Tag: 1,
+        Tag: '',
         StartTime: "",
         EndTime: "",
         Sort: "",
-        Status: 1
+        Status: ''
+      },
+      initForm: {
+        Title: "",
+        type_id: '',
+        Description: "",
+        ImageUrl: "",
+        Tag: '',
+        StartTime: "",
+        EndTime: "",
+        Sort: "",
+        Status: ''
       },
       titleData:[
         {
@@ -267,9 +283,19 @@ export default {
     beforeAvatarUpload(file) {
       // console.log(file);
       if (file) {
-        this.form.ImageUrl = URL.createObjectURL(file);
+        this.$set(this.form,'ImageUrl',URL.createObjectURL(file))
+        // this.form.ImageUrl = URL.createObjectURL(file);
       }
     },
+
+     fileChange(file, fileList){
+      console.log(file, fileList,'文件改变了');
+      if(file){
+        this.imageChange = true
+      }
+    },
+ 
+
     upLoad(file) {
       // console.log(file);
       const formData = new FormData();
@@ -279,14 +305,13 @@ export default {
         // console.log(data);
         if (data.data.code === 1 && data.data.msg === "ok") {
           this.serveUrl = data.data.path;
-          this.form.ImageUrl = URL.createObjectURL(file);
         }
       });
     },
 
     //添加
     add() {
-      this.editForm("新增", true, DeepData(this.initForm));
+      this.editForm("新增", true, DeepData(this.initform));
     },
 
     //搜索
@@ -336,7 +361,6 @@ export default {
 
       this.form.StartTime = this.data(row.StartTime);
       this.form.EndTime = this.data(row.EndTime);
-      // console.log(this.form);
       this.editForm("编辑", true, this.form);
     },
 
@@ -378,42 +402,73 @@ export default {
     onSubmit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.form.ImageUrl = this.serveUrl;
-          // console.log(this.form);
+ 
+          Object.keys(this.initForm).forEach((item)=>{
+            Object.keys(this.form).forEach((it)=>{
+              if(item === it){
+                this.initForm[it] = this.form[it]
+              }
+            })
+          })
+
 
           if (type === "新增") {
-            // console.log(this.form);
+            this.form.ImageUrl = this.serveUrl;
+            console.log(this.form,this.initForm);
             let { data } = await this.$http.HallFunConfig.PostGameNotice(
-              this.form
+              this.initForm
             );
-            // console.log(data);
+            console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
               this.initdata({
                 page: this.currentPage,
                 limit: this.limit,
                 title: this.searchinput
+              });
+               this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+            }else{
+               this.$message({
+                type: "warning",
+                message: "新增失败!"
               });
             }
           } else if (type === "编辑") {
-            // console.log(this.form);
-            if (this.form.ImageUrl === "") {
-              this.form.ImageUrl = "ImageUrl";
+            this.initForm['AnnouncementId'] = this.form['AnnouncementId']
+             if(this.imageChange){
+              console.log('图片改过啦');
+              this.form.ImageUrl = this.serveUrl
+              console.log(this.form);
+              this.imageChange = false
             }
+            console.log(this.form,this.initForm);
             let { data } = await this.$http.HallFunConfig.PutGameNotice(
-              this.form
+              this.initForm
             );
-            // console.log(data);
+            console.log(data);
 
             if (data.code === 1 && data.msg === "ok") {
+
               this.initdata({
                 page: this.currentPage,
                 limit: this.limit,
                 title: this.searchinput
               });
+              this.$message({
+                type: "success",
+                message: "修改成功!"
+              });
+            }else{
+              this.$message({
+                type: "warning",
+                message: "修改失败!"
+              });
             }
           }
-          this.editForm("添加", false, {});
+          this.editForm("添加", false, this.initform);
         } else {
           console.log("error submit!!");
           return false;
@@ -431,10 +486,10 @@ export default {
     formateData(res) {
       res.forEach(item => {
         item.type_id = item.Description  ? "文字" : "图片";
-        item.Status = item.Status === 1 ? "展示" : "隐藏";
-        if (item.Tag === 1) {
+        item.Status = item.Status === 0 ? "展示" : "隐藏";
+        if (item.Tag === 0) {
           item.Tag = "没有标签";
-        } else if (item.Tag === 2) {
+        } else if (item.Tag === 1) {
           item.Tag = "新";
         } else {
           item.Tag = "热门";
@@ -452,13 +507,17 @@ export default {
         return;
 
       item.type_id = item.type_id === "文字" ? 1 : 2;
-      item.Status = item.Status === "展示" ? 1 : 2;
+      item.Status = item.Status === "展示" ? 0 : 1;
       if (item.Tag === "没有标签") {
-        item.Tag = 1;
+        console.log(item.Tag,"==");
+        
+        item.Tag = 0;
       } else if (item.Tag === "新") {
-        item.Tag = 2;
+        console.log(item.Tag,"====");
+        item.Tag = 1;
       } else {
-        item.Tag = 3;
+        console.log(item.Tag,"=======");
+        item.Tag = 2;
       }
 
       return item;

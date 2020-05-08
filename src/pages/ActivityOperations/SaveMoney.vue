@@ -34,23 +34,37 @@
           <el-option label="关闭" value="false"></el-option>
         </el-select>
       </el-form-item>
+
+
+    <div class="formTime">
+        <p>
       <el-form-item label="活动时间" prop="ac_begin_time">
         <el-date-picker
           v-model="form.ac_begin_time"
           type="date"
           placeholder="请输入开始时间"
           format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
-        -
+       
+         </el-form-item>
+        
+         </p>
+         <span class="line">-</span>
+         <p>
+         <el-form-item label-width="20px"  prop="ac_end_time">
         <el-date-picker
           v-model="form.ac_end_time"
           type="date"
           placeholder="请输入结束时间"
           format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
       </el-form-item>
+      </p>
+      </div>
       <el-form-item v-if="form.ac_content" label="救赎金" prop="ac_content">
         <el-button type="primary" @click="add">添加</el-button>
 
@@ -58,6 +72,7 @@
           <p style="margin-top:10px;">
             当日亏损金额(递增):
             <el-input
+            type="number"
               style="width:220px"
               v-model="item.lose_coin"
               placeholder="当日亏损金额"
@@ -67,12 +82,14 @@
             救赎金额:
             <span>
               <el-input
-                style="width:400px"
+              type="number"
+                style="width:220px"
                 v-model="item.award_coin"
                 placeholder="救赎金额"
               ></el-input>
               <el-button type="danger" @click="del(index)">删除</el-button>
-              <p>(VIP1～VIP6可以领取的救援金额。每个数字间用“，”隔开)</p>
+              <!-- <p>(VIP1～VIP6可以领取的救援金额。每个数字间用“，”隔开)</p> -->
+              <p></p>
             </span>
           </p>
         </div>
@@ -86,16 +103,26 @@
 export default {
   name:'daily_rescue',
   data() {
+     let checkTime = (rule,value,callback) => {
+      if(value === null) {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    }
     return {
       form: {
+        ac_type:'',
         ac_name: "",
         open_state: "",
         ac_begin_time: "",
         ac_end_time: "",
         ac_content:{
-          level: []
+          level: [],
+          prize_time:0,
+          jump_position:0,
+          bg_url:'',
         }
-        
       },
       rules: {
         ac_name: [{ required: true, message: "不可以为空", trigger: "blur" }],
@@ -103,16 +130,17 @@ export default {
           { required: true, message: "不可以为空", trigger: "blur" }
         ],
         ac_begin_time: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         ac_end_time: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
       },
       keys: "",
       id: "",
       allData: "",
-      loading: false
+      loading: false,
+      ResData:{}
     };
   },
   created() {
@@ -120,30 +148,64 @@ export default {
   },
   methods: {
     add() {
-      this.form.ac_content.level = Object.values(this.form.ac_content.level);
-      this.form.ac_content.level.push({});
+      // this.form.ac_content.level = Object.values(this.form.ac_content.level);
+      this.form.ac_content.level.push({lose_coin:'',award_coin:''});
     },
     del(index) {
-      this.form.ac_content.level = this.form.ac_content.level.filter((item, idx) => {
-        return index !== idx;
-      });
+       this.$confirm('确认永久删除？')
+          .then(_ => {
+          this.form.ac_content.level = this.form.ac_content.level.filter((item, idx) => {
+            return index !== idx;
+          });
+             this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+
+          })
+          .catch(_ => {
+               this.$message({
+                type: "info",
+                message: "取消删除!"
+              });
+          });
+      
     },
     send(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          //  console.log(this.form);
-          let resData = this.form.ac_content.level;
-          this.form.ac_content.level = {};
-          // console.log(resData, this.form.level);
-          resData.forEach((item, index) => {
-            this.form.ac_content.level[index + 1] = item;
+            this.form.ac_content.level.forEach((item)=>{
+              if(item.award_coin === '' || item.lose_coin === ''){
+                 this.$message({
+                  type: "warning",
+                  message: "必填的项不可以为空!"
+                });
+                return false
+              }else{
+                item.award_coin = +item.award_coin
+                item.lose_coin = +item.lose_coin
+              }
+            })
+            // console.log(this.form);
+          let resData = JSON.parse(JSON.stringify(this.form));
+          // console.log(resData);
+          let resDataLeve = resData.ac_content.level
+          resData.ac_content.level = {};
+          resDataLeve.forEach((item, index) => {
+            resData.ac_content.level[index + 1] = item;
           });
-          // console.log(resData, this.form.level,this.allData);
+          // console.log(resData,this.ResData);
+          Object.keys(this.ResData).forEach((it)=>{
+            if(it === '111'){
+              this.ResData[it] = resData
+            }
+          })
+            
           if (type === 1) {
             //put
             let { data } = await this.$http.HallFunConfig.PutActivityNew2({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -163,7 +225,7 @@ export default {
             this.loading = true;
             let { data } = await this.$http.HallFunConfig.PostActivityNew2({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -201,6 +263,8 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      this.ResData = JSON.parse(JSON.stringify(this.allData))
+      // console.log(this.ResData);
       // console.log(this.keys, this.id, this.allData);
 
       Object.keys(this.allData).forEach(item => {
@@ -208,8 +272,6 @@ export default {
           this.form = this.allData[item];
         }
       });
-      console.log(this.form);
-      
       this.form.ac_content.level = Object.values(this.form.ac_content.level);
       // console.log(this.form,this.allData);
     }
@@ -228,6 +290,17 @@ export default {
   }
   .item {
     margin-top: 30px;
+  }
+   .formTime {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .line {
+      display: inline-block;
+      height: 60px;
+      line-height: 35px;
+      margin-left: 20px;
+    }
   }
 }
 </style>
