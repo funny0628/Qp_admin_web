@@ -23,7 +23,15 @@
         <el-table-column prop="modified_time" label="更新时间" align="center"></el-table-column>
         <el-table-column align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleHistory(scope.row)">历史版本</el-button>
+            <el-button
+              v-loading.fullscreen="loading"
+              element-loading-text="资源加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.5)"
+              size="mini"
+              type="primary"
+              @click="handleHistory(scope.row)"
+            >历史版本</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,7 +90,7 @@
       <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addVersionUpdate">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 历史版本 -->
@@ -139,6 +147,7 @@ export default {
       imageUrl: "",
       channelOpts: [],
       form: {
+        version_id: null,
         channel: "",
         radio: "1",
         version: "",
@@ -179,14 +188,59 @@ export default {
         }
       });
     },
-    handleHistory(row) {
-      this.records = [];
-      console.log(row);
-      this.records.push(row);
-      console.log(this.records);
-      this.dialogVisible = true;
+    addVersionUpdate() {
+      let data = {
+        channel: this.form.channel,
+        version: this.form.version,
+        status: Number(this.form.radio),
+        // package_size: this.form.package_size,
+        // package_url: this.form.package_url
+        package_size: 100,
+        package_url: "www.baidu.com"
+      };
+      this.$http.post("v1/backend/sys-conf/package", data).then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.dialogFormVisible = false;
+          this.getWholePackageList();
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        } else {
+          this.dialogFormVisible = false;
+          this.$message({
+            type: "info",
+            message: res.data.msg
+          });
+        }
+      });
     },
-    handleEdit(row) {},
+    handleHistory(row) {
+      console.log(row);
+      this.loading = true;
+      this.$http
+        .get("v1/backend/sys-conf/package/history", {
+          params: {
+            page: this.currentPage,
+            limit: this.pageSize,
+            channel: row.channel
+          }
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 200) {
+            this.dialogVisible = true;
+            this.loading = false;
+            this.records = res.data.data;
+          }
+        });
+    },
+    handleEdit(row) {
+      console.log(row);
+      this.dialogVisible = false;
+      this.dialogFormVisible = true;
+    },
     handleDelete(row) {
       console.log(row);
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -196,15 +250,15 @@ export default {
       })
         .then(() => {
           this.$http
-            .delete("v1/backend/operation/channels", {
+            .delete("v1/backend/sys-conf/package", {
               params: {
-                channel_id: row.id
+                version_id: row.id
               }
             })
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {
-                this.getWholePackageList();
+                this.handleHistory();
                 this.$message({
                   type: "success",
                   message: res.data.msg

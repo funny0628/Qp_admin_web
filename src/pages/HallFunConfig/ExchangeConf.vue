@@ -249,7 +249,7 @@ export default {
       this.form.pay_type = String(row.method);
       this.form.exchange_min = row.min_money;
       this.form.exchange_max = row.max_money;
-      this.form.status = String(row.status);
+      this.form.status = String(row.online_status);
       this.imageUrl = row.thumb;
     },
     handleDelete(row) {

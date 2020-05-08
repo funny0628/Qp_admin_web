@@ -141,20 +141,32 @@
       </el-form>
     </el-dialog>
     <!-- 游戏详情  抢牛庄庄 -->
-    <el-dialog title="详情" :visible.sync="dialogCowVisible">
+    <el-dialog title="详情" :visible.sync="dialogCowVisible" width="60%">
       <el-form :model="form" style="background-color:#f2f2f2;">
         <div
           style="width:100%;height:30px;line-height:30px;"
         >{{tableName}}{{'------'}}{{"系统控制类:"+system_result}}</div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="100" v-if="item.is_banker===false">闲家,id: {{item.uid}}</td>
-            <td width="100" v-else>庄家,id: {{item.uid}}</td>
+            <td width="100" v-if="item.is_banker===false">
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>闲家,id: {{item.uid}}</div>
+            </td>
+            <td width="100" v-else>
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>庄家,id: {{item.uid}}</div>
+            </td>
             <td width="100">叫庄倍数* {{item.banker_times}}</td>
             <td width="100">叫倍* {{item.bet_times}}</td>
             <td width="100">{{item.card_type}}</td>
             <td width="100">{{String(item.cards)}}</td>
-            <td width="100">{{item.card_times}}</td>
+            <td width="100">开牌倍数:{{item.card_times}}</td>
             <td width="100">{{item.add_score}}</td>
           </tr>
           <tr />
@@ -174,10 +186,14 @@
           </tr>
           <tr v-for="(item,index) in tableData" :key="index">
             <td width="100">
-              id: {{item.uid}}
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>id: {{item.uid}}</div>
               <span
                 v-if="item.is_banker === true"
-                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#96ce44;margin-left:5px;"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#96ce44;margin-left:-60px;"
               >地</span>
             </td>
             <td width="100">{{item.jiaofen}}分</td>
@@ -333,7 +349,13 @@
         </div>
         <table border="1" width="100%" style="text-align:center;background-color:#fff;">
           <tr v-for="(item,index) in tableData" :key="index">
-            <td width="150">{{item.uid}}</td>
+            <td width="150">
+              <span
+                v-if="true_user == item.uid"
+                style="display:inline-block;width:20px;height:20px;border-radius:10px;background-color:#00ff37;margin-left:-60px;"
+              >真</span>
+              <div>{{item.uid}}</div>
+            </td>
             <td width="150">{{item.card_type}}</td>
             <td width="150">下注:{{item.bet_coins}}</td>
             <td width="150">输赢:{{item.add_score}}</td>
@@ -605,6 +627,7 @@ export default {
         money: "",
         check_money: ""
       },
+      true_user: "",
       dialogFruitVisible: false, //水果机
       tableName: "",
       exinfo: {},
@@ -695,6 +718,7 @@ export default {
     handleEdit(row) {
       this.loading = true;
       console.log(row);
+      this.true_user = row.true_user;
       this.$http
         .get("v1/backend/operation/play/detail", {
           params: {
@@ -889,6 +913,9 @@ export default {
 #GamblingRecord-main .bd >>> .el-button {
   margin-left: 0px;
   min-width: 30px;
+}
+#GamblingRecord-main >>> .el-range-editor .el-range-input {
+  width: 150px;
 }
 table {
   border-collapse: collapse;

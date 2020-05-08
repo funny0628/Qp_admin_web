@@ -5,40 +5,7 @@
       <el-button v-has="'add_function_sort_config'" type="primary" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
-      <!-- <info-table
-        v-has="'function_sort_config_list'"
-        :search="search"
-        :table-style="tableStyle"
-        :records="records"
-        :page-info="pageInfo"
-        :hide-page="true"
-      >
-        <info-table-item :table-style="tableStyle">
-          <template slot-scope="scope">
-            <template v-if="scope.prop== 'func_list'">
-              <span></span>
-            </template>
-            <template v-if="scope.prop === 'action'">
-              <el-button
-                v-has="'modify_function_sort_config'"
-                size="mini"
-                type="primary"
-                @click="handleEdit(scope.row)"
-              >编辑</el-button>
-              <el-button
-                v-has="'delete_function_sort_config'"
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.row)"
-              >删除</el-button>
-            </template>
-            <template
-              v-if="['action','func_list'].indexOf(scope.prop) < 0"
-            >{{scope.row[scope.prop]}}</template>
-          </template>
-        </info-table-item>
-      </info-table>-->
-      <el-table :data="records" border style="width: 100%" v-has="'button_menu_config_list'">
+      <el-table :data="records" border style="width: 100%" v-has="'function_sort_config_list'">
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="channel_name" label="渠道名称" align="center"></el-table-column>
         <el-table-column prop="channel_code" label="渠道KEY" align="center"></el-table-column>
