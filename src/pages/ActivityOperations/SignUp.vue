@@ -141,12 +141,16 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      console.log(this.allData);
+      
       //   console.log(this.keys, this.id, this.allData);
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10005") {
+        if (item === "110") {
           this.form = this.allData[item].ac_content;
         }
       });
+      console.log(this.form);
+      
     }
   }
 };

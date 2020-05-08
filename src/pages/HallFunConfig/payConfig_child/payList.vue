@@ -81,13 +81,18 @@
             <span>排序只可以为数字</span>
           </el-form-item>
           <el-form-item label="支付名称" prop="pay_name">
-            <el-input placeholder="支付名称" v-model="form.pay_name"></el-input>
+            <el-input maxlength="5" placeholder="支付名称" v-model="form.pay_name"></el-input>
           </el-form-item>
-          <el-form-item label="支付渠道(小类)" prop="pay_channel">
-            <el-input
-              placeholder="支付渠道名称"
-              v-model="form.pay_channel"
-            ></el-input>
+          <el-form-item label="支付渠道(小类)" prop="pay_channel"> 
+             <el-select v-model="form.pay_channel" @change="Change">
+               <el-option
+                  v-for="item in SmopaObj"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="支付方式(大类)" prop="pay_way">
             <el-select v-model="form.pay_way" @change="Change">
@@ -265,6 +270,7 @@ export default {
      
       },
       opaObj:[],
+      SmopaObj:[],
       pay_info:{
         rece_name:'',
         rece_card_id:'',
@@ -578,6 +584,16 @@ export default {
         opaObj.push({label:opation[item],value:item})
       })
       this.opaObj = opaObj
+
+
+      //支付小类数据
+      let Smdata = await this.$http.HallFunConfig.GetNameLiat({type_id:9});
+      let Smopation = Smdata.data.data[0]
+       let SmopaObj =[]
+       Object.keys(Smopation).forEach((item)=>{
+        SmopaObj.push({label:Smopation[item],value:item})
+      })
+      this.SmopaObj = SmopaObj
     },
   }
 };

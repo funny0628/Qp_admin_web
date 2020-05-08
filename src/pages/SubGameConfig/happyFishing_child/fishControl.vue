@@ -25,6 +25,7 @@
         <div class="item_div right">
           <p>
             命中系数:<el-input
+            type='number'
               style="width:200px"
               v-model="Data.hit_arg"
             ></el-input>
@@ -47,7 +48,7 @@
         </div>
         <div class="item_div right" v-if="Data.robot_leave">
           <p>
-           退出时间（秒）:<el-input style="width:100px" v-model="Data.robot_leave.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_leave.interval_time[1]"></el-input>
+           退出时间（秒）:<el-input style="width:100px" v-model="Data.robot_leave.interval_time[1]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_leave.interval_time[2]"></el-input>
           </p>
           <p>
            退出概率(百分比):<el-input style="width:200px;margin-top:10px" v-model="Data.robot_leave.rate"></el-input>
@@ -60,7 +61,7 @@
         </div>
         <div class="item_div right" v-if="Data.robot_leave">
           <p>
-          加入时间（秒):<el-input style="width:100px" v-model="Data.robot_join.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_join.interval_time[1]"></el-input>
+          加入时间（秒):<el-input style="width:100px" v-model="Data.robot_join.interval_time[1]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.robot_join.interval_time[2]"></el-input>
           </p>
           <p>
             人数设定(百分比): <el-button type="primary" @click="addRobot(Data.robot_join.player_num_setting)">添加</el-button><br>
@@ -76,7 +77,7 @@
         </div>
         <div class="item_div right" v-if="Data.robot_leave">
           <p>
-          切换时间（秒）:<el-input style="width:100px" v-model="Data.fire_change.interval_time[0]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.fire_change.interval_time[1]"></el-input>
+          切换时间（秒）:<el-input style="width:100px" v-model="Data.fire_change.interval_time[1]"></el-input>&nbsp;&nbsp;~&nbsp;&nbsp;<el-input style="width:100px" v-model="Data.fire_change.interval_time[2]"></el-input>
           </p>
           <p>
             炮台倍数(百分比): <el-button type="primary" @click="addFire(Data.fire_change.gun_rate)">添加</el-button><br>
@@ -109,7 +110,7 @@ export default {
   name:'hl_fish_robot_config',
   data() {
     return {
-      namelist:[],
+      namelist:['fishing_normal','fishing_junior','fishing_senior'],
       activeName: "fishing_normal",
       //三个场次总数据
       resData: {},
@@ -118,6 +119,8 @@ export default {
       id:0,
       keys:'',
      loading:false,
+     //所有机器人的数据
+     allData:{}
     };
   },
   async created() {
@@ -125,78 +128,142 @@ export default {
     let { data } = await this.$http.HallFunConfig.Getfishing_robot({
       key: "robot.lua"
     });
-    console.log(data);
+    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
     console.log(res);
-    this.resData = res
-    this.namelist = Object.keys(res)
-    this.Data = res[this.namelist[0]]
+    //所有机器人数据
+     this.allData = JSON.parse(JSON.stringify(res))
+    //捕鱼的所有数据
+    let ResData = {};
+    this.namelist.forEach((item)=>{
+      Object.keys(res).forEach((it)=>{
+        if(item === it){
+          ResData[it] = res[it]
+        }
+      })
+    })
+    this.resData = ResData
+    console.log(this.resData);
     
+    this.activeName = this.namelist[0];
+    this.Data = this.resData[this.namelist[0]]
   },
   methods: {
+    set(ssl){
+      let returnData = true
+      let ss = Object.keys(ssl)
+        for(var i = 0; i < ss.length; i++){
+          if(ssl[ss[i]].constructor === Object){//是i
+            this.set(ssl[ss[i]])
+          }else {
+            if(ssl[ss[i]] === '' || isNaN(ssl[ss[i]])){
+              this.$message({
+                  type: "warning",
+                  message: "输入正确格式的数字,必填项不能为空!!"
+                });
+                returnData = false
+                console.log("&&&&&",returnData);
+                // break
+                return false
+            }else if(!isNaN(ssl[ss[i]])){
+              ssl[ss[i]] = +ssl[ss[i]]
+              returnData = true
+                return true
+              // console.log(+ssl[ss[i]]);
+            }
+          }
+        }
+        console.log('+++',returnData);
+        
+        // if(returnData){
+        //   return true
+        // }else{
+        //   return false
+        // }
+    },
+
+
     //保存和服务器配置
     async submit(type){
-      if(type === 1){
-          let { data } = await this.$http.HallFunConfig.Putfishing_robot({
-              keys:this.keys,
-              values:JSON.stringify(this.resData),
-              id:this.id,
-          });
-          // console.log(data);
-          if(data.code === 1 && data.msg === 'ok'){
-            this.$message({
-              type: "success",
-              message: "保存成功!"
-            });
-          }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-      }else if(type === 2){
-        this.loading = true
-     
-       let { data } = await this.$http.HallFunConfig.Postfishing_robot({
-         keys:this.keys,
-         values:JSON.stringify(this.resData),
-         id:this.id,
-       });
-      // console.log(data);
-      if(data.code === 1 && data.msg === 'ok'){
-        this.loading = false
-        this.$message({
-          type: "success",
-          message: "发送服务器配置成功!"
-        });
-      }else {
-          this.loading = false
-        this.$message({
-          type: "warning",
-          message: "发送服务器配置失败!"
-        });
-      }
+      this.set(this.resData)
+      console.log( this.set(this.resData));
+      
+      
+      // Object.keys(this.resData).forEach((item)=>{
+      //   Object.keys(this.allData).forEach((it)=>{
+      //     if(item === it){
+      //       this.allData[it] = this.resData[item]
+      //     }
+      //   })
+      // })
+      // console.log(this.resData,this.allData);
+      // if(type === 1){
+      //     let { data } = await this.$http.HallFunConfig.Putfishing_robot({
+      //         keys:this.keys,
+      //         values:JSON.stringify(this.allData),
+      //         id:this.id,
+      //     });
+      //     // console.log(data);
+      //     if(data.code === 1 && data.msg === 'ok'){
+      //       this.$message({
+      //         type: "success",
+      //         message: "保存成功!"
+      //       });
+      //     }else{
+      //       this.$message({
+      //         type: "warning",
+      //         message: "保存失败!"
+      //       });
+      //     }
+      // }else if(type === 2){
+      //     this.loading = true
+      
+      //   let { data } = await this.$http.HallFunConfig.Postfishing_robot({
+      //     keys:this.keys,
+      //     values:JSON.stringify(this.allData),
+      //     id:this.id,
+      //   });
+      //   // console.log(data);
+      //   if(data.code === 1 && data.msg === 'ok'){
+      //     this.loading = false
+      //     this.$message({
+      //       type: "success",
+      //       message: "发送服务器配置成功!"
+      //     });
+      //   }else {
+      //       this.loading = false
+      //     this.$message({
+      //       type: "warning",
+      //       message: "发送服务器配置失败!"
+      //     });
+      //   }
 
-      }
+      // }
     },
 
     
     
     //加入房间的添加
     addRobot(row) {
-      row.push({})
+      console.log(row);
+      let item = Object.keys(row).length + 1
+      this.$set(row,item,{player_num: '',rate: ''})
     },
 
     //子弹切换的添加
     addFire(row) {
-      row.push({})
+
+      let item = Object.keys(row).length + 1
+      this.$set(row,item,{power_rate: '',trigger_rate: ''})
+
     },
 
     //锁定概率添加
     addLock(row) {
-      row.push({})
+      let item = Object.keys(row).length + 1
+      this.$set(row,item,{score_rate: '',trigger_rate: ''})
     },
 
     //加入房间删除
@@ -207,7 +274,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          row.splice(index,1)
+          this.$delete(row,index)
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -231,7 +298,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          row.splice(index,1)
+          this.$delete(row,index)
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -253,7 +320,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          row.splice(index,1)
+          this.$delete(row,index)
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -282,12 +349,13 @@ export default {
 
 <style lang="less" scoped>
 #fishControl {
+  padding: 20px;
+  box-sizing: border-box;
   background-color: #f2f2f2;
  /deep/.el-loading-spinner {
     top: 20% !important;
 }
   .table {
-    padding: 10px;
     
 
     .item {

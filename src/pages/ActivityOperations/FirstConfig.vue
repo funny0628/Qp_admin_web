@@ -39,7 +39,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="活动状态" prop="open_state">
-        <el-select v-model="form.open_state">
+        <el-select v-model="form.open_state+''">
           <el-option label="开启" value="true"></el-option>
           <el-option label="关闭" value="false"></el-option>
         </el-select>
@@ -130,11 +130,14 @@ export default {
     send(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          console.log(this.form);
+          
           let resData = this.form.ac_content.level;
           this.form.ac_content.level = {};
           resData.forEach((item, index) => {
             this.form.ac_content.level[index + 1] = item;
           });
+          console.log(this.form,this.allData);
           //   console.log(resData, this.form.level,this.allData);
           if (type === 1) {
             //put
@@ -208,11 +211,17 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      console.log(this.allData);
+      
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10001") {
+        console.log(item);
+        
+        if (item === '109') {
           this.form = this.allData[item];
         }
       });
+      console.log(this.form);
+      
       this.form.ac_content.level = Object.values(this.form.ac_content.level);
       // console.log(this.form, this.allData);
     }

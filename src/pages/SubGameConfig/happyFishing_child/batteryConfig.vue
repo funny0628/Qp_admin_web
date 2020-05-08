@@ -52,7 +52,8 @@ export default {
       list: [],
       id: 0,
       keys: "",
-      loading: false
+      loading: false,
+      allData:{},
     };
   },
   async created() {
@@ -65,20 +66,45 @@ export default {
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
     // console.log(res);
-    this.list = res;
+    this.allData = JSON.parse(JSON.stringify(res))
+    // this.list = res;
+    this.list = Object.values((res))
   },
   methods: {
     //添加
     add() {
-      this.list.push({});
+      this.list.push({
+        vip_level:'',
+        name:'',
+        id:'',
+        power:'',
+      });
     },
 
     //保存和服务器配置
     async submit(type) {
+        for(var i = 0; i < this.list.length; i++){
+        if(this.list[i].vip_level === '' || this.list[i].name === '' || this.list[i].id === '' || this.list[i].power === '' || isNaN(this.list[i].vip_level) || isNaN(this.list[i].id)){
+          this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!!"
+          });
+          return false
+        }else {
+          this.list[i].vip_level = +this.list[i].vip_level
+          this.list[i].id = +this.list[i].id
+        }
+      }
+      // console.log(this.list);
+      let resObj = {}
+      this.list.forEach((item,index)=>{
+        resObj[index + 1] = item
+      })
+      // console.log(resObj);
       if (type === 1) {
         let { data } = await this.$http.HallFunConfig.Putfishing_guns({
           keys: this.keys,
-          values: JSON.stringify(this.list),
+          values: JSON.stringify(resObj),
           id: this.id
         });
         // console.log(data);
@@ -99,7 +125,7 @@ export default {
 
         let { data } = await this.$http.HallFunConfig.Postfishing_guns({
           keys: this.keys,
-          values: JSON.stringify(this.list),
+          values: JSON.stringify(resObj),
           id: this.id
         });
         // console.log(data);
