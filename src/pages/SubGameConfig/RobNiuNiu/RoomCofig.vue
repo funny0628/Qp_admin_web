@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'qz_room_config',
   data() {
@@ -123,8 +124,6 @@ export default {
       id: 0,
       keys: "",
       loading: false,
-      //房间配置的所有数据
-      ResData:{}
     };
   },
   created() {
@@ -149,8 +148,6 @@ export default {
         let res = JSON.parse(data.data[0].sys_val);
         console.log(res);
         this.allData = res
-        this.ResData = JSON.parse(JSON.stringify(res));
-        console.log(this.ResData);
         this.namelist.forEach((item,index)=>{
           Object.keys(res).forEach((it)=>{
             if(item === it){
@@ -170,32 +167,24 @@ export default {
     submitForm(formName,type) {
         this.$refs[formName].validate(async valid => {
         if (valid) {
-          let all = JSON.parse(JSON.stringify(this.allData))
+          let all = DeepData(this.allData);
           this.namelist.forEach((item)=>{
             Object.keys(all).forEach((it,idx)=>{
               if(item === it){
-                // all[it].grab_banker_times
                 let times = all[it].grab_banker_times.split('|')
                 let obj = {}
                 times.forEach((item,index)=>{
                   obj[index + 1] = item
                 })
                 all[item].grab_banker_times = obj
-              }
-            })
-          })
-          this.namelist.forEach((item)=>{
-            Object.keys(all).forEach((it)=>{
-              if(item === it){
                 all[it].dizhu = +all[it].dizhu
-                // all[it].cost = +all[it].cost
+                all[it].cost = +all[it].cost
                 all[it].max = +all[it].max
                 all[it].min = +all[it].min
               }
             })
           })
-
-          console.log(all,this.allData,this.currentlist);
+          // console.log(all,this.allData,this.ResData);
           if(type === 1){
             //发送put
             let { data } = await this.$http.HallFunConfig.Putroomdata2({

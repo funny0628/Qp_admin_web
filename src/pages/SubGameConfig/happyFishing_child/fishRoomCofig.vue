@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'hl_fish_room_config',
   data() {
@@ -128,8 +129,6 @@ export default {
       currentlist: {},
        //游戏场次类别
       labellist:[],
-      //所有数据
-      ResData:{}
     };
   },
 
@@ -139,14 +138,10 @@ export default {
     let { data } = await this.$http.HallFunConfig.Getroomdata6({
       key: "roomdata.lua"
     });
-    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
     this.allData = res;
-    this.ResData = JSON.parse(JSON.stringify(res));
-
     this.namelist.forEach((it, index) => {
       Object.keys(res).forEach(item => {
         if (item === it) {
@@ -159,31 +154,26 @@ export default {
         }
       });
     });
-    // console.log(this.ruleForm, this.currentlist);
   },
 
   methods: {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          // console.log(this.ruleForm,this.currentlist,this.allData,this.ResData);
-          Object.values(this.currentlist).forEach((item)=>{
-            item.max = +item.max
-            item.min = +item.min
-            item.multiple = +item.multiple
-          })
-          Object.keys(this.ResData).forEach((item)=>{
-            Object.keys(this.currentlist).forEach((it)=>{
+          let resData = DeepData(this.allData);
+          this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
               if(item === it){
-                this.ResData[item] = this.currentlist[it]
+                resData[it].max = +resData[it].max
+                resData[it].min = +resData[it].min
+                resData[it].multiple = +resData[it].multiple
               }
             })
           })
-
           if (type === 1) {
             let { data } = await this.$http.HallFunConfig.Putroomdata6({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
@@ -203,7 +193,7 @@ export default {
 
             let { data } = await this.$http.HallFunConfig.Postroomdata6({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);

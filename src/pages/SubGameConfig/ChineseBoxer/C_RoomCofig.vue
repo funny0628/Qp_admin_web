@@ -39,24 +39,24 @@
         </el-form-item>
       
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="上座金额" prop="sit_coins_limit">
-          <el-input style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="下注最低携带" prop="min_bet">
-          <el-input style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人限红" prop="person_limit">
@@ -64,23 +64,23 @@
      </el-form-item>
 
         <el-form-item label="个人区域限红（龙）" prop="loong_limit">
-          <el-input style="width:200px" v-model="ruleForm.loong_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.loong_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人区域限红（虎）" prop="phoenix_limit">
-          <el-input style="width:200px" v-model="ruleForm.phoenix_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.phoenix_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="个人区域限红（和）" prop="equal_limit">
-          <el-input style="width:200px" v-model="ruleForm.equal_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.equal_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="龙虎区域差额限制" prop="difference_limit">
-          <el-input style="width:200px" v-model="ruleForm.difference_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.difference_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="和总额限制" prop="all_equal_limit">
-          <el-input style="width:200px" v-model="ruleForm.all_equal_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.all_equal_limit" placeholder="0"></el-input>
      </el-form-item>
      
        
@@ -99,12 +99,27 @@
 
 <script>
 import DeepData from "../../../assets/js/formate.js";
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'lhd_room_config',
   data() {
-       let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+     let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
+     let checkLimit = (rule,value,callback) => {
+      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?$/
+      if(value !== '') {
+        if(!reg.test(value)){
+          return callback(new Error('请按照提示的格式填写!!'))
+        }else{
+          callback();
+        }
+      }else{
+        return callback(new Error('必填项不可以为空!!'))
+      }
     };
     return {
       activeName: "first",
@@ -145,7 +160,7 @@ export default {
           { required: true,  validator: checkValue, trigger: "blur" }
         ],
         person_limit: [
-          { required: true,  validator: checkValue, trigger: "blur" }
+          { required: true,  validator: checkLimit, trigger: "blur" }
         ],
         loong_limit: [
           { required: true,  validator: checkValue, trigger: "blur" }
@@ -178,29 +193,27 @@ export default {
   },
 
     async created() {
-       let { data } = await this.$http.HallFunConfig.Getroomdata2003({
-      key: "roomdata.lua"
-    });
-    // console.log(data);
-     this.id = data.data[0].id;
-    this.keys = data.data[0].sys_key;
-    let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
-    this.allData = res;
-    this.namelist.forEach((item,index)=>{
-      Object.keys(res).forEach((it)=>{
-        if(item === it){
-          this.currentlist[item] = res[it]
-           this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`
-          this.labellist.push(res[it].name)
-        }
-        if(index === 0){
-          this.activeName = item
-          this.ruleForm = res[item]
-        }
+      let { data } = await this.$http.HallFunConfig.Getroomdata2003({
+        key: "roomdata.lua"
+      });
+
+      this.id = data.data[0].id;
+      this.keys = data.data[0].sys_key;
+      let res = JSON.parse(data.data[0].sys_val);
+      this.allData = res;
+      this.namelist.forEach((item,index)=>{
+        Object.keys(res).forEach((it)=>{
+          if(item === it){
+            this.currentlist[item] = res[it]
+            this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`
+            this.labellist.push(res[it].name)
+          }
+          if(index === 0){
+            this.activeName = item
+            this.ruleForm = res[item]
+          }
+        })
       })
-    })
-    // console.log(this.allData,this.currentlist,this.ruleForm,this.labellist);
   },
 
   methods: {
@@ -215,7 +228,7 @@ export default {
     submitForm(formName,type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-           let resData = DeepData(this.allData);
+          let resData = DeepData(this.allData);
           this.namelist.forEach((item)=>{
             Object.keys(this.allData).forEach((it)=>{
               if(item === it){
@@ -224,12 +237,21 @@ export default {
                 limit_str.forEach((litem,lindex)=>{
                   obj[lindex + 1] = +litem
                 })
-               resData[it].person_limit = obj
+                resData[it].person_limit = obj
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+                resData[it].cost = +resData[it].cost;
+                resData[it].sit_coins_limit = +resData[it].sit_coins_limit;
+                resData[it].min_bet = +resData[it].min_bet;
+                resData[it].loong_limit = +resData[it].loong_limit;
+                resData[it].phoenix_limit = +resData[it].phoenix_limit;
+                resData[it].equal_limit = +resData[it].equal_limit;
+                resData[it].difference_limit = +resData[it].difference_limit;
+                resData[it].all_equal_limit = +resData[it].all_equal_limit;
               }
             })
           })
-          // console.log(this.allData,this.currentlist,this.ruleForm,resData);
-          
+
           if(type === 1){
             //put
             let { data } = await this.$http.HallFunConfig.Putroomdata2003({

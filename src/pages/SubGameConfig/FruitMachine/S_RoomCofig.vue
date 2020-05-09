@@ -32,16 +32,16 @@
         </el-form-item>
 
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
 
@@ -56,12 +56,16 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'sgj_room_config',
   data() {
-     let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+    let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
     };
     return {
       activeName: "first",
@@ -98,11 +102,9 @@ export default {
        let { data } = await this.$http.HallFunConfig.Getroomdata2004({
       key: "roomdata.lua"
     });
-    // console.log(data);
      this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
     this.allData = res;
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
@@ -116,7 +118,6 @@ export default {
         }
       })
     })
-    // console.log(this.allData,this.currentlist,this.ruleForm,this.labellist);
   },
 
   methods: {
@@ -126,34 +127,40 @@ export default {
        this.$refs[formName].validate(async valid => {
         if (valid) {
           // console.log(this.allData,this.currentlist,this.ruleForm);
-          
+          let resData = DeepData(this.allData);
+           this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
+              if(item === it){
+                resData[it].cost = +resData[it].cost;
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+              }
+            })
+          })
           if(type === 1){
-             //发送put
-                 let { data } = await this.$http.HallFunConfig.Putroomdata2004({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
+              //发送put
+              let { data } = await this.$http.HallFunConfig.Putroomdata2004({
+                keys: this.keys,
+                values: JSON.stringify(resData),
+                id: this.id
               });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-
+              // console.log(data);
+              if (data.code === 1 && data.msg === "ok") {
+                this.$message({
+                  type: "success",
+                  message: "保存成功!"
+                });
+              }else{
+                this.$message({
+                  type: "warning",
+                  message: "保存失败!"
+                });
+              }
           }else if(type === 2){
-
-              this.loading = true;
-
+            this.loading = true;
             let { data } = await this.$http.HallFunConfig.Postroomdata2004({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
@@ -170,10 +177,12 @@ export default {
                 message: "发送服务器配置失败!"
               });
             }
-
           }
         }else{
-           console.log("error submit!!");
+          this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
        })
