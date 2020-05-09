@@ -38,24 +38,24 @@
         </el-form-item>
       
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="上座金额" prop="sit_coins_limit">
-          <el-input style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="下注最低携带" prop="min_bet">
-          <el-input style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人限红" prop="person_limit">
@@ -63,23 +63,23 @@
      </el-form-item>
 
         <el-form-item label="个人区域限红（红）" prop="red_limit">
-          <el-input style="width:200px" v-model="ruleForm.red_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.red_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人区域限红（黑）" prop="black_limit">
-          <el-input style="width:200px" v-model="ruleForm.black_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.black_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="个人区域限红（幸运）" prop="special_limit">
-          <el-input style="width:200px" v-model="ruleForm.special_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.special_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="红黑区域差额限制" prop="difference_limit">
-          <el-input style="width:200px" v-model="ruleForm.difference_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.difference_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="幸运区域总值限制" prop="all_special_limit">
-          <el-input style="width:200px" v-model="ruleForm.all_special_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.all_special_limit" placeholder="0"></el-input>
      </el-form-item>
      
        
@@ -98,12 +98,27 @@
 
 <script>
 import DeepData from "../../../assets/js/formate.js";
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'hhdz_room_config',
   data() {
-      let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+    let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
+     let checkLimit = (rule,value,callback) => {
+      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?$/
+      if(value !== '') {
+        if(!reg.test(value)){
+          return callback(new Error('请按照提示的格式填写!!'))
+        }else{
+          callback();
+        }
+      }else{
+        return callback(new Error('必填项不可以为空!!'))
+      }
     };
     return {
       activeName: "first",
@@ -128,15 +143,12 @@ export default {
 
       },
       rules: {
-          // name: [{ required: true, message: "不可以为空", trigger: "blur" }],
-          // open_game: [{ required: true, message: "不可以为空", trigger: "blur" }],
-          // open_robot: [{ required: true, message: "不可以为空", trigger: "blur" }],
           cost: [{ required: true,  validator: checkValue, trigger: "blur" }],
           max: [{ required: true,  validator: checkValue, trigger: "blur" }],
           min: [{ required: true,  validator: checkValue, trigger: "blur" }],
           sit_coins_limit: [{ required: true,  validator: checkValue, trigger: "blur" }],
           min_bet: [{ required: true,  validator: checkValue, trigger: "blur" }],
-          person_limit: [{ required: true,  validator: checkValue, trigger: "blur" }],
+          person_limit: [{ required: true,  validator: checkLimit, trigger: "blur" }],
           red_limit: [{ required: true,  validator: checkValue, trigger: "blur" }],
           black_limit: [{ required: true,  validator: checkValue, trigger: "blur" }],
           special_limit: [{ required: true,  validator: checkValue, trigger: "blur" }],
@@ -201,13 +213,23 @@ export default {
                 limit_str.forEach((litem,lindex)=>{
                   obj[lindex + 1] = +litem
                 })
-               resData[it].person_limit = obj
+                resData[it].person_limit = obj
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+                resData[it].cost = +resData[it].cost;
+                resData[it].sit_coins_limit = +resData[it].sit_coins_limit;
+                resData[it].min_bet = +resData[it].min_bet;
+                resData[it].red_limit = +resData[it].red_limit;
+                resData[it].black_limit = +resData[it].black_limit;
+                resData[it].special_limit = +resData[it].special_limit;
+                resData[it].difference_limit = +resData[it].difference_limit;
+                resData[it].all_special_limit = +resData[it].all_special_limit;
               }
             })
           })
           if(type === 1){
             //put
-                 let { data } = await this.$http.HallFunConfig.Putroomdata2000({
+            let { data } = await this.$http.HallFunConfig.Putroomdata2000({
               keys: this.keys,
               values: JSON.stringify(resData),
               id: this.id
@@ -226,8 +248,7 @@ export default {
           }
           }else if(type === 2){
             //post
-             this.loading = true;
-
+            this.loading = true;
             let { data } = await this.$http.HallFunConfig.Postroomdata2000({
               keys: this.keys,
               values: JSON.stringify(resData),

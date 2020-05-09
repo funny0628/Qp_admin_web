@@ -190,6 +190,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name: "three_room_config",
   data() {
@@ -287,9 +288,6 @@ export default {
       currentlist: {},
       //游戏场次类别
       labellist: [],
-      //所有房间的数据
-      ResData: {},
-      Res:{}
     };
   },
 
@@ -317,11 +315,7 @@ export default {
       this.keys = data.data[0].sys_key;
       let res = JSON.parse(data.data[0].sys_val);
       console.log(res);
-
       this.allData = res;
-      this.ResData = JSON.parse(JSON.stringify(res));
-      this.Res = JSON.parse(JSON.stringify(res));
-           console.log(this.ResData);
       this.namelist.forEach((it, index) => {
         Object.keys(res).forEach(item => {
           if (item === it) {
@@ -341,62 +335,50 @@ export default {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          //准备要发送的数据
-          // let $Data = JSON.parse(JSON.stringify(this.allData))
-
           console.log(
             this.ruleForm,
             this.allData,
-            this.ResData,
             this.currentlist
           );
-          Object.values(this.currentlist).forEach(item => {
-            item.max = +item.max;
-            item.min = +item.min;
-            item.cost = +item.cost;
-            item.sit_coins_limit = +item.sit_coins_limit;
-            item.heart_limit = +item.heart_limit;
-            item.spade_limit = +item.spade_limit;
-            item.all_club_limit = +item.all_club_limit;
-            item.all_diamond_limit = +item.all_diamond_limit;
-            item.sit_coins_limit = +item.sit_coins_limit;
-            item.all_spade_limit = +item.all_spade_limit;
-            item.all_heart_limit = +item.all_heart_limit;
-            item.club_limit = +item.club_limit;
-            item.diamond_limit = +item.diamond_limit;
-            item.min_banker_coins = +item.min_banker_coins;
-          });
-
-          Object.keys(this.currentlist).forEach(it => {
-            let limit_str = this.currentlist[it].person_limit.split(",");
-            delete this.currentlist[it].person_limit;
-            let obj = {};
-            limit_str.forEach((litem, lindex) => {
-              obj[lindex + 1] = +litem;
-            });
-            console.log(obj);
-            this.currentlist[it].person_limit = obj;
-          });
-
-          Object.keys(this.ResData).forEach(item => {
-            Object.keys(this.currentlist).forEach(it => {
-              if (item === it) {
-                this.ResData[item] = this.currentlist[it];
+          let resData = DeepData(this.allData);
+          this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
+              if(item === it){
+                let limit_str = this.allData[it].person_limit.split(',')
+                let obj = {}
+                limit_str.forEach((litem,lindex)=>{
+                  obj[lindex + 1] = +litem
+                })
+                resData[it].person_limit = obj
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+                resData[it].cost = +resData[it].cost;
+                resData[it].sit_coins_limit = +resData[it].sit_coins_limit;
+                resData[it].heart_limit = +resData[it].heart_limit;
+                resData[it].spade_limit = +resData[it].spade_limit;
+                resData[it].all_club_limit = +resData[it].all_club_limit;
+                resData[it].all_diamond_limit = +resData[it].all_diamond_limit;
+                resData[it].min_bet = +resData[it].min_bet;
+                resData[it].all_spade_limit = +resData[it].all_spade_limit;
+                resData[it].all_heart_limit = +resData[it].all_heart_limit;
+                resData[it].club_limit = +resData[it].club_limit;
+                resData[it].diamond_limit = +resData[it].diamond_limit;
+                resData[it].min_banker_coins = +resData[it].min_banker_coins;
               }
-            });
-          });
+            })
+          })
+
 
           //判断type类型
           if (type === 1) {
             //发送put
             let { data } = await this.$http.HallFunConfig.Putroomdata2001({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
-               this.getData()
               this.$message({
                 type: "success",
                 message: "保存成功!"
@@ -413,12 +395,11 @@ export default {
 
             let { data } = await this.$http.HallFunConfig.Postroomdata2001({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
-               this.getData()
               this.loading = false;
               this.$message({
                 type: "success",

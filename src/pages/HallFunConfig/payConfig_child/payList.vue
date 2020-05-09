@@ -84,7 +84,7 @@
             <el-input maxlength="5" placeholder="支付名称" v-model="form.pay_name"></el-input>
           </el-form-item>
           <el-form-item label="支付渠道(小类)" prop="pay_channel"> 
-             <el-select v-model="form.pay_channel" @change="Change">
+             <el-select v-model="form.pay_channel">
                <el-option
                   v-for="item in SmopaObj"
                   :key="item.value"
@@ -95,7 +95,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="支付方式(大类)" prop="pay_way">
-            <el-select v-model="form.pay_way" @change="Change">
+            <el-select v-model="form.pay_way">
                <el-option
                   v-for="item in opaObj"
                   :key="item.value"
@@ -351,10 +351,26 @@ export default {
 
     // 表格编辑
     handleEdit(row,formName) {
-      this.editForm("更新", true,this.formateNum(DeepData(row)));
+      
       if(row.pay_way === 'unioncard'){
         this.pay_info = JSON.parse(row.pay_info)
       }
+      let reg = /[\u4e00-\u9fa5]/
+      if(reg.test(row.pay_channel)){
+        this.SmopaObj.forEach((item)=>{
+          if(item.label === row.pay_channel){
+            row.pay_channel = item.value
+          }
+        })
+      }
+      if(reg.test(row.pay_way)){
+        this.opaObj.forEach((item)=>{
+          if(item.label === row.pay_way){
+            row.pay_way = item.value
+          }
+        })
+      }
+      this.editForm("更新", true,this.formateNum(DeepData(row)));
     },
 
     //表格删除
@@ -399,9 +415,6 @@ export default {
       this.initdata({ page: this.currentPage, limit: this.limit, title:this.searchinput });
     },
 
-    
-    Change(val){
-    },
 
     //表单提交
     onSubmit(formName, type) {
@@ -430,6 +443,7 @@ export default {
           } else if (type === "更新") {
             delete this.form.created_at
             delete this.form.updated_at
+            console.log(this.form);
              //发送请求到后台-------------------------------------------------------
               let { data } = await this.$http.HallFunConfig.PutPaylist(
               this.form
@@ -584,6 +598,8 @@ export default {
         opaObj.push({label:opation[item],value:item})
       })
       this.opaObj = opaObj
+      console.log(this.opaObj);
+      
 
 
       //支付小类数据
@@ -594,6 +610,8 @@ export default {
         SmopaObj.push({label:Smopation[item],value:item})
       })
       this.SmopaObj = SmopaObj
+      console.log(this.SmopaObj);
+      
     },
   }
 };

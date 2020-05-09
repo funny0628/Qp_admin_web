@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'zjh_room_config',
   data() {
@@ -133,8 +134,6 @@ export default {
       id: 0,
       keys: "",
       loading: false,
-      //房间配置的所有数据
-      ResData:{}
     };
   },
   created() {
@@ -154,13 +153,10 @@ export default {
       let { data } = await this.$http.HallFunConfig.Getroomdata1({
         key: "roomdata.lua"
       });
-      // console.log(data);
       this.id = data.data[0].id;
       this.keys = data.data[0].sys_key;
       let res = JSON.parse(data.data[0].sys_val);
-      // console.log(res);
       this.allData = res;
-      this.ResData = JSON.parse(JSON.stringify(res));
       this.namelist.forEach((item,index)=>{
         Object.keys(res).forEach((it)=>{
           if(item === it){
@@ -178,21 +174,19 @@ export default {
     submitForm(formName,type) {
        this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.ruleForm,this.currentlist,this.allData,this.ResData);
-          Object.keys(this.currentlist).forEach((item)=>{
-            this.currentlist[item].dizhu = +this.currentlist[item].dizhu
-            this.currentlist[item].dingzhu = +this.currentlist[item].dingzhu
-            // this.currentlist[item].cost = +this.currentlist[item].cost
-            this.currentlist[item].max = +this.currentlist[item].max
-            this.currentlist[item].min = +this.currentlist[item].min
-            // this.currentlist[item].max_bet_round = +this.currentlist[item].max_bet_round
-            // this.currentlist[item].max_look_round = +this.currentlist[item].max_look_round
-            // this.currentlist[item].comparable_bet_round = +this.currentlist[item].comparable_bet_round
-          })
-          Object.keys(this.currentlist).forEach((item)=>{
-            Object.keys(this.ResData).forEach((it)=>{
+          // console.log(this.ruleForm,this.currentlist,this.allData,this.ResData);
+          let resData = DeepData(this.allData);
+           this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
               if(item === it){
-                this.ResData[it] = this.currentlist[item]
+                resData[it].dizhu = +resData[it].dizhu;
+                resData[it].dingzhu = +resData[it].dingzhu;
+                resData[it].cost = +resData[it].cost;
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+                resData[it].max_bet_round = +resData[it].max_bet_round;
+                resData[it].max_look_round = +resData[it].max_look_round;
+                resData[it].comparable_bet_round = +resData[it].comparable_bet_round;
               }
             })
           })
@@ -201,12 +195,11 @@ export default {
             //发送put
               let { data } = await this.$http.HallFunConfig.Putroomdata1({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
-              this.getData()
               this.$message({
                 type: "success",
                 message: "保存成功!"
@@ -222,12 +215,11 @@ export default {
              this.loading = true;
             let { data } = await this.$http.HallFunConfig.Postroomdata1({
               keys: this.keys,
-              values: JSON.stringify(this.ResData),
+              values: JSON.stringify(resData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
-              this.getData()
               this.loading = false;
               this.$message({
                 type: "success",
