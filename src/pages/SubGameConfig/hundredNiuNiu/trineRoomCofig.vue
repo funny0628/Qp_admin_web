@@ -18,13 +18,16 @@
 
     <div class="form">
       <el-button
-       v-has="'three_room_config_send'"
+        v-has="'three_room_config_send'"
         style="margin-bottom:10px"
         type="primary"
         @click="submit('ruleForm', 2)"
         >发送到服务器配置</el-button
       >
-      <el-button v-has="'three_room_config_save'" type="primary" @click="submit('ruleForm', 1)"
+      <el-button
+        v-has="'three_room_config_save'"
+        type="primary"
+        @click="submit('ruleForm', 1)"
         >立即提交</el-button
       >
       <el-form
@@ -62,6 +65,7 @@
 
         <el-form-item label="台费" prop="cost">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.cost"
             placeholder="0"
@@ -70,6 +74,7 @@
         </el-form-item>
         <el-form-item label="携带上限" prop="max">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.max"
             placeholder="0"
@@ -77,6 +82,7 @@
         </el-form-item>
         <el-form-item label="携带下限" prop="min">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.min"
             placeholder="0"
@@ -84,6 +90,7 @@
         </el-form-item>
         <el-form-item label="上座金额" prop="sit_coins_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.sit_coins_limit"
             placeholder="0"
@@ -91,6 +98,7 @@
         </el-form-item>
         <el-form-item label="上庄最低携带" prop="min_banker_coins">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.min_banker_coins"
             placeholder="0"
@@ -98,6 +106,7 @@
         </el-form-item>
         <el-form-item label="下注最低携带" prop="min_bet">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.min_bet"
             placeholder="0"
@@ -113,6 +122,7 @@
         </el-form-item>
         <el-form-item label="个人区域限红（黑桃）" prop="spade_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.spade_limit"
             placeholder="0"
@@ -120,6 +130,7 @@
         </el-form-item>
         <el-form-item label="个人区域限红（红桃）" prop="heart_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.heart_limit"
             placeholder="0"
@@ -127,6 +138,7 @@
         </el-form-item>
         <el-form-item label="个人区域限红（梅花）" prop="club_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.club_limit"
             placeholder="0"
@@ -134,6 +146,7 @@
         </el-form-item>
         <el-form-item label="个人区域限红（方块）" prop="diamond_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.diamond_limit"
             placeholder="0"
@@ -141,6 +154,7 @@
         </el-form-item>
         <el-form-item label="区域总限红（黑桃）" prop="all_spade_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.all_spade_limit"
             placeholder="0"
@@ -148,6 +162,7 @@
         </el-form-item>
         <el-form-item label="区域总限红（红桃））" prop="all_heart_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.all_heart_limit"
             placeholder="0"
@@ -155,6 +170,7 @@
         </el-form-item>
         <el-form-item label="区域总限红（梅花）" prop="all_club_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.all_club_limit"
             placeholder="0"
@@ -162,6 +178,7 @@
         </el-form-item>
         <el-form-item label="区域总限红（方块）" prop="all_diamond_limit">
           <el-input
+            type="number"
             style="width:200px"
             v-model="ruleForm.all_diamond_limit"
             placeholder="0"
@@ -173,12 +190,27 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
-  name:'three_room_config',
+  name: "three_room_config",
   data() {
-    let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+    let checkValue = (rule, value, callback) => {
+      if (value === "") {
+        return callback(new Error("必填项不可以为空!!"));
+      } else {
+        callback();
+      }
+    };
+    let checkLimit = (rule, value, callback) => {
+      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?$/;
+      if (value !== "") {
+        if (!reg.test(value)) {
+          return callback(new Error("请按照提示的格式填写!!"));
+        } else {
+          callback();
+        }
+      } else {
+        return callback(new Error("必填项不可以为空!!"));
+      }
     };
     return {
       ruleForm: {
@@ -216,7 +248,7 @@ export default {
         ],
         min_bet: [{ required: true, validator: checkValue, trigger: "blur" }],
         person_limit: [
-          { required: true, validator: checkValue, trigger: "blur" }
+          { required: true, validator: checkLimit, trigger: "blur" }
         ],
         spade_limit: [
           { required: true, validator: checkValue, trigger: "blur" }
@@ -241,47 +273,29 @@ export default {
         ],
         all_diamond_limit: [
           { required: true, validator: checkValue, trigger: "blur" }
-        ],
+        ]
       },
       activeName: "",
       id: 0,
       keys: "",
       loading: false,
       //所有房间的数据
-      allData: "",
+      allData: {},
       //匹配当前游戏的条件
       namelist: ["200100", "200101", "200102"],
       //当前游戏的所有数据
       currentlist: {},
       //游戏场次类别
-      labellist:[]
+      labellist: [],
+      //所有房间的数据
+      ResData: {},
+      Res:{}
     };
   },
 
-  async created() {
+  created() {
     //获取数据
-    let { data } = await this.$http.HallFunConfig.Getroomdata2001({
-      key: "roomdata.lua"
-    });
-    this.id = data.data[0].id;
-    this.keys = data.data[0].sys_key;
-    let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
-    
-    this.allData = res;
-    this.namelist.forEach((it, index) => {
-      Object.keys(res).forEach(item => {
-        if (item === it) {
-          this.currentlist[item] = res[item];
-          this.labellist.push(res[it].name)
-          this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`
-        }
-        if (index === 0) {
-          this.ruleForm = res[it];
-          this.activeName = it;
-        }
-      });
-    });
+    this.getData()
   },
 
   methods: {
@@ -295,56 +309,116 @@ export default {
       });
     },
 
+    async getData() {
+      let { data } = await this.$http.HallFunConfig.Getroomdata2001({
+        key: "roomdata.lua"
+      });
+      this.id = data.data[0].id;
+      this.keys = data.data[0].sys_key;
+      let res = JSON.parse(data.data[0].sys_val);
+      console.log(res);
+
+      this.allData = res;
+      this.ResData = JSON.parse(JSON.stringify(res));
+      this.Res = JSON.parse(JSON.stringify(res));
+           console.log(this.ResData);
+      this.namelist.forEach((it, index) => {
+        Object.keys(res).forEach(item => {
+          if (item === it) {
+            this.currentlist[item] = res[item];
+            this.labellist.push(res[it].name);
+            this.currentlist[item].person_limit = `${res[it].person_limit[1]},${res[it].person_limit[2]}`;
+          }
+          if (index === 0) {
+            this.ruleForm = res[it];
+            this.activeName = it;
+          }
+        });
+      });
+    },
+
     //保存和发送服务器配置
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           //准备要发送的数据
-          let $Data = JSON.parse(JSON.stringify(this.allData))
-          this.namelist.forEach((item)=>{
-            Object.keys(this.allData).forEach((it)=>{
-              if(item === it){
-                let limit_str = this.allData[it].person_limit.split(',')
-                let obj = {}
-                limit_str.forEach((litem,lindex)=>{
-                  obj[lindex + 1] = +litem
-                })
-                console.log(obj);
-                $Data[it].person_limit = obj
+          // let $Data = JSON.parse(JSON.stringify(this.allData))
+
+          console.log(
+            this.ruleForm,
+            this.allData,
+            this.ResData,
+            this.currentlist
+          );
+          Object.values(this.currentlist).forEach(item => {
+            item.max = +item.max;
+            item.min = +item.min;
+            item.cost = +item.cost;
+            item.sit_coins_limit = +item.sit_coins_limit;
+            item.heart_limit = +item.heart_limit;
+            item.spade_limit = +item.spade_limit;
+            item.all_club_limit = +item.all_club_limit;
+            item.all_diamond_limit = +item.all_diamond_limit;
+            item.sit_coins_limit = +item.sit_coins_limit;
+            item.all_spade_limit = +item.all_spade_limit;
+            item.all_heart_limit = +item.all_heart_limit;
+            item.club_limit = +item.club_limit;
+            item.diamond_limit = +item.diamond_limit;
+            item.min_banker_coins = +item.min_banker_coins;
+          });
+
+          Object.keys(this.currentlist).forEach(it => {
+            let limit_str = this.currentlist[it].person_limit.split(",");
+            delete this.currentlist[it].person_limit;
+            let obj = {};
+            limit_str.forEach((litem, lindex) => {
+              obj[lindex + 1] = +litem;
+            });
+            console.log(obj);
+            this.currentlist[it].person_limit = obj;
+          });
+
+          Object.keys(this.ResData).forEach(item => {
+            Object.keys(this.currentlist).forEach(it => {
+              if (item === it) {
+                this.ResData[item] = this.currentlist[it];
               }
-            })
-          })
+            });
+          });
+
           //判断type类型
           if (type === 1) {
             //发送put
             let { data } = await this.$http.HallFunConfig.Putroomdata2001({
               keys: this.keys,
-              values: JSON.stringify($Data),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
+               this.getData()
               this.$message({
                 type: "success",
                 message: "保存成功!"
               });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
+            } else {
+              this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
+            }
           } else if (type === 2) {
             //发送post
             this.loading = true;
 
             let { data } = await this.$http.HallFunConfig.Postroomdata2001({
               keys: this.keys,
-              values: JSON.stringify($Data),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
             if (data.code === 1 && data.msg === "ok") {
+               this.getData()
               this.loading = false;
               this.$message({
                 type: "success",

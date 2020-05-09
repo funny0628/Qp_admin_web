@@ -183,8 +183,6 @@ export default {
   name:'rainmaker_config',
   data() {
      let checkTime = (rule,value,callback) => {
-       console.log(value);
-       
       if(value === '') {
         return callback(new Error('必填项不可以为空!!'))
       }else{
@@ -192,11 +190,22 @@ export default {
       }
     };
      let checkImg = (rule,value,callback) => {
-
       if(value === '') {
         return callback(new Error('必填项不可以为空!!'))
       }else{
         callback();
+      }
+    };
+     let checkWeight = (rule,value,callback) => {
+      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?(=[0-9]+)?$/
+      if(value !== '') {
+        if(!reg.test(value)){
+          return callback(new Error('请按照提示的格式填写!!'))
+        }else{
+          callback();
+        }
+      }else{
+        return callback(new Error('必填项不可以为空!!'))
       }
     };
     
@@ -233,7 +242,7 @@ export default {
           { required: true, validator: checkTime, trigger: "blur" }
         ],
         weight_info: [
-          { required: true, validator: checkTime, trigger: "blur" }
+          { required: true, validator: checkWeight, trigger: "blur" }
         ],
         icon_cash_cow_url: [
           { required: true, validator: checkImg, trigger: "blur" }
@@ -284,9 +293,6 @@ export default {
     async send(type) {
       //发送post
       this.initBackData(this.tableData,type) 
-
-      
-
     },
 
     upLoad(file) {
@@ -302,12 +308,12 @@ export default {
 
     beforeAvatarUpload(file) {
       if (file) {
-        console.log(file,'文件',URL.createObjectURL(file));
+        // console.log(file,'文件',URL.createObjectURL(file));
         this.$set(this.form,'icon_cash_cow_url',URL.createObjectURL(file))
       }
     },
     fileChange(file, fileList){
-      console.log(file, fileList,'文件改变了');
+      // console.log(file, fileList,'文件改变了');
       if(file){
         this.imageChange = true
       }
@@ -315,21 +321,19 @@ export default {
  
 
     onSubmit(formName, title) {
-      console.log(this.form);
-      
+      // console.log(this.form);
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (title === "新增") {
             this.form.icon_cash_cow_url = this.servebg_url
             this.tableData.push(this.form);
             console.log(this.tableData);
-            
           } else if (title === "编辑") {
-            console.log(this.form);
+            // console.log(this.form);
             if(this.imageChange){
-              console.log('图片改过啦');
+              // console.log('图片改过啦');
               this.form.icon_cash_cow_url = this.servebg_url
-              console.log(this.form);
+              // console.log(this.form);
               this.imageChange = false
             }
             
@@ -346,7 +350,6 @@ export default {
           }
           this.initBackData(this.tableData,1)        
           this.editForm(false, "新增", this.initform);
-
         } else {
           this.$message({
             type: "warning",
@@ -357,12 +360,11 @@ export default {
       })
     },
     back() {
-      this.editForm(false, "新增", {});
+      this.editForm(false, "新增", this.initform);
     },
 
     async initBackData(tableData,type){
         let RestableData = JSON.parse(JSON.stringify(tableData))
-
           RestableData.forEach((item)=>{
             item.level = +item.level
             item.growth_value = +item.growth_value
@@ -373,8 +375,8 @@ export default {
            
           })
 
-           let infoObj = {}
            RestableData.forEach((item)=>{
+             let infoObj = {}
             item.weight_info.forEach((it,idx)=>{
               infoObj[idx + 1] = it
             })
@@ -383,14 +385,14 @@ export default {
           //  console.log(RestableData);
             RestableData.forEach((item,index)=>{
               let weightArr ={}
+              let weightObj = {}
               Object.values(item.weight_info).forEach((it,idx)=>{
-                let weightObj = {}
+                // let weightObj = {}
                 weightObj.coin = +it.split('=')['0']
                 weightObj.weight = +it.split('=')['1']
                 it = weightObj
                 // console.log(weightObj,it);
                 weightArr[idx + 1] = weightObj
-
               })
               item.weight_info = weightArr
            })
@@ -407,7 +409,7 @@ export default {
               this.ResData[item].ac_content.cash_cow = ObjRes
             }
           })
-          // console.log(this.ResData);
+          console.log(this.ResData);
 
           if(type === 2){
             let { data } = await this.$http.HallFunConfig.PostActivityNew33({
@@ -448,12 +450,6 @@ export default {
               });
             }
           }
-          
-
-
-          
-
-
     },
     editForm(visible, title, form) {
       this.visible = visible;

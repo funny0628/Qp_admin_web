@@ -11,7 +11,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       -
@@ -21,7 +21,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       <el-button type="primary" @click="search">查找</el-button>
@@ -65,8 +65,8 @@ export default {
   },
   created() {
     let today = new Date().getTime();
-    this.start_time = this.initTime(today);
-    this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
+    this.start_time = today;
+    this.end_time = (today - 60 * 60 * 24 * 7 * 1000);
     this.getData();
   },
   methods: {
@@ -77,8 +77,8 @@ export default {
 
 
     //获取时间格式
-    initTime(today) {
-      let myDate = new Date(today);
+    initTime(timestamp) {
+      let myDate = new Date(timestamp);
       let year = myDate.getFullYear();
       let month =
         myDate.getMonth() + 1 < 10
@@ -90,11 +90,10 @@ export default {
     },
 
     getData() {
-      this.startDate = this.start_time.replace(/[-]/g, "");
-      this.endDate = this.end_time.replace(/[-]/g, "");
+      // console.log(this.initTime(this.start_time),this.initTime(this.end_time));
       this.initData({
-        start_date: +this.endDate,
-        end_data: +this.startDate,
+        start_date: this.initTime(this.end_time),
+        end_data: this.initTime(this.start_time),
       });
     },
 

@@ -27,9 +27,9 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="活动状态" prop="open_state">
-        <el-select v-model="form.open_state+''">
-          <el-option label="待上线" value="true"></el-option>
-          <el-option label="生效中" value="false"></el-option>
+        <el-select v-model="form.open_state">
+          <el-option label="待上线" :value="true"></el-option>
+          <el-option label="生效中" :value="false"></el-option>
         </el-select>
       </el-form-item>
 

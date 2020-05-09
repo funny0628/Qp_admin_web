@@ -42,24 +42,24 @@
         </el-form-item>
 
         <el-form-item label="底注" prop="dizhu">
-          <el-input style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
         </el-form-item>
   
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="初始倍率" prop="rate">
-          <el-input style="width:200px" v-model="ruleForm.rate" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.rate" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item>
@@ -73,12 +73,15 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'ddz_room_config',
   data() {
-     let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+      let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
     };
     return {
       activeName: "",
@@ -128,6 +131,8 @@ export default {
     let res = JSON.parse(data.data[0].sys_val);
     // console.log(res);
     this.allData = res;
+    this.ResData = JSON.parse(JSON.stringify(res));
+    console.log(this.ResData);
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
         if(item === it){
@@ -157,52 +162,65 @@ export default {
         this.$refs[formName].validate(async valid => {
         if (valid) {
           console.log(this.ruleForm,this.currentlist,this.allData);
-          if(type === 1){
-            //发送put
-                 let { data } = await this.$http.HallFunConfig.Putroomdata3({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
-              });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-          }else if(type === 2){
-            //发送post
-             this.loading = true;
 
-            let { data } = await this.$http.HallFunConfig.Postroomdata3({
-              keys: this.keys,
-              values: JSON.stringify(this.allData),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
-            }else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
-            }
-          }
+          // this.currentlist.forEach((item)=>{
+          //   item.max = +item.max
+          //   item.min = +item.min
+          //   item.dizhu = +item.dizhu
+          //   item.cost = +item.cost
+          //   item.rate = +item.rate
+          // })
+
+
+          // if(type === 1){
+          //   //发送put
+          //        let { data } = await this.$http.HallFunConfig.Putroomdata3({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.allData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.$message({
+          //       type: "success",
+          //       message: "保存成功!"
+          //     });
+          //   }else{
+          //   this.$message({
+          //     type: "warning",
+          //     message: "保存失败!"
+          //   });
+          // }
+          // }else if(type === 2){
+          //   //发送post
+          //    this.loading = true;
+
+          //   let { data } = await this.$http.HallFunConfig.Postroomdata3({
+          //     keys: this.keys,
+          //     values: JSON.stringify(this.allData),
+          //     id: this.id
+          //   });
+          //   // console.log(data);
+          //   if (data.code === 1 && data.msg === "ok") {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "success",
+          //       message: "发送服务器配置成功!"
+          //     });
+          //   }else {
+          //     this.loading = false;
+          //     this.$message({
+          //       type: "warning",
+          //       message: "发送服务器配置失败!"
+          //     });
+          //   }
+          // }
 
         }else{
-          console.log("error submit!!");
+           this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
         })
