@@ -2,7 +2,7 @@
   <div id="FreshmanReward-main">
     <input-area>
       <!-- <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加奖励</el-button> -->
-      <el-button type="primary" size="medium" @click="save(currentIndex)">保存</el-button>
+      <!-- <el-button type="primary" size="medium" @click="save(currentIndex)">保存</el-button> -->
       <!-- <el-button type="primary" size="medium" @click="sendConfigFile">发送到服务器配置</el-button> -->
     </input-area>
     <div class="bd">
@@ -16,7 +16,7 @@
         >{{item}}</div>
       </div>
       <div style="margin-top:10px;margin-bottom:10px;">
-        <el-button type="primary" size="medium" @click="add">添加</el-button>
+        <!-- <el-button type="primary" size="medium" @click="add">添加</el-button> -->
       </div>
       <!-- <div style="width:50%;margin-bottom:10px;" v-for="(item,index) in counter" :key="index"> -->
       <el-row
@@ -50,7 +50,7 @@
               ></el-input>
             </el-col>
             <el-col :span="4" style="padding-left:5px;">
-              <el-button type="primary" size="small" @click="deleteItem(index)">删除</el-button>
+              <!-- <el-button type="primary" size="small" @click="deleteItem(index)">删除</el-button> -->
             </el-col>
           </el-row>
         </el-col>

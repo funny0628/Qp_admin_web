@@ -44,7 +44,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <img :src="$baseUrl + scope.row.icon_cash_cow_url" />
+            <img :src="scope.row.icon_cash_cow_url" />
           </template>
         </el-table-column>
         <el-table-column

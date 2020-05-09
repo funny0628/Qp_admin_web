@@ -68,20 +68,20 @@
                 </div>
                 <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
               </div>-->
-              <el-dropdown>
+              <el-dropdown trigger="click">
                 <span class="el-dropdown-link">
                   {{loginUser}}
                   <i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                    <span>基本资料</span>
+                    <!-- <span>基本资料</span> -->
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <span @click="dialogFormVisible = true">修改密码</span>
+                    <div @click="openModPsd(loginUserInfo)" style="width:100%;">修改密码</div>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <span @click="logout">退出</span>
+                    <div @click="logout" style="width:100%;">退出</div>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -137,15 +137,15 @@
     <el-dialog title="修改用户密码" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input type="password" v-model="form.name" autocomplete="off"></el-input>
+          <el-input type="password" v-model="form.psd" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" :label-width="formLabelWidth">
-          <el-input type="password" v-model="form.name" autocomplete="off"></el-input>
+          <el-input type="password" v-model="form.checkPsd" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="modifyUserPsd">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -173,10 +173,12 @@ export default {
       headerVue: root.headerVue,
       showNavMenu: false,
       loginUser: "",
+      loginUserInfo: {},
       showLoginout: false,
       dialogFormVisible: false,
-      formLabelWidth: '120px',
+      formLabelWidth: "120px",
       form: {
+        uid: null,
         psd: "",
         checkPsd: ""
       }
@@ -284,6 +286,33 @@ export default {
           }
         });
       },
+      openModPsd(loginUserInfo) {
+        console.log(loginUserInfo);
+        this.dialogFormVisible = true;
+        this.form.uid = loginUserInfo.id;
+      },
+      modifyUserPsd() {
+        let data = {
+          uid: this.form.uid,
+          password: this.form.psd,
+          password2: this.form.checkPsd
+        };
+        this.$http
+          .post("v1/backend/operation/user/password", data)
+          .then(res => {
+            console.log(res);
+            if (res.data.code == 200) {
+              this.dialogFormVisible = false;
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              setTimeout(() => {
+                this.logout();
+              }, 1000);
+            }
+          });
+      },
       showLoginoutFn() {
         if (this.showLoginout == true) {
           this.showLoginout = false;
@@ -327,6 +356,7 @@ export default {
   },
   mounted() {
     this.loginUser = JSON.parse(localStorage.getItem("user")).username;
+    this.loginUserInfo = JSON.parse(localStorage.getItem("user"));
     $this.init();
     $this.$forceUpdate();
     let clientWidth = document.body.offsetWidth;
