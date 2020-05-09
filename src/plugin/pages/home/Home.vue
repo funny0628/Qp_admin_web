@@ -61,13 +61,30 @@
               </template>
             </el-col>
             <el-col :xs="8" :sm="2" :md="2" :lg="2">
-              <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
+              <!-- <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
                 <div>
                   {{loginUser}}
                   <i class="el-icon-caret-bottom"></i>
                 </div>
                 <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
-              </div>
+              </div>-->
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  {{loginUser}}
+                  <i class="el-icon-caret-bottom"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <span>基本资料</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <span @click="dialogFormVisible = true">修改密码</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <span @click="logout">退出</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </el-col>
           </el-row>
           <div class="nav-menu rel" ref="quickMenu">
@@ -117,6 +134,20 @@
         </div>
       </el-col>
     </el-row>
+    <el-dialog title="修改用户密码" :visible.sync="dialogFormVisible" width="30%">
+      <el-form :model="form">
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -142,7 +173,13 @@ export default {
       headerVue: root.headerVue,
       showNavMenu: false,
       loginUser: "",
-      showLoginout: false
+      showLoginout: false,
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        psd: "",
+        checkPsd: ""
+      }
     };
   },
   methods: (() => {
@@ -226,7 +263,7 @@ export default {
         }
       },
       forward(data) {
-        console.log(data)
+        console.log(data);
         $this.add(data["name"]);
       },
       back() {},
@@ -289,7 +326,7 @@ export default {
     $this.activeName = active;
   },
   mounted() {
-    this.loginUser = JSON.parse(localStorage.getItem("user"));
+    this.loginUser = JSON.parse(localStorage.getItem("user")).username;
     $this.init();
     $this.$forceUpdate();
     let clientWidth = document.body.offsetWidth;
@@ -314,7 +351,7 @@ export default {
   right: 0;
   background-color: #f2f2f2;
   color: #000;
-  width: 50px;
+  width: 80px;
   height: 20px;
   line-height: 20px;
   text-align: center;
