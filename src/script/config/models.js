@@ -102,16 +102,16 @@ const models = {
           //   text: '十倍场机器人控制',
           //   vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleRobotControl')), 'ten_robot_config')
           // },
-          {
-            name: 'three_szrobot_config',
-            text: '三倍场上庄机器人控制 ',
-            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineBankerControl')), 'three_szrobot_config')
-          },
-          {
-            name: 'ten_szrobot_config',
-            text: '十倍场上庄机器人控制',
-            vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleBankerControl')), 'ten_szrobot_config')
-          },
+          // {
+          //   name: 'three_szrobot_config',
+          //   text: '三倍场上庄机器人控制 ',
+          //   vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/trineBankerControl')), 'three_szrobot_config')
+          // },
+          // {
+          //   name: 'ten_szrobot_config',
+          //   text: '十倍场上庄机器人控制',
+          //   vue: r => require.ensure([], () => r(require('../../pages/SubGameConfig/hundredNiuNiu/decupleBankerControl')), 'ten_szrobot_config')
+          // },
         ]
       },
       {

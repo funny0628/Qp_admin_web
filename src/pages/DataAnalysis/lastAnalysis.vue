@@ -29,7 +29,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       -
@@ -39,7 +39,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       <el-button type="primary" @click="search">查找</el-button>
@@ -146,8 +146,8 @@ export default {
   },
   created() {
     let today = new Date().getTime();
-    this.start_time = this.initTime(today);
-    this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
+    this.start_time = today;
+    this.end_time = (today - 60 * 60 * 24 * 7 * 1000);
     // console.log(this.start_time, this.end_time);
 
     this.initChannel();
@@ -175,7 +175,6 @@ export default {
 
     //页码变化
     handleCurrentChange(pagenum) {
-
         this.currentPage = pagenum
         this.getData()
     },
@@ -184,22 +183,18 @@ export default {
     initTime(today) {
       let myDate = new Date(today);
       let year = myDate.getFullYear();
-      let month = myDate.getMonth() + 1;
-      let day = myDate.getDate();
+      let month = myDate.getMonth() + 1 < 10 ? '0' +  (myDate.getMonth() + 1) :  myDate.getMonth() + 1;
+      let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
       return `${year}-${month}-${day}`;
     },
 
     getData() {
-      this.startDate = this.start_time;
-      this.startDate = DeepData(this.startDate).replace(/[-]/g, "");
-      this.endDate = this.end_time;
-      this.endDate = DeepData(this.endDate).replace(/[-]/g, "");
-
+      // console.log(Math.ceil(this.start_time / 1000),Math.ceil(this.end_time / 1000));
       this.initData({
         page: this.currentPage,
         limit: this.limit,
-        start_date: +this.startDate,
-        end_data: +this.endDate,
+        end_data: Math.ceil(this.start_time / 1000),
+        start_date: Math.ceil(this.end_time / 1000),
         channel_name: this.avator_nameO === "所有渠道" ? "" : this.avator_nameO,
         type_id: +this.activeName
       });
