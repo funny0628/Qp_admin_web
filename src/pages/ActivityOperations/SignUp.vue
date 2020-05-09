@@ -21,13 +21,13 @@
         label-position="right"
       >
         <el-form-item label="签到门槛" prop="need_coin">
-          <el-input style="width:200px" v-model="form.need_coin"></el-input>
+          <el-input  type="number" style="width:200px" v-model="form.need_coin"></el-input>
         </el-form-item>
         <el-form-item label="签到奖励" prop="award_coin">
-          <el-input style="width:200px" v-model="form.award_coin"></el-input>
+          <el-input  type="number" style="width:200px" v-model="form.award_coin"></el-input>
         </el-form-item>
         <el-form-item label="月俸禄领取门槛" prop="salary_days">
-          <el-input style="width:200px" v-model="form.salary_days"></el-input>
+          <el-input  type="number" style="width:200px" v-model="form.salary_days"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -38,6 +38,13 @@
 export default {
   name:'daily_sign',
   data() {
+      let checkItem = (rule,value,callback) => {
+      if(!value) {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
     return {
       form: {
         need_coin: "",
@@ -45,18 +52,21 @@ export default {
         salary_days: ""
       },
       rules: {
-        need_coin: [{ required: true, message: "不可以为空", trigger: "blur" }],
+        need_coin: [{ required: true, validator: checkItem, trigger: "blur" }],
         award_coin: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkItem, trigger: "blur" }
         ],
         salary_days: [
-          { required: true, message: "不可以为空", trigger: "blur" }
+          { required: true, validator: checkItem, trigger: "blur" }
         ]
       },
       keys: "",
       id: "",
+      //所有数据
       allData: {},
-      loading: false
+      loading: false,
+      //所有数据
+      ResData:{}
     };
   },
   created() {
@@ -67,19 +77,25 @@ export default {
       // console.log(this.allData);
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let all = true; //quanbu shi shuzi
-          Object.values(this.form).forEach(item => {
-            if (!isNaN(item)) {
-              all = true;
-            } else {
-              all = false;
+          Object.keys(this.form).forEach(item => {
+            if(this.form['need_coin'] ==='' || this.form['award_coin'] ==='' || this.form['salary_days'] ===''){
+                this.$message({
+                type: "warning",
+                message: "必填的项不可以为空!"
+              });
+              return false
+            }else{
+              this.form['need_coin'] = +this.form['need_coin']
+              this.form['award_coin'] = +this.form['award_coin']
+              this.form['salary_days'] = +this.form['salary_days']
             }
           });
-          if (all) {
+          console.log(this.form,this.ResData);
+          this.ResData['110'].ac_content = this.form
             if (type === 1) {
               let { data } = await this.$http.HallFunConfig.PutActivityNew5({
                 keys: this.keys,
-                values: JSON.stringify(this.allData),
+                values: JSON.stringify(this.ResData),
                 id: this.id
               });
               // console.log(data);
@@ -98,7 +114,7 @@ export default {
               this.loading = true;
               let { data } = await this.$http.HallFunConfig.PostActivityNew5({
                 keys: this.keys,
-                values: JSON.stringify(this.allData),
+                values: JSON.stringify(this.ResData),
                 id: this.id
               });
               // console.log(data);
@@ -116,13 +132,7 @@ export default {
                 });
               }
             }
-          } else {
-            this.$message({
-              type: "warning",
-              message: "所有项都必须是数字!"
-            });
-            return false;
-          }
+         
         } else {
           this.$message({
             type: "warning",
@@ -142,6 +152,8 @@ export default {
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
       console.log(this.allData);
+      this.ResData = JSON.parse(JSON.stringify(this.allData))
+      console.log(this.ResData);
       
       //   console.log(this.keys, this.id, this.allData);
       Object.keys(this.allData).forEach(item => {
@@ -149,7 +161,7 @@ export default {
           this.form = this.allData[item].ac_content;
         }
       });
-      console.log(this.form);
+      // console.log(this.form);
       
     }
   }

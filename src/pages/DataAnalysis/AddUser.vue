@@ -219,6 +219,7 @@ export default {
     //获取表格数据
     async initData(params) {
       let { data } = await this.$http.DataAnalysis.GetrNewUsers(params);
+            console.log(data);
         let resData = data.data;
       resData.forEach(item => {
         item.date = this.initTime(item.date * 1000);

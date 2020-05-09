@@ -127,6 +127,7 @@
           </el-form-item>
           <el-form-item label="任务目标数量" prop="task_target">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.task_target"
               placeholder="0"
@@ -135,12 +136,13 @@
 
           <el-form-item label="肥料奖励数量" prop="fertilizers">
             <el-input
+            type="number"
               style="width:220px"
               v-model="form.fertilizers"
               placeholder="0"
             ></el-input>
           </el-form-item>
-          <el-form-item label="是否摇奖次数必须" prop="fertilizers">
+          <el-form-item label="是否摇奖次数必须" >
             <el-switch
               v-model="form.is_draw"
               active-color="#13ce66"
@@ -188,6 +190,14 @@ export default {
         is_draw: false,
         task_guide: ""
       },
+      initform: {
+        task_type: "",
+        task_describe: "",
+        task_target: "",
+        fertilizers: "",
+        is_draw: false,
+        task_guide: ""
+      },
       rules: {
         task_type: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
@@ -199,9 +209,6 @@ export default {
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
         fertilizers: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
-        ],
-        is_draw: [
           { required: true, message: "必填项不可以为空", trigger: "blur" }
         ],
         task_guide: [
@@ -252,7 +259,8 @@ export default {
       currentData: {},
       //保存当前编辑的下标
       currentIndex: "",
-      loading: false
+      loading: false,
+      ResData:{}
     };
   },
   created() {
@@ -260,24 +268,25 @@ export default {
   },
   methods: {
     add() {
-      this.editForm(true, "新增", this.form);
+      this.editForm(true, "新增", this.initform);
     },
 
     //发送服务器配置
     async send() {
       this.loading = true;
       let postData = {};
-      // let deepTable = this.tableData.concat()
-       this.tableData.forEach((item, index) => {
-      // deepTable.forEach((item, index) => {
-      //   item.is_draw = ""+ item.is_draw  
+      this.tableData.forEach((item, index) => {
         postData[index + 1] = item;
       });
-      this.currentData.ac_content.task = postData;
+       Object.keys(this.ResData).forEach((item)=>{
+            if(item === '112'){
+              this.ResData[item].ac_content.task = postData
+            }
+      })
       // console.log(this.currentData,this.allData);    
       let { data } = await this.$http.HallFunConfig.PostActivityNew32({
         keys: this.keys,
-        values: JSON.stringify(this.allData),
+        values: JSON.stringify(this.ResData),
         id: this.id
       });
       if (data.code === 1 && data.msg === "ok") {
@@ -293,6 +302,7 @@ export default {
           message: "发送服务器配置失败!"
         });
       }
+      
     },
 
     handleEdit(index, row) {
@@ -302,14 +312,25 @@ export default {
 
     //表格删除
     handleDelete(index, row) {
-      this.tableData = this.tableData.filter((item, idx) => {
-        return index !== idx;
-      });
+      this.$confirm('确认永久删除？')
+          .then(_ => {
+           this.tableData = this.tableData.filter((item, idx) => {
+              return index !== idx;
+            });
+            this.initBackData(this.tableData)
+          })
+          .catch(_ => {
+               this.$message({
+                type: "info",
+                message: "取消删除!"
+              });
+          });
+      
     },
 
     //新增和编辑的提交
     onSubmit(formName, title) {
-      this.$refs[formName].validate(async valid => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           if (title === "新增") {
             this.tableData.push(this.form);
@@ -322,9 +343,10 @@ export default {
               }
             });
             this.tableData = resTable;
-            // console.log(this.tableData,resTable);
           }
-          this.editForm(false, "新增", this.form);
+          // console.log(this.tableData);
+          this.initBackData(this.tableData)
+          this.editForm(false, "新增", this.initform);
         } else {
           this.$message({
             type: "warning",
@@ -335,6 +357,42 @@ export default {
       });
     },
     back() {},
+
+    async initBackData(tableData){
+          tableData.forEach((item)=>{
+            item.fertilizers = +item.fertilizers
+            item.task_target = +item.task_target
+          })
+          let RestableData = JSON.parse(JSON.stringify(tableData))
+          let resObj = {}
+          RestableData.forEach((it,idx)=>{
+            resObj[idx + 1] = it
+          })
+          Object.keys(this.ResData).forEach((item)=>{
+            if(item === '112'){
+              this.ResData[item].ac_content.task = resObj
+            }
+          })
+          // console.log(this.ResData);
+           let { data } = await this.$http.HallFunConfig.PutActivityNew32({
+            keys: this.keys,
+            values: JSON.stringify(this.ResData),
+            id: this.id
+          });
+          // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.initData()
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "保存失败!"
+              });
+            }
+    },
 
     editForm(visible, title, form) {
       this.visible = visible;
@@ -351,15 +409,14 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      this.ResData = JSON.parse(JSON.stringify(this.allData))
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10003") {
-          this.currentData = this.allData[item]; //所有摇钱树数据
+        if (item === "112") {
+          // this.currentData = this.allData[item]; //所有摇钱树数据
           this.tableData = Object.values(this.allData[item].ac_content.task);//摇钱树任务数据
           this.total = this.tableData.length;
         }
       });
-
-      // console.log(this.tableData, this.allData);
     }
   }
 };
