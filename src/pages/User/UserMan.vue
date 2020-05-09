@@ -38,6 +38,7 @@
               @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button>
             <el-button
+              v-if="scope.row.username !== 'root'"
               size="mini"
               type="primary"
               @click="handlePsd(scope.row)"
@@ -83,7 +84,13 @@
         <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth" style="width:50%;">
           <el-input v-model="form.phone" maxlength="11" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="!form.uid" label="密码" prop="password" :label-width="formLabelWidth" style="width:50%;">
+        <el-form-item
+          v-if="!form.uid"
+          label="密码"
+          prop="password"
+          :label-width="formLabelWidth"
+          style="width:50%;"
+        >
           <el-input v-model="form.password" type="password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item
@@ -110,7 +117,7 @@
     <el-dialog title="用户分配角色" :visible.sync="dialogRoleAssign" width="25%">
       <el-form :model="form2">
         <el-form-item label="角色" label-width="80px">
-          <el-select v-model="form2.role" placeholder="请选择角色">
+          <el-select v-model="form2.role">
             <el-option
               v-for="(item,index) in roleOpts"
               :key="index"
@@ -151,16 +158,16 @@ export default {
     InputArea
   },
   data() {
-    let checkUsername = (rule,value,callback) => {
-      if(!value) {
-        return callback(new Error('用户名不能为空'))
+    let checkUsername = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("用户名不能为空"));
       }
       // else {
       //   if(this.form.username.length < 6) {
       //     return callback(new Error('长度在 6 到 8 个字符'))
       //   }
       // }
-    }
+    };
     /*校验手机号*/
     let checkPhone = (rule, value, callback) => {
       if (!value) {
@@ -296,9 +303,9 @@ export default {
         if (res.data.code === 200) {
           this.dialogAddUser = false;
           this.$message({
-            type: 'success',
+            type: "success",
             message: res.data.msg
-          })
+          });
           this.getUserList();
         }
       } else {
@@ -357,30 +364,41 @@ export default {
       this.form.channel = JSON.parse(row.channel);
     },
     handlePsd(row) {
-      console.log(row)
-      this.dialogPsdVisible = true
+      console.log(row);
+      this.dialogPsdVisible = true;
       this.psdForm = {
         uid: null,
         psd: "",
         checkPsd: ""
-      }
-      this.psdForm.uid = row.id
+      };
+      this.psdForm.uid = row.id;
     },
     modifyPsd() {
       let data = {
         uid: this.psdForm.uid,
         password: this.psdForm.psd,
         password2: this.psdForm.checkPsd
-      }
-      this.$http.post('v1/backend/operation/user/password',data).then(res => {
-        console.log(res)
-      })
+      };
+      this.$http.post("v1/backend/operation/user/password", data).then(res => {
+        console.log(res);
+        if (res.data.code == 200) {
+          this.dialogPsdVisible = false;
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+        }
+      });
     },
     handleRole(index, row) {
-      console.log(row)
+      console.log(row);
       this.dialogRoleAssign = true;
       this.form.uid = row.id;
-      this.form2.role = ""
+      if (row.role_id == null) {
+        this.form2.role = "未分配角色";
+      } else {
+        this.form2.role = row.role_id;
+      }
       this.getRoleList();
     },
     async assignRole() {
@@ -397,15 +415,15 @@ export default {
       if (res.data.code === 200) {
         this.dialogRoleAssign = false;
         this.$message({
-          type: 'success',
-          message: '分配角色成功'
-        })
-      }else {
+          type: "success",
+          message: "分配角色成功"
+        });
+      } else {
         this.dialogRoleAssign = false;
         this.$message({
-          type: 'error',
-          message: '分配角色失败'
-        })
+          type: "error",
+          message: "分配角色失败"
+        });
       }
     },
     handleDelete(index, row) {
