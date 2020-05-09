@@ -45,19 +45,19 @@
         </el-form-item>
 
         <el-form-item label="底注" prop="dizhu">
-          <el-input style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
         </el-form-item>
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="抢庄区间设置" prop="grab_banker_times">
@@ -72,12 +72,22 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'qz_room_config',
   data() {
-     let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+    let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    };
+     let checkLimit = (rule,value,callback) => {
+      if(value !== '') {
+        callback();
+      }else{
+        return callback(new Error('必填项不可以为空!!'))
+      }
     };
     return {
       activeName: "",
@@ -100,7 +110,7 @@ export default {
          cost: [{ required: true, validator: checkValue, trigger: "blur" }],
          max: [{ required: true, validator: checkValue, trigger: "blur" }],
          min: [{ required: true, validator: checkValue, trigger: "blur" }],
-         grab_banker_times: [{ required: true, validator: checkValue, trigger: "blur" }],
+         grab_banker_times: [{ required: true, validator: checkLimit, trigger: "blur" }],
       },
       //房间配置的所有数据
       allData:{},
@@ -113,31 +123,12 @@ export default {
       id: 0,
       keys: "",
       loading: false,
+      //房间配置的所有数据
+      ResData:{}
     };
   },
-  async created() {
-      let { data } = await this.$http.HallFunConfig.Getroomdata2({
-      key: "roomdata.lua"
-    });
-    // console.log(data);
-     this.id = data.data[0].id;
-    this.keys = data.data[0].sys_key;
-    let res = JSON.parse(data.data[0].sys_val);
-    console.log(res);
-    this.allData = res
-    this.namelist.forEach((item,index)=>{
-      Object.keys(res).forEach((it)=>{
-        if(item === it){
-          this.currentlist[item] = res[item]
-          this.currentlist[item].grab_banker_times = Object.values(res[item].grab_banker_times).join('|')
-        }
-        if(index === 0){
-          this.ruleForm = res[item]
-          this.activeName = item
-        }
-      })
-      this.labellist.push(res[item].name)
-    })
+  created() {
+    this.getData()  
   },
   methods: {
     handleClick(tab) {
@@ -147,12 +138,39 @@ export default {
        }
      })
     },
+
+    async getData() {
+       let { data } = await this.$http.HallFunConfig.Getroomdata2({
+          key: "roomdata.lua"
+        });
+        // console.log(data);
+        this.id = data.data[0].id;
+        this.keys = data.data[0].sys_key;
+        let res = JSON.parse(data.data[0].sys_val);
+        console.log(res);
+        this.allData = res
+        this.ResData = JSON.parse(JSON.stringify(res));
+        console.log(this.ResData);
+        this.namelist.forEach((item,index)=>{
+          Object.keys(res).forEach((it)=>{
+            if(item === it){
+              this.currentlist[item] = res[item]
+              this.currentlist[item].grab_banker_times = Object.values(res[item].grab_banker_times).join('|')
+            }
+            if(index === 0){
+              this.ruleForm = res[item]
+              this.activeName = item
+            }
+          })
+          this.labellist.push(res[item].name)
+        })
+    },
+
+
     submitForm(formName,type) {
         this.$refs[formName].validate(async valid => {
         if (valid) {
-          // console.log(this.ruleForm,this.currentlist,this.allData);
           let all = JSON.parse(JSON.stringify(this.allData))
-          
           this.namelist.forEach((item)=>{
             Object.keys(all).forEach((it,idx)=>{
               if(item === it){
@@ -166,50 +184,62 @@ export default {
               }
             })
           })
-          console.log(all);
-      if(type === 1){
-        //发送put
-         let { data } = await this.$http.HallFunConfig.Putroomdata2({
-              keys: this.keys,
-              values: JSON.stringify(all),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.$message({
-                type: "success",
-                message: "保存成功!"
-              });
-            }else{
-            this.$message({
-              type: "warning",
-              message: "保存失败!"
-            });
-          }
-      }else if(type === 2){
-        //发送post
-          this.loading = true;
+          this.namelist.forEach((item)=>{
+            Object.keys(all).forEach((it)=>{
+              if(item === it){
+                all[it].dizhu = +all[it].dizhu
+                // all[it].cost = +all[it].cost
+                all[it].max = +all[it].max
+                all[it].min = +all[it].min
+              }
+            })
+          })
 
-            let { data } = await this.$http.HallFunConfig.Postroomdata2({
-              keys: this.keys,
-              values: JSON.stringify(all),
-              id: this.id
-            });
-            // console.log(data);
-            if (data.code === 1 && data.msg === "ok") {
-              this.loading = false;
-              this.$message({
-                type: "success",
-                message: "发送服务器配置成功!"
-              });
-            }else {
-              this.loading = false;
-              this.$message({
-                type: "warning",
-                message: "发送服务器配置失败!"
-              });
-            }
-      }
+          console.log(all,this.allData,this.currentlist);
+          if(type === 1){
+            //发送put
+            let { data } = await this.$http.HallFunConfig.Putroomdata2({
+                  keys: this.keys,
+                  values: JSON.stringify(all),
+                  id: this.id
+                });
+                // console.log(data);
+                if (data.code === 1 && data.msg === "ok") {
+                  this.getData()
+                  this.$message({
+                    type: "success",
+                    message: "保存成功!"
+                  });
+                }else{
+                this.$message({
+                  type: "warning",
+                  message: "保存失败!"
+                });
+              }
+          }else if(type === 2){
+            //发送post
+              this.loading = true;
+                let { data } = await this.$http.HallFunConfig.Postroomdata2({
+                  keys: this.keys,
+                  values: JSON.stringify(all),
+                  id: this.id
+                });
+                // console.log(data);
+                if (data.code === 1 && data.msg === "ok") {
+                  this.getData()
+                  this.loading = false;
+                  this.$message({
+                    type: "success",
+                    message: "发送服务器配置成功!"
+                  });
+                }else {
+                  this.loading = false;
+                  this.$message({
+                    type: "warning",
+                    message: "发送服务器配置失败!"
+                  });
+                }
+          }
 
         }else{
             this.$message({

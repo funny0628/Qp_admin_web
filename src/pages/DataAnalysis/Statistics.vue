@@ -4,21 +4,21 @@
     <div class="title">
       <el-date-picker
         style="margin-top:10px;width:200px"
-        v-model="end_time"
+        v-model="start_time"
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       -
       <el-date-picker
         style="margin-top:10px;width:200px"
-        v-model="start_time"
+        v-model="end_time"
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       <el-button type="primary" @click="search">查找</el-button>
@@ -62,8 +62,8 @@ export default {
   },
   created() {
     let today = new Date().getTime();
-    this.start_time = this.initTime(today);
-    this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
+    this.end_time = today;
+    this.start_time = (today - 60 * 60 * 24 * 7 * 1000);
     this.getData();
   },
   methods: {
@@ -72,24 +72,11 @@ export default {
     },
 
 
-    //获取时间格式
-    initTime(today) {
-      let myDate = new Date(today);
-      let year = myDate.getFullYear();
-      let month = myDate.getMonth() + 1;
-      let day = myDate.getDate();
-      return `${year}-${month}-${day}`;
-    },
-
     getData() {
-      this.startDate = this.start_time;
-      this.startDate = DeepData(this.startDate).replace(/[-]/g, "");
-      this.endDate = this.end_time;
-      this.endDate = DeepData(this.endDate).replace(/[-]/g, "");
-
+      // console.log(this.start_time,this.end_time);
       this.initData({
-        start_date:+this.endDate,
-        end_data: +this.startDate, 
+        start_date:Math.ceil(this.start_time/1000),
+        end_data:Math.ceil(this.end_time/1000), 
       });
     },
 

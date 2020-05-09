@@ -108,7 +108,7 @@
           style="margin-top:20px"
         >
           <el-form-item label="任务类型" prop="task_type">
-            <el-select v-model="form.task_type" placeholder="请选择">
+            <el-select v-model="form.task_type" placeholder="请选择" @change="Change">
               <el-option
                 v-for="item in optiontype"
                 :key="item.value"
@@ -242,6 +242,12 @@ export default {
           value: 1,
           label: "无指引"
         },
+      ],
+      alloptionguide: [
+        {
+          value: 1,
+          label: "无指引"
+        },
         {
           value: 2,
           label: "跳转分享微信朋友圈"
@@ -267,6 +273,18 @@ export default {
     this.initData();
   },
   methods: {
+    Change(val){
+      console.log(val);
+      if(val === '分享微信朋友' || val === '分享微信朋友圈'){
+        this.optionguide = this.alloptionguide
+      }else{
+        this.optionguide = [{
+          value: 1,
+          label: "无指引"
+        },]
+      }
+     
+    },
     add() {
       this.editForm(true, "新增", this.initform);
     },
@@ -356,7 +374,7 @@ export default {
         }
       });
     },
-    back() {},
+    back() { this.editForm(false, "新增", this.initform);},
 
     async initBackData(tableData){
           tableData.forEach((item)=>{
