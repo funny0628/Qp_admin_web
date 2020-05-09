@@ -47,34 +47,34 @@
         </el-form-item>
 
         <el-form-item label="底注" prop="dizhu">
-          <el-input style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.dizhu" placeholder="0"></el-input>
         </el-form-item>
         <el-form-item label="顶注" prop="dingzhu">
-          <el-input style="width:200px" v-model="ruleForm.dingzhu" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.dingzhu" placeholder="0"></el-input>
         </el-form-item>
         <el-form-item label="台费" prop="cost">
-          <el-input style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
+          <el-input type="number" style="width:200px" v-model="ruleForm.cost" placeholder="0"></el-input>(百分比)
         </el-form-item>
       
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="最大看牌轮数" prop="max_look_round">
-          <el-input style="width:200px" v-model="ruleForm.max_look_round" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max_look_round" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="最大可比轮数" prop="max_bet_round">
-          <el-input style="width:200px" v-model="ruleForm.max_bet_round" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max_bet_round" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="最小可比轮数" prop="comparable_bet_round">
-          <el-input style="width:200px" v-model="ruleForm.comparable_bet_round" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.comparable_bet_round" placeholder="0"></el-input>
      </el-form-item>
      
       </el-form>
@@ -83,12 +83,15 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'zjh_room_config',
   data() {
-     let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+      let checkValue = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
     };
     return {
       activeName: "",
@@ -130,33 +133,12 @@ export default {
       id: 0,
       keys: "",
       loading: false,
+      //房间配置的所有数据
+      ResData:{}
     };
   },
-  async created() {
-       let { data } = await this.$http.HallFunConfig.Getroomdata1({
-      key: "roomdata.lua"
-    });
-    // console.log(data);
-     this.id = data.data[0].id;
-    this.keys = data.data[0].sys_key;
-    let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
-    this.allData = res;
-    this.namelist.forEach((item,index)=>{
-      Object.keys(res).forEach((it)=>{
-        if(item === it){
-          this.currentlist[item] = res[it]
-          this.labellist.push(res[it].name)
-        }
-        if(index === 0){
-          this.activeName = item
-          this.ruleForm = res[item]
-        }
-      })
-    })
-    // console.log(this.allData,this.currentlist,this.ruleForm,this.labellist);
-    
-     
+  created() {
+    this.getData()
   },
   methods: {
 
@@ -167,59 +149,104 @@ export default {
         }
       })
     },
+
+    async getData() {
+      let { data } = await this.$http.HallFunConfig.Getroomdata1({
+        key: "roomdata.lua"
+      });
+      // console.log(data);
+      this.id = data.data[0].id;
+      this.keys = data.data[0].sys_key;
+      let res = JSON.parse(data.data[0].sys_val);
+      // console.log(res);
+      this.allData = res;
+      this.ResData = JSON.parse(JSON.stringify(res));
+      this.namelist.forEach((item,index)=>{
+        Object.keys(res).forEach((it)=>{
+          if(item === it){
+            this.currentlist[item] = res[it]
+            this.labellist.push(res[it].name)
+          }
+          if(index === 0){
+            this.activeName = item
+            this.ruleForm = res[item]
+          }
+        })
+      })
+    },
+    
     submitForm(formName,type) {
        this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.ruleForm);
+          console.log(this.ruleForm,this.currentlist,this.allData,this.ResData);
+          Object.keys(this.currentlist).forEach((item)=>{
+            this.currentlist[item].dizhu = +this.currentlist[item].dizhu
+            this.currentlist[item].dingzhu = +this.currentlist[item].dingzhu
+            // this.currentlist[item].cost = +this.currentlist[item].cost
+            this.currentlist[item].max = +this.currentlist[item].max
+            this.currentlist[item].min = +this.currentlist[item].min
+            // this.currentlist[item].max_bet_round = +this.currentlist[item].max_bet_round
+            // this.currentlist[item].max_look_round = +this.currentlist[item].max_look_round
+            // this.currentlist[item].comparable_bet_round = +this.currentlist[item].comparable_bet_round
+          })
+          Object.keys(this.currentlist).forEach((item)=>{
+            Object.keys(this.ResData).forEach((it)=>{
+              if(item === it){
+                this.ResData[it] = this.currentlist[item]
+              }
+            })
+          })
           
-          // console.log(this.ruleForm,this.currentlist,this.allData);
-          
-          // if(type === 1){
-          //   //发送put
-          //     let { data } = await this.$http.HallFunConfig.Putroomdata1({
-          //     keys: this.keys,
-          //     values: JSON.stringify(this.allData),
-          //     id: this.id
-          //   });
-          //   // console.log(data);
-          //   if (data.code === 1 && data.msg === "ok") {
-          //     this.$message({
-          //       type: "success",
-          //       message: "保存成功!"
-          //     });
-          //   }else{
-          //   this.$message({
-          //     type: "warning",
-          //     message: "保存失败!"
-          //   });
-          // }
-          // }else if(type === 2){
-          //   //发送post
-          //    this.loading = true;
-
-          //   let { data } = await this.$http.HallFunConfig.Postroomdata1({
-          //     keys: this.keys,
-          //     values: JSON.stringify(this.allData),
-          //     id: this.id
-          //   });
-          //   // console.log(data);
-          //   if (data.code === 1 && data.msg === "ok") {
-          //     this.loading = false;
-          //     this.$message({
-          //       type: "success",
-          //       message: "发送服务器配置成功!"
-          //     });
-          //   }else {
-          //     this.loading = false;
-          //     this.$message({
-          //       type: "warning",
-          //       message: "发送服务器配置失败!"
-          //     });
-          //   }
-          // }
+          if(type === 1){
+            //发送put
+              let { data } = await this.$http.HallFunConfig.Putroomdata1({
+              keys: this.keys,
+              values: JSON.stringify(this.ResData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.getData()
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
+          }else if(type === 2){
+            //发送post
+             this.loading = true;
+            let { data } = await this.$http.HallFunConfig.Postroomdata1({
+              keys: this.keys,
+              values: JSON.stringify(this.ResData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.getData()
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
+          }
 
         }else{
-          console.log("error submit!!");
+           this.$message({
+            type: "warning",
+            message: "输入正确格式的数字,必填项不能为空!"
+          });
           return false;
         }
        })

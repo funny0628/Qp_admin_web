@@ -25,7 +25,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       -
@@ -35,7 +35,7 @@
         type="date"
         placeholder="选择日期"
         format="yyyyMMdd"
-        value-format="yyyy-MM-dd"
+        value-format="timestamp"
       >
       </el-date-picker>
       <el-button type="primary" @click="search">查找</el-button>
@@ -159,9 +159,9 @@ export default {
   },
   created() {
     let today = new Date().getTime();
-    this.start_time = this.initTime(today);
-    this.end_time = this.initTime(today - 60 * 60 * 24 * 7 * 1000);
-    // console.log(this.start_time, this.end_time);
+    this.start_time = today;
+    this.end_time = (today - 60 * 60 * 24 * 7 * 1000);
+    console.log(this.start_time, this.end_time);
     this.initChannel();
     this.getData();
   },
@@ -183,28 +183,31 @@ export default {
         this.getData()
     },
 
-    getData() {
-      this.startDate = this.start_time;
-      this.startDate = DeepData(this.startDate).replace(/[-]/g, "");
-      this.endDate = this.end_time;
-      this.endDate = DeepData(this.endDate).replace(/[-]/g, "");
+    //时间戳转格式时间
+    timestampToTime(timestamp) {
+      var date = new Date(timestamp);
+      var Y = date.getFullYear() ;
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1);
+      var D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+      // var h = date.getHours() + ":";
+      // var m = date.getMinutes() + ":";
+      // var s = date.getSeconds();
+      return Y + M + D;
+    },
 
+    getData() {
+      console.log(this.end_time,this.start_time);
+      console.log(this.timestampToTime(this.end_time),this.timestampToTime(this.start_time));
       this.initData({
         page: this.currentPage,
         limit: this.limit,
-        start_date: +this.startDate,
-        end_data: +this.endDate,
+        end_data: +this.timestampToTime(this.start_time),
+        start_date: +this.timestampToTime(this.end_time),
         channel_name: this.avator_nameO === "所有渠道" ? "" : this.avator_nameO
       });
-    },
-
-    //获取时间格式
-    initTime(today) {
-      let myDate = new Date(today);
-      let year = myDate.getFullYear();
-      let month = myDate.getMonth() + 1;
-      let day = myDate.getDate();
-      return `${year}-${month}-${day}`;
     },
 
     //获取所有渠道

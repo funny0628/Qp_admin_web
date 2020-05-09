@@ -64,15 +64,15 @@
         </el-form-item>
 
         <el-form-item label="携带上限" prop="max">
-          <el-input v-model="ruleForm.max"></el-input>
+          <el-input type="number" v-model="ruleForm.max"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input v-model="ruleForm.min"></el-input>
+          <el-input type="number" v-model="ruleForm.min"></el-input>
         </el-form-item>
 
         <el-form-item label="子弹倍数" prop="multiple">
-          <el-input v-model="ruleForm.multiple"></el-input>
+          <el-input type="number" v-model="ruleForm.multiple"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -86,12 +86,15 @@
 </template>
 
 <script>
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'hl_fish_room_config',
   data() {
-    let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+     let checkTime = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
     };
     return {
       ruleForm: {
@@ -107,10 +110,10 @@ export default {
         is_hundred_game: ""
       },
       rules: {
-        max: [ { required: true, validator: checkValue, trigger: "blur" }],
-        min: [ {  required: true, validator: checkValue, trigger: "blur" }],
+        max: [ { required: true, validator: checkTime, trigger: "blur" }],
+        min: [ {  required: true, validator: checkTime, trigger: "blur" }],
         multiple: [
-          {  required: true, validator: checkValue, trigger: "blur" }
+          {  required: true, validator: checkTime, trigger: "blur" }
         ]
       },
       activeName: "",
@@ -118,13 +121,15 @@ export default {
       keys: "",
       loading: false,
       //所有房间的数据
-      allData: "",
+      allData: {},
       //匹配当前游戏的条件
       namelist: ["600", "601", "602"],
       //当前游戏的所有数据
       currentlist: {},
        //游戏场次类别
       labellist:[],
+      //所有数据
+      ResData:{}
     };
   },
 
@@ -140,6 +145,7 @@ export default {
     let res = JSON.parse(data.data[0].sys_val);
     // console.log(res);
     this.allData = res;
+    this.ResData = JSON.parse(JSON.stringify(res));
 
     this.namelist.forEach((it, index) => {
       Object.keys(res).forEach(item => {
@@ -160,14 +166,24 @@ export default {
     submit(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.ruleForm);
-          
-          // console.log(this.ruleForm,this.currentlist,this.allData);
+          // console.log(this.ruleForm,this.currentlist,this.allData,this.ResData);
+          Object.values(this.currentlist).forEach((item)=>{
+            item.max = +item.max
+            item.min = +item.min
+            item.multiple = +item.multiple
+          })
+          Object.keys(this.ResData).forEach((item)=>{
+            Object.keys(this.currentlist).forEach((it)=>{
+              if(item === it){
+                this.ResData[item] = this.currentlist[it]
+              }
+            })
+          })
 
           if (type === 1) {
             let { data } = await this.$http.HallFunConfig.Putroomdata6({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -187,7 +203,7 @@ export default {
 
             let { data } = await this.$http.HallFunConfig.Postroomdata6({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -208,7 +224,7 @@ export default {
         } else {
            this.$message({
             type: "warning",
-            message: "输入正确格式的数字,必填项不能为空!"
+            message:"输入正确格式的数字,必填项不能为空!!"
           });
           return false;
         }
