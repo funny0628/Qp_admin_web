@@ -8,6 +8,13 @@
         :stroke-width="26"
         :percentage="percentage"
       ></el-progress>
+      <span
+        v-if="percentage == 100"
+        v-loading.fullscreen="loading"
+        element-loading-text="资源包整合中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.2)"
+      ></span>
     </div>
     <input-area>
       <div style="margin-bottom:10px;">
@@ -581,17 +588,21 @@ export default {
         fd.append("file_name", that.fileData.file_name);
         const config = {
           onUploadProgress: progressEvent => {
-            console.log(progressEvent);
             // progressEvent.loaded:已上传文件大小
             // progressEvent.total:被上传文件的总大小
-              that.percentage =
+            that.percentage =
               Number(
-                (((progressEvent.loaded + currentChunk * chunkSize) / file.size) * 100).toFixed(2)
+                (
+                  ((progressEvent.loaded + currentChunk * chunkSize) /
+                    file.size) *
+                  100
+                ).toFixed(2)
               ) || 0;
+            console.log(that.percentage);
           }
         };
         that.$http
-          .post("v1/backend/sys-conf/hot-update/package", fd,config)
+          .post("v1/backend/sys-conf/hot-update/package", fd, config)
           .then(res => {
             console.log(res);
             if (res.data.code === 200) {
@@ -639,15 +650,18 @@ export default {
       sectionUpload();
     },
     formatResource(obj) {
-      console.log(obj)
+      console.log(obj);
       var str = "";
       for (var key in obj) {
         let item = obj[key];
         str += key + "项目配置地址:";
-        for (var k in item) {
-          // return Object.values(k);
-          str += item[k];
+        var indexes = Object.keys(item);
+        for (var i = indexes.length - 1; i >= 1; i--) {
+          str += item[indexes[i]];
         }
+        // for (var k in item) {
+        //   str += item[k];
+        // }
         str += "\n";
       }
       return str;
@@ -675,8 +689,6 @@ export default {
 
 <style scoped>
 #hotUpdate-main .mask {
-  /* width: 100%;
-  height: 100%; */
   position: absolute;
   top: 0;
   left: 0;
