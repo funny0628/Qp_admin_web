@@ -22,6 +22,7 @@
       >
         <el-form-item label="肥料" prop="experience">
           <el-input
+          type="number"
             style="width:220px"
             v-model="form.experience"
             placeholder="0"
@@ -52,6 +53,13 @@
 export default {
   name:'rainmaker_other_config',
   data() {
+     let checkTime = (rule,value,callback) => {
+      if(value === '') {
+        return callback(new Error('必填项不可以为空!!'))
+      }else{
+        callback();
+      }
+    }
     return {
       form: {
         experience: "",
@@ -60,19 +68,20 @@ export default {
       },
       rules: {
         experience: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         help: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ],
         task_txt: [
-          { required: true, message: "必填项不可以为空", trigger: "blur" }
+          { required: true, validator: checkTime, trigger: "blur" }
         ]
       },
       keys: "",
       id: "",
       allData: {},
-      loading: false
+      loading: false,
+      ResData:{}
     };
   },
   created() {
@@ -82,12 +91,26 @@ export default {
     send(formName, type) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          console.log(this.form);
+          if(this.form.experience === '' || this.form.help === '' || this.form.task_txt === ''){
+              this.$message({
+                type: "warning",
+                message: "必填的项不可以为空!"
+              });
+              return false
+          }else{
+            this.form.experience = +this.form.experience 
+          }
+          Object.keys(this.ResData).forEach((item)=>{
+            if(item === '112'){
+              this.ResData[item].ac_content.other = this.form
+            }
+          })
+          // console.log(this.ResData);
           if (type === 1) {
-            // console.log(this.form,this.allData);
-
             let { data } = await this.$http.HallFunConfig.PutActivityNew31({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -106,7 +129,7 @@ export default {
             this.loading = true;
             let { data } = await this.$http.HallFunConfig.PostActivityNew31({
               keys: this.keys,
-              values: JSON.stringify(this.allData),
+              values: JSON.stringify(this.ResData),
               id: this.id
             });
             // console.log(data);
@@ -143,9 +166,11 @@ export default {
       this.id = data.data[0].id;
       let res = data.data[0].sys_val;
       this.allData = JSON.parse(res);
+      this.ResData = JSON.parse(JSON.stringify(this.allData))
+      console.log(this.ResData);
       Object.keys(this.allData).forEach(item => {
-        if (this.allData[item].ac_type === "10003") {
-          this.form = this.allData[item].ac_content.other[0];
+        if (item === "112") {
+          this.form = this.allData[item].ac_content.other;
         }
       });
       // console.log(this.form, this.allData);

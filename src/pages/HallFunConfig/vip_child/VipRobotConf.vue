@@ -9,13 +9,13 @@
         @click="openAddDialog"
       >添加</el-button>
       <el-button type="primary" @click="sendDataToServer">发送到服务端配置</el-button>
-      <el-button
+      <!-- <el-button
         v-has="'robot_random_probability'"
         type="danger"
         size="medium"
         style="margin-top: 10px;margin-bottom: 10px;"
         @click="openRankDialog"
-      >排行榜机器人随机概率</el-button>
+      >排行榜机器人随机概率</el-button> -->
     </input-area>
     <div class="bd">
       <el-table
