@@ -68,7 +68,7 @@
                 </div>
                 <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
               </div>-->
-              <el-dropdown>
+              <el-dropdown trigger="click">
                 <span class="el-dropdown-link">
                   {{loginUser}}
                   <i class="el-icon-caret-bottom"></i>
