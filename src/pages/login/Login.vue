@@ -95,8 +95,8 @@ export default {
         this.$router.push({
           name: "home",
         });
-        localStorage.setItem('user_info', JSON.stringify(res.data.data));
-        localStorage.setItem('user', JSON.stringify(this.formData.username));
+        localStorage.setItem('user_info', JSON.stringify(res.data.data.permissions));
+        localStorage.setItem('user', JSON.stringify(res.data.data.user));
       } else {
         this.$message({
           type: "error",

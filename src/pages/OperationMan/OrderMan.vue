@@ -41,7 +41,14 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" @click="searchData">查找</el-button>
+      <el-button
+        type="primary"
+        v-loading.fullscreen="loading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        @click="searchData"
+      >查找</el-button>
       <el-button v-has="'add_order'" type="primary" @click="openPeopleDialog">添加人工订单</el-button>
       <!-- <el-button type="primary">导出excel</el-button> -->
     </input-area>
@@ -194,6 +201,7 @@ export default {
   },
   data() {
     return {
+      loading:false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -304,6 +312,7 @@ export default {
       this.getOrderList();
     },
     getOrderList() {
+      this.loading = true
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -327,6 +336,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.loading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }
