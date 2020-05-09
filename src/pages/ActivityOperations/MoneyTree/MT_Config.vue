@@ -197,15 +197,31 @@ export default {
       }
     };
      let checkWeight = (rule,value,callback) => {
-      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?(=[0-9]+)?$/
-      if(value !== '') {
-        if(!reg.test(value)){
-          return callback(new Error('请按照提示的格式填写!!'))
-        }else{
-          callback();
-        }
+      let reg = /^[0-9]*$/
+      let val = value.split(',')
+      let arr = []
+      val.forEach((item)=>{
+        arr.push(item.split('=')['0'])
+        arr.push(item.split('=')['1'])
+      })
+      let isall = true
+      arr.forEach((ietm)=>{
+        if(+ietm){
+          if(parseInt(ietm) < parseFloat(ietm)){
+            isall = false
+          }else{
+             isall = true
+          }
+          }else{
+             console.log('fou');
+             isall = false
+          }
+      })
+      // console.log(isall);
+      if(isall){
+        callback()
       }else{
-        return callback(new Error('必填项不可以为空!!'))
+        return callback(new Error('请按照提示输入正确格式的值!!'))
       }
     };
     

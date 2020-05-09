@@ -61,7 +61,7 @@
      </el-form-item>
      
         <el-form-item label="抢庄区间设置" prop="grab_banker_times">
-          <el-input style="width:200px" v-model="ruleForm.grab_banker_times" placeholder="1,2|2,3|3,4"></el-input> 1,2|2,3|3,4 或者1,2;2,3;3;4 多个数字用逗号分隔,多个配置用;号或者|分隔
+          <el-input style="width:200px" v-model="ruleForm.grab_banker_times" placeholder="1,2|2,3|3,4"></el-input> 1,2|2,3|3,4 或者1,2;2,3;3;4 多个数字用逗号分隔,多个配置用 | 号分隔
         </el-form-item>
        
      
@@ -90,6 +90,36 @@ export default {
         return callback(new Error('必填项不可以为空!!'))
       }
     };
+     let checkWeight = (rule,value,callback) => {
+      let reg = /^[0-9]*$/
+      let val = value.split('|')
+      let arr = []
+      val.forEach((item)=>{
+        arr.push(item.split(',')['0'])
+        arr.push(item.split(',')['1'])
+      })
+      console.log(arr);
+      
+      let isall = true
+      arr.forEach((ietm)=>{
+        if(+ietm){
+          if(parseInt(ietm) < parseFloat(ietm)){
+            isall = false
+          }else{
+             isall = true
+          }
+          }else{
+             console.log('fou');
+             isall = false
+          }
+      })
+      // console.log(isall);
+      if(isall){
+        callback()
+      }else{
+        return callback(new Error('请按照提示输入正确格式的值!!'))
+      }
+    };
     return {
       activeName: "",
       ruleForm: {
@@ -111,7 +141,7 @@ export default {
          cost: [{ required: true, validator: checkValue, trigger: "blur" }],
          max: [{ required: true, validator: checkValue, trigger: "blur" }],
          min: [{ required: true, validator: checkValue, trigger: "blur" }],
-         grab_banker_times: [{ required: true, validator: checkLimit, trigger: "blur" }],
+         grab_banker_times: [{ required: true, validator: checkWeight, trigger: "blur" }],
       },
       //房间配置的所有数据
       allData:{},
@@ -257,7 +287,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 0px 10px;
+    padding: 10px;
   }
 }
 </style>
