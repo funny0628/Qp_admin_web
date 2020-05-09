@@ -1,7 +1,23 @@
 <template>
   <div id="whiteList-main">
+    <div class="mask" v-if="showProgress">
+      <el-progress
+        class="progress"
+        v-if="showProgress"
+        :text-inside="true"
+        :stroke-width="26"
+        :percentage="percentage"
+      ></el-progress>
+      <span
+        v-if="percentage == 100"
+        v-loading.fullscreen="apkloading"
+        element-loading-text="资源包整合中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.2)"
+      ></span>
+    </div>
     <input-area>
-      <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加</el-button>
+      <el-button type="primary" size="medium" @click="openAddDialog">添加</el-button>
     </input-area>
     <div class="bd">
       <el-table
@@ -47,7 +63,7 @@
       ></el-pagination>
     </div>
     <!-- 添加版本管理信息 -->
-    <el-dialog title="添加版本管理信息" :visible.sync="dialogFormVisible">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="渠道" :label-width="formLabelWidth">
           <el-select v-model="form.channel" placeholder="请选择渠道">
@@ -64,16 +80,7 @@
           <el-radio v-model="form.radio" label="2">禁用</el-radio>
         </el-form-item>
         <el-form-item label="文件" :label-width="formLabelWidth">
-          <el-upload
-            v-loading.fullscreen="loading"
-            element-loading-text="资源包上传中"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(0, 0, 0, 0.5)"
-            action
-            accept=".apk"
-            :show-file-list="false"
-            :http-request="uploadFile"
-          >
+          <el-upload action accept=".apk" :show-file-list="false" :http-request="uploadFile">
             <el-button size="small" type="primary">apk/ipa包上传</el-button>
           </el-upload>
         </el-form-item>
@@ -87,7 +94,6 @@
           <el-input v-model="form.package_url" disabled autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
-      <div>{{form}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addVersionUpdate">确 定</el-button>
@@ -135,6 +141,9 @@ export default {
   data() {
     return {
       loading: false,
+      apkloading: false,
+      showProgress: false,
+      percentage: 0,
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -160,6 +169,16 @@ export default {
     };
   },
   methods: {
+    resetForm() {
+      this.form = {
+        version_id: null,
+        channel: "",
+        radio: "1",
+        version: "",
+        package_size: "",
+        package_url: ""
+      };
+    },
     getWholePackageList() {
       this.$http
         .get("v1/backend/sys-conf/package", {
@@ -188,43 +207,73 @@ export default {
         }
       });
     },
-    addVersionUpdate() {
-      let data = {
-        channel: this.form.channel,
-        version: this.form.version,
-        status: Number(this.form.radio),
-        // package_size: this.form.package_size,
-        // package_url: this.form.package_url
-        package_size: 100,
-        package_url: "www.baidu.com"
-      };
-      this.$http.post("v1/backend/sys-conf/package", data).then(res => {
-        console.log(res);
-        if (res.data.code === 200) {
-          this.dialogFormVisible = false;
-          this.getWholePackageList();
-          this.$message({
-            type: "success",
-            message: res.data.msg
-          });
-        } else {
-          this.dialogFormVisible = false;
-          this.$message({
-            type: "info",
-            message: res.data.msg
-          });
-        }
-      });
+    openAddDialog() {
+      this.dialogFormVisible = true;
+      this.percentage = 0;
+      this.dialogTitle = "添加版本管理信息"
     },
-    handleHistory(row) {
-      console.log(row);
-      this.loading = true;
+    addVersionUpdate() {
+      if (!this.form.version_id) {
+        let data = {
+          channel: this.form.channel,
+          version: this.form.version,
+          status: Number(this.form.radio),
+          package_size: this.form.package_size,
+          package_url: this.form.package_url
+        };
+        this.$http.post("v1/backend/sys-conf/package", data).then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.dialogFormVisible = false;
+            this.getWholePackageList();
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          } else {
+            this.dialogFormVisible = false;
+            this.$message({
+              type: "info",
+              message: res.data.msg
+            });
+          }
+        });
+      } else {
+        let data = {
+          version_id: this.form.version_id,
+          channel: this.form.channel,
+          version: this.form.version,
+          status: Number(this.form.radio),
+          package_size: this.form.package_size,
+          package_url: this.form.package_url
+        };
+        this.$http.put("v1/backend/sys-conf/package", data).then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.dialogFormVisible = false;
+            this.getHistoryVersion(this.form.channel);
+            this.getWholePackageList()
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          } else {
+            this.dialogFormVisible = false;
+            this.$message({
+              type: "info",
+              message: res.data.msg
+            });
+          }
+        });
+      }
+    },
+    getHistoryVersion(channel) {
       this.$http
         .get("v1/backend/sys-conf/package/history", {
           params: {
             page: this.currentPage,
             limit: this.pageSize,
-            channel: row.channel
+            channel: channel
           }
         })
         .then(res => {
@@ -236,13 +285,27 @@ export default {
           }
         });
     },
+    handleHistory(row) {
+      console.log(row);
+      this.dialogTitle = '编辑版本管理信息'
+      let channel = row.channel;
+      this.loading = true;
+      this.getHistoryVersion(channel);
+    },
     handleEdit(row) {
       console.log(row);
       this.dialogVisible = false;
       this.dialogFormVisible = true;
+      this.form.version_id = row.id;
+      this.form.channel = row.channel
+      this.form.radio = String(row.status)
+      this.form.version = row.version
+      this.form.package_size = row.size
+      this.form.package_url = row.apk_update_url
     },
     handleDelete(row) {
       console.log(row);
+      let channel = row.channel;
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -258,7 +321,8 @@ export default {
             .then(res => {
               console.log(res);
               if (res.data.code === 200) {
-                this.handleHistory();
+                this.getHistoryVersion(channel);
+                this.getWholePackageList();
                 this.$message({
                   type: "success",
                   message: res.data.msg
@@ -276,15 +340,53 @@ export default {
     uploadFile(f) {
       var file = f.file;
       console.log(file);
+      this.showProgress = true;
+      this.apkloading = true;
       // 用FormData传输文件对象
       let fd = new FormData();
       // 设置文件上传接口的需要的参数
       fd.append("file", file);
       fd.append("file_name", file.name);
       fd.append("package_size", file.size);
-      this.$http.post("v1/backend/sys-conf/package/upload", fd).then(res => {
-        console.log(res);
-      });
+      const config = {
+        onUploadProgress: progressEvent => {
+          // progressEvent.loaded:已上传文件大小
+          // progressEvent.total:被上传文件的总大小
+          this.percentage = Number(
+            ((progressEvent.loaded / progressEvent.total) * 100).toFixed(2)
+          );
+        }
+      };
+      this.$http
+        .post("v1/backend/sys-conf/package/upload", fd, config)
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 200) {
+            this.showProgress = false;
+            this.apkloading = false;
+            this.$message({
+              type: "success",
+              message: "资源包上传成功"
+            });
+            this.form.package_size = res.data.data.package_size;
+            this.form.package_url = res.data.data.package_url;
+          } else {
+            this.showProgress = false;
+            this.apkloading = false;
+            this.$message({
+              type: "info",
+              message: "资源包上传失败"
+            });
+          }
+        })
+        .catch(res => {
+          this.$message({
+            type: "error",
+            message: "请求接口异常"
+          });
+          this.showProgress = false;
+          this.apkloading = false;
+        });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -305,6 +407,20 @@ export default {
 </script>
 
 <style scoped>
+#whiteList-main .mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100000000000;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#whiteList-main .mask .progress {
+  margin-top: 25%;
+  width: 60%;
+  margin-left: 20%;
+}
 #whiteList-main .bd {
   padding-left: 20px;
 }

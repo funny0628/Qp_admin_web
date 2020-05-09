@@ -169,8 +169,6 @@
             <td width="100">开牌倍数:{{item.card_times}}</td>
             <td width="100">{{item.add_score}}</td>
           </tr>
-          <tr />
-          <tr></tr>
         </table>
       </el-form>
     </el-dialog>
@@ -272,18 +270,18 @@
             <td
               v-for="(item,index) in player_win_list"
               :key="index"
-            >{{ item[0] | formatFreeCommission }}</td>
+            ><span v-if="item[0]">{{ item[0] | formatFreeCommission }}</span><span v-else>0</span></td>
             <td>{{free_win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
           <tr>
             <td>非免佣</td>
             <td
               v-for="(item,index) in player_win_list"
               :key="index"
-            >{{ item[0] | formatCommission }}</td>
+            ><span v-if="item[0]">{{ item[0] | formatCommission }}</span><span v-else>0</span></td>
             <td>{{not_free_win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -328,9 +326,9 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
             <td>{{win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -411,9 +409,9 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
             <td>{{win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -446,9 +444,9 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
             <td>{{win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -485,9 +483,9 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
             <td>{{win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -520,9 +518,9 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index">{{ item[0] | formatObj }}</td>
+            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
             <td>{{win_lost_gold}}</td>
-            <td></td>
+            <td>{{stage_fee}}</td>
           </tr>
         </table>
       </el-form>
@@ -627,7 +625,8 @@ export default {
         money: "",
         check_money: ""
       },
-      true_user: "",
+      true_user: "", //真人
+      stage_fee: 0,
       dialogFruitVisible: false, //水果机
       tableName: "",
       exinfo: {},
@@ -719,6 +718,7 @@ export default {
       this.loading = true;
       console.log(row);
       this.true_user = row.true_user;
+      this.stage_fee = row.total_fee
       this.$http
         .get("v1/backend/operation/play/detail", {
           params: {
