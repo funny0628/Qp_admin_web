@@ -6,8 +6,8 @@
         <el-button type="primary" size="medium" @click="openAddComDialog">添加公司</el-button>
       </div>
       <span>公司</span>
-      <el-select v-model="format.company" placeholder="请选择公司" size="medium">
-        <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      <el-select v-model="format.company" clearable placeholder="请选择公司" size="medium">
+        <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.name"></el-option>
       </el-select>
       <span>渠道</span>
         <el-input v-model="format.searchChannel" autocomplete="off" placeholder="请输入渠道名" style="width:20%;"></el-input>
@@ -53,7 +53,7 @@
           <el-input v-model="form.channel_id" autocomplete="off" placeholder="请输入渠道编号"></el-input>
         </el-form-item>
         <el-form-item label="所属公司" :label-width="formLabelWidth">
-          <el-select v-model="form.belong_company" placeholder="请选择" style="width:100%;">
+          <el-select v-model="form.belong_company" clearable placeholder="请选择" style="width:100%;">
             <el-option
               v-for="item in companyList"
               :key="item.id"

@@ -29,7 +29,7 @@
         <el-table-column prop="update_time" label="更新时间" align="center">
           <template slot-scope="scope">{{scope.row.update_time | dateFormat}}</template>
         </el-table-column>
-        <el-table-column fixed="right" align="center" width="200">
+        <el-table-column fixed="right" align="center" width="300">
           <template slot-scope="scope">
             <el-button
               v-has="'modify_user'"
@@ -37,6 +37,11 @@
               type="primary"
               @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handlePsd(scope.row)"
+            >修改密码</el-button>
             <el-button
               v-has="'role_assign'"
               size="mini"
@@ -78,10 +83,11 @@
         <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth" style="width:50%;">
           <el-input v-model="form.phone" maxlength="11" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password" :label-width="formLabelWidth" style="width:50%;">
+        <el-form-item v-if="!form.uid" label="密码" prop="password" :label-width="formLabelWidth" style="width:50%;">
           <el-input v-model="form.password" type="password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item
+          v-if="!form.uid"
           label="确认密码"
           prop="password2"
           :label-width="formLabelWidth"
@@ -117,6 +123,21 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRoleAssign = false">取 消</el-button>
         <el-button type="primary" @click="assignRole">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 修改密码 -->
+    <el-dialog title="修改用户密码" :visible.sync="dialogPsdVisible" width="30%">
+      <el-form :model="psdForm">
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="psdForm.psd" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="psdForm.checkPsd" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogPsdVisible = false">取 消</el-button>
+        <el-button type="primary" @click="modifyPsd">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -192,10 +213,11 @@ export default {
       currentPage: 1,
       total: 0,
       dialogAddUser: false,
+      dialogPsdVisible: false,
       dialogTitle: "",
       formLabelWidth: "120px",
       form: {
-        uid: -1,
+        uid: null,
         username: "",
         nick_name: "",
         email: "",
@@ -203,6 +225,11 @@ export default {
         password: "",
         password2: "",
         channel: []
+      },
+      psdForm: {
+        uid: null,
+        psd: "",
+        checkPsd: ""
       },
       channelList: [],
       form2: {
@@ -230,6 +257,7 @@ export default {
   methods: {
     resetForm() {
       this.form = {
+        uid: null,
         username: "",
         nick_name: "",
         email: "",
@@ -280,8 +308,8 @@ export default {
           nick_name: this.form.nick_name,
           email: this.form.email,
           phone: this.form.phone,
-          password: this.form.password,
-          password2: this.form.password2,
+          // password: this.form.password,
+          // password2: this.form.password2,
           channel: JSON.stringify(this.form.channel)
         };
         const res = await this.$http.put("v1/backend/auth/users", data);
@@ -328,15 +356,26 @@ export default {
       this.form.uid = row.id;
       this.form.channel = JSON.parse(row.channel);
     },
-    // async updateUser() {
-    //   console.log(this.form);
-    //   const res = await this.$http.put("v1/backend/auth/users", this.form);
-    //   console.log(res);
-    //   if (res.data.code === 200) {
-    //     this.dialogAddUser = false;
-    //     this.getUserList();
-    //   }
-    // },
+    handlePsd(row) {
+      console.log(row)
+      this.dialogPsdVisible = true
+      this.psdForm = {
+        uid: null,
+        psd: "",
+        checkPsd: ""
+      }
+      this.psdForm.uid = row.id
+    },
+    modifyPsd() {
+      let data = {
+        uid: this.psdForm.uid,
+        password: this.psdForm.psd,
+        password2: this.psdForm.checkPsd
+      }
+      this.$http.post('v1/backend/operation/user/password',data).then(res => {
+        console.log(res)
+      })
+    },
     handleRole(index, row) {
       console.log(row)
       this.dialogRoleAssign = true;
