@@ -1,7 +1,17 @@
 <template>
   <div id="WithdrawRec-main">
     <input-area>
-      <!-- <el-button type="primary" size="medium" style="background-color:#ffc75a;border:none;">关闭音乐提醒</el-button> -->
+      <el-button
+        type="primary"
+        size="medium"
+        style="background-color:#ffc75a;border:none;"
+        @click="closeMusic"
+      >关闭音乐提醒</el-button>
+      <div style="display:none;">
+        <audio controls loop id="play">
+          <source src="../../../static/music/hint.mp3" type="audio/mpeg" />
+        </audio>
+      </div>
       <el-select v-model="format.withdraw_status" placeholder="请选择" clearable size="medium">
         <el-option
           v-for="item in orderStatus"
@@ -120,6 +130,12 @@ export default {
     InfoTable,
     PermissionButton
   },
+  props: {
+    newOrder: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       pagesize: 10,
@@ -203,7 +219,7 @@ export default {
         pass: "",
         order_id: "",
         remark: ""
-      }
+      },
     };
   },
   methods: {
@@ -248,11 +264,13 @@ export default {
       this.dialogVisible = true;
       this.form2.pass = "通过";
       this.form2.order_id = row.WithdrawId;
+      this.form2.remark = ""
     },
     handleReject(row) {
       console.log(row);
       this.dialogVisible = true;
       this.form2.order_id = row.WithdrawId;
+      this.form2.remark = ""
     },
     checkOrderStatus() {
       let data = {
@@ -265,6 +283,7 @@ export default {
         if (res.data.code == 200) {
           this.dialogVisible = false;
           this.getWithdrawRec();
+          this.closeMusic()
         }
       });
     },
@@ -275,11 +294,47 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getWithdrawRec();
+    },
+    // newMsgSearch() {
+    //   this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
+    //     console.log(res)
+    //     if (res.data.code == 200) {
+    //       if (res.data.data.unread_total) {
+    //         var audio = document.getElementById("play");
+    //         audio.play(); //播放提示音
+    //       }
+    //     }
+    //   });
+    // },
+    closeMusic() {
+      var audio = document.getElementById("play");
+      audio.pause(); //关闭提示音
+      this.$http.post('v1/backend/operation/withdraw/notice').then(res => {
+        console.log(res)
+        if(res.data.code == 200) {
+          
+        }
+      })
+    },
+    playMusic() {
+      if (this.newOrder !== 0) {
+        var audio = document.getElementById("play");
+        audio.play(); //播放提示音
+      }
     }
   },
   mounted() {
     this.getWithdrawRec();
+    this.playMusic()
+    // this.newMsgSearch();
+    // this.intervalId = setInterval(() => {
+    //   this.newMsgSearch();
+    // }, 60000);
+    // console.log(this.intervalId)
   }
+  // beforeDestroy() {
+  //   clearInterval(this.intervalId);
+  // }
 };
 </script>
 
