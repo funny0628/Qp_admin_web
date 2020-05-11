@@ -210,13 +210,22 @@
     <el-dialog title="详情" :visible.sync="dialogFishVisible" width="60%">
       <el-form :model="form" style="background-color:#f2f2f2;">
         <div style="width:100%;height:30px;line-height:30px;">{{tableName}}</div>
-        <el-table border :data="tableData" style="width: 100%">
-          <el-table-column prop="date" label="玩家id" width="180"></el-table-column>
-          <el-table-column prop="name" label="游戏前的金币" width="180"></el-table-column>
-          <el-table-column prop="address" label="游戏后的金币"></el-table-column>
-          <el-table-column prop="address" label="输赢金额"></el-table-column>
-          <el-table-column prop="address" label="台费"></el-table-column>
-        </el-table>
+        <table border="1" width="100%" style="text-align:center;background-color:#fff;">
+          <tr>
+            <th>玩家id</th>
+            <th>游戏前的金币</th>
+            <th>游戏后的金币</th>
+            <th>输赢金额</th>
+            <th>台费</th>
+          </tr>
+          <tr>
+            <td>{{fish_uid}}</td>
+            <td>{{before_score}}</td>
+            <td>{{left_score}}</td>
+            <td>{{add_score}}</td>
+            <td>{{pay_fee}}</td>
+          </tr>
+        </table>
       </el-form>
     </el-dialog>
     <!-- 游戏详情  百家乐-传奇 -->
@@ -638,6 +647,12 @@ export default {
       game_name: "",
       dialogLandlordVisible: false, //斗地主
       dialogFishVisible: false, //捕鱼达人
+      game_type: "",//捕鱼需要传的游戏类型
+      before_score: 0,
+      left_score: 0,
+      add_score: 0,
+      pay_fee: 0,
+      fish_uid: 0,
       dialogBaihapVisible: false, //百家乐
       free_win_lost_gold: 0,
       not_free_win_lost_gold: 0,
@@ -722,7 +737,8 @@ export default {
       this.$http
         .get("v1/backend/operation/play/detail", {
           params: {
-            table_gid: row.table_gid
+            table_gid: row.table_gid,
+            game_type: row.game_type
           }
         })
         .then(res => {
@@ -747,6 +763,11 @@ export default {
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "捕鱼达人") {
               this.dialogFishVisible = true;
+              this.before_score = res.data.data.before_score
+              this.left_score = res.data.data.left_score
+              this.pay_fee = res.data.data.pay_fee
+              this.add_score = res.data.data.add_score
+              this.fish_uid = res.data.data.uid
             } else if (res.data.data.game_name == "百家乐") {
               this.dialogBaihapVisible = true;
               this.system_result = res.data.data.exinfo.system_result;
