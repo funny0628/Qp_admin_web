@@ -340,6 +340,8 @@ export default {
   },
   created() {
     this.initdata({ page: this.currentPage, limit: this.limit,title:this.searchinput });
+    this.initopa()
+    this.initSopa()
   },
 
   methods: {
@@ -590,7 +592,10 @@ export default {
       let localdata = this.formateData(DeepData(data.data));
       this.tableData = localdata;
       this.total = data.total;
-      //支付方式数据
+    },
+    
+    async initopa(){
+        //支付方式数据
       let resdata = await this.$http.HallFunConfig.GetNameLiat({type_id:2});
       let opation = resdata.data.data[0]
       let opaObj =[]
@@ -599,20 +604,18 @@ export default {
       })
       this.opaObj = opaObj
       console.log(this.opaObj);
-      
-
-
+    },
+    async initSopa(){
       //支付小类数据
       let Smdata = await this.$http.HallFunConfig.GetNameLiat({type_id:9});
       let Smopation = Smdata.data.data[0]
-       let SmopaObj =[]
-       Object.keys(Smopation).forEach((item)=>{
+      let SmopaObj =[]
+      Object.keys(Smopation).forEach((item)=>{
         SmopaObj.push({label:Smopation[item],value:item})
       })
       this.SmopaObj = SmopaObj
       console.log(this.SmopaObj);
-      
-    },
+    }
   }
 };
 </script>
