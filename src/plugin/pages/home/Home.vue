@@ -37,10 +37,11 @@
               :lg="10"
               style="justify-content: flex-end"
             >
-              <template v-if="headerVue">
-                <component :is="headerVue" @forward="forward"></component>
-              </template>
-              <template v-else>
+              <!-- <template v-if="headerVue"> -->
+                <!-- <component :is="headerVue" @forward="forward"></component> -->
+                <header-nav @forward="forward"></header-nav>
+              <!-- </template> -->
+              <!-- <template v-else>
                 <div class="btn-area">
                   <a class="btn-message"></a>
                   <a class="btn-settings"></a>
@@ -58,7 +59,7 @@
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
-              </template>
+              </template> -->
             </el-col>
             <el-col :xs="8" :sm="2" :md="2" :lg="2">
               <!-- <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
@@ -129,6 +130,7 @@
             v-show="item.name === activeName"
             :params="{}"
             @forward="forward"
+            :newOrder="newOrder"
             @back="del(index)"
           ></page>
         </div>
@@ -155,6 +157,7 @@
 import Vue from "vue";
 import Page from "../../components/Page";
 import NavMenu from "../../components/NavMenu";
+import headerNav from '../../../components/HeaderMenu'
 import root from "../../script/common/Root";
 import { mapState } from "vuex";
 import { SIZE_CHANGE } from "../../script/store/mutationsType";
@@ -163,7 +166,7 @@ import NProgress from "nprogress"; // Progress 进度条
 let $this = null;
 export default {
   name: "Home",
-  components: { NavMenu, Page },
+  components: { NavMenu, Page,headerNav },
   data() {
     return {
       defaultActive: "",
@@ -181,7 +184,8 @@ export default {
         uid: null,
         psd: "",
         checkPsd: ""
-      }
+      },
+      newOrder: 0,
     };
   },
   methods: (() => {
@@ -264,9 +268,9 @@ export default {
           $this.showNavMenu = false;
         }
       },
-      forward(data) {
-        console.log(data);
+      forward(data,count) {
         $this.add(data["name"]);
+        $this.newOrder = count
       },
       back() {},
       closeNavMenu(done) {

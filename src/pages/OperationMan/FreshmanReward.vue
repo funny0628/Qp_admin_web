@@ -2,7 +2,7 @@
   <div id="FreshmanReward-main">
     <input-area>
       <!-- <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加奖励</el-button> -->
-      <!-- <el-button type="primary" size="medium" @click="save(currentIndex)">保存</el-button> -->
+      <el-button type="primary" size="medium" @click="save(currentIndex)">保存</el-button>
       <!-- <el-button type="primary" size="medium" @click="sendConfigFile">发送到服务器配置</el-button> -->
     </input-area>
     <div class="bd">
@@ -16,45 +16,77 @@
         >{{item}}</div>
       </div>
       <div style="margin-top:10px;margin-bottom:10px;">
-        <!-- <el-button type="primary" size="medium" @click="add">添加</el-button> -->
+        <!-- <el-button type="success" size="medium" @click="add">添加</el-button> -->
       </div>
       <!-- <div style="width:50%;margin-bottom:10px;" v-for="(item,index) in counter" :key="index"> -->
-      <el-row
-        :gutter="20"
-        v-for="(item,index) in counter"
-        :key="index"
-        style="margin-bottom:10px;width:50%;"
-      >
-        <el-col :span="10">
-          <el-row>
-            <el-col :span="20">
-              <el-select size="small" v-model="value" placeholder="请选择" style="width:100%;">
-                <el-option label="金币" value="1001"></el-option>
-                <!-- <el-option label="现金" value="money"></el-option> -->
-              </el-select>
-            </el-col>
-            <el-col :span="4" style="height:36px;line-height:36px;color:#6c6c6c;padding-left:5px;">
-              <span>(元)</span>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="14">
-          <el-row>
-            <el-col :span="20" style="height:36px;">
-              <el-input
-                size="small"
-                v-model.number="item.newbie_award"
-                autocomplete="off"
-                placeholder
-                style="height:100%;"
-              ></el-input>
-            </el-col>
-            <el-col :span="4" style="padding-left:5px;">
-              <!-- <el-button type="primary" size="small" @click="deleteItem(index)">删除</el-button> -->
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
+        <el-row :gutter="20" v-if="currentIndex == 0">
+          <el-col :span="10">
+            <el-row>
+              <el-col :span="20">
+                <el-select size="small" v-model="value" placeholder="请选择" style="width:100%;">
+                  <el-option label="金币" value="1001"></el-option>
+                  <!-- <el-option label="现金" value="money"></el-option> -->
+                </el-select>
+              </el-col>
+              <el-col
+                :span="4"
+                style="height:36px;line-height:36px;color:#6c6c6c;padding-left:5px;"
+              >
+                <span>(元)</span>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="14">
+            <el-row>
+              <el-col :span="20" style="height:36px;">
+                <el-input
+                  size="small"
+                  v-model="newbie_award.count"
+                  autocomplete="off"
+                  placeholder
+                  style="height:100%;"
+                ></el-input>
+              </el-col>
+              <el-col :span="4" style="padding-left:5px;">
+                <!-- <el-button type="danger" size="small" @click="deleteItem(index)">删除</el-button> -->
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" v-if="currentIndex == 1">
+          <el-col :span="10">
+            <el-row>
+              <el-col :span="20">
+                <el-select size="small" v-model="value" placeholder="请选择" style="width:100%;">
+                  <el-option label="金币" value="1001"></el-option>
+                  <!-- <el-option label="现金" value="money"></el-option> -->
+                </el-select>
+              </el-col>
+              <el-col
+                :span="4"
+                style="height:36px;line-height:36px;color:#6c6c6c;padding-left:5px;"
+              >
+                <span>(元)</span>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="14">
+            <el-row>
+              <el-col :span="20" style="height:36px;">
+                <el-input
+                  size="small"
+                  v-model="bind_phone_award.count"
+                  autocomplete="off"
+                  placeholder
+                  style="height:100%;"
+                ></el-input>
+              </el-col>
+              <el-col :span="4" style="padding-left:5px;">
+                <!-- <el-button type="danger" size="small" @click="deleteItem(index)">删除</el-button> -->
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
       <!-- </div> -->
     </div>
     <!-- <el-dialog title="奖励添加" :visible.sync="dialogFormVisible" width="30%">
@@ -70,7 +102,7 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
-    </el-dialog>-->
+    </el-dialog> -->
   </div>
 </template>
          
@@ -82,17 +114,24 @@ export default {
   name: "fresher_awards",
   extends: BaseIframe,
   components: {
-    InputArea
+    InputArea,
   },
   data() {
     return {
-      value: "金币",
+      value:'1001',
       formLabelWidth: "120px",
-      tabItem: ["新人奖励"],
+      tabItem: ["新人奖励","绑定手机奖励"],
       currentIndex: 0,
-      gold: "",
+      // gold: "",
       // money: "",
-      counter: []
+      // counter: [
+      //   {
+      //    newbie_award: 999,
+      //    bind_phone_award: 10
+      //   }
+      // ],
+      bind_phone_award: {},
+      newbie_award: {}
       // dialogFormVisible: false,
       // form: {
       //   reward_id: "",
@@ -101,47 +140,51 @@ export default {
     };
   },
   created() {
-    this.initData();
+    this.initData()
   },
   methods: {
     showTab(index) {
       this.currentIndex = index;
     },
 
-    async save(type) {
-      // console.log(type);
-      // console.log(this.counter);
-
-      // let { data } = await this.$http.allAgency.PostfresherAward({
-      //   type: type + 1,
-      //   value: +this.counter.newbie_award
-      // });
-      // console.log(data);
+    async save(type){      
+      
+      let {data} = await this.$http.allAgency.PostfresherAward({
+        type:type+1,
+        value:+this.newbie_award.count
+      });
+      console.log(data);
+      
     },
 
-    // 添加
-    add() {
-      this.counter.push({ bind_phone_award: 0, newbie_award: 0 });
-    },
+    //添加
+    // add() {
+    //   this.counter.push({item_id:'',count:''});
+    // },
 
     //删除
-    deleteItem(index) {
-      this.counter.splice(index, 1);
-    },
+    // deleteItem(index) {
+    //   this.counter = this.counter.filter((item, n) => {
+    //     return index !== n;
+    //   });
+    // },
 
     //发送到服务器配置
     // sendConfigFile() {
     //   console.log(this.counter);
-
+      
     // },
 
-    async initData(params) {
-      let { data } = await this.$http.allAgency.GetfresherAward(params);
+    async initData(params){
+      let {data} = await this.$http.allAgency.GetfresherAward(params)
       console.log(data);
-      this.counter.push(data.data);
-      console.log(this.counter);
-    }
-  }
+      this.newbie_award = data.data.newbie_award[0]
+      this.bind_phone_award = data.data.bind_phone_award[0]
+      // this.counter = data.data
+      // console.log(this.counter)
+    },
+  },
+ 
 };
 </script>
 

@@ -444,11 +444,10 @@ const models = {
         text: '牌局记录',
         vue: r => require.ensure([], () => r(require('../../pages/OperationMan/GamblingRecord')), 'play_records'),
       },
-      // fresher_awards
       {
-        name: 'fresherawards',
+        name: 'fresher_awards',
         text: '新人奖励',
-        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FreshmanReward')), 'fresherawards'),
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/FreshmanReward')), 'fresher_awards'),
       },
       {
         name: 'cash_flows',
