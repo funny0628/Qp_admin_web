@@ -486,7 +486,7 @@ export default {
     formateData(res) {
       res.forEach(item => {
         item.type_id = item.Description  ? "文字" : "图片";
-        item.Status = item.Status === 0 ? "展示" : "隐藏";
+        item.Status = item.Status === 1 ? "展示" : "隐藏";
         if (item.Tag === 0) {
           item.Tag = "没有标签";
         } else if (item.Tag === 1) {
@@ -507,7 +507,7 @@ export default {
         return;
 
       item.type_id = item.type_id === "文字" ? 1 : 2;
-      item.Status = item.Status === "展示" ? 0 : 1;
+      item.Status = item.Status === "展示" ? 1 : 2;
       if (item.Tag === "没有标签") {
         console.log(item.Tag,"==");
         

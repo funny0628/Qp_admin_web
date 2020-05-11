@@ -61,7 +61,7 @@
      </el-form-item>
      
         <el-form-item label="抢庄区间设置" prop="grab_banker_times">
-          <el-input style="width:200px" v-model="ruleForm.grab_banker_times" placeholder="1,2|2,3|3,4"></el-input> 1,2|2,3|3,4 或者1,2;2,3;3;4 多个数字用逗号分隔,多个配置用;号或者|分隔
+          <el-input style="width:200px" v-model="ruleForm.grab_banker_times" placeholder="1,2|2,3|3,4"></el-input> 1,2|2,3|3,4 或者1,2;2,3;3;4 多个数字用逗号分隔,多个配置用 | 号分隔
         </el-form-item>
        
      
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'qz_room_config',
   data() {
@@ -87,6 +88,36 @@ export default {
         callback();
       }else{
         return callback(new Error('必填项不可以为空!!'))
+      }
+    };
+     let checkWeight = (rule,value,callback) => {
+      let reg = /^[0-9]*$/
+      let val = value.split('|')
+      let arr = []
+      val.forEach((item)=>{
+        arr.push(item.split(',')['0'])
+        arr.push(item.split(',')['1'])
+      })
+      console.log(arr);
+      
+      let isall = true
+      arr.forEach((ietm)=>{
+        if(+ietm){
+          if(parseInt(ietm) < parseFloat(ietm)){
+            isall = false
+          }else{
+             isall = true
+          }
+          }else{
+             console.log('fou');
+             isall = false
+          }
+      })
+      // console.log(isall);
+      if(isall){
+        callback()
+      }else{
+        return callback(new Error('请按照提示输入正确格式的值!!'))
       }
     };
     return {
@@ -110,7 +141,7 @@ export default {
          cost: [{ required: true, validator: checkValue, trigger: "blur" }],
          max: [{ required: true, validator: checkValue, trigger: "blur" }],
          min: [{ required: true, validator: checkValue, trigger: "blur" }],
-         grab_banker_times: [{ required: true, validator: checkLimit, trigger: "blur" }],
+         grab_banker_times: [{ required: true, validator: checkWeight, trigger: "blur" }],
       },
       //房间配置的所有数据
       allData:{},
@@ -123,8 +154,6 @@ export default {
       id: 0,
       keys: "",
       loading: false,
-      //房间配置的所有数据
-      ResData:{}
     };
   },
   created() {
@@ -149,8 +178,6 @@ export default {
         let res = JSON.parse(data.data[0].sys_val);
         console.log(res);
         this.allData = res
-        this.ResData = JSON.parse(JSON.stringify(res));
-        console.log(this.ResData);
         this.namelist.forEach((item,index)=>{
           Object.keys(res).forEach((it)=>{
             if(item === it){
@@ -170,32 +197,24 @@ export default {
     submitForm(formName,type) {
         this.$refs[formName].validate(async valid => {
         if (valid) {
-          let all = JSON.parse(JSON.stringify(this.allData))
+          let all = DeepData(this.allData);
           this.namelist.forEach((item)=>{
             Object.keys(all).forEach((it,idx)=>{
               if(item === it){
-                // all[it].grab_banker_times
                 let times = all[it].grab_banker_times.split('|')
                 let obj = {}
                 times.forEach((item,index)=>{
                   obj[index + 1] = item
                 })
                 all[item].grab_banker_times = obj
-              }
-            })
-          })
-          this.namelist.forEach((item)=>{
-            Object.keys(all).forEach((it)=>{
-              if(item === it){
                 all[it].dizhu = +all[it].dizhu
-                // all[it].cost = +all[it].cost
+                all[it].cost = +all[it].cost
                 all[it].max = +all[it].max
                 all[it].min = +all[it].min
               }
             })
           })
-
-          console.log(all,this.allData,this.currentlist);
+          // console.log(all,this.allData,this.ResData);
           if(type === 1){
             //发送put
             let { data } = await this.$http.HallFunConfig.Putroomdata2({
@@ -268,7 +287,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 0px 10px;
+    padding: 10px;
   }
 }
 </style>

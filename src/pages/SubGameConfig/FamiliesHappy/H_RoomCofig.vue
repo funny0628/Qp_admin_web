@@ -41,19 +41,19 @@
     
          </el-form-item>
         <el-form-item label="携带上限" prop="max">
-          <el-input style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.max" placeholder="0"></el-input>
         </el-form-item>
 
         <el-form-item label="携带下限" prop="min">
-          <el-input style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.min" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="上座金额" prop="sit_coins_limit">
-          <el-input style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.sit_coins_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="下注最低携带" prop="min_bet">
-          <el-input style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
+          <el-input type="number"  style="width:200px" v-model="ruleForm.min_bet" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人限红" prop="person_limit">
@@ -61,36 +61,36 @@
      </el-form-item>
 
         <el-form-item label="个人区域限红（闲)" prop="play_limit">
-          <el-input style="width:200px" v-model="ruleForm.play_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.play_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item label="个人区域限红 (庄)" prop="bank_limit">
-          <el-input style="width:200px" v-model="ruleForm.bank_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.bank_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="个人区域限红 (和)" prop="tie_limit">
-          <el-input style="width:200px" v-model="ruleForm.tie_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.tie_limit" placeholder="0"></el-input>
      </el-form-item>
         <el-form-item label="个人区域限红 (闲对)" prop="play_pair_limit">
-          <el-input style="width:200px" v-model="ruleForm.play_pair_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.play_pair_limit" placeholder="0"></el-input>
      </el-form-item>
         <el-form-item label="个人区域限红 (庄对)" prop="bank_pair_limit">
-          <el-input style="width:200px" v-model="ruleForm.bank_pair_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.bank_pair_limit" placeholder="0"></el-input>
      </el-form-item>
         <el-form-item label="区域限红 (庄、闲差)" prop="bank_play_limit">
-          <el-input style="width:200px" v-model="ruleForm.bank_play_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.bank_play_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="和总值" prop="tie_total_limit">
-          <el-input style="width:200px" v-model="ruleForm.tie_total_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.tie_total_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="庄对总值" prop="bank_pair_total_limit">
-          <el-input style="width:200px" v-model="ruleForm.bank_pair_total_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.bank_pair_total_limit" placeholder="0"></el-input>
      </el-form-item>
      
         <el-form-item label="闲对总值" prop="play_pair_total_limit">
-          <el-input style="width:200px" v-model="ruleForm.play_pair_total_limit" placeholder="0"></el-input>
+          <el-input type="number" style="width:200px" v-model="ruleForm.play_pair_total_limit" placeholder="0"></el-input>
      </el-form-item>
 
         <el-form-item>
@@ -106,12 +106,27 @@
 
 <script>
 import DeepData from '../../../assets/js/formate.js'
-import {CheckValue} from '../../../assets/js/formate.js'
 export default {
   name:'bjl_room_config',
   data() {
-      let checkValue = (rule, theObj, callback) => {
-      CheckValue(this.ruleForm,rule, theObj, callback)
+     let checkValue = (rule, value, callback) => {
+      if (value === "") {
+        return callback(new Error("必填项不可以为空!!"));
+      } else {
+        callback();
+      }
+    };
+     let checkLimit = (rule, value, callback) => {
+      let reg = /^([-+] ?)?[0-9]+(,[0-9]+)?$/;
+      if (value !== "") {
+        if (!reg.test(value)) {
+          return callback(new Error("请按照提示的格式填写!!"));
+        } else {
+          callback();
+        }
+      } else {
+        return callback(new Error("必填项不可以为空!!"));
+      }
     };
     return {
       id:0,
@@ -158,7 +173,7 @@ export default {
           { required: true,validator: checkValue, trigger: "blur" }
         ],
          person_limit: [
-          { required: true,validator: checkValue, trigger: "blur" }
+          { required: true,validator: checkLimit, trigger: "blur" }
         ],
          times_5_limit: [
           { required: true,validator: checkValue, trigger: "blur" }
@@ -207,11 +222,9 @@ export default {
     let { data } = await this.$http.HallFunConfig.Getroomdata2006({
       key: "roomdata.lua"
     });
-    // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
     this.allData = res;
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
@@ -226,8 +239,6 @@ export default {
         }
       })
     });
-    // console.log(this.currentlist,this.allData,this.ruleForm);
-    
   },
   methods: {
     handleClick(tab) {
@@ -250,14 +261,25 @@ export default {
                   obj[lindex + 1] = +litem
                 })
                resData[it].person_limit = obj
+               resData[it].max = +resData[it].max
+               resData[it].min = +resData[it].min
+               resData[it].sit_coins_limit = +resData[it].sit_coins_limit
+               resData[it].min_bet = +resData[it].min_bet
+               resData[it].play_limit = +resData[it].play_limit
+               resData[it].bank_limit = +resData[it].bank_limit
+               resData[it].tie_limit = +resData[it].tie_limit
+               resData[it].play_pair_limit = +resData[it].play_pair_limit
+               resData[it].bank_pair_limit = +resData[it].bank_pair_limit
+               resData[it].bank_play_limit = +resData[it].bank_play_limit
+               resData[it].tie_total_limit = +resData[it].tie_total_limit
+               resData[it].bank_pair_total_limit = +resData[it].bank_pair_total_limit
+               resData[it].play_pair_total_limit = +resData[it].play_pair_total_limit
               }
             })
           })
-          //  console.log(this.allData,this.currentlist,this.ruleForm,resData);
-          
           if(type === 1){
             //put
-                 let { data } = await this.$http.HallFunConfig.Putroomdata2006({
+            let { data } = await this.$http.HallFunConfig.Putroomdata2006({
               keys: this.keys,
               values: JSON.stringify(resData),
               id: this.id
@@ -276,8 +298,7 @@ export default {
           }
           }else if(type === 2){
             //post
-             this.loading = true;
-
+            this.loading = true;
             let { data } = await this.$http.HallFunConfig.Postroomdata2006({
               keys: this.keys,
               values: JSON.stringify(resData),
@@ -321,7 +342,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 20px;
+    padding: 10px;
   }
 }
 </style>

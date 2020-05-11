@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import DeepData from '../../../assets/js/formate.js'
 export default {
   name:'ddz_room_config',
   data() {
@@ -125,14 +126,10 @@ export default {
        let { data } = await this.$http.HallFunConfig.Getroomdata3({
       key: "roomdata.lua"
     });
-    // console.log(data);
      this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
     this.allData = res;
-    this.ResData = JSON.parse(JSON.stringify(res));
-    console.log(this.ResData);
     this.namelist.forEach((item,index)=>{
       Object.keys(res).forEach((it)=>{
         if(item === it){
@@ -145,7 +142,6 @@ export default {
         }
       })
     })
-    // console.log(this.allData,this.currentlist,this.ruleForm,this.labellist);
   },
   
   methods: {
@@ -161,60 +157,61 @@ export default {
     submitForm(formName,type) {
         this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.ruleForm,this.currentlist,this.allData);
-
-          // this.currentlist.forEach((item)=>{
-          //   item.max = +item.max
-          //   item.min = +item.min
-          //   item.dizhu = +item.dizhu
-          //   item.cost = +item.cost
-          //   item.rate = +item.rate
-          // })
-
-
-          // if(type === 1){
-          //   //发送put
-          //        let { data } = await this.$http.HallFunConfig.Putroomdata3({
-          //     keys: this.keys,
-          //     values: JSON.stringify(this.allData),
-          //     id: this.id
-          //   });
-          //   // console.log(data);
-          //   if (data.code === 1 && data.msg === "ok") {
-          //     this.$message({
-          //       type: "success",
-          //       message: "保存成功!"
-          //     });
-          //   }else{
-          //   this.$message({
-          //     type: "warning",
-          //     message: "保存失败!"
-          //   });
-          // }
-          // }else if(type === 2){
-          //   //发送post
-          //    this.loading = true;
-
-          //   let { data } = await this.$http.HallFunConfig.Postroomdata3({
-          //     keys: this.keys,
-          //     values: JSON.stringify(this.allData),
-          //     id: this.id
-          //   });
-          //   // console.log(data);
-          //   if (data.code === 1 && data.msg === "ok") {
-          //     this.loading = false;
-          //     this.$message({
-          //       type: "success",
-          //       message: "发送服务器配置成功!"
-          //     });
-          //   }else {
-          //     this.loading = false;
-          //     this.$message({
-          //       type: "warning",
-          //       message: "发送服务器配置失败!"
-          //     });
-          //   }
-          // }
+          // console.log(this.ruleForm,this.currentlist,this.allData);
+          let resData = DeepData(this.allData);
+           this.namelist.forEach((item)=>{
+            Object.keys(this.allData).forEach((it)=>{
+              if(item === it){
+                resData[it].dizhu = +resData[it].dizhu;
+                resData[it].cost = +resData[it].cost;
+                resData[it].max = +resData[it].max;
+                resData[it].min = +resData[it].min;
+                resData[it].rate = +resData[it].rate;
+              }
+            })
+          })
+          if(type === 1){
+            //发送put
+                 let { data } = await this.$http.HallFunConfig.Putroomdata3({
+              keys: this.keys,
+              values: JSON.stringify(resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            }else{
+            this.$message({
+              type: "warning",
+              message: "保存失败!"
+            });
+          }
+          }else if(type === 2){
+            //发送post
+             this.loading = true;
+            let { data } = await this.$http.HallFunConfig.Postroomdata3({
+              keys: this.keys,
+              values: JSON.stringify(resData),
+              id: this.id
+            });
+            // console.log(data);
+            if (data.code === 1 && data.msg === "ok") {
+              this.loading = false;
+              this.$message({
+                type: "success",
+                message: "发送服务器配置成功!"
+              });
+            }else {
+              this.loading = false;
+              this.$message({
+                type: "warning",
+                message: "发送服务器配置失败!"
+              });
+            }
+          }
 
         }else{
            this.$message({
@@ -239,7 +236,7 @@ export default {
     border: 1px solid #eee;
   }
   .form {
-    padding: 0px 10px;
+    padding: 10px;
   }
 }
 </style>
