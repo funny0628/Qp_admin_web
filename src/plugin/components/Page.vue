@@ -1,7 +1,7 @@
 <template>
-  <keep-alive>
+  <!-- <keep-alive> -->
     <component :is="vue" @forward="forward" @back="back" :page-name="pageName" :newOrder="newOrder" class="admin-page"></component>
-  </keep-alive>
+  <!-- </keep-alive> -->
 </template>
 
 <script>
@@ -74,7 +74,8 @@ export default {
     this.pageName = this.firstView;
     this.history.push(this.pageName);
   },
-  mounted() {},
+  mounted() {
+  },
   beforeDestroy() {
     this.history = [];
   },

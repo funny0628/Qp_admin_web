@@ -2,8 +2,8 @@
   <div id="FreshmanReward-main">
     <input-area>
       <!-- <el-button type="primary" size="medium" @click="dialogFormVisible=true">添加奖励</el-button> -->
-      <el-button type="primary" size="medium" @click="save(currentIndex)">保存</el-button>
-      <!-- <el-button type="primary" size="medium" @click="sendConfigFile">发送到服务器配置</el-button> -->
+      <el-button v-has="'modify_fresher_award'" type="primary" size="medium" @click="save(currentIndex)">保存</el-button>
+      <el-button type="primary" size="medium" @click="sendConfigFile">发送到服务器配置</el-button>
     </input-area>
     <div class="bd">
       <div class="nav">
@@ -146,15 +146,29 @@ export default {
     showTab(index) {
       this.currentIndex = index;
     },
-
-    async save(type){      
-      
+    async save(type){        
       let {data} = await this.$http.allAgency.PostfresherAward({
-        type:type+1,
-        value:+this.newbie_award.count
+        newbie_award: Number(this.newbie_award.count),
+        bind_phone_award: Number(this.bind_phone_award.count)
       });
       console.log(data);
-      
+      if(data.code == 200) {
+        this.$message({
+          type: 'success',
+          message: data.msg
+        })
+      }
+    },
+    sendConfigFile() {
+      this.$http.put('v1/backend/operation/fresher-award').then(res => {
+        console.log(res)
+        if(res.data.code == 200) {
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+        }
+      })
     },
 
     //添加

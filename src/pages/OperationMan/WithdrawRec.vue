@@ -119,10 +119,12 @@ import PermissionButton from "../../plugin/components/PermissionButton";
 import UserHandler from "../../script/handlers/UserHandler";
 import InputArea from "../../plugin/components/InputArea";
 import InfoTableItem from "../../plugin/components/InfoTableItem";
+import bus from "../../assets/js/bus.js";
 
 export default {
   name: "withdraw_records",
   extends: BaseIframe,
+  inject:['reload'], 
   components: {
     InfoTableItem,
     InputArea,
@@ -220,6 +222,9 @@ export default {
         order_id: "",
         remark: ""
       },
+      is_read: 0,
+      // newOrder: 0
+      newWithdrawMsg: 0
     };
   },
   methods: {
@@ -264,13 +269,13 @@ export default {
       this.dialogVisible = true;
       this.form2.pass = "通过";
       this.form2.order_id = row.WithdrawId;
-      this.form2.remark = ""
+      this.form2.remark = "";
     },
     handleReject(row) {
       console.log(row);
       this.dialogVisible = true;
       this.form2.order_id = row.WithdrawId;
-      this.form2.remark = ""
+      this.form2.remark = "";
     },
     checkOrderStatus() {
       let data = {
@@ -283,7 +288,23 @@ export default {
         if (res.data.code == 200) {
           this.dialogVisible = false;
           this.getWithdrawRec();
-          this.closeMusic()
+          this.is_read =
+                this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
+              bus.$emit("resetMenu", this.is_read);
+              if (this.newWithdrawMsg > 0) {
+              }
+              this.newWithdrawMsg > 0 ? (this.newWithdrawMsg -= 1) : 0;
+          // this.$http.post("v1/backend/operation/withdraw/notice").then(res => {
+          //   console.log(res);
+          //   if (res.data.code == 200) {
+          //     // this.is_read =
+          //     //   this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
+          //     // bus.$emit("resetMenu", this.is_read);
+          //     // if (this.newWithdrawMsg > 0) {
+          //     // }
+          //     // this.newWithdrawMsg > 0 ? (this.newWithdrawMsg -= 1) : 0;
+          //   }
+          // });
         }
       });
     },
@@ -295,46 +316,51 @@ export default {
       this.currentPage = val;
       this.getWithdrawRec();
     },
-    // newMsgSearch() {
-    //   this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
-    //     console.log(res)
-    //     if (res.data.code == 200) {
-    //       if (res.data.data.unread_total) {
-    //         var audio = document.getElementById("play");
-    //         audio.play(); //播放提示音
-    //       }
-    //     }
-    //   });
-    // },
     closeMusic() {
       var audio = document.getElementById("play");
       audio.pause(); //关闭提示音
-      this.$http.post('v1/backend/operation/withdraw/notice').then(res => {
-        console.log(res)
-        if(res.data.code == 200) {
-          
-        }
-      })
+      // this.$http.post("v1/backend/operation/withdraw/notice").then(res => {
+      //   console.log(res);
+      //   if (res.data.code == 200) {
+      //     this.is_read = this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
+      //     bus.$emit("resetMenu", this.is_read);
+      //     if(this.newWithdrawMsg > 0) {}
+      //     this.newWithdrawMsg > 0 ? this.newWithdrawMsg -= 1 : 0;
+      //   }
+      // });
     },
     playMusic() {
-      if (this.newOrder !== 0) {
+      if (this.newWithdrawMsg !== 0) {
         var audio = document.getElementById("play");
         audio.play(); //播放提示音
       }
     }
   },
   mounted() {
+    this.$nextTick(() => {
+      // bus.$on("clickItemTransformCount", count => {
+      //   console.log(count, "created");
+      //   this.newWithdrawMsg = count;
+      // });
+      bus.$on("un_read", un_read => {
+        this.newWithdrawMsg = un_read;
+      });
+    });
     this.getWithdrawRec();
-    this.playMusic()
-    // this.newMsgSearch();
-    // this.intervalId = setInterval(() => {
-    //   this.newMsgSearch();
-    // }, 60000);
-    // console.log(this.intervalId)
+    this.playMusic();
+  },
+  created() {
+    this.newWithdrawMsg = this.newOrder;
+  },
+  watch: {
+    "newWithdrawMsg": function(newVal,oldVal) {
+      console.log(newVal,oldVal)
+      if(newVal) {
+        this.reload()
+        this.getWithdrawRec()
+      }
+    }
   }
-  // beforeDestroy() {
-  //   clearInterval(this.intervalId);
-  // }
 };
 </script>
 

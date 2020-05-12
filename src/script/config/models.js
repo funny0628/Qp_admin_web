@@ -469,6 +469,11 @@ const models = {
         text: '修改玩家金币',
         vue: r => require.ensure([], () => r(require('../../pages/OperationMan/ModPlayGold')), 'change_coins'),
       },
+      {
+        name: 'online_users',
+        text: '在线列表',
+        vue: r => require.ensure([], () => r(require('../../pages/OperationMan/OnlineUsers')), 'online_users'),
+      },
     ]
   },
   repertoryMan: {
