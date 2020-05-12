@@ -286,8 +286,8 @@ let GetRechargeConfig = (params) => { //get / search
   })
 }
 
-let PutRechargeConfig = (params) => { //get / search
-  return axios.put('v1/backend/lobby/server_config/recharge_config', params)
+let PatchRechargeConfig = (params) => { //get / search
+  return axios.patch('v1/backend/lobby/server_config/recharge_config', params)
 }
 
 // 大厅功能配置 ->充值配置--举报方式------------------------------------------
@@ -729,7 +729,7 @@ export default {
   PutActivityNew5,
   //大厅功能配置-------------------
   GetRechargeConfig,
-  PutRechargeConfig,
+  PatchRechargeConfig,
   GetComplaintConfig,
   PutComplaintConfig,
   Getrank_control,

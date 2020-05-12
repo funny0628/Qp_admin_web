@@ -70,6 +70,12 @@ let GetNventory = (params) => {
         params
     })
 }
+//数据分析 ->每日玩家统计
+let GetStatisticsDay = (params) => {
+    return axios.get('v1/backend/channel/statistics_day', {
+        params
+    })
+}
 
 //子游戏 ->斗地主防刷配置
 let GetDdz = (params) => {
@@ -105,4 +111,5 @@ export default {
     PutDdz,
     DeleterDdz,
     GetNventory,
+    GetStatisticsDay,
 }
