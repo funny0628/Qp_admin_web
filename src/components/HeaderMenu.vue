@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import bus from "../assets/js/bus.js";
+import BaseIframe from "../plugin/script/common/BaseIframe";
 export default {
   name: "Header",
   data() {
@@ -44,35 +46,51 @@ export default {
     };
   },
   methods: {
+    resetMenu() {
+      this.menu = {
+        bank: {
+          name: "bank_card",
+          count: 0,
+          label: "银行卡"
+        }, // 银行卡
+        thirdPay: {
+          name: "order_manage",
+          count: 0,
+          label: "第三方"
+        }, // 第三方
+        withdraw: {
+          name: "withdraw_records",
+          count: 0,
+          label: "兑换"
+        } // 兑换
+      };
+    },
     forward(name, count) {
       this.$emit("forward", { name }, count);
+      // bus.$emit('clickItemTransformCount',count)
     },
     newMsgSearch() {
       this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
         console.log(res);
         if (res.data.code == 200) {
-          if (res.data.data.unread_total) {
-            this.menu.withdraw.count = res.data.data.unread_total;
-            console.log(this.menu.withdraw.count)
-          }
+          this.menu.withdraw.count = res.data.data.unread_total; // + Math.floor(Math.random()*10)
+          bus.$emit("un_read", this.menu.withdraw.count);
         }
       });
     }
   },
-  created() {
+  mounted() {
+    bus.$on("resetMenu", is_read => {
+      this.menu.withdraw.count = is_read;
+    });
     this.newMsgSearch();
     clearInterval(this.intervalId);
     this.intervalId = null;
     this.intervalId = setInterval(() => {
       this.newMsgSearch();
-    }, 1000*30);
+    }, 1000 * 30);
   },
-  // mounted() {
-  //   this.newMsgSearch();
-  //   this.intervalId = setInterval(() => {
-  //     this.newMsgSearch();
-  //   }, 1000 * 60 * 60);
-  // },
+  updated() {},
   beforeDestroy() {
     clearInterval(this.intervalId);
   }
