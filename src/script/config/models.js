@@ -772,6 +772,11 @@ const models = {
       //   text:'登陆日志',
       //   vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/loginLog')), 'login_log')
       // },
+      {
+        name:'data_analysis',
+        text:'每日玩家统计',
+        vue: r => require.ensure([], () => r(require('../../pages/DataAnalysis/playerSys')), 'data_analysis')
+      },
     ]
   },
   activity:{

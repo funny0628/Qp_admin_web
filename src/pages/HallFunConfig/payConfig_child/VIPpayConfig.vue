@@ -11,9 +11,9 @@
       <div class="table" v-for="(item, index) in list" :key="index" v-has="'vip_deposit_config_detail'">
         <el-row :gutter="10">
           <el-col :span="4">
-            <el-select style="width:100%" v-model="item.undefined">
-              <el-option label="QQ" value="QQ"></el-option>
-              <el-option label="微信" value="微信"></el-option> </el-select
+            <el-select style="width:100%" v-model="item.type">
+              <el-option label="QQ" value="qq"></el-option>
+              <el-option label="微信" value="wechat"></el-option> </el-select
           ></el-col>
           <el-col :span="5">
             <el-input v-model="item.name" placeholder="名称"></el-input
@@ -50,35 +50,42 @@ export default {
   async created() {
     //获取数据
     let { data } = await this.$http.HallFunConfig.GetRechargeConfig({
-      key: "recharge_config.lua"
+      key: "recharge_config"
     });
     // console.log(data);
     this.id = data.data[0].id;
     this.keys = data.data[0].sys_key;
     let res = JSON.parse(data.data[0].sys_val);
-    // console.log(res);
+    console.log(res);
     this.list = res;
   },
   methods: {
     //添加
     add() {
-      this.list.push({});
+      this.list.push({type:'',undefined:'',name:'',wx:'',desc:'',});
     },
 
     // 保存
     async saveData() {
-      // console.log('拿到数据,saveData');
-      console.log(this.list);
       this.list.forEach(item => {
-        if (item.undefined === "QQ") {
-          item.type = "qq";
-        } else if (item.undefined === "微信") {
-          item.type = "wechat";
+        if (item.type === "qq") {
+          item.undefined = "QQ";
+        } else if (item.type === "wechat") {
+          item.undefined = "微信";
         }
       });
       // console.log(this.list);
+      for(var i = 0; i < this.list.length; i++){
+        if(this.list[i].type === '' || this.list[i].undefined === '' || this.list[i].name === '' || this.list[i].wx === '' || this.list[i].desc === ''){
+           this.$message({
+            type: "warning",
+            message: "必填项不可以为空"
+          });
+           return false
+        }
+      }
 
-      let { data } = await this.$http.HallFunConfig.PutRechargeConfig({
+      let { data } = await this.$http.HallFunConfig.PatchRechargeConfig({
         keys: this.keys,
         id: this.id,
         values: JSON.stringify(this.list)

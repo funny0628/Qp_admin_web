@@ -566,7 +566,7 @@ export default {
     },
 
     formate(item){
-        item.is_diy = item.is_diy === 0 ? "固定" : "可自定义";
+        item.is_diy = item.is_diy === 1 ? "固定" : "可自定义";
         item.o_status = item.o_status === 1 ? "不生效" : "生效";
         item.o_activity = item.o_activity === 1 ? "不推荐" : "推荐";
         item.created_at  = this.timestampToTime(item.created_at)
