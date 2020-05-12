@@ -558,6 +558,13 @@ export default {
       console.log(f.file);
       var file = f.file;
       var currentChunk = 0;
+      if(this.form.version == '' ) {
+        this.$message({
+          type: 'error',
+          message: "请先填写更新版本号"
+        })
+        return false
+      }
       let that = this;
       that.loading = true;
       that.showProgress = true;
@@ -639,7 +646,7 @@ export default {
               }
             } else {
               that.loading = false;
-              this.showProgress = false;
+              that.showProgress = false;
               that.$message({
                 type: "error",
                 message: "资源包上传失败"

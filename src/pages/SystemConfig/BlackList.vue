@@ -191,7 +191,6 @@ export default {
         });
       } else {
         let data = {
-          id: this.form.id,
           ip: this.form.forbid_ip,
           op_type: Number(this.form.type),
           remarks: this.form.remark
