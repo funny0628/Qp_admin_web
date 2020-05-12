@@ -123,6 +123,10 @@ export default {
                     label:"团队代理提现",
                 },
                 {
+                    prop:"award",
+                    label:"	活动奖励",
+                },
+                {
                     prop:"agent_rebate",
                     label:"代理收益",
                 },
