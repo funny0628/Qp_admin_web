@@ -73,22 +73,37 @@ export default {
       this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
         console.log(res);
         if (res.data.code == 200) {
-          this.menu.withdraw.count = res.data.data.unread_total; // + Math.floor(Math.random()*10)
+          this.menu.withdraw.count = res.data.data.unread_total;
           bus.$emit("un_read", this.menu.withdraw.count);
         }
       });
+    },
+    setTimer() {
+      if (this.intervalId == null) {
+        this.intervalId = setInterval(() => {
+          this.newMsgSearch();
+        }, 1000 * 30);
+      }
     }
   },
+  created() {
+    clearInterval(this.intervalId);
+    this.intervalId = null;
+    this.setTimer()
+  },
   mounted() {
+    this.newMsgSearch()
     bus.$on("resetMenu", is_read => {
       this.menu.withdraw.count = is_read;
     });
-    this.newMsgSearch();
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-    this.intervalId = setInterval(() => {
-      this.newMsgSearch();
-    }, 1000 * 30);
+    // this.newMsgSearch();
+    // clearInterval(this.intervalId);
+    // this.intervalId = null;
+    // console.log(this.intervalId, "header-menu");
+    // this.intervalId = setInterval(() => {
+    //   this.newMsgSearch();
+    // }, 1000 * 30);
+    // console.log(this.intervalId, "header-menu----new-setinterval");
   },
   updated() {},
   beforeDestroy() {
