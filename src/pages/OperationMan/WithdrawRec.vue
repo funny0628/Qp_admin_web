@@ -124,7 +124,6 @@ import bus from "../../assets/js/bus.js";
 export default {
   name: "withdraw_records",
   extends: BaseIframe,
-  inject:['reload'], 
   components: {
     InfoTableItem,
     InputArea,
@@ -288,23 +287,11 @@ export default {
         if (res.data.code == 200) {
           this.dialogVisible = false;
           this.getWithdrawRec();
-          this.is_read =
-                this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
-              bus.$emit("resetMenu", this.is_read);
-              if (this.newWithdrawMsg > 0) {
-              }
-              this.newWithdrawMsg > 0 ? (this.newWithdrawMsg -= 1) : 0;
-          // this.$http.post("v1/backend/operation/withdraw/notice").then(res => {
-          //   console.log(res);
-          //   if (res.data.code == 200) {
-          //     // this.is_read =
-          //     //   this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
-          //     // bus.$emit("resetMenu", this.is_read);
-          //     // if (this.newWithdrawMsg > 0) {
-          //     // }
-          //     // this.newWithdrawMsg > 0 ? (this.newWithdrawMsg -= 1) : 0;
-          //   }
-          // });
+          this.is_read = this.newWithdrawMsg > 0 ? this.newWithdrawMsg - 1 : 0;
+          bus.$emit("resetMenu", this.is_read);
+          if (this.newWithdrawMsg > 0) {
+          }
+          this.newWithdrawMsg > 0 ? (this.newWithdrawMsg -= 1) : 0;
         }
       });
     },
@@ -315,6 +302,15 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getWithdrawRec();
+    },
+    newMsgSearch() {
+      this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
+        console.log(res);
+        if (res.data.code == 200) {
+          this.newWithdrawMsg = res.data.data.unread_total
+          this.playMusic()
+        }
+      });
     },
     closeMusic() {
       var audio = document.getElementById("play");
@@ -337,6 +333,7 @@ export default {
     }
   },
   mounted() {
+    this.newMsgSearch();
     this.$nextTick(() => {
       // bus.$on("clickItemTransformCount", count => {
       //   console.log(count, "created");
@@ -347,17 +344,18 @@ export default {
       });
     });
     this.getWithdrawRec();
-    this.playMusic();
   },
   created() {
     this.newWithdrawMsg = this.newOrder;
   },
   watch: {
-    "newWithdrawMsg": function(newVal,oldVal) {
-      console.log(newVal,oldVal)
-      if(newVal) {
-        this.reload()
-        this.getWithdrawRec()
+    newWithdrawMsg: function(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      if (newVal) {
+        this.getWithdrawRec();
+      }
+      if(newVal == 0) {
+        this.closeMusic()
       }
     }
   }
