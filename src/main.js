@@ -40,7 +40,7 @@ import VueCookie from 'vue-cookie';
 Vue.use(VueCookie);
 
 Vue.use(VueQuillEditor, /* { default global options } */ )
-Vue.prototype.$baseUrl = `${window.location.protocol}//${window.location.hostname}/${window.location.port}/`
+// Vue.prototype.$baseUrl = `${window.location.protocol}//${window.location.hostname}/${window.location.port}/`
 
 
 Vue.config.productionTip = false;

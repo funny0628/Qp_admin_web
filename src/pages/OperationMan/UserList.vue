@@ -226,7 +226,7 @@
     </div>
     <!-- dialog -->
     <div class="dialog">
-      <el-dialog title="用户详情" :visible.sync="visible" width="50%">
+      <el-dialog title="用户详情" :visible.sync="visible" width="60%">
         <div class="msg">
           <div class="left">
             <p class="image">
@@ -275,7 +275,7 @@
             </div>
           </div>
         </div>
-        <div v-if="visibiTable">
+        <div >
           <el-table
             :data="formTable"
             highlight-current-row
@@ -289,35 +289,30 @@
               prop="lock_status"
               label="	封号状态"
               align="center"
-              width="120"
             >
             </el-table-column>
             <el-table-column
               prop="reason"
               label="原因"
               align="center"
-              width="120"
             >
             </el-table-column>
             <el-table-column
               prop="endtime"
               label="结束时间"
               align="center"
-              width="130"
             >
             </el-table-column>
             <el-table-column
               prop="op_name"
               label="最后修改的操作人"
               align="center"
-              width="150"
             >
             </el-table-column>
             <el-table-column
               prop="op_time"
               label="操作时间"
               align="center"
-              width="130"
             >
             </el-table-column>
           </el-table>
@@ -379,7 +374,7 @@ export default {
       accountType: "",
       //所有数据表格
       tableData: [],
-      visibiTable: false,
+      // visibiTable: false,
       //详情中的表格
       formTable: [],
       // 详情数据
@@ -531,57 +526,50 @@ export default {
     async initdata(params) {
       let { data } = await this.$http.OperationMan.GetUsers(params);
       let fres = this.formateData(DeepData(data.data));
-      // console.log(fres);
       this.tableData = fres;
       this.total = data.total;
-      console.log(data);
+      // console.log(data);
     },
     //VIP记录列表 / 渠道列表
     async initVIP(params) {
       let { data } = await this.$http.OperationMan.GetVips(params);
-      // console.log(data);
-      
       this.optionData = DeepData(data.data);
       this.optionData.unshift({avator_name: '所有', level: -1})
       let Channelsdata = await this.$http.OperationMan.GetChannels(params);
-      // console.log(Channelsdata);
       let changeData = [];
       Channelsdata.data.data.forEach(item => {
         changeData.push(item.name);
       });
-      // console.log(changeData);
       changeData.forEach((item, index) => {
         this.optionchannels.push({ avator_nameO: item, levelO: index });
       });
        this.optionchannels.unshift({avator_nameO: '所有渠道', levelO: -1})
-      // console.log(this.optionchannels);
     },
 
     //获取用户详情
     async iniDetail(params) {
       let { data } = await this.$http.OperationMan.GetUserDetail(params);
       // console.log(data.data);
-      this.formData = this.formateNum(data.data);
-      this.formData.icon_border = this.$baseUrl + this.formData.icon_border
+      this.formData = (data.data);
+      // this.formData.icon_border = this.$baseUrl + this.formData.icon_border
+      this.formData.icon_border =  this.formData.icon_border
+      this.formData.status =  this.formData.status === 1 ? '封号' : '正常'
       // console.log(this.formData);
     },
 
     //获取用户封号信息
     async initUserLock(params) {
       let { data } = await this.$http.OperationMan.GetUserLock(params);
-      // console.log(data.data);
-      if (Object.keys(data.data || {}).length !== 0) {
-        // console.log(data.data);
-        let resData = data.dada;
-        // console.log(timestampToTime);
-        resData.endtime = this.timestampToTime(resData.endtime)
-        resData.op_time = this.timestampToTime(resData.op_time)
-        this.visibiTable = true;
-        this.formTable.push(resData);
-      } else {
-        return false;
-      }
-      // console.log(this.formTable);
+        if(data.data.constructor === Array){//没有数据返回[]
+          console.log('没有数据的数组');
+        }else{//有数据返回的{...}
+          // this.visibiTable = true
+          // console.log('拿到数据了',data.data);
+          data.data.lock_status = data.data.lock_status === 1 ? '封号' : '正常' 
+          data.data.endtime = this.timestampToTime(data.data.endtime)
+          data.data.op_time = this.timestampToTime(data.data.op_time)
+          this.formTable.push(data.data)
+        }
     }
   }
 };
