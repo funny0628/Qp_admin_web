@@ -10,7 +10,15 @@
           :value="item.game_id"
         ></el-option>
       </el-select>
-      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >搜索</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -53,7 +61,7 @@ import InfoTableItem from "../../plugin/components/InfoTableItem";
 
 export default {
   name: "online_users",
-  inject:['reload'],
+  inject: ["reload"],
   components: {
     InfoTableItem,
     InputArea,
@@ -61,6 +69,7 @@ export default {
   },
   data() {
     return {
+      searchLoading: false,
       currentPage: 1,
       pagesize: 10,
       total: 0,
@@ -87,6 +96,7 @@ export default {
   },
   methods: {
     getOnlineUsersList() {
+      this.searchLoading = true
       this.$http
         .get("v1/backend/operation/online-users", {
           params: {
@@ -98,6 +108,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code == 200) {
+            this.searchLoading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }

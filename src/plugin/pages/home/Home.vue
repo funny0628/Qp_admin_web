@@ -1,47 +1,34 @@
 <template>
   <div id="home" :class="isPhone?'is-phone': ''">
-    <el-row class="admin-box content-100 rel">
-      <!-- 左侧导航栏 -->
-      <el-col class="nav-menu-box" :xs="4" :sm="4" :md="4" :lg="3" v-if="!isPhone">
+    <div class="admin-box" style="display:flex;">
+      <div class="left nav-menu-box" style="width:220px;">
         <nav-menu @clickItem="clickItem"></nav-menu>
-      </el-col>
-      <el-drawer
-        class="menu-drawer"
-        size="160px"
-        title
-        :show-close="false"
-        :visible.sync="showNavMenu"
-        direction="ltr"
-        :before-close="closeNavMenu"
-        v-else
-      >
-        <div class="nav-menu-box">
-          <nav-menu @clickItem="clickItem"></nav-menu>
-        </div>
-      </el-drawer>
-      <el-col class="container f-l cnt-box" :xs="20" :sm="20" :md="20" :lg="21">
-        <!-- 顶部内容 -->
-        <div class="header-box">
-          <el-row class="header">
-            <el-col :xs="6" v-if="isPhone">
-              <a class="btn-menu" @click="showNavMenu = !showNavMenu"></a>
-            </el-col>
-            <el-col class="header-row hidden-xs-only" :sm="12" :md="12" :lg="12" v-if="!isPhone">
-              <span>欢迎登录</span>
-            </el-col>
-            <el-col
-              class="header-row"
-              :xs="10"
-              :sm="10"
-              :md="10"
-              :lg="10"
-              style="justify-content: flex-end"
-            >
-              <!-- <template v-if="headerVue"> -->
-                <!-- <component :is="headerVue" @forward="forward"></component> -->
-                <header-nav @forward="forward"></header-nav>
-              <!-- </template> -->
-              <!-- <template v-else>
+      </div>
+      <div class="right" style="flex:1;">
+        <el-row style="width:100%;">
+          <el-col class="container f-l cnt-box">
+            <!-- 顶部内容 -->
+            <div class="header-box">
+              <el-row class="header" style="display:flex;">
+                <el-col :xs="6" v-if="isPhone">
+                  <a class="btn-menu" @click="showNavMenu = !showNavMenu"></a>
+                </el-col>
+                <el-col
+                  class="header-row hidden-xs-only"
+                  v-if="!isPhone"
+                  style="flex:1;"
+                >
+                  <span>欢迎登录</span>
+                </el-col>
+                <div
+                  class="header-row"
+                  style="justify-content: flex-end;"
+                >
+                  <!-- <template v-if="headerVue"> -->
+                  <!-- <component :is="headerVue" @forward="forward"></component> -->
+                  <header-nav @forward="forward"></header-nav>
+                  <!-- </template> -->
+                  <!-- <template v-else>
                 <div class="btn-area">
                   <a class="btn-message"></a>
                   <a class="btn-settings"></a>
@@ -59,83 +46,88 @@
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
-              </template> -->
-            </el-col>
-            <el-col :xs="8" :sm="2" :md="2" :lg="2">
-              <!-- <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
+                  </template>-->
+                </div>
+                <el-col style="text-align:center;width:148px;">
+                  <!-- <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
                 <div>
                   {{loginUser}}
                   <i class="el-icon-caret-bottom"></i>
                 </div>
                 <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
-              </div>-->
-              <el-dropdown trigger="click">
-                <span class="el-dropdown-link">
-                  {{loginUser}}
-                  <i class="el-icon-caret-bottom"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
-                    <!-- <span>基本资料</span> -->
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <div @click="openModPsd(loginUserInfo)" style="width:100%;">修改密码</div>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <div @click="logout" style="width:100%;">退出</div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </el-col>
-          </el-row>
-          <div class="nav-menu rel" ref="quickMenu">
-            <a
-              class="btn-nav"
-              ref="quickNav"
-              v-for="(item, index) in showItems"
-              :class="item.name === activeName?'active':''"
-              @click="clickItem(item)"
-              :key="index"
-            >
-              {{item.text}}
-              <a class="btn-close iconfont icon-guanbi" v-on:click.stop="del(index)"></a>
-            </a>
-            <div class="arrow-down">
-              <el-dropdown trigger="click">
-                <div class="btn-arrow-down">
-                  <i class="el-icon-arrow-down"></i>
+                  </div>-->
+                  <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                      {{loginUser}}
+                      <i class="el-icon-caret-bottom"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>
+                        <!-- <span>基本资料</span> -->
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <div @click="openModPsd(loginUserInfo)" style="width:100%;">修改密码</div>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <div @click="logout" style="width:100%;">退出</div>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </el-col>
+              </el-row>
+              <div class="nav-menu rel" ref="quickMenu">
+                <a
+                  class="btn-nav"
+                  ref="quickNav"
+                  v-for="(item, index) in showItems"
+                  :class="item.name === activeName?'active':''"
+                  @click="clickItem(item)"
+                  :key="index"
+                >
+                  {{item.text}}
+                  <a
+                    class="btn-close iconfont icon-guanbi"
+                    v-on:click.stop="del(index)"
+                  ></a>
+                </a>
+                <div class="arrow-down">
+                  <el-dropdown trigger="click">
+                    <div class="btn-arrow-down">
+                      <i class="el-icon-arrow-down"></i>
+                    </div>
+                    <el-dropdown-menu slot="dropdown" style="max-height: 520px;overflow: auto">
+                      <el-dropdown-item
+                        v-for="(item, index) in hideItems"
+                        @click.native="add(item.name)"
+                        :key="index"
+                      >{{item.text}}</el-dropdown-item>
+                      <el-dropdown-item
+                        divided
+                        v-show="items.length > 0"
+                        @click.native="closeAll()"
+                      >关闭所有</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
-                <el-dropdown-menu slot="dropdown" style="max-height: 520px;overflow: auto">
-                  <el-dropdown-item
-                    v-for="(item, index) in hideItems"
-                    @click.native="add(item.name)"
-                    :key="index"
-                  >{{item.text}}</el-dropdown-item>
-                  <el-dropdown-item
-                    divided
-                    v-show="items.length > 0"
-                    @click.native="closeAll()"
-                  >关闭所有</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              </div>
             </div>
-          </div>
-        </div>
-        <!-- 主题内容 -->
-        <div class="main-box">
-          <page
-            v-for="(item, index) in items"
-            :first-view="item.name"
-            :key="item.name"
-            v-show="item.name === activeName"
-            :params="{}"
-            @forward="forward"
-            :newOrder="newOrder"
-            @back="del(index)"
-          ></page>
-        </div>
-      </el-col>
-    </el-row>
+            <!-- 主题内容 -->
+            <div class="main-box">
+              <page
+                v-for="(item, index) in items"
+                :first-view="item.name"
+                :key="item.name"
+                v-show="item.name === activeName"
+                :params="{}"
+                @forward="forward"
+                :newOrder="newOrder"
+                @back="del(index)"
+              ></page>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
     <el-dialog title="修改用户密码" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form">
         <el-form-item label="密码" :label-width="formLabelWidth">
@@ -157,7 +149,7 @@
 import Vue from "vue";
 import Page from "../../components/Page";
 import NavMenu from "../../components/NavMenu";
-import headerNav from '../../../components/HeaderMenu'
+import headerNav from "../../../components/HeaderMenu";
 import root from "../../script/common/Root";
 import { mapState } from "vuex";
 import { SIZE_CHANGE } from "../../script/store/mutationsType";
@@ -166,7 +158,7 @@ import NProgress from "nprogress"; // Progress 进度条
 let $this = null;
 export default {
   name: "Home",
-  components: { NavMenu, Page,headerNav },
+  components: { NavMenu, Page, headerNav },
   data() {
     return {
       defaultActive: "",
@@ -185,7 +177,7 @@ export default {
         psd: "",
         checkPsd: ""
       },
-      newOrder: 0,
+      newOrder: 0
     };
   },
   methods: (() => {
@@ -268,9 +260,9 @@ export default {
           $this.showNavMenu = false;
         }
       },
-      forward(data,count) {
+      forward(data, count) {
         $this.add(data["name"]);
-        $this.newOrder = count
+        $this.newOrder = count;
       },
       back() {},
       closeNavMenu(done) {
@@ -396,11 +388,17 @@ export default {
   width: 100%;
 }
 #home .admin-box {
+  height: 100%;
+  width: 100%;
 }
 #home .nav-menu-box {
   height: 100%;
+  /* width: 220px; */
   overflow-y: auto;
   overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0 !important;
 }
 #home .container {
   height: 100%;
@@ -473,10 +471,10 @@ export default {
   margin-left: 0;
 }
 #home .header-box .nav-menu {
-  background: #f2f2f2;
+  background: #efefef;
   width: 100%;
   height: 36px;
-  line-height: 34px;
+  line-height: 36px;
   text-align: center;
   -webkit-user-select: none;
   user-select: none;
@@ -501,7 +499,7 @@ export default {
   text-align: center;
   line-height: 34px;
   float: left;
-  color: #515a6e;
+  color: #999999;
   cursor: pointer;
   position: relative;
   height: 100%;
@@ -510,6 +508,9 @@ export default {
   font-size: 12px;
   background: #fff;
   border-right: 1px solid #e4e4e4;
+}
+#home .header-box .nav-menu .btn-nav.active {
+  color: #000;
 }
 #home .header-box .nav-menu .btn-nav:first-child {
   border-left: 1px solid #e4e4e4;
@@ -527,7 +528,7 @@ export default {
   transform: translateY(-50%);
 }
 #home .header-box .nav-menu .btn-nav.active:before {
-  background: #006efe;
+  background: #01c8ae;
 }
 #home .header-box .nav-menu .btn-close {
   color: #a5a5a5;

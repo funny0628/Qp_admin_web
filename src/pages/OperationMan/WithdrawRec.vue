@@ -20,7 +20,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <el-input v-model="format.game_id" placeholder="请输入游戏id" size="medium" clearable></el-input>
+      <el-input v-model="format.game_id" placeholder="请输入用户id" size="medium" clearable></el-input>
       <el-date-picker
         v-model="format.dateArr"
         type="datetimerange"
@@ -30,7 +30,15 @@
         end-placeholder="结束日期"
         align="right"
       ></el-date-picker>
-      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >搜索</el-button>
       <!-- <el-button type="primary" size="medium">导出excel</el-button> -->
     </input-area>
     <div class="bd">
@@ -139,6 +147,7 @@ export default {
   },
   data() {
     return {
+      searchLoading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -228,6 +237,7 @@ export default {
   },
   methods: {
     getWithdrawRec() {
+      this.searchLoading = true
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -247,6 +257,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.searchLoading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }
@@ -307,8 +318,8 @@ export default {
       this.$http.get("v1/backend/operation/withdraw/notice").then(res => {
         console.log(res);
         if (res.data.code == 200) {
-          this.newWithdrawMsg = res.data.data.unread_total
-          this.playMusic()
+          this.newWithdrawMsg = res.data.data.unread_total;
+          this.playMusic();
         }
       });
     },
@@ -354,8 +365,8 @@ export default {
       if (newVal) {
         this.getWithdrawRec();
       }
-      if(newVal == 0) {
-        this.closeMusic()
+      if (newVal == 0) {
+        this.closeMusic();
       }
     }
   }

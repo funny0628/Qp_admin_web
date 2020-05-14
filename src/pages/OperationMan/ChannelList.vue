@@ -10,8 +10,21 @@
         <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.name"></el-option>
       </el-select>
       <span>渠道</span>
-        <el-input v-model="format.searchChannel" autocomplete="off" placeholder="请输入渠道名" style="width:20%;"></el-input>
-      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
+      <el-input
+        v-model="format.searchChannel"
+        autocomplete="off"
+        placeholder="请输入渠道名"
+        style="width:20%;"
+      ></el-input>
+      <el-button
+        v-loading.fullscreen="loading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >搜索</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -25,8 +38,18 @@
         <info-table-item :table-style="tableStyle">
           <template slot-scope="scope">
             <template v-if="scope.prop === 'action'">
-              <el-button v-has="'modify_channel'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button v-has="'delete_channel'" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button
+                v-has="'modify_channel'"
+                size="mini"
+                type="primary"
+                @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                v-has="'delete_channel'"
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
             </template>
             <template v-if="['action'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
           </template>
@@ -106,6 +129,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       currentPage: 1,
       pagesize: 10,
       total: 0,
@@ -114,7 +138,7 @@ export default {
       companyList: [],
       format: {
         company: "",
-        searchChannel: "",
+        searchChannel: ""
       },
       tableStyle: [
         { label: "ID", prop: "id", width: "" },
@@ -149,6 +173,7 @@ export default {
       };
     },
     getChannelList() {
+      this.loading = true
       this.$http
         .get("v1/backend/operation/channels", {
           params: {
@@ -161,13 +186,14 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.loading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }
         });
     },
     searchData() {
-      this.getChannelList()
+      this.getChannelList();
     },
     //获取公司列表
     getCompanyList() {
@@ -184,24 +210,26 @@ export default {
       this.dialogFormVisible = true;
     },
     openAddComDialog() {
-      this.dialogVisible = true
-      this.form1.company_name = ""
+      this.dialogVisible = true;
+      this.form1.company_name = "";
     },
     addCompany() {
       let data = {
         name: this.form1.company_name
-      }
-      this.$http.post('v1/backend/operation/channel/company',data).then(res=>{
-        console.log(res)
-        if(res.data.code === 200) {
-          this.dialogVisible = false
-          this.getCompanyList()
-          this.$message({
-            type: 'success',
-            message: res.data.msg
-          })
-        }
-      })
+      };
+      this.$http
+        .post("v1/backend/operation/channel/company", data)
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.dialogVisible = false;
+            this.getCompanyList();
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+        });
     },
     addChannel() {
       if (!this.form.id) {
@@ -276,7 +304,7 @@ export default {
                   message: res.data.msg
                 });
               }
-            })
+            });
         })
         .catch(() => {
           this.$message({
