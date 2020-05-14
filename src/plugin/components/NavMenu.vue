@@ -287,10 +287,12 @@ export default {
   border: none;
   -webkit-user-select: none;
   user-select: none;
+  height: 100%;
 }
 #navMenu .el-menu .single .el-menu-item {
-  background: #0f1212;
+  background: #1f232a;
   color: #8e8e8e;
+  font-size: 14px;
   height: 56px;
   line-height: 56px;
 }
@@ -305,15 +307,15 @@ export default {
   cursor: pointer;
 }
 #navMenu .el-submenu .el-submenu__title {
-  height: 40px;
+  height: 56px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  background: #262e3f;
+  background: #1f232a;
 }
 #navMenu .el-submenu:hover .el-submenu__title {
   color: #fff;
-  background: #262e3f;
+  background: #1f232a;
 }
 #navMenu .el-submenu.is-opened {
   height: auto;
@@ -332,6 +334,7 @@ export default {
 #navMenu .el-submenu .el-menu-item {
   height: 50px;
   line-height: 50px;
+  background-color: #0f1212;
 }
 #navMenu .el-menu-item-group > ul {
   background: #1a1f2b;

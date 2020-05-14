@@ -23,7 +23,14 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" @click="searchData">查找</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        @click="searchData"
+      >查找</el-button>
       <!-- <el-button type="primary">导出excel</el-button> -->
     </input-area>
     <div class="bd">
@@ -276,19 +283,19 @@
           <tr>
             <td rowspan="2">{{uid}}</td>
             <td>免佣</td>
-            <td
-              v-for="(item,index) in player_win_list"
-              :key="index"
-            ><span v-if="item[0]">{{ item[0] | formatFreeCommission }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatFreeCommission }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{free_win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
           <tr>
             <td>非免佣</td>
-            <td
-              v-for="(item,index) in player_win_list"
-              :key="index"
-            ><span v-if="item[0]">{{ item[0] | formatCommission }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatCommission }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{not_free_win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -335,7 +342,10 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatObj }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -418,7 +428,10 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatObj }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -453,7 +466,10 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatObj }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -492,7 +508,10 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatObj }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -527,7 +546,10 @@
           </tr>
           <tr>
             <td>{{uid}}</td>
-            <td v-for="(item,index) in player_win_list" :key="index"><span v-if="item[0]">{{ item[0] | formatObj }}</span><span v-else>0</span></td>
+            <td v-for="(item,index) in player_win_list" :key="index">
+              <span v-if="item[0]">{{ item[0] | formatObj }}</span>
+              <span v-else>0</span>
+            </td>
             <td>{{win_lost_gold}}</td>
             <td>{{stage_fee}}</td>
           </tr>
@@ -561,6 +583,7 @@ export default {
   data() {
     return {
       loading: false,
+      searchLoading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -647,7 +670,7 @@ export default {
       game_name: "",
       dialogLandlordVisible: false, //斗地主
       dialogFishVisible: false, //捕鱼达人
-      game_type: "",//捕鱼需要传的游戏类型
+      game_type: "", //捕鱼需要传的游戏类型
       before_score: 0,
       left_score: 0,
       add_score: 0,
@@ -692,6 +715,7 @@ export default {
   },
   methods: {
     getPlayList() {
+      this.searchLoading = true
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -711,6 +735,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.searchLoading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }
@@ -733,7 +758,7 @@ export default {
       this.loading = true;
       console.log(row);
       this.true_user = row.true_user;
-      this.stage_fee = row.total_fee
+      this.stage_fee = row.total_fee;
       this.$http
         .get("v1/backend/operation/play/detail", {
           params: {
@@ -763,11 +788,11 @@ export default {
               this.tableData = res.data.data.side_list;
             } else if (res.data.data.game_name == "捕鱼达人") {
               this.dialogFishVisible = true;
-              this.before_score = res.data.data.before_score
-              this.left_score = res.data.data.left_score
-              this.pay_fee = res.data.data.pay_fee
-              this.add_score = res.data.data.add_score
-              this.fish_uid = res.data.data.uid
+              this.before_score = res.data.data.before_score;
+              this.left_score = res.data.data.left_score;
+              this.pay_fee = res.data.data.pay_fee;
+              this.add_score = res.data.data.add_score;
+              this.fish_uid = res.data.data.uid;
             } else if (res.data.data.game_name == "百家乐") {
               this.dialogBaihapVisible = true;
               this.system_result = res.data.data.exinfo.system_result;

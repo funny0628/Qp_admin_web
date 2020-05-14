@@ -14,7 +14,15 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" size="medium" @click="searchData">查询</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >查询</el-button>
     </input-area>
     <div class="bd">
       <info-table
@@ -47,7 +55,15 @@
       ></el-pagination>
     </div>
     <el-dialog title="捕鱼记录" :visible.sync="dialogFormVisible">
-      <el-table :data="recordTableData" style="width: 100%" border>
+      <el-table
+        v-loading="loading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.1)"
+        :data="recordTableData"
+        style="width: 100%"
+        border
+      >
         <el-table-column prop="create_date" label="时间" width="180" align="center"></el-table-column>
         <el-table-column prop="bullet_value" label="子弹总价值" width="180" align="center"></el-table-column>
         <el-table-column prop="fish_value" label="鱼价值" align="center"></el-table-column>
@@ -84,6 +100,8 @@ export default {
   },
   data() {
     return {
+      searchLoading: false,
+      loading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -152,6 +170,7 @@ export default {
   },
   methods: {
     getFishList() {
+      this.searchLoading = true;
       let params = {
         user_id: Number(this.format.play_id),
         start_time: this.format.dateArr
@@ -168,6 +187,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.searchLoading = false;
             this.records = res.data.data;
             this.total = res.data.total;
           }
@@ -180,6 +200,7 @@ export default {
     handleRecord(row) {
       console.log(row);
       this.dialogFormVisible = true;
+      this.loading = true;
       let params = {
         user_id: Number(row.uid),
         start_time: this.format.dateArr
@@ -196,6 +217,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.loading = false
             this.recordTableData = res.data.data;
           }
         });

@@ -118,16 +118,16 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  margin-right: 10px;
 }
 #header-menu ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 300px;
 }
 #header-menu ul li {
   display: inline-block;
+  width: 110px;
+  text-align: center;
   cursor: pointer;
 }
 #header-menu ul li .el-badge sup {
