@@ -2,7 +2,7 @@
   <div id="FlowSearch-main">
     <input-area>
       <el-select v-model="format.change_reason" placeholder="变化原因选择" clearable size="medium">
-        <el-option label="全部" value=""></el-option>
+        <el-option label="全部" value></el-option>
         <el-option v-for="(val,num) in changeReason" :key="num" :label="val" :value="num">{{val}}</el-option>
       </el-select>
       <el-select v-model="format.room" placeholder="房间选择" clearable size="medium">
@@ -25,7 +25,15 @@
         align="right"
         :clearable="false"
       ></el-date-picker>
-      <el-button type="primary" size="medium" @click="searchData">搜索</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >搜索</el-button>
       <!-- <el-button type="primary" size="medium">导出excel</el-button> -->
     </input-area>
     <div class="bd">
@@ -119,6 +127,7 @@ export default {
   },
   data() {
     return {
+      searchLoading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -197,6 +206,7 @@ export default {
   },
   methods: {
     getFlowWaterList() {
+      this.searchLoading = true
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
@@ -217,6 +227,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.data.code === 200) {
+            this.searchLoading = false
             this.records = res.data.data;
             this.total = res.data.total;
           }

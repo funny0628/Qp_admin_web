@@ -3,7 +3,15 @@
     <input-area>
       <span>玩家ID</span>
       <el-input v-model="format.play_id" placeholder="请输入玩家id" size="medium" clearable></el-input>
-      <el-button type="primary" size="medium">查找</el-button>
+      <el-button
+        v-loading.fullscreen="searchLoading"
+        element-loading-text="资源加载中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)"
+        type="primary"
+        size="medium"
+        @click="searchData"
+      >查找</el-button>
       <el-button type="primary" size="medium" @click="dialogFormVisible=true">修改金币</el-button>
     </input-area>
     <div class="bd">
@@ -27,7 +35,9 @@
             <template v-if="'updated_at'.indexOf(scope.prop) >= 0">
               <span>{{scope.row.updated_at | dateFormat}}</span>
             </template>
-            <template v-if="['action','type','path','updated_at'].indexOf(scope.prop) < 0">{{scope.row[scope.prop]}}</template>
+            <template
+              v-if="['action','type','path','updated_at'].indexOf(scope.prop) < 0"
+            >{{scope.row[scope.prop]}}</template>
           </template>
         </info-table-item>
       </info-table>
@@ -97,6 +107,7 @@ export default {
   },
   data() {
     return {
+      searchLoading: false,
       pagesize: 10,
       currentPage: 1,
       total: 0,
@@ -112,7 +123,7 @@ export default {
         { label: "修改数量", prop: "value", width: "" },
         { label: "备注", prop: "remarks", width: "" },
         { label: "操作者", prop: "auth", width: "" },
-        { label: "操作时间", prop: "updated_at", width: "" },
+        { label: "操作时间", prop: "updated_at", width: "" }
       ],
       records: [],
       form: {
@@ -127,20 +138,27 @@ export default {
   },
   methods: {
     getModGoldList() {
+      this.searchLoading = true
       let params = {
         page: this.currentPage,
         limit: this.pagesize,
         user_id: Number(this.format.play_id)
-      }
-      this.$http.get('v1/backend/operation/coin-modify',{
-        params
-      }).then(res=>{
-        console.log(res)
-        if(res.data.code === 200) {
-          this.records = res.data.data
-          this.total = res.data.total
-        }
-      })
+      };
+      this.$http
+        .get("v1/backend/operation/coin-modify", {
+          params
+        })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.searchLoading = false
+            this.records = res.data.data;
+            this.total = res.data.total;
+          }
+        });
+    },
+    searchData() {
+      this.getModGoldList();
     },
     modPlayGoldFn() {
       let data = {
@@ -149,18 +167,18 @@ export default {
         modify_path: Number(this.form.mod_path),
         modify_value: Number(this.form.mod_num),
         remarks: this.form.remark
-      }
-      this.$http.post('v1/backend/operation/coin-modify',data).then(res=>{
-        console.log(res)
-        if(res.data.code === 200) {
-          this.dialogFormVisible = false
-          this.getModGoldList()
+      };
+      this.$http.post("v1/backend/operation/coin-modify", data).then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.dialogFormVisible = false;
+          this.getModGoldList();
           this.$message({
             type: "success",
             message: res.data.msg
-          })
+          });
         }
-      })
+      });
     },
     /**搜索*/
     search() {},
@@ -196,10 +214,10 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getModGoldList();
-    },
+    }
   },
   mounted() {
-    this.getModGoldList()
+    this.getModGoldList();
   }
 };
 </script>
