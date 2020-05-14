@@ -230,7 +230,7 @@
         <div class="msg">
           <div class="left">
             <p class="image">
-              <img :src="formData.icon_border" alt="" />
+              <img  :src="formData.icon" alt="" />
             </p>
             <p>{{ formData.nickname }}</p>
             <p>状态:{{ formData.status }}</p>
@@ -395,6 +395,16 @@ export default {
         reason:'',
         end_time:'',
       },
+      defaultImage:[
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_1_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_2_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_3_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_4_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_5_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_6_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_7_225.png')},
+        {ImageUrl:require('../../assets/defualtImage/lobby_headIcon_8_225.png')},
+      ]
      
     };
   },
@@ -405,6 +415,9 @@ export default {
   },
 
   methods: {
+    // imgError(item){
+    //   item.icon_border = require('../../assets/img/icon.png')
+    // },
 
     //筛查
     search() {
@@ -554,7 +567,8 @@ export default {
       // this.formData.icon_border = this.$baseUrl + this.formData.icon_border
       this.formData.icon_border =  this.formData.icon_border
       this.formData.status =  this.formData.status === 1 ? '封号' : '正常'
-      // console.log(this.formData);
+      this.formData.sex =  this.formData.sex === 1 ? '男' : '女'
+      this.formData.icon = this.defaultImage[this.formData.icon - 1].ImageUrl
     },
 
     //获取用户封号信息
@@ -563,8 +577,6 @@ export default {
         if(data.data.constructor === Array){//没有数据返回[]
           console.log('没有数据的数组');
         }else{//有数据返回的{...}
-          // this.visibiTable = true
-          // console.log('拿到数据了',data.data);
           data.data.lock_status = data.data.lock_status === 1 ? '封号' : '正常' 
           data.data.endtime = this.timestampToTime(data.data.endtime)
           data.data.op_time = this.timestampToTime(data.data.op_time)
@@ -599,8 +611,8 @@ export default {
         .image {
           width: 100px;
           height: 100px;
-          border: 1px solid red;
-          background-color: red;
+          // border: 1px solid red;
+          // background-color: red;
           img {
             width: 100%;
             height: 100%;
