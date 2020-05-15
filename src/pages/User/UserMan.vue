@@ -29,7 +29,7 @@
         <el-table-column prop="update_time" label="更新时间" align="center">
           <template slot-scope="scope">{{scope.row.update_time | dateFormat}}</template>
         </el-table-column>
-        <el-table-column fixed="right" align="center" width="300">
+        <el-table-column fixed="right" align="center" width="200">
           <template slot-scope="scope">
             <el-button
               v-has="'modify_user'"
@@ -49,6 +49,13 @@
               type="primary"
               @click="handleRole(scope.$index, scope.row)"
             >角色</el-button>
+            <el-button
+              v-has="'admin_user_unlock'"
+              v-if="scope.row.username !== 'root' && scope.row.status == 1"
+              size="mini"
+              type="danger"
+              @click="handleFreeze(scope.row)"
+            >账号解冻</el-button>
             <el-button
               v-if="scope.row.username !== 'root'"
               v-has="'delete_user'"
@@ -456,6 +463,22 @@ export default {
           });
         });
     },
+    handleFreeze(row) {
+      console.log(row);
+      let data = {
+        user_id: row.id
+      };
+      this.$http.post("v1/backend/auth/user/unlock", data).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+          this.getUserList()
+        }
+      });
+    },
     //角色列表
     async getRoleList() {
       const res = await this.$http.get("v1/backend/auth/roles");
@@ -501,6 +524,9 @@ export default {
 }
 .el-pagination {
   margin-top: 20px;
+}
+.el-button {
+  margin-top: 5px;
 }
 #userMan—main >>> .el-dialog .el-dialog__header {
   text-align: left;
