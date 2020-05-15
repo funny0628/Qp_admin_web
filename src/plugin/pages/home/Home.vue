@@ -400,6 +400,11 @@ export default {
 ::-webkit-scrollbar {
   width: 0 !important;
 }
+#home .admin-box .right {
+  height: 100%;
+  width: 100%;
+  overflow-x: auto;
+}
 #home .container {
   height: 100%;
 }
