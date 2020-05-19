@@ -46,12 +46,7 @@
             </div>
           </div>
         </form>-->
-        <el-form
-          label-position="top"
-          ref="ruleForm"
-          :model="formData"
-          label-width="80px"
-        >
+        <el-form label-position="top" ref="ruleForm" :model="formData" label-width="80px">
           <h2 style="text-align:center;">用户登录</h2>
           <el-form-item label="用户名" prop="username">
             <el-input v-model="formData.username"></el-input>
@@ -65,10 +60,62 @@
         </el-form>
       </div>
     </div>
+    <!-- 安全验证 -->
+    <el-dialog
+      title="安全验证"
+      :visible.sync="dialogFormVisible"
+      center
+      width="30%"
+      top="20vh"
+      :show-close="false"
+    >
+      <el-form :model="form">
+        <el-form-item>
+          <div style="text-align:center;">输入谷歌验证器中6位验证码</div>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model.number="form.verificationCode" maxLength='6' autocomplete="off" placeholder="谷歌验证码"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button style="width:100%;" type="primary" @click="codeLogin">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 绑定谷歌验证码 -->
+    <el-dialog
+      title="绑定谷歌验证码"
+      :visible.sync="dialogVisible"
+      center
+      width="30%"
+      top="20vh"
+      :show-close="false"
+      append-to-body
+    >
+      <el-form :model="form2">
+        <el-form-item style="border: 1px solid #e0e8ed;padding:10px;">
+          <div class="paycode">
+            <!-- 放置二维码的容器,需要给一个ref -->
+            <div id="qrcode" ref="qrcode"></div>
+            <div style="float:left;margin-left:30px;">
+              <div>{{secret}}</div>
+              <div style="margin-top:10px;">手动输入密钥</div>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <span>输入谷歌验证器中6位验证码</span>
+          <el-input v-model.number="form2.code" maxlength="6" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="bindCode" style="width:100%;">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import QRCode from "qrcodejs2";
 export default {
   name: "Login",
   data() {
@@ -77,10 +124,99 @@ export default {
         username: "",
         password: ""
       },
+      form: {
+        verificationCode: ""
+      },
+      form2: {
+        code: ""
+      },
+      user_id: null,
+      dialogFormVisible: false,
+      dialogVisible: false,
+      code_url: "",
+      secret: "",
+      qrcode: ""
     };
   },
   methods: {
+    // 展示二维码
+    payOrder() {
+      this.qrcode = "";
+      this.form2.code = "";
+      this.dialogVisible = true;
+      // 二维码内容,一般是由后台返回的跳转链接,这里是写死的一个链接
+      this.qrcode = this.code_url;
+      // 使用$nextTick确保数据渲染
+      this.$nextTick(() => {
+        this.$refs.qrcode.innerHTML = "";
+        this.createCode();
+      });
+    },
+    createCode() {
+      this.qrcode = new QRCode("qrcode", {
+        text: this.qrcode, //# 二维码内容
+        width: 100,
+        height: 100,
+        // render: 'canvas' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+        colorDark: "#000000", //#前景色
+        colorLight: "#ffffff", //#背景色
+        correctLevel: 3
+      });
+      console.log(this.qrcode);
+    },
+    bindCode() {
+      let data = {
+        user_id: this.user_id,
+        ga_code: Number(this.form2.code)
+      };
+      this.$http.post("v1/backend/auth/ga-bind", data).then(res => {
+        console.log(res);
+        if (res.data.code == 200) {
+          this.dialogVisible = false;
+          this.$refs.qrcode.innerHTML = "";
+          this.secret = "";
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+          this.$router.push({
+            name: "home"
+          });
+          localStorage.setItem(
+            "user_info",
+            JSON.stringify(res.data.data.permissions)
+          );
+          localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        }
+      });
+    },
+    codeLogin() {
+      let data = {
+        user_id: this.user_id,
+        ga_code: Number(this.form.verificationCode)
+      };
+      this.$http.post("v1/backend/auth/ga", data).then(res => {
+        console.log(res);
+        if (res.data.code == 200) {
+          this.$router.push({
+            name: "home"
+          });
+          localStorage.setItem(
+            "user_info",
+            JSON.stringify(res.data.data.permissions)
+          );
+          localStorage.setItem("user", JSON.stringify(res.data.data.user));
+          this.dialogFormVisible = false
+        }else {
+          this.$message({
+            type: "error",
+            message: res.data.msg
+          });
+        }
+      });
+    },
     async login() {
+      // this.dialogFormVisible = true;
       let data = {
         username: this.formData.username,
         password: this.formData.password
@@ -88,15 +224,38 @@ export default {
       const res = await this.$http.post("/v1/backend/login", data);
       console.log(res);
       if (res.data.code === 200) {
-        this.$message({
-          type: "success",
-          message: res.data.msg
-        });
-        this.$router.push({
-          name: "home",
-        });
-        localStorage.setItem('user_info', JSON.stringify(res.data.data.permissions));
-        localStorage.setItem('user', JSON.stringify(res.data.data.user));
+        this.user_id = res.data.data.user_id;
+        if (res.data.data.google_auth == 0) {
+          this.$http
+            .get("v1/backend/auth/ga-bind", {
+              params: {
+                user_id: res.data.data.user_id
+              }
+            })
+            .then(res => {
+              console.log(res);
+              if (res.data.code == 200) {
+                this.code_url = res.data.data.code_url;
+                this.secret = res.data.data.secret;
+                this.payOrder();
+              }
+            });
+        } else {
+          this.dialogFormVisible = true;
+        }
+
+        // this.$message({
+        //   type: "success",
+        //   message: res.data.msg
+        // });
+        // this.$router.push({
+        //   name: "home"
+        // });
+        // localStorage.setItem(
+        //   "user_info",
+        //   JSON.stringify(res.data.data.permissions)
+        // );
+        // localStorage.setItem("user", JSON.stringify(res.data.data.user));
       } else {
         this.$message({
           type: "error",
@@ -147,5 +306,16 @@ export default {
 .login-view .login-wrap .login-form .login-head h3 {
   margin-top: 10px;
   padding-bottom: 10px;
+}
+
+.paycode {
+  width: 100%;
+  height: 100px;
+  margin: 0 auto;
+}
+#qrcode {
+  width: 100px;
+  height: 100px;
+  float: left;
 }
 </style>
