@@ -49,14 +49,7 @@
                   </template>-->
                 </div>
                 <el-col style="text-align:center;width:148px;">
-                  <!-- <div style="position:relative;cursor: pointer;" @click="showLoginoutFn">
-                <div>
-                  {{loginUser}}
-                  <i class="el-icon-caret-bottom"></i>
-                </div>
-                <div class="loginout" v-if="showLoginout" @click="logout">退出</div>
-                  </div>-->
-                  <el-dropdown trigger="click">
+                  <el-dropdown trigger="click" placement="bottom">
                     <span class="el-dropdown-link">
                       {{loginUser}}
                       <i class="el-icon-caret-bottom"></i>
@@ -68,8 +61,11 @@
                       <el-dropdown-item>
                         <div @click="openModPsd(loginUserInfo)" style="width:100%;">修改密码</div>
                       </el-dropdown-item>
+                       <el-dropdown-item>
+                        <div style="width:100%;">修改谷歌验证码</div>
+                      </el-dropdown-item>
                       <el-dropdown-item>
-                        <div @click="logout" style="width:100%;">退出</div>
+                        <div @click="logout" style="width:100%;">退出登录</div>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -169,7 +165,6 @@ export default {
       showNavMenu: false,
       loginUser: "",
       loginUserInfo: {},
-      showLoginout: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
       form: {
@@ -279,6 +274,8 @@ export default {
               type: "success",
               message: res.data.msg
             });
+            localStorage.removeItem('user_info');
+            localStorage.removeItem('user');
           }
         });
       },
@@ -309,13 +306,6 @@ export default {
             }
           });
       },
-      showLoginoutFn() {
-        if (this.showLoginout == true) {
-          this.showLoginout = false;
-        } else {
-          this.showLoginout = true;
-        }
-      }
     };
   })(),
   computed: {
