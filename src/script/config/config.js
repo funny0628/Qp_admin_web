@@ -1,7 +1,7 @@
 export default {
   IS_DEBUG: {
     state: process.env.NODE_ENV !== 'production',
-    activePage: 'userList'
+    activePage: 'user_manage'
   },
   ACTIVE_PAGE: 'index'
 }
