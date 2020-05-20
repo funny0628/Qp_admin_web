@@ -429,13 +429,11 @@ export default {
               message: res.data.msg
             });
           }else {
-            this.dialogVisible = false;
-            this.$refs.qrcode.innerHTML = "";
-            this.secret = "";
             this.$message({
               type: "error",
               message: res.data.msg
             });
+            this.form2.code = ""
           }
         });
       }
