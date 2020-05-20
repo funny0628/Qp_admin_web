@@ -1,5 +1,5 @@
 <template>
-  <div id="home" :class="isPhone?'is-phone': ''">
+  <div id="home" :class="isPhone ? 'is-phone' : ''">
     <div class="admin-box" style="display:flex;">
       <div class="left nav-menu-box" style="width:220px;">
         <nav-menu @clickItem="clickItem"></nav-menu>
@@ -20,10 +20,7 @@
                 >
                   <span>欢迎登录</span>
                 </el-col>
-                <div
-                  class="header-row"
-                  style="justify-content: flex-end;"
-                >
+                <div class="header-row" style="justify-content: flex-end;">
                   <!-- <template v-if="headerVue"> -->
                   <!-- <component :is="headerVue" @forward="forward"></component> -->
                   <header-nav @forward="forward"></header-nav>
@@ -51,7 +48,7 @@
                 <el-col style="text-align:center;width:148px;">
                   <el-dropdown trigger="click" placement="bottom">
                     <span class="el-dropdown-link">
-                      {{loginUser}}
+                      {{ loginUser }}
                       <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -59,10 +56,17 @@
                         <!-- <span>基本资料</span> -->
                       </el-dropdown-item>
                       <el-dropdown-item>
-                        <div @click="openModPsd(loginUserInfo)" style="width:100%;">修改密码</div>
+                        <div
+                          @click="openModPsd(loginUserInfo)"
+                          style="width:100%;"
+                        >
+                          修改密码
+                        </div>
                       </el-dropdown-item>
-                       <el-dropdown-item>
-                        <div style="width:100%;">修改谷歌验证码</div>
+                      <el-dropdown-item>
+                        <div style="width:100%;" @click="modifyCode">
+                          修改谷歌验证码
+                        </div>
                       </el-dropdown-item>
                       <el-dropdown-item>
                         <div @click="logout" style="width:100%;">退出登录</div>
@@ -76,11 +80,11 @@
                   class="btn-nav"
                   ref="quickNav"
                   v-for="(item, index) in showItems"
-                  :class="item.name === activeName?'active':''"
+                  :class="item.name === activeName ? 'active' : ''"
                   @click="clickItem(item)"
                   :key="index"
                 >
-                  {{item.text}}
+                  {{ item.text }}
                   <a
                     class="btn-close iconfont icon-guanbi"
                     v-on:click.stop="del(index)"
@@ -91,17 +95,22 @@
                     <div class="btn-arrow-down">
                       <i class="el-icon-arrow-down"></i>
                     </div>
-                    <el-dropdown-menu slot="dropdown" style="max-height: 520px;overflow: auto">
+                    <el-dropdown-menu
+                      slot="dropdown"
+                      style="max-height: 520px;overflow: auto"
+                    >
                       <el-dropdown-item
                         v-for="(item, index) in hideItems"
                         @click.native="add(item.name)"
                         :key="index"
-                      >{{item.text}}</el-dropdown-item>
+                        >{{ item.text }}</el-dropdown-item
+                      >
                       <el-dropdown-item
                         divided
                         v-show="items.length > 0"
                         @click.native="closeAll()"
-                      >关闭所有</el-dropdown-item>
+                        >关闭所有</el-dropdown-item
+                      >
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
@@ -124,18 +133,66 @@
         </el-row>
       </div>
     </div>
-    <el-dialog title="修改用户密码" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog
+      title="修改用户密码"
+      :visible.sync="dialogFormVisible"
+      width="30%"
+    >
       <el-form :model="form">
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input type="password" v-model="form.psd" autocomplete="off"></el-input>
+          <el-input
+            type="password"
+            v-model="form.psd"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="确认密码" :label-width="formLabelWidth">
-          <el-input type="password" v-model="form.checkPsd" autocomplete="off"></el-input>
+          <el-input
+            type="password"
+            v-model="form.checkPsd"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyUserPsd">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 绑定谷歌验证码 -->
+    <el-dialog
+      title="绑定谷歌验证码"
+      :visible.sync="dialogVisible"
+      center
+      width="30%"
+      top="20vh"
+      :show-close="false"
+      append-to-body
+    >
+      <el-form :model="form2">
+        <el-form-item style="border: 1px solid #e0e8ed;padding:10px;">
+          <div class="paycode">
+            <!-- 放置二维码的容器,需要给一个ref -->
+            <div id="qrcode" ref="qrcode"></div>
+            <div style="float:left;margin-left:30px;">
+              <div>{{ secret }}</div>
+              <div style="margin-top:10px;">手动输入密钥</div>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <span>输入谷歌验证器中6位验证码</span>
+          <el-input
+            v-model="form2.code"
+            maxlength="6"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="bindCode" style="width:100%;"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -150,6 +207,7 @@ import root from "../../script/common/Root";
 import { mapState } from "vuex";
 import { SIZE_CHANGE } from "../../script/store/mutationsType";
 import NProgress from "nprogress"; // Progress 进度条
+import QRCode from "qrcodejs2";
 
 let $this = null;
 export default {
@@ -172,7 +230,16 @@ export default {
         psd: "",
         checkPsd: ""
       },
-      newOrder: 0
+      newOrder: 0,
+      form2: {
+        code: ""
+      },
+      user_id: null,
+      dialogFormVisible: false,
+      dialogVisible: false,
+      code_url: "",
+      secret: "",
+      qrcode: ""
     };
   },
   methods: (() => {
@@ -274,8 +341,8 @@ export default {
               type: "success",
               message: res.data.msg
             });
-            localStorage.removeItem('user_info');
-            localStorage.removeItem('user');
+            localStorage.removeItem("user_info");
+            localStorage.removeItem("user");
           }
         });
       },
@@ -306,6 +373,72 @@ export default {
             }
           });
       },
+      modifyCode() {
+        this.$http
+          .get("v1/backend/auth/ga-bind", {
+            params: {
+              user_id: this.loginUserInfo.id
+            }
+          })
+          .then(res => {
+            console.log(res);
+            if (res.data.code == 200) {
+              this.code_url = res.data.data.code_url;
+              this.secret = res.data.data.secret;
+              this.payOrder();
+            }
+          });
+      },
+      // 展示二维码
+      payOrder() {
+        this.qrcode = "";
+        this.form2.code = "";
+        this.dialogVisible = true;
+        // 二维码内容,一般是由后台返回的跳转链接,这里是写死的一个链接
+        this.qrcode = this.code_url;
+        // 使用$nextTick确保数据渲染
+        this.$nextTick(() => {
+          this.$refs.qrcode.innerHTML = "";
+          this.createCode();
+        });
+      },
+      createCode() {
+        this.qrcode = new QRCode("qrcode", {
+          text: this.qrcode, //# 二维码内容
+          width: 100,
+          height: 100,
+          // render: 'canvas' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+          colorDark: "#000000", //#前景色
+          colorLight: "#ffffff", //#背景色
+          correctLevel: 3
+        });
+        console.log(this.qrcode);
+      },
+      bindCode() {
+        let data = {
+          ga_code: Number(this.form2.code)
+        };
+        this.$http.put("v1/backend/auth/ga-bind", data).then(res => {
+          console.log(res);
+          if (res.data.code == 200) {
+            this.dialogVisible = false;
+            this.$refs.qrcode.innerHTML = "";
+            this.secret = "";
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }else {
+            this.dialogVisible = false;
+            this.$refs.qrcode.innerHTML = "";
+            this.secret = "";
+            this.$message({
+              type: "error",
+              message: res.data.msg
+            });
+          }
+        });
+      }
     };
   })(),
   computed: {
@@ -361,6 +494,16 @@ export default {
 </script>
 
 <style scoped>
+.paycode {
+  width: 100%;
+  height: 100px;
+  margin: 0 auto;
+}
+#qrcode {
+  width: 100px;
+  height: 100px;
+  float: left;
+}
 .loginout {
   position: absolute;
   top: 20px;
