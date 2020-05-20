@@ -74,7 +74,7 @@
           <div style="text-align:center;">输入谷歌验证器中6位验证码</div>
         </el-form-item>
         <el-form-item>
-          <el-input v-model.number="form.verificationCode" maxLength='6' autocomplete="off" placeholder="谷歌验证码"></el-input>
+          <el-input v-model="form.verificationCode" maxLength='6' autocomplete="off" placeholder="谷歌验证码"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,7 +104,7 @@
         </el-form-item>
         <el-form-item>
           <span>输入谷歌验证器中6位验证码</span>
-          <el-input v-model.number="form2.code" maxlength="6" autocomplete="off"></el-input>
+          <el-input v-model="form2.code" maxlength="6" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -242,6 +242,7 @@ export default {
             });
         } else {
           this.dialogFormVisible = true;
+          this.form.verificationCode = ""
         }
 
         // this.$message({
